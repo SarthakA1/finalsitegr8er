@@ -17,12 +17,14 @@ const AnswerInput:React.FC<AnswerInputProps> = ({ answerText, setAnswerText, use
         <Flex direction="column" position="relative" >
         {user ? (
           <>
+            
             <Text mb={1}>
               Answer as{" "}
               <span style={{ color: "#2c75b9" }}>
               {user?.displayName! || user?.email!.split("@")[0]}
               </span>
             </Text>
+            
             <Textarea
               value={answerText}
               onChange={(event) => setAnswerText(event.target.value)}
@@ -40,25 +42,25 @@ const AnswerInput:React.FC<AnswerInputProps> = ({ answerText, setAnswerText, use
               }}
             />
             <Flex
-              position="absolute"
-              left="1px"
-              right={0.1}
              
-              bottom="1px"
-              justify="flex-end"
-              bg="gray.100"
-              p="6px 8px"
-              borderRadius="0px 0px 4px 4px"
-            >
-              <Button 
-                height="26px"
-                disabled={!answerText.length}
-                isLoading={createLoading}
-                onClick={() => onCreateAnswer(answerText)}
-              >
-                Answer
-              </Button>
-            </Flex>
+             left="1px"
+             right={0.1}
+            
+             bottom="1px"
+             justify="flex-end"
+             bg="gray.100"
+             p="6px 8px"
+             borderRadius="0px 0px 4px 4px"
+           >
+             <Button 
+               height="26px"
+               disabled={!answerText.length}
+               isLoading={createLoading}
+               onClick={() => onCreateAnswer(answerText)}
+             >
+               Answer
+             </Button>
+           </Flex>
             
             
           </>
