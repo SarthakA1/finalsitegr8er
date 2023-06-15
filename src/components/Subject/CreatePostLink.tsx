@@ -1,7 +1,7 @@
 import { AuthModalState } from "@/atoms/authModalAtom";
 import { auth } from "@/firebase/clientApp";
 import useDirectory from "@/hooks/useDirectory";
-import { Flex, Icon, Input } from "@chakra-ui/react";
+import { Flex, Icon, Input, Image } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
@@ -50,7 +50,11 @@ const CreatePostLink: React.FC = () => {
       p={2}
       mb={4}
     >
-      <Icon as={FaUserCircle} fontSize={36} color="gray.300" mr={4} />
+       {user?.photoURL ? (
+                <Image src={user.photoURL} height="35px" borderRadius={50} mr={2}></Image>
+            ) : (
+              <Icon as={FaUserCircle} fontSize={36} color="gray.300" mr={2} />
+            )}
       <Input
         placeholder="Ask Anything!"
         fontSize="10pt"
