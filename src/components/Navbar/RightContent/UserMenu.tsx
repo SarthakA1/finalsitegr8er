@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from '@chakra-ui/icons';
-import { Menu, MenuButton, Button, MenuList, MenuItem, Icon, Flex } from '@chakra-ui/react';
+import { Menu, MenuButton, Button, MenuList, MenuItem, Icon, Flex, Image } from '@chakra-ui/react';
 import { signOut, User } from 'firebase/auth';
 import React from 'react';
 import { FaUserCircle } from "react-icons/fa";
