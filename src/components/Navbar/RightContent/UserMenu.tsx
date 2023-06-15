@@ -30,7 +30,13 @@ const UserMenu:React.FC<UserMenuProps> = ({ user }) => {
         <Menu>
              <MenuButton cursor="pointer" padding="0px 6px" borderRadius={4} _hover={{ outline: "1px solid", outlineColor: "gray.200" }}>
                 <Flex align="center">
-                         <Icon fontSize={24} as={FaUserCircle}  mr={1} color="brand.100"/>
+                      {user?.photoURL ? (
+                <Image src={user.photoURL} height="28px" borderRadius={50}></Image>
+            ) : (
+                <Icon fontSize={24} as={FaUserCircle}  mr={1} color="brand.100"/>
+                
+            )}
+                       
                          <Text mr={2} display={{ base: 'none', md: 'unset' }}> 
                             {user?.displayName || user?.email?.split("@")[0]}
                          </Text>
