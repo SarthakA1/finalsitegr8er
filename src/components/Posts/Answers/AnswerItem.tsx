@@ -1,8 +1,12 @@
-import { Box, Flex, Icon, Spinner, Stack, Text } from '@chakra-ui/react';
+import { AuthModalState } from '@/atoms/authModalAtom';
+import { auth } from '@/firebase/clientApp';
+import { Box, Flex, Icon, Spinner, Stack, Text, Image } from '@chakra-ui/react';
 import { Timestamp } from 'firebase/firestore';
 import moment from 'moment';
 import React from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { FaUserCircle } from "react-icons/fa";
+import { useSetRecoilState } from 'recoil';
 
 export type Answer = {
     id: string;
@@ -21,16 +25,24 @@ type AnswerItemProps = {
     onDeleteAnswer: (answer: Answer) => void;
     loadingDelete: boolean;
     userId: string;
+    
 };
 
 
 
 const AnswerItem:React.FC<AnswerItemProps> = ({ answer, onDeleteAnswer, loadingDelete, userId }) => {
+  const [user] = useAuthState(auth);
+  const setAuthModalState = useSetRecoilState(AuthModalState);
     
     return (
       <Flex>
         <Box mr={2}>
-          <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
+        {user?.photoURL? (
+       
+                <Image src={user.photoURL} height="35px" borderRadius={50} mt={1} minWidth={35}></Image>
+            ) : (
+              <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
+            )}
         </Box>
         <Stack spacing={1}>
           <Stack direction="row" align="center" fontSize="8pt">
