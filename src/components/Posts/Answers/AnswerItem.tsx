@@ -38,8 +38,8 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, onDeleteAnswer, loadingD
       <Flex>
         <Box mr={2}>
         {user?.photoURL? (
-       
-                <Image src={user.photoURL} height="35px" borderRadius={50} mt={1} minWidth={35}></Image>
+              <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
+                // <Image src={user.photoURL} height="35px" borderRadius={50} mt={1} minWidth={35}></Image>
             ) : (
               <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
             )}
