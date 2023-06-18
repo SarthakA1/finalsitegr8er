@@ -37,7 +37,7 @@ const UserMenu:React.FC<UserMenuProps> = ({ user }) => {
                 
             )}
                        
-                         <Text mr={2} display={{ base: 'none', md: 'unset' }}> 
+                       <Text mr={2} ml={1} display={{ base: 'none', md: 'unset' }}> 
                             {user?.displayName || user?.email?.split("@")[0]}
                          </Text>
                          <Icon fontSize={11} as={BsChevronDown} mt={0.5} mr={1} color="brand.100"/>
