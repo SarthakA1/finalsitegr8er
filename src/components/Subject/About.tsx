@@ -149,12 +149,11 @@ const About: React.FC<AboutProps> = ({
                   <Button mt={2} mb={3} height="30px" width="250px">
                     Ask Anything!
                   </Button>
-                </Link>
-            <Link href={`${router.query.subject}/submit`}>
-                  <Button mt={2} mb={3} height="30px" width="250px">
+                   <Button mt={2} mb={3} height="30px" width="250px">
                   Share Anything!
                   </Button>
                 </Link>
+            
               )}
               {/* !!!ADDED AT THE VERY END!!! INITIALLY DOES NOT EXIST */}
              
