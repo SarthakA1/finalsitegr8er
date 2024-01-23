@@ -40,7 +40,8 @@ const Notification:React.FC<NotificationsProps> = ({ subjectData }) => {
     const [selectedTab, setSelectedTab] = useState(formTabs[0].title)
     const [users] = useAuthState(auth);
     const { postStateValue, setPostStateValue, onVote, onDeletePost, onSelectPost } = usePosts(subjectData!);
-    const [notificationsValue, setNotificationsValue] = useState<NotificationsProps>({ notifications: []});
+    //const [notificationsValue, setNotificationsValue] = useState([]);
+    const [notificationsValue, setNotificationsValue] = useState<Notification[]>([]);
     const getPosts = async () => {
         try {
             //get posts for the subject
@@ -73,10 +74,12 @@ const Notification:React.FC<NotificationsProps> = ({ subjectData }) => {
 
             //store in post state
             const notifications = notificationDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-            setNotificationsValue(prev  => ({
-                ...prev,
-                notifications: notifications as Notification[],
-            }))
+            //setNotificationsValue(notifications as Notification[]);
+            setNotificationsValue(notifications as Notification[]);
+            // setNotificationsValue(prev  => ({
+            //     ...prev,
+            //     notifications: notifications as Notification[],
+            // }))
         } catch (error: any) {
             console.log('getPosts error', error.message)
         }
@@ -108,7 +111,7 @@ const Notification:React.FC<NotificationsProps> = ({ subjectData }) => {
                     <Flex p={4} >
                         {selectedTab === "User Notifications" && (
                             <List spacing={3} className='notifications_item_lists'>
-                                {notificationsValue.notifications.slice(0, 5).map((item: any, index:any) =>
+                                {notificationsValue.slice(0, 5).map((item: any, index:any) =>
                                     <ListItem className='notification_item' key={index}>
                                         {/* <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/subject/${item.subjectId}/answers/${item.id}`}> */}
                                             {/* {item.notification} */}
