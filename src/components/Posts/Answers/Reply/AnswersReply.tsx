@@ -1,4 +1,4 @@
-import { Answer, AnswerState } from '@/atoms/answersAtom';
+import { AnswerReply, AnswerReplyState } from '@/atoms/answersReplyAtom';
 import { Post, PostState } from '@/atoms/postsAtom';
 import { Subject } from '@/atoms/subjectsAtom';
 import { auth, firestore } from '@/firebase/clientApp';
@@ -7,18 +7,19 @@ import { User } from 'firebase/auth';
 import { collection, doc, Firestore, getDocs, increment, orderBy, query, serverTimestamp, Timestamp, where, writeBatch } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
-import AnswerInput from './AnswerInput';
-import AnswerItem from './AnswerItem';
-import CommentItem from './AnswerItem';
+import AnswerReplyInput from './AnswerReplyInput';
+import AnswerReplyItem from './AnswerReplyItem';
+import CommentReplyItem from './AnswerReplyItem';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import useAnswers from '@/hooks/useAnswers';
+import useAnswersReply from '@/hooks/useAnswersReply';
 
 
 
-type AnswersProps = {
+type AnswersReplyProps = {
     user: User;
     selectedPost: Post | null;
     subjectId: string;
+    answerId: string;
 };
 
 export type Notifications = {
@@ -34,54 +35,56 @@ export type Notifications = {
 
 
 
-const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
+const AnswersReply:React.FC<AnswersReplyProps> = ({ user, selectedPost, subjectId, answerId }) => {
     const [users] = useAuthState(auth);
     const [answerText, setAnswerText] = useState("");
-    const [answers, setAnswers] = useState<Answer[]>([]);
+    const [answers, setAnswers] = useState<AnswerReply[]>([]);
     const [fetchLoading, setFetchLoading] = useState(true);
     const [createLoading, setCreateLoading] = useState(false);
     const [loadingDeleteId, setLoadingDeleteId] = useState("");
     const setPostState = useSetRecoilState(PostState);
-    const { answerStateValue, setAnswerStateValue, onVote, onDeleteAnswer } = useAnswers();
+    const { answerStateValue, setAnswerStateValue, onVote, onDeleteAnswer } = useAnswersReply();
     
 
 
-    const onCreateAnswer = async (answerText: string) => {
+    const onCreateAnswerReply = async (answerText: string) => {
         setCreateLoading(true);
         try {
             const batch = writeBatch(firestore);
 
-            const answerDocRef = doc(collection(firestore, 'answers'))
+            const answerDocRef = doc(collection(firestore, 'answers_reply'))
             const notificationDocRef = doc(collection(firestore, 'notifications'))
 
-            const newAnswer: Answer ={
+            const newAnswer: AnswerReply ={
                 id: answerDocRef.id,
                 creatorId: user.uid,
                 creatorDisplayText: user?.displayName! || user?.email!.split("@")[0],
                 subjectId,
                 postId: selectedPost?.id!,
+                answerId: answerId,
                 postTitle: selectedPost?.title!,
                 text: answerText,
-                voteStatus: 0,
+                parentReplyId: answerDocRef.id,
+                voteStatus: 0, 
                 createdAt: serverTimestamp() as Timestamp,
-                
+
             }
 
             batch.set(answerDocRef, newAnswer);
 
             newAnswer.createdAt = {seconds:Date.now() / 1000} as Timestamp
-            if(user.uid !== selectedPost?.creatorId){
-                const newNotification: Notifications = {
-                    id: notificationDocRef.id,
-                    notifyBy: user?.displayName! || user?.email!.split("@")[0],
-                    notifyTo: selectedPost?.creatorDisplayName!,
-                    notification: user?.displayName! || user?.email!.split("@")[0]+' has replies on your post <a href="'+process.env.NEXT_PUBLIC_BASE_URL+'/subject/'+selectedPost?.subjectId+'/answers/'+selectedPost?.id+'">'+selectedPost?.title+'</a>',
-                    isRead: 0,
-                    notificationType: 'addPost',
-                    createdAt: serverTimestamp() as Timestamp,
-                }
-                batch.set(notificationDocRef, newNotification);
-            }
+            // if(user.uid !== selectedPost?.creatorId){
+            //     const newNotification: Notifications = {
+            //         id: notificationDocRef.id,
+            //         notifyBy: user?.displayName! || user?.email!.split("@")[0],
+            //         notifyTo: selectedPost?.creatorDisplayName!,
+            //         notification: user?.displayName! || user?.email!.split("@")[0]+' has replies on your post <a href="'+process.env.NEXT_PUBLIC_BASE_URL+'/subject/'+selectedPost?.subjectId+'/answers/'+selectedPost?.id+'">'+selectedPost?.title+'</a>',
+            //         isRead: 0,
+            //         notificationType: 'addPost',
+            //         createdAt: serverTimestamp() as Timestamp,
+            //     }
+            //     batch.set(notificationDocRef, newNotification);
+            // }
             const postDocRef = doc(firestore, 'posts', selectedPost?.id!);
             batch.update(postDocRef, {
                 numberOfAnswers: increment(1)
@@ -94,7 +97,7 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
             //setAnswers(prev => [newAnswer, ...prev])
             setAnswerStateValue(prev  => ({
                 ...prev,
-                answers: [newAnswer, ...prev.answers] as Answer[],
+                answersReply: [newAnswer, ...prev.answersReply] as AnswerReply[],
             }))
             setPostState(prev => ({
                 ...prev,
@@ -112,71 +115,43 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
         }
         setCreateLoading(false);
     }
-    // const onDeleteAnswer = async (answer: Answer) => {
-    //     setLoadingDeleteId(answer.id)
-    //     try {
-    //         const batch = writeBatch(firestore);
-    //         const answerDocRef = doc(firestore, 'answers', answer.id);
-    //         batch.delete(answerDocRef);
 
-    //         const postDocRef= doc(firestore, 'posts', selectedPost?.id!)
-    //         batch.update(postDocRef, {
-    //             numberOfAnswers: increment(-1)
-    //         })
-
-    //         await batch.commit()
-
-    //         setPostState(prev => ({
-    //             ...prev,
-    //             selectedPost: {
-    //                 ...prev.selectedPost,
-    //                 numberOfAnswers: prev.selectedPost?.numberOfAnswers! -1
-    //             } as Post
-    //         }))
-
-    //         setAnswers(prev=> prev.filter(item => item.id !== answer.id))
-            
-    //     } catch (error) {
-    //         console.log('onDeleteComment error', error)
-    //     }
-    //     setLoadingDeleteId('')
-    // }
-
-    const getPostAnswers = async () => {
+    const getPostAnswersReply = async () => {
         
         try {
-            const answersQuery = query(
-                collection(firestore, "answers"), 
+            const answersReplyQuery = query(
+                collection(firestore, "answers_reply"), 
                 where('postId', '==', selectedPost?.id), 
+                where('answerId', '==', answerId), 
                 orderBy('createdAt', 'desc'));
-            const answerDocs = await getDocs(answersQuery);
-            const answers = answerDocs.docs.map((doc) => ({ 
+            const answerReplyDocs = await getDocs(answersReplyQuery);
+            const answersReply = answerReplyDocs.docs.map((doc) => ({ 
                 id: doc.id, 
                 ...doc.data(),
             }));
             //setAnswers(answers as Answer[]);
             setAnswerStateValue(prev  => ({
                 ...prev,
-                answers: answers as Answer[],
+                answersReply: answersReply as AnswerReply[],
             }))
         } catch (error) {
-            console.log('getPostAnswers error', error)
+            console.log('getPostAnswersReply error', error)
         }
         setFetchLoading(false);
     }
 
     useEffect(() => {
         if (!selectedPost) return;
-        getPostAnswers();
+        getPostAnswersReply();
     }, [selectedPost])
     return (
         <Box bg='white' borderRadius='0px 0px 4px 4px' p={2} border="1px solid" 
         borderColor="gray.400" >
             <Flex direction='column' pl={10} pr={2} mb={6} fontSize="10pt" width="100%">
-                {!fetchLoading && <AnswerInput answerText={answerText} setAnswerText={setAnswerText} user={user} createLoading={createLoading} onCreateAnswer={onCreateAnswer}/>}
+                {!fetchLoading && <AnswerReplyInput answerText={answerText} setAnswerText={setAnswerText} user={user} createLoading={createLoading} onCreateAnswerReply={onCreateAnswerReply}/>}
             </Flex>
             
-            <Stack spacing={2} p={2}>
+            {/* <Stack spacing={2} p={2}>
                 {fetchLoading ? (
                      <>
                      {[0, 1, 2].map((item) => (
@@ -188,7 +163,7 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
                    </>
                 ) : (
                     <>
-                        {answerStateValue.answers.length === 0 ? (
+                        {answerStateValue.answersReply.length === 0 ? (
                             <Flex
                             direction='column'
                             justify='center'
@@ -200,12 +175,12 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
                             </Flex>
                         ) : (
                             <>
-                                {answerStateValue.answers.map((item: any, index:any) =>
-                                    <AnswerItem
+                                {answerStateValue.answersReply.map((item: any, index:any) =>
+                                    <AnswerReplyItem
                                     //key={answer.id}
                                     answer={item}
                                     userIsCreator={user?.uid === item.creatorId}
-                                    userVoteValue={answerStateValue.answerVotes.find((vote: { answerId: any; }) => vote.answerId === item.id)?.voteValue}
+                                    userVoteValue={answerStateValue.answerReplyVotes.find((vote: { answerId: any; }) => vote.answerId === item.id)?.voteValue}
                                     onVote={onVote}
                                     onDeleteAnswer={onDeleteAnswer}
                                     loadingDelete={loadingDeleteId === item.id}
@@ -216,8 +191,8 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
                         )}
                     </>
                 )}
-            </Stack>
+            </Stack> */}
         </Box>
     )
 }
-export default Answers;
+export default AnswersReply;

@@ -14,6 +14,11 @@ export type Post = {
     subjectImageURL?: string;
     createdAt: Timestamp;
     grade: string;
+    typeOfQuestions: {
+        label: string,
+        value: string
+    },
+    criteria: string,
 }
 
 export type PostVote = {

@@ -1,0 +1,136 @@
+.css-a61lc6 {
+    position: relative;
+}
+.css-a61lc6 .css-k008qs {
+    position: absolute;
+    right: 7px;
+    /* z-index: 999; */
+    bottom: 4px;
+}
+
+
+.post_list_main_section {
+    padding: 10px 6px;
+}
+.post_list_subject_section {
+    width: 50%;
+}
+.post_list_subject_without_homepage_section {
+    width: 48%;
+}
+.post_list_header_section {
+    width: 50%;
+    text-align: right !important;
+    justify-content: end;
+}
+.post_list_header_without_homepage_section {
+    width: 52%;
+    text-align: right !important;
+    justify-content: end;
+}
+
+@media (max-width:991px){
+    .post_list_main_section { 
+        display: unset !important;
+    }   
+    .post_list_subject_section {
+        width: 100%;
+    }
+    .post_list_subject_without_homepage_section {
+        width: 100%;
+    }
+    .post_list_header_section {
+        width: 100%;
+        justify-content: start !important;
+        margin: 10px 0 !important;
+    }
+    .post_list_header_without_homepage_section{
+        width: 100%;
+        justify-content: start !important;
+        margin: 10px 0 !important;
+    }
+}
+
+@media (max-width:767px){
+    .post_list_header_section span {
+        font-size: 12px !important;
+    }
+    .post_list_header_without_homepage_section span {
+        font-size: 12px !important;
+    }
+    .post_list_subject_section p {
+        font-size: 12px;
+    }
+    .post_list_subject_without_homepage_section p {
+        font-size: 12px;
+    }
+    .css-1lxauma {
+        font-size: 12pt; 
+    }
+    .css-ud6z9v { 
+        font-size: 12pt; 
+    }
+
+}
+
+@media (max-width:370px){
+    .post_list_header_section span {
+        font-size: 11px;
+    }
+    .post_list_header_without_homepage_section span {
+        font-size: 11px;
+    }
+    .post_list_subject_section p {
+        font-size: 9px;
+    }
+    .post_list_subject_without_homepage_section p {
+        font-size: 9px;
+    }
+}
+.notification_popup_section{
+    min-width: 30em !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+}
+.notification_popup_subsection{
+    margin-top: 0px !important;
+}
+.notification_user_posts {
+    width: 100%;
+}
+/******searchbar css header ********/
+.company_jobs_search {
+    position: absolute;
+    /* width: 100%; */
+    background: #fff;
+    border: 1px solid #d3d3d3;
+    border-radius: 6px;
+    left: 31%;
+    top: 42px;
+    z-index: 9999;
+}
+div#search-results .title_heading {
+    font-size: 20px;
+    color: rgb(66, 153, 225);
+    font-weight: 700;
+}
+.company_jobs_search p {
+    margin: 9px 0 0 10px;
+    cursor: pointer;
+}
+.company_jobs_search ul.list-unstyled {
+    margin: 0;
+    padding: 6px;
+    overflow-y: auto;
+}
+.list-unstyled {
+    padding-left: 0;
+    list-style: none;
+}
+.company_jobs_search .search_result_para {
+    padding: 10px;
+    border: 1px solid #d3d3d3;
+    border-radius: 4px;
+    margin: 10px 0;
+    display: block;
+}

@@ -49,11 +49,12 @@ const Home: NextPage = () => {
         const mySubjectIds = subjectStateValue.mySnippets.map(
           (snippet) => snippet.subjectId
         );
-        console.log('mySubjectIds', mySubjectIds)
+        //console.log('mySubjectIds', mySubjectIds)
         const postQuery = query(
           collection(firestore, "posts"),
           where("subjectId", "in", mySubjectIds),
           limit(20),
+          orderBy('pinPost', 'desc'),
           orderBy('createdAt', 'desc')
         );
         const postDocs = await getDocs(postQuery);

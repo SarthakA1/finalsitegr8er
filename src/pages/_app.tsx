@@ -3,7 +3,8 @@ import { ChakraProvider } from '@chakra-ui/react'
 import type { AppProps } from 'next/app'
 import { theme } from '../chakra/theme'
 import Layout from '@/components/layout/layout'
-import { RecoilRoot } from 'recoil'
+import { RecoilRoot } from 'recoil';
+import '../lib/css/customstyle.css';
 
 function App({ Component, pageProps }: AppProps) {
   return (

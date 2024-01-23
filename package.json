@@ -19,6 +19,7 @@
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
     "@vercel/analytics": "^1.0.1",
+    "chakra-react-select": "^4.7.6",
     "firebase": "^9.22.2",
     "framer-motion": "^8.5.2",
     "moment": "^2.29.4",

@@ -1,21 +1,14 @@
 import { AuthModalState } from '@/atoms/authModalAtom';
-import { auth, firestore } from '@/firebase/clientApp';
+import { auth } from '@/firebase/clientApp';
 import { Box, Flex, Icon, Spinner, Stack, Text, Image } from '@chakra-ui/react';
 import { Timestamp } from 'firebase/firestore';
 import moment from 'moment';
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { FaUserCircle } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiFillDislike, AiOutlineDislike } from "react-icons/ai";
 import { useSetRecoilState } from 'recoil';
 import { Answer } from '@/atoms/answersAtom';
-import AnswersReply from "./Reply/AnswersReply";
-import { User } from 'firebase/auth';
-import usePosts from '@/hooks/usePosts';
-import { useRouter } from 'next/router';
-import useSubjectData from '@/hooks/useSubjectData';
-import { doc, getDoc } from 'firebase/firestore';
-import { Post } from '@/atoms/postsAtom';
 
 // export type Answer = {
 //     id: string;
@@ -45,56 +38,29 @@ type AnswerItemProps = {
 
 
 
-const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteValue, onVote, onDeleteAnswer, loadingDelete, userId }) => {
+const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteValue, onVote, onDeleteAnswer, loadingDelete, userId }) => {
   const [user] = useAuthState(auth);
-  const [replyForm, setReplyForm] = useState(false);
   const setAuthModalState = useSetRecoilState(AuthModalState);
-  const { postStateValue, setPostStateValue } = usePosts();
-  const router = useRouter();
-  const { subjectStateValue } = useSubjectData();
   const handleDelete = async () => {
     try {
         const success = await onDeleteAnswer(answer);
         if (!success) {
             throw new Error("Failed to delete post"); 
         }
-        console.log("Answer was Successfully Deleted");    
+        console.log("Answer was Successfully Deleted")    
     } catch (error: any) {
        
     }
   }  
-  const handleReply = async () => {
-    setReplyForm(true);
-  }
-  const fetchPost = async (postId: string) => {
-    try {
-      const postDocRef = doc(firestore, "posts", postId);
-      const postDoc = await getDoc(postDocRef);
-      setPostStateValue((prev) => ({
-        ...prev,
-        selectedPost: { id: postDoc.id, ...postDoc.data() } as Post,
-      }));
-    } catch (error) {
-      console.log("fetchPost error", error);
-    }
-  };
-
-  useEffect(() => {
-    const { pid } = router.query;
-
-    if (pid && !postStateValue.selectedPost) {
-      fetchPost(pid as string);
-    }
-  }, [router.query, postStateValue.selectedPost]);
     return (
       <Flex>
         <Box mr={2}>
         {user?.photoURL? (
-          <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
-            // <Image src={user.photoURL} height="35px" borderRadius={50} mt={1} minWidth={35}></Image>
-        ) : (
-          <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
-        )}
+              <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
+                // <Image src={user.photoURL} height="35px" borderRadius={50} mt={1} minWidth={35}></Image>
+            ) : (
+              <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
+            )}
         </Box>
         <Stack spacing={1}>
           <Stack direction="row" align="center" fontSize="8pt">
@@ -121,7 +87,7 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
                 <Text
                   fontSize="9pt"
                   _hover={{ color: "blue.500" }}
-                  onClick={handleReply}>
+                  onClick={handleDelete}>
                   Reply
                 </Text>
               </>
@@ -143,9 +109,8 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
               />
             </Flex> 
           </Stack>
-          {replyForm && <AnswersReply user={user as User} selectedPost={postStateValue.selectedPost} subjectId={postStateValue.selectedPost?.subjectId as string} answerId={answer?.id as string}/>}
         </Stack>
       </Flex>
     );
-            }
-export default AnswerItem;
+  }
+export default AnswerReplyItem;
