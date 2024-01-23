@@ -16,7 +16,6 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 type NotificationsProps = {
     post?: Post[];
     notifications?: Notification[];
-    subjectData: Subject;
 };
 
 const formTabs: TabItem[] = [
@@ -35,11 +34,12 @@ export type TabItem = {
     icon: typeof Icon.arguments
 }
 
-const Notification:React.FC<NotificationsProps> = ({ subjectData }) => {
+const Notification:React.FC<NotificationsProps> = () => {
     const resetSubjectState = useResetRecoilState(subjectState)
     const [selectedTab, setSelectedTab] = useState(formTabs[0].title)
     const [users] = useAuthState(auth);
-    const { postStateValue, setPostStateValue, onVote, onDeletePost, onSelectPost } = usePosts(subjectData!);
+    const [postStateValue, setPostStateValue] = useState<Post[]>([]);
+    //const { postStateValue, setPostStateValue, onVote, onDeletePost, onSelectPost } = usePosts(subjectData!);
     //const [notificationsValue, setNotificationsValue] = useState([]);
     const [notificationsValue, setNotificationsValue] = useState<Notification[]>([]);
     const getPosts = async () => {
@@ -53,11 +53,12 @@ const Notification:React.FC<NotificationsProps> = ({ subjectData }) => {
             const postDocs = await getDocs(postsQuery);
 
             //store in post state
-            const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-            setPostStateValue(prev  => ({
-                ...prev,
-                posts: posts as Post[],
-            }))
+            const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setPostStateValue(posts as Post[]);
+            // setPostStateValue(prev  => ({
+            //     ...prev,
+            //     posts: posts as Post[],
+            // }))
         } catch (error: any) {
             console.log('getPosts error', error.message)
         }
@@ -88,7 +89,7 @@ const Notification:React.FC<NotificationsProps> = ({ subjectData }) => {
     useEffect(() => {
         getPosts();
         getNotifications();
-    }, [subjectData])
+    }, [])
     return (
         <Menu>
             <MenuButton cursor="pointer" padding="0px 6px" borderRadius={4} _hover={{ outline: "1px solid", outlineColor: "gray.200" }}>
@@ -123,13 +124,13 @@ const Notification:React.FC<NotificationsProps> = ({ subjectData }) => {
                         )}
                         {selectedTab === "User Posts" && (
                             <List spacing={3} className='notification_user_posts'>
-                                {postStateValue.posts.slice(0, 5).map((item: any, index:any) =>
-                                    <ListItem className='notification_user_posts_item' key={index}>
+                                {postStateValue.slice(0, 5).map((item: any, index:any) => {
+                                    return(<ListItem className='notification_user_posts_item' key={index}>
                                         <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/subject/${item.subjectId}/answers/${item.id}`}>
                                             {item.title}
                                         </Link>
-                                    </ListItem>
-                                )}
+                                    </ListItem>)
+                                })}
                             </List>
                         )}
                     </Flex>

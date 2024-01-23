@@ -6,6 +6,8 @@ import { IoNotifications } from 'react-icons/io5';
 import { User } from 'firebase/auth';
 import React, {useState} from 'react';
 import Notification from './Notifications/Notification';
+import useSubjectData from 'useSubjectData';
+import { Subject } from '@/atoms/subjectsAtom';
 
 type SearchinputProps = {
    user?: User | null;
