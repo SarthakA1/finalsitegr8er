@@ -141,7 +141,6 @@ const TextInputs: React.FC<TextInputsProps> = ({
             components={customGradeComponents}
             value={textInputs.grade} // Set the value prop for controlled component
             onChange={(selectedGradeOptions:any) => handleInputChange("grade", selectedGradeOptions)}
-            defaultValue="3"
             options={gradeOptions}
           />
         {/* <Input
