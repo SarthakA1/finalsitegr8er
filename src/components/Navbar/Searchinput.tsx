@@ -157,7 +157,7 @@ const Searchinput:React.FC<SearchinputProps> = ({ user }) => {
                     </div>
                 </div>
             )} 
-            <Image src="/images/finalcontent.png" height="41px" mb="2px" mr="2px" style={{maxWidth: "unset"}}/>
+{/*             <Image src="/images/finalcontent.png" height="41px" mb="2px" mr="2px" style={{maxWidth: "unset"}}/> */}
             <Flex alignItems="center" cursor="pointer" justifyContent="right">
                 <Link href="https://www.youtube.com/@GR8ERIB/channels" rel="noopener noreferrer" target="_blank">
                     <a>
