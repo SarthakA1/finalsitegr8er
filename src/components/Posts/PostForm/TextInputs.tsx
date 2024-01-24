@@ -78,11 +78,11 @@ const TextInputs: React.FC<TextInputsProps> = ({
   const typeOfQuestionsOptions = [
     {
       value: "Academic Question",
-      label: "Academic Question"
+      label: "Academic Question (Past Paper Questions, Numericals, Questions you need help solving)"
     },
     {
       value: "General Question",
-      label: "General Question"
+      label: "General Question (Open ended questions, general doubts, resource requests)"
     },
   ];
   const gradeOptions = [
