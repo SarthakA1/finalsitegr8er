@@ -67,14 +67,12 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
           body: textInputs.body,
           grade: textInputs.grade,
           criteria: textInputs.criteria,
-          typeOfQuestions: textInputs.typeOfQuestions,
+          typeOfQuestions:textInputs.typeOfQuestions,
           numberOfAnswers: 0,
           voteStatus: 0, 
           pinPost: false,
           createdAt: serverTimestamp() as Timestamp,
-          
         }
-       
        
     
         setLoading(true)

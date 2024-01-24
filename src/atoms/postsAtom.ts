@@ -14,10 +14,8 @@ export type Post = {
     subjectImageURL?: string;
     createdAt: Timestamp;
     grade: string;
-    typeOfQuestions: {
-        label: string,
-        value: string
-    },
+    typeOfQuestions: string;
+    pinPost: boolean;
     criteria: string,
 }
 
