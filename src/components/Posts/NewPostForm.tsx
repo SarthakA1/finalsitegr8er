@@ -46,7 +46,7 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
         grade: "",
         title: "",
         body: "",
-        typeOfQuestions: "",
+        typeOfQuestions: {value: "", label: ""},
         criteria: ""
     });
     const {selectedFile, setSelectedFile, onSelectFile} = useSelectFile()
@@ -67,13 +67,15 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
           body: textInputs.body,
           grade: textInputs.grade,
           criteria: textInputs.criteria,
-          typeOfQuestions:textInputs.typeOfQuestions,
+          typeOfQuestions: {value: textInputs.typeOfQuestions.value, label: textInputs.typeOfQuestions.label},
           numberOfAnswers: 0,
           voteStatus: 0, 
           pinPost: false,
           createdAt: serverTimestamp() as Timestamp,
+          
         }
        
+       console.log(newPost);
     
         setLoading(true)
         try {

@@ -67,7 +67,7 @@ const NewShareResourcePostForm:React.FC<NewPostFormProps> = ({
           body: textInputs.body,
           grade: textInputs.grade,
           criteria: textInputs.criteria,
-          typeOfQuestions: {label: 'Resource', value: 'Resource'},
+          typeOfQuestions: { value: 'Resource', label: 'Resource' },
           numberOfAnswers: 0,
           voteStatus: 0,
           pinPost: false,
