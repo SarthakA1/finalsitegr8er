@@ -98,7 +98,6 @@ const About: React.FC<AboutProps> = ({
 
     setImageLoading(false);
   };
-
   return (
     <Box pt={pt} position="sticky" top="14px">
       <Flex
@@ -145,7 +144,7 @@ const About: React.FC<AboutProps> = ({
                   </Flex>
 
               {user && (
-                <Link href={`${router.query.subject}/submit`}>
+                <Link href={`${router.query.subjectId}/submit`}>
                   <Button mt={2} mb={3} height="30px" width="250px">
                     Ask or Share Anything!
                   </Button>

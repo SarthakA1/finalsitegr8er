@@ -23,22 +23,24 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
 
     const getPosts = async () => {
         try {
-            //get posts for the subject
+            // Get posts for the subject
             const postsQuery = query(
                 collection(firestore, 'posts'),
                 where('subjectId', '==', subjectData.id),
-                orderBy('createdAt', 'desc')
-            )
+                orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
+                orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
+            );
+    
             const postDocs = await getDocs(postsQuery);
-
-            //store in post state
-            const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-            setPostStateValue(prev  => ({
+    
+            // Store in post state
+            const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setPostStateValue(prev => ({
                 ...prev,
                 posts: posts as Post[],
-            }))
+            }));
         } catch (error: any) {
-            console.log('getPosts error', error.message)
+            console.log('getPosts error', error.message);
         }
     };
 
@@ -52,7 +54,7 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
             <PostLoader />
         ) : ( 
         <Stack spacing={5}>
-        {postStateValue.posts.map((item: any) => 
+        {postStateValue.posts.map((item: any, index:any) => 
         <PostItem 
         post={item} 
         userIsCreator={user?.uid === item.creatorId}

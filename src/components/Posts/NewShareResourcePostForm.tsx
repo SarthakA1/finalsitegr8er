@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Input, Button, Flex, Text, Icon, Alert, AlertDescription, AlertIcon, AlertTitle } from '@chakra-ui/react';
 import { IoDocumentText, IoImageOutline } from 'react-icons/io5';
 import TabItem from './TabItem';
-import TextInputs from './PostForm/TextInputs';
+import TextInputs from './PostForm/TextInputsResources';
 import ImageUpload from './PostForm/ImageUpload';
 import { Post } from '@/atoms/postsAtom';
 import { User } from 'firebase/auth';
@@ -35,7 +35,7 @@ export type TabItem = {
 
 
 
-const NewPostForm:React.FC<NewPostFormProps> = ({ 
+const NewShareResourcePostForm:React.FC<NewPostFormProps> = ({ 
   user,
   subjectImageURL,
 
@@ -67,21 +67,20 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
           body: textInputs.body,
           grade: {value: textInputs.grade.value, label: textInputs.grade.label},
           criteria: {value: textInputs.criteria.value, label: textInputs.criteria.label},
-          typeOfQuestions: {value: textInputs.typeOfQuestions.value, label: textInputs.typeOfQuestions.label},
+          typeOfQuestions: {value: 'Resource', label: 'Resource'},
           numberOfAnswers: 0,
-          voteStatus: 0, 
+          voteStatus: 0,
           pinPost: false,
           createdAt: serverTimestamp() as Timestamp,
           
         }
        
-       console.log(newPost);
+       
     
         setLoading(true)
         try {
                 //store the question in firestore database
             const postDocRef = await addDoc(collection(firestore, 'posts'), newPost)
-
              //check if user has decided to include image or tag in the question
              if (selectedFile) {
                  //if image is there, store in storage => get download URL (return imageURL)
@@ -158,4 +157,4 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
     </Flex>
  )
 }
-export default NewPostForm;
+export default NewShareResourcePostForm;

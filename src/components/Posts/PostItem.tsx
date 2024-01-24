@@ -1,5 +1,5 @@
 import { Post } from '@/atoms/postsAtom';
-import { Flex, Icon, Stack, Text , Image, Link, textDecoration } from '@chakra-ui/react';
+import { Flex, Icon, Stack, Text , Image, Link, textDecoration, SimpleGrid } from '@chakra-ui/react';
 import React from 'react';
 import { AiOutlineDelete, AiFillTags } from "react-icons/ai";
 import { TfiCommentAlt } from "react-icons/tfi";
@@ -37,10 +37,10 @@ const PostItem:React.FC<PostItemProps> = ({
     onDeletePost,
     onSelectPost,
     homePage
-}) => {
+}:any) => {
     const singlePostPage = !onSelectPost
-
-
+    
+    const criteria = post.criteria;
 
     const handleDelete = async () => {
         try {
@@ -55,67 +55,64 @@ const PostItem:React.FC<PostItemProps> = ({
     }    
     return (
         <Flex 
-        direction='column'
-        border="1px solid" 
-        borderColor={singlePostPage ? "gray.400" : "gray.400"}
-        borderRadius={singlePostPage ? "4px 4px 0px 0px" : "4px"}
-        _hover = 
-        {{borderColor: singlePostPage ? "none" : "gray.500"}}
+            direction='column'
+            border="1px solid" 
+            borderColor={singlePostPage ? "gray.400" : "gray.400"}
+            borderRadius={singlePostPage ? "4px 4px 0px 0px" : "4px"}
+            _hover = 
+            {{borderColor: singlePostPage ? "none" : "gray.500"}}
         >
-
-            <Flex 
-            direction="row" 
-            align="center" 
-            bg="blue.100" 
-            p={2}
-            > 
-             <Stack direction="row" spacing={0.6}>
-                {/* //Homepage check  */}
-                {homePage && (
-                    <>
-                    {post.subjectImageURL ? (
-                        <Image src={post.subjectImageURL} mr={1} mt={1} borderRadius="full" boxSize="18px"/>
-                    ) : (
-                        <Icon as ={RiGroup2Fill} fontSize="18pt" mr={1} color="blue.500"/>
-                    )}
-                    <Link href={`subject/${post.subjectId}`}>
-                        <Text fontWeight={700} mr={3}_hover={{textDecoration:"underline"}}
-                        onClick={(event) => event.stopPropagation()}
-                        >
-                            {`${post.subjectId}`}
+            {/* <Flex 
+                direction="row" 
+                align="center" 
+                bg="blue.100" 
+                p={2}
+            >  */}
+                <Stack direction="row" spacing={0.6} className='post_list_main_section'>
+                    {/* //Homepage check  */}
+                    <Flex className={homePage ? 'post_list_subject_section' : 'post_list_subject_without_homepage_section'}>
+                        {homePage && (
+                            <>
+                                {post.subjectImageURL ? (
+                                    <Image src={post.subjectImageURL} mr={1} mt={1} borderRadius="full" boxSize="18px"/>
+                                ) : (
+                                    <Icon as ={RiGroup2Fill} fontSize="18pt" mr={1} color="blue.500"/>
+                                )}
+                                <Link href={`subject/${post.subjectId}`}>
+                                    <Text fontWeight={700} mr={3}_hover={{textDecoration:"underline"}}
+                                    onClick={(event) => event.stopPropagation()}
+                                    >
+                                        {`${post.subjectId}`}
+                                    </Text>
+                                </Link>
+                            </>
+                        )}
+                        <Text className='post_list_left_text_section'> 
+                            Asked by {" "}
+                            <span style={{ color: "#2c75b9" }}>
+                                {post.creatorDisplayName}
+                            </span>
+                            , {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
                         </Text>
-                    </Link>
-                   
-                    </>
-                )}
-                <Text> 
-                Asked by {" "}
-              <span style={{ color: "#2c75b9" }}>
-              {post.creatorDisplayName}
-              </span>
-              , {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
-                
-                </Text>
+                    </Flex>
+                    <Flex className={homePage ? 'post_list_header_section' : 'post_list_header_without_homepage_section'}>
+                        <Text style={{textAlign: "right"}} className='post_list_right_text_section'>
+                            {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion:any, index:any) => (
+                                <span key={index} style={{background: "#000000", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
+                                    {criterion.value}
+                                </span>
+                            ))}
+                            {post.typeOfQuestions && (
+                                <>
+                                    <span style={{background: "#4299E1", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
+                                        {post.typeOfQuestions.value} {/* Display value */}
+                                    </span>
+                                </>
+                            )}
+                        </Text>
+                    </Flex>
                 </Stack>
-
-                {userIsCreator && (
-                <Flex
-                align='center'
-                p="8px 10px"
-                borderRadius={singlePostPage ? "0" : "10"}
-                _hover={{bg:"blue.200"}}
-                cursor="pointer"
-                ml={2}
-                onClick={handleDelete}
-                >
-                    <Icon as = {AiOutlineDelete}/>
-
-                </Flex>
-                )}
-            
-            </Flex>
-
-
+            {/* </Flex> */}
 
             <Flex 
             direction="column" 
@@ -128,7 +125,15 @@ const PostItem:React.FC<PostItemProps> = ({
            <Flex direction="row">
             <Text fontSize='13pt' fontWeight={600} mb={1}> {post.title} </Text>
             <Text ml={2} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}> MYP  </Text>
-            <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}> {post.grade} </Text>
+            {post.grade && (
+                <>
+                    <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}>
+                        {post.grade.value}
+                    </Text>
+                </>
+            )}
+            {/* 
+            <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}> {post.grade} </Text> */}
             </Flex>
             <Text fontSize='11pt'> {post.body} </Text>
             {post.imageURL && (
@@ -163,16 +168,33 @@ const PostItem:React.FC<PostItemProps> = ({
                 cursor="pointer"
                 />
                </Flex>
-               
-               <Flex  ml={5} align='center' justify='right' cursor="pointer">
-               <Icon 
-               as={MdOutlineComment} 
-               fontSize={22.5} 
-               color="gray.500"
-               onClick={() => onSelectPost && onSelectPost(post)} 
-               />
-               <Text color="gray.500" ml={1}> {post.numberOfAnswers}</Text>
-               </Flex>
+               <Flex>
+                    <Flex  ml={5} align='center' justify='right' cursor="pointer">
+                    <Icon 
+                    as={MdOutlineComment} 
+                    fontSize={22.5} 
+                    color="gray.500"
+                    onClick={() => onSelectPost && onSelectPost(post)} 
+                    />
+                    <Text color="gray.500" ml={1}> {post.numberOfAnswers}</Text>
+                    </Flex>
+
+                    {userIsCreator && (
+                        <Flex
+                        align='center'
+                        p="8px 10px"
+                        borderRadius={singlePostPage ? "0" : "10"}
+                        _hover={{bg:"blue.200"}}
+                        cursor="pointer"
+                        ml={2}
+                        onClick={handleDelete}
+                        color="#ff0000"
+                        >
+                            <Icon as = {AiOutlineDelete}/>
+
+                        </Flex>
+                        )}
+                </Flex>
             </Flex>    
         </Flex>
     

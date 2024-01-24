@@ -42,20 +42,20 @@ const TextInputs: React.FC<TextInputsProps> = ({
       }
     } as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>);
   };
-  const [typeOfQuestionsError, setTypeOfQuestionsError] = useState<string | null>(null);
+  //const [typeOfQuestionsError, setTypeOfQuestionsError] = useState<string | null>(null);
 
   // Custom validation function for "Type Of Questions" field
-  const validateTypeOfQuestions = (value: any) => {
+//   const validateTypeOfQuestions = (value: any) => {
 
-    let error = null;
-    if (!value.typeOfQuestions) {
-      error = "Type Of Questions is required";
-    }
-    setTypeOfQuestionsError(error);
-    if(error == null){
-      handleCreatePost();
-    }
-  };
+//     let error = null;
+//     if (!value.typeOfQuestions) {
+//       error = "Type Of Questions is required";
+//     }
+//     setTypeOfQuestionsError(error);
+//     if(error == null){
+//       handleCreatePost();
+//     }
+//   };
   
   const criteriaOptions = [
     {
@@ -175,8 +175,8 @@ const TextInputs: React.FC<TextInputsProps> = ({
           />
         </Flex>
       </SimpleGrid>
-      <SimpleGrid columns={2} spacing={10}>
-        <Flex style={{display: "block"}}>
+      <SimpleGrid columns={1} spacing={10}>
+        {/* <Flex style={{display: "block"}}>
           <Select
             name="typeOfQuestions"
             placeholder="Type Of Questions"
@@ -186,7 +186,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
             options={typeOfQuestionsOptions}
           />
           <p style={{color: "#ff0000", fontSize: "12px", paddingLeft: "3px", paddingTop: "3px"}}>{typeOfQuestionsError}</p>
-        </Flex>
+        </Flex> */}
         <Input
           name="title"
           value={textInputs.title}
@@ -225,8 +225,8 @@ const TextInputs: React.FC<TextInputsProps> = ({
           padding="0px 30px"
           disabled={!textInputs.title || !textInputs.body}
           isLoading={loading}
-          //onClick={handleCreatePost}
-          onClick={() => validateTypeOfQuestions(textInputs)}
+          onClick={handleCreatePost}
+          //onClick={() => validateTypeOfQuestions(textInputs)}
         >
           Ask
         </Button>

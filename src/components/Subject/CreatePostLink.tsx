@@ -1,7 +1,7 @@
 import { AuthModalState } from "@/atoms/authModalAtom";
 import { auth } from "@/firebase/clientApp";
 import useDirectory from "@/hooks/useDirectory";
-import { Flex, Icon, Input, Image } from "@chakra-ui/react";
+import { Flex, Icon, Input, Image, SimpleGrid } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
@@ -33,9 +33,20 @@ const CreatePostLink: React.FC = () => {
     }
 
     toggleMenuOpen();
-    }
+  }
     // Open directory menu to select community to post to
-
+  const onClickResource = () => {
+    if (!user) {
+      setAuthModalState({ open: true, view: "login"});
+      return;
+    }
+    const { subjectId } = router.query;
+    if (subjectId) {
+      router.push(`/subject/${subjectId}/resource-submit`);
+      return;
+    }
+    toggleMenuOpen();
+  }
     
   
   return (
@@ -55,29 +66,53 @@ const CreatePostLink: React.FC = () => {
             ) : (
               <Icon as={FaUserCircle} fontSize={36} color="gray.300" mr={2} />
             )}
-      <Input
-        placeholder="Ask Anything!"
-        fontSize="10pt"
-        _placeholder={{ color: "gray.500" }}
-        _hover={{
-          bg: "white",
-          border: "1px solid",
-          borderColor: "blue.500",
-        }}
-        _focus={{
-          outline: "none",
-          bg: "white",
-          border: "1px solid",
-          borderColor: "blue.500",
-        }}
-        bg="gray.50"
-        borderColor="gray.200"
-        height="36px"
-        borderRadius={4}
-        mr={4}
-        onClick={onClick}
-      />
-      <Icon
+      <SimpleGrid columns={2}>
+        <Input
+          placeholder="Ask Anything!"
+          fontSize="10pt"
+          _placeholder={{ color: "gray.500" }}
+          _hover={{
+            bg: "white",
+            border: "1px solid",
+            borderColor: "blue.500",
+          }}
+          _focus={{
+            outline: "none",
+            bg: "white",
+            border: "1px solid",
+            borderColor: "blue.500",
+          }}
+          bg="gray.50"
+          borderColor="gray.200"
+          height="36px"
+          borderRadius={4}
+          mr={4}
+          onClick={onClick}
+        />
+        <Input
+          placeholder="Share a Resource"
+          fontSize="10pt"
+          _placeholder={{ color: "gray.500" }}
+          _hover={{
+            bg: "white",
+            border: "1px solid",
+            borderColor: "blue.500",
+          }}
+          _focus={{
+            outline: "none",
+            bg: "white",
+            border: "1px solid",
+            borderColor: "blue.500",
+          }}
+          bg="gray.50"
+          borderColor="gray.200"
+          height="36px"
+          borderRadius={4}
+          mr={4}
+          onClick={onClickResource}
+        />
+      </SimpleGrid>
+      {/* <Icon
         as={IoImageOutline}
         fontSize={24}
         mr={4}
@@ -85,7 +120,7 @@ const CreatePostLink: React.FC = () => {
         cursor="pointer"
         onClick={onClick}
       />
-      <Icon as={BsLink45Deg} fontSize={24} color="gray.400" cursor="pointer" onClick={onClick}/>
+      <Icon as={BsLink45Deg} fontSize={24} color="gray.400" cursor="pointer" onClick={onClick}/> */}
     </Flex>
   );
 };
