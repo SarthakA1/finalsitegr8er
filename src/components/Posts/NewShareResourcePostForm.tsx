@@ -43,11 +43,11 @@ const NewShareResourcePostForm:React.FC<NewPostFormProps> = ({
     const router = useRouter();
     const [selectedTab, setSelectedTab] = useState(formTabs[0].title)
     const [textInputs, setTextInputs] = useState({
-        grade: "",
+        grade: {value: "", label: ""},
         title: "",
         body: "",
-        typeOfQuestions: {label: '', value: ''},
-        criteria: ""
+        typeOfQuestions: {value: "", label: ""},
+        criteria: {value: "", label: ""}
     });
     const {selectedFile, setSelectedFile, onSelectFile} = useSelectFile()
     // const [selectedFile, setSelectedFile] = useState<string>()
@@ -65,9 +65,9 @@ const NewShareResourcePostForm:React.FC<NewPostFormProps> = ({
           creatorDisplayName: user.displayName! || user.email!.split('@')[0],
           title: textInputs.title,
           body: textInputs.body,
-          grade: textInputs.grade,
-          criteria: textInputs.criteria,
-          typeOfQuestions: { value: 'Resource', label: 'Resource' },
+          grade: {value: textInputs.grade.value, label: textInputs.grade.label},
+          criteria: {value: textInputs.criteria.value, label: textInputs.criteria.label},
+          typeOfQuestions: {value: 'Resource', label: 'Resource'},
           numberOfAnswers: 0,
           voteStatus: 0,
           pinPost: false,

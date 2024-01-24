@@ -12,9 +12,9 @@ type TextInputsProps = {
   textInputs: {
     title: string;
     body: string;
-    grade: string;
-    criteria: string;
-    typeOfQuestions: {label: string, value: string};
+    grade: {value: string, label: string};
+    criteria: {value: string, label: string};
+    typeOfQuestions: {value: string, label: string};
   };
   onChange: (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

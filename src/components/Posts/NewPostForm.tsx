@@ -43,11 +43,11 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
     const router = useRouter();
     const [selectedTab, setSelectedTab] = useState(formTabs[0].title)
     const [textInputs, setTextInputs] = useState({
-        grade: "",
+        grade: {value: "", label: ""},
         title: "",
         body: "",
         typeOfQuestions: {value: "", label: ""},
-        criteria: ""
+        criteria: {value: "", label: ""}
     });
     const {selectedFile, setSelectedFile, onSelectFile} = useSelectFile()
     // const [selectedFile, setSelectedFile] = useState<string>()
@@ -65,8 +65,8 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
           creatorDisplayName: user.displayName! || user.email!.split('@')[0],
           title: textInputs.title,
           body: textInputs.body,
-          grade: textInputs.grade,
-          criteria: textInputs.criteria,
+          grade: {value: textInputs.grade.value, label: textInputs.grade.label},
+          criteria: {value: textInputs.criteria.value, label: textInputs.criteria.label},
           typeOfQuestions: {value: textInputs.typeOfQuestions.value, label: textInputs.typeOfQuestions.label},
           numberOfAnswers: 0,
           voteStatus: 0, 
