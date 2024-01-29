@@ -58,6 +58,7 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
     const handleCreatePost = async () => {
         const { subjectId } = router.query;
         //create new question object => type post
+
         const newPost: Post = {
           subjectId: subjectId as string,
           subjectImageURL: subjectImageURL || "",
@@ -66,7 +67,7 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
           title: textInputs.title,
           body: textInputs.body,
           grade: {value: textInputs.grade.value, label: textInputs.grade.label},
-          criteria: {value: textInputs.criteria.value, label: textInputs.criteria.label},
+          criteria: textInputs.criteria,
           typeOfQuestions: {value: textInputs.typeOfQuestions.value, label: textInputs.typeOfQuestions.label},
           numberOfAnswers: 0,
           voteStatus: 0, 
@@ -74,8 +75,6 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
           createdAt: serverTimestamp() as Timestamp,
           
         }
-       
-       console.log(newPost);
     
         setLoading(true)
         try {
@@ -114,7 +113,6 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
           [name]: value,
         }));
       };
-      
 
  return (
     
