@@ -56,10 +56,11 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           <input
             id="file-upload"
             type="file"
-            accept="image/png,image/gif,image/jpeg"
+            accept="image/png,image/gif,image/jpeg, application/pdf,application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             hidden
             ref={selectFileRef}
             onChange={onSelectImage}
+            multiple
           />
         </Flex>
       )}

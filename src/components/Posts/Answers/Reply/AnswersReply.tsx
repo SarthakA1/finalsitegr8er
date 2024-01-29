@@ -64,7 +64,7 @@ const AnswersReply:React.FC<AnswersReplyProps> = ({ user, selectedPost, subjectI
                 answerId: answerId,
                 postTitle: selectedPost?.title!,
                 text: answerText,
-                parentReplyId: answerDocRef.id,
+                parentReplyId: answerId,
                 voteStatus: 0, 
                 createdAt: serverTimestamp() as Timestamp,
 
