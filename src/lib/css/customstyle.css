@@ -134,3 +134,29 @@ div#search-results .title_heading {
     margin: 10px 0;
     display: block;
 }
+.mq-editable-field {
+    width: 100%;
+    height: 300px;
+    padding: 10px;
+    font-size: 20px;
+}
+.static_math_equation_text  {
+    pointer-events: none;
+    border: none !important;
+    min-height: 55px;
+    height: 30px !important;
+}
+.static_math_equation_text .mq-root-block var {
+    font-style: normal;
+}
+.tex-button {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.tex-button svg {
+    width: 30px;
+    height: 30px;
+}

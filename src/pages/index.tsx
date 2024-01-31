@@ -1,4 +1,4 @@
-import { Stack } from "@chakra-ui/react";
+import { Stack, Select } from "@chakra-ui/react";
 import {
   collection,
   getDocs,
@@ -120,6 +120,112 @@ const Home: NextPage = () => {
     }
   };
 
+  const handleChangeFilter = async(e:any) => {
+    const selectedFilterValue = e.target.value;
+    if(selectedFilterValue){
+      if(selectedFilterValue!== 'General Question' && selectedFilterValue!== 'Academic Question'){
+        setLoading(true);
+        try {
+          if (subjectStateValue.mySnippets.length) {
+            // get posts from users' subjects
+            const mySubjectIds = subjectStateValue.mySnippets.map(
+              (snippet) => snippet.subjectId
+            );
+            //console.log('mySubjectIds', mySubjectIds)
+            const postQuery = query(
+              collection(firestore, "posts"),
+              where("subjectId", "in", mySubjectIds),
+              where('criteria', 'array-contains', { label: e.target.value, value: e.target.value }),
+              limit(20),
+              orderBy('pinPost', 'desc'),
+              orderBy('createdAt', 'desc')
+            );
+            const postDocs = await getDocs(postQuery);
+            const posts = postDocs.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            }));
+            setPostStateValue((prev) => ({
+              ...prev,
+              posts: posts as Post[],
+            }));
+          } else {
+            buildNoUserHomeFeed();
+          }
+        } catch (error) {
+          console.log("buildUserHomeFeed error", error);
+        }
+        setLoading(false);
+      } else {
+        setLoading(true);
+        try {
+          if (subjectStateValue.mySnippets.length) {
+            // get posts from users' subjects
+            const mySubjectIds = subjectStateValue.mySnippets.map(
+              (snippet) => snippet.subjectId
+            );
+            //console.log('mySubjectIds', mySubjectIds)
+            const postQuery = query(
+              collection(firestore, "posts"),
+              where("subjectId", "in", mySubjectIds),
+              where('typeOfQuestions.label', '==', e.target.value),  // Search based on label
+              where('typeOfQuestions.value', '==', e.target.value), 
+              limit(20),
+              orderBy('pinPost', 'desc'),
+              orderBy('createdAt', 'desc')
+            );
+            const postDocs = await getDocs(postQuery);
+            const posts = postDocs.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            }));
+            setPostStateValue((prev) => ({
+              ...prev,
+              posts: posts as Post[],
+            }));
+          } else {
+            buildNoUserHomeFeed();
+          }
+        } catch (error) {
+          console.log("buildUserHomeFeed error", error);
+        }
+        setLoading(false);
+      } 
+    } else {
+      setLoading(true);
+      try {
+        if (subjectStateValue.mySnippets.length) {
+          // get posts from users' subjects
+          const mySubjectIds = subjectStateValue.mySnippets.map(
+            (snippet) => snippet.subjectId
+          );
+          //console.log('mySubjectIds', mySubjectIds)
+          const postQuery = query(
+            collection(firestore, "posts"),
+            where("subjectId", "in", mySubjectIds),
+            limit(20),
+            orderBy('pinPost', 'desc'),
+            orderBy('createdAt', 'desc')
+          );
+          const postDocs = await getDocs(postQuery);
+          const posts = postDocs.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setPostStateValue((prev) => ({
+            ...prev,
+            posts: posts as Post[],
+          }));
+        } else {
+          buildNoUserHomeFeed();
+        }
+      } catch (error) {
+        console.log("buildUserHomeFeed error", error);
+      }
+      setLoading(false);
+    }
+  }
+
   // useEffects
   useEffect(() => {
     if (subjectStateValue.snippetsFetched) buildUserHomeFeed();
@@ -139,7 +245,6 @@ const Home: NextPage = () => {
       }));
     };
   }, [user, postStateValue.posts]);
-console.log(subjectStateValue)
 
   return (
     
@@ -167,6 +272,14 @@ console.log(subjectStateValue)
           <PostLoader />
         ) : (
           <Stack>
+            <Select placeholder='Sort By Tags' onChange={handleChangeFilter}>
+                <option value='Criteria A'>Criteria A</option>
+                <option value='Criteria B'>Criteria B</option>
+                <option value='Criteria C'>Criteria C</option>
+                <option value='Criteria D'>Criteria D</option>
+                <option value='Academic Question'>Academic Question</option>
+                <option value='General Question'>General Question</option>
+            </Select>
             {postStateValue.posts.map((post) => (
               <PostItem
                 key={post.id}
