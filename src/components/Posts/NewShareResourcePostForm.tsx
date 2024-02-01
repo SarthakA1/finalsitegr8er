@@ -81,17 +81,32 @@ const NewShareResourcePostForm:React.FC<NewPostFormProps> = ({
         try {
                 //store the question in firestore database
             const postDocRef = await addDoc(collection(firestore, 'posts'), newPost)
-             //check if user has decided to include image or tag in the question
-             if (selectedFile) {
-                 //if image is there, store in storage => get download URL (return imageURL)
+            if (selectedFile && selectedFile.length > 0) {
+              // Iterate over each file URL in the array
+              for (const fileUrl of selectedFile) {
+                console.log(fileUrl);
+                // Store image in storage and get download URL
                 const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
-                await uploadString(imageRef, selectedFile, 'data_url');
+                await uploadString(imageRef, fileUrl, 'data_url');
                 const downloadURL = await getDownloadURL(imageRef);
-
-                //update question doc
+            
+                // Update question doc with the imageURL
                 await updateDoc(postDocRef, {
-                    imageURL: downloadURL
-                })}
+                  imageURL: downloadURL
+                });
+              }
+            }
+             //check if user has decided to include image or tag in the question
+            //  if (selectedFile) {
+            //      //if image is there, store in storage => get download URL (return imageURL)
+            //     const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
+            //     await uploadString(imageRef, selectedFile, 'data_url');
+            //     const downloadURL = await getDownloadURL(imageRef);
+
+            //     //update question doc
+            //     await updateDoc(postDocRef, {
+            //         imageURL: downloadURL
+            //     })}
                 router.back();
         } catch (error: any) {
             console.log('handleCreatePost error', error.message)

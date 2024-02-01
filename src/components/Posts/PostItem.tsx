@@ -290,14 +290,21 @@ const PostItem:React.FC<PostItemProps> = ({
                 />
                </Flex>
                <Flex>
-                    <Flex  ml={5} align='center' justify='right' cursor="pointer">
-                    <Text>{highestPercentage} voted {highestPercentageName}</Text>
-                    <ul>
-                        <li><Button onClick={() => handleClickVoting('easy')}>Easy</Button></li>
-                        <li><Button onClick={() => handleClickVoting('medium')}>Medium</Button></li>
-                        <li><Button onClick={() => handleClickVoting('hard')}>Hard</Button></li>
-                    </ul>
-                    </Flex>
+                    {post.typeOfQuestions && (
+                        post.typeOfQuestions.value == 'Academic Question'
+                        ?
+                            <Flex  ml={5} align='center' justify='right' cursor="pointer">
+                                <Text>{highestPercentage} voted {highestPercentageName}</Text>
+                                <ul>
+                                    <li><Button onClick={() => handleClickVoting('easy')}>Easy</Button></li>
+                                    <li><Button onClick={() => handleClickVoting('medium')}>Medium</Button></li>
+                                    <li><Button onClick={() => handleClickVoting('hard')}>Hard</Button></li>
+                                </ul>
+                            </Flex>
+                        :
+                            ''
+                    )}
+                    
                     <Flex  ml={5} align='center' justify='right' cursor="pointer">
                     <Icon 
                     as={MdOutlineComment} 

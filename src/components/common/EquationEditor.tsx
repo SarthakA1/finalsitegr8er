@@ -7,7 +7,7 @@ import Head from 'next/head';
 //addStyles();
 const EditableMathField = dynamic(() => import('react-mathquill') as any, { ssr: false });
 
-const EquationEditor = ({onInputChange}) => {
+const EquationEditor = ({onInputChange}:any) => {
   const [formula, setFormula] = useState('');
 
   function handleChange(mathField:any) {
