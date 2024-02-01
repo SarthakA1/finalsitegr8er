@@ -12,8 +12,6 @@ import PostLoader from './PostLoader';
 type PostsProps = {
     subjectData: Subject;
     userId?: string;
-
-
 };
 
 const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
@@ -120,7 +118,6 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
     useEffect(() => {
         getPosts();
     }, [subjectData])
-
     return (
         <>
         { loading ? (

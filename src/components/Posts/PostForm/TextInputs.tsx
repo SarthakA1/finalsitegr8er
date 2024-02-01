@@ -7,6 +7,7 @@ import {
   Select,
   chakraComponents 
 } from "chakra-react-select";
+import EquationEditor from '../../common/EquationEditor';
 
 type TextInputsProps = {
   textInputs: {
@@ -203,7 +204,8 @@ const TextInputs: React.FC<TextInputsProps> = ({
           placeholder="Topic"
         />
       </SimpleGrid>
-      <Textarea
+      <EquationEditor onInputChange={handleInputChange}/>
+      {/* <Textarea
         name="body"
         value={textInputs.body}
         onChange={(e:any) => handleInputChange('body', e.target.value)}
@@ -217,9 +219,8 @@ const TextInputs: React.FC<TextInputsProps> = ({
           borderColor: "black",
         }}
         height="400px"
-      />
+      /> */}
       <Flex justify="flex-end">
-       
         <Button
           height="34px"
           padding="0px 30px"
