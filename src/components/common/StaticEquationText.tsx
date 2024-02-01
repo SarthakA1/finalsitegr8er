@@ -5,7 +5,10 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 //addStyles();
-const EditableMathField = dynamic(() => import('react-mathquill') as any, { ssr: false });
+const EditableMathField = dynamic(
+  () => import("react-mathquill").then((mod) => mod.EditableMathField),
+  { ssr: false }
+);
 
 const EquationEditor = ({bodyValue}:any) => {
   useEffect(() => {
@@ -16,7 +19,7 @@ const EquationEditor = ({bodyValue}:any) => {
   return (
     <>
       {typeof window !== 'undefined' && (
-        <EditableMathField className="static_math_equation_text" latex={bodyValue} editable={false}/>
+        <EditableMathField className="static_math_equation_text" latex={bodyValue}/>
       )}
     </>
   );
