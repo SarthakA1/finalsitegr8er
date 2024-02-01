@@ -2,7 +2,7 @@ import React, { Ref } from "react";
 import { Flex, Stack, Button, Image } from "@chakra-ui/react";
 
 type ImageUploadProps = {
-  selectedFile?: string[];
+  selectedFile: string[];
   setSelectedFile: (value: string[]) => void;
   setSelectedTab: (value: string) => void;
   selectFileRef: React.RefObject<HTMLInputElement>;
@@ -16,7 +16,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   selectFileRef,
   onSelectImage,
 }) => {
-  console.log(selectedFile);
   return (
     <Flex direction="column" justify="center" align="center" width="100%">
       {selectedFile.length > 0 
