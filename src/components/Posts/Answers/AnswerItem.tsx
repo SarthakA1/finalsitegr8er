@@ -9,22 +9,27 @@ import { FaUserCircle } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiFillDislike, AiOutlineDislike } from "react-icons/ai";
 import { useSetRecoilState } from 'recoil';
 import { Answer } from '@/atoms/answersAtom';
+import { AnswerReply } from '@/atoms/answersReplyAtom';
 import AnswersReply from "./Reply/AnswersReply";
+import AnswerReplyItem from "./Reply/AnswerReplyItem";
 import { User } from 'firebase/auth';
 import usePosts from '@/hooks/usePosts';
 import { useRouter } from 'next/router';
 import useSubjectData from '@/hooks/useSubjectData';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, query, collection, where, orderBy, getDocs, } from 'firebase/firestore';
 import { Post } from '@/atoms/postsAtom';
+import useAnswersReply from '@/hooks/useAnswersReply';
 
-// export type Answer = {
+// export type AnswerReply = {
 //     id: string;
 //     creatorId: string;
 //     creatorDisplayText: string;
 //     subjectId: string;
 //     postId: string;
+//     answerId: string;
 //     postTitle: string;
 //     text: string;
+//     parentReplyId: string,
 //     voteStatus: string;
 //     createdAt: Timestamp;
 
@@ -52,6 +57,8 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
   const { postStateValue, setPostStateValue } = usePosts();
   const router = useRouter();
   const { subjectStateValue } = useSubjectData();
+  const [subAnswer, setSubAnswer] = useState<AnswerReply[]>([]);
+  const { answerReplyStateValue, setAnswerReplyStateValue, onAnswerReplyVote, onDeleteAnswerReply } = useAnswersReply();
   const handleDelete = async () => {
     try {
         const success = await onDeleteAnswer(answer);
@@ -78,13 +85,34 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
       console.log("fetchPost error", error);
     }
   };
-
+  const getPostSubAnswers = async () => {
+    try {
+        const subAnswersQuery = query(
+            collection(firestore, "answers_reply"), 
+            where('postId', '==', answer.postId), 
+            where('parentReplyId', '==', answer.id),
+            orderBy('createdAt', 'desc'));
+        const subAnswerDocs = await getDocs(subAnswersQuery);
+        const subAnswers = subAnswerDocs.docs.map((doc) => ({ 
+            id: doc.id, 
+            ...doc.data(),
+        }));
+        //console.log(subAnswers);
+        //setSubAnswer(subAnswers as SubAnswer[]);
+        setAnswerReplyStateValue((prev:any)  => ({
+            ...prev,
+            answersReply: subAnswers as Answer[],
+        }))
+    } catch (error) {
+        console.log('getPostAnswers error', error)
+    }
+}
   useEffect(() => {
     const { pid } = router.query;
-
     if (pid && !postStateValue.selectedPost) {
       fetchPost(pid as string);
     }
+    getPostSubAnswers();
   }, [router.query, postStateValue.selectedPost]);
     return (
       <Flex>
@@ -116,7 +144,7 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
                 </Text>
               </>
             )}
-            {userId === answer.creatorId && (
+            {userId !== answer.creatorId && (
               <>
                 <Text
                   fontSize="9pt"
@@ -143,6 +171,23 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
               />
             </Flex> 
           </Stack>
+          {answerReplyStateValue.answersReply.length > 0
+            ?
+              answerReplyStateValue.answersReply.map((item: any, index:any) => {
+                return(
+                  <AnswerReplyItem 
+                  answerReply={item} 
+                  userIsCreator={userId === item.creatorId} 
+                  userVoteValue={answerReplyStateValue.answerReplyVotes.find((vote: { answerId: any; }) => vote.answerId === item.id)?.voteValue}
+                  onAnswerReplyVote={onAnswerReplyVote}
+                  onDeleteAnswerReply={onDeleteAnswerReply}
+                  userId={userId}
+                  />
+                )
+              })
+            :
+              ''
+          }
           {replyForm && <AnswersReply user={user as User} selectedPost={postStateValue.selectedPost} subjectId={postStateValue.selectedPost?.subjectId as string} answerId={answer?.id as string}/>}
         </Stack>
       </Flex>

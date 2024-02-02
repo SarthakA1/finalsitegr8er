@@ -43,7 +43,7 @@ const AnswersReply:React.FC<AnswersReplyProps> = ({ user, selectedPost, subjectI
     const [createLoading, setCreateLoading] = useState(false);
     const [loadingDeleteId, setLoadingDeleteId] = useState("");
     const setPostState = useSetRecoilState(PostState);
-    const { answerStateValue, setAnswerStateValue, onVote, onDeleteAnswer } = useAnswersReply();
+    const { answerReplyStateValue, setAnswerReplyStateValue, onAnswerReplyVote, onDeleteAnswerReply } = useAnswersReply();
     
 
 
@@ -95,7 +95,7 @@ const AnswersReply:React.FC<AnswersReplyProps> = ({ user, selectedPost, subjectI
 
             setAnswerText("")
             //setAnswers(prev => [newAnswer, ...prev])
-            setAnswerStateValue(prev  => ({
+            setAnswerReplyStateValue(prev  => ({
                 ...prev,
                 answersReply: [newAnswer, ...prev.answersReply] as AnswerReply[],
             }))
@@ -130,7 +130,7 @@ const AnswersReply:React.FC<AnswersReplyProps> = ({ user, selectedPost, subjectI
                 ...doc.data(),
             }));
             //setAnswers(answers as Answer[]);
-            setAnswerStateValue(prev  => ({
+            setAnswerReplyStateValue(prev  => ({
                 ...prev,
                 answersReply: answersReply as AnswerReply[],
             }))

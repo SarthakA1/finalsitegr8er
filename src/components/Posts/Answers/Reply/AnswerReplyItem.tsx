@@ -8,7 +8,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { FaUserCircle } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiFillDislike, AiOutlineDislike } from "react-icons/ai";
 import { useSetRecoilState } from 'recoil';
-import { Answer } from '@/atoms/answersAtom';
+import { AnswerReply } from '@/atoms/answersReplyAtom';
 
 // export type Answer = {
 //     id: string;
@@ -24,26 +24,25 @@ import { Answer } from '@/atoms/answersAtom';
 // }
 
 type AnswerItemProps = {
-    answer: Answer;
+    answerReply: AnswerReply;
     userIsCreator: boolean;
     userVoteValue?: number;
     //onDeleteAnswer: (answer: Answer) => void;
-    onVote: (answer: Answer,
+    onAnswerReplyVote: (answerReply: AnswerReply,
       vote: number,
       subjectId: string) => void;
-    onDeleteAnswer: (answer: Answer) => Promise<boolean>;
-    loadingDelete: boolean;
+    onDeleteAnswerReply: (answerReply: AnswerReply) => Promise<boolean>;
     userId: string;
 };
 
 
 
-const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteValue, onVote, onDeleteAnswer, loadingDelete, userId }) => {
+const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answerReply, userIsCreator, userVoteValue, onAnswerReplyVote, onDeleteAnswerReply, userId }) => {
   const [user] = useAuthState(auth);
   const setAuthModalState = useSetRecoilState(AuthModalState);
   const handleDelete = async () => {
     try {
-        const success = await onDeleteAnswer(answer);
+        const success = await onDeleteAnswerReply(answerReply);
         if (!success) {
             throw new Error("Failed to delete post"); 
         }
@@ -64,15 +63,15 @@ const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, user
         </Box>
         <Stack spacing={1}>
           <Stack direction="row" align="center" fontSize="8pt">
-            <Text fontWeight={700}> {answer.creatorDisplayText} </Text>
+            <Text fontWeight={700}> {answerReply.creatorDisplayText} </Text>
             <Text color="gray.600">
-              {moment(new Date(answer.createdAt.seconds * 1000)).fromNow()}
+              {moment(new Date(answerReply.createdAt.seconds * 1000)).fromNow()}
             </Text>
-            {loadingDelete && <Spinner size="sm" />}
+            {/* {loadingDelete && <Spinner size="sm" />} */}
           </Stack>
-          <Text fontSize="10pt">{answer.text}</Text>
+          <Text fontSize="10pt">{answerReply.text}</Text>
           <Stack direction="row" align="center" cursor="pointer" color="gray.500">
-            {userId === answer.creatorId && (
+            {userId === answerReply.creatorId && (
               <>
                 <Text
                   fontSize="9pt"
@@ -82,7 +81,7 @@ const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, user
                 </Text>
               </>
             )}
-            {userId === answer.creatorId && (
+            {userId === answerReply.creatorId && (
               <>
                 <Text
                   fontSize="9pt"
@@ -96,14 +95,14 @@ const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, user
               <Icon as = {userVoteValue === 1 ? AiFillLike : AiOutlineLike} 
               color={userVoteValue === 1 ? "#9FB751" : "gray.500"} 
               fontSize={24}
-              onClick={() => onVote(answer, 1, answer.subjectId)} 
+              onClick={() => onAnswerReplyVote(answerReply, 1, answerReply.subjectId)} 
               cursor="pointer"
               mr={0.5}/>
-              <Text color="gray.500" fontSize='11pt'>{answer.voteStatus}</Text>
+              <Text color="gray.500" fontSize='11pt'>{answerReply.voteStatus}</Text>
               <Icon as = {userVoteValue === -1 ?  AiFillDislike : AiOutlineDislike} 
               color={userVoteValue === -1 ? "#EB4E45" :  "gray.500"} 
               fontSize={22.5}
-              onClick={() => onVote(answer, -1, answer.subjectId)} 
+              onClick={() => onAnswerReplyVote(answerReply, -1, answerReply.subjectId)} 
               ml={0.5}
               cursor="pointer"
               />

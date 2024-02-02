@@ -14,19 +14,19 @@ const useAnswersReply = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [loadingDeleteId, setLoadingDeleteId] = useState("");
-    const [answerStateValue, setAnswerStateValue] = useRecoilState(AnswerReplyState);
+    const [answerReplyStateValue, setAnswerReplyStateValue] = useRecoilState(AnswerReplyState);
     const setPostState = useSetRecoilState(PostState);
 
-    const onVote = async (answer: AnswerReply, vote: number, subjectId: string) => {
+    const onAnswerReplyVote = async (answerReply: AnswerReply, vote: number, subjectId: string) => {
 
 
         try {
-            const { voteStatus } = answer;
-            const existingVote = answerStateValue.answerReplyVotes.find(vote => vote.answerId === answer.id)
+            const { voteStatus } = answerReply;
+            const existingVote = answerReplyStateValue.answerReplyVotes.find(vote => vote.answerId === answerReply.id)
             const batch = writeBatch(firestore)
-            const updatedAnswer = { ...answer }
-            const updatedAnswers = [ ...answerStateValue.answersReply ]
-            let updatedAnswerVotes = [ ...answerStateValue.answerReplyVotes ];
+            const updatedAnswer = { ...answerReply }
+            const updatedAnswers = [ ...answerReplyStateValue.answersReply ]
+            let updatedAnswerVotes = [ ...answerReplyStateValue.answerReplyVotes ];
             let voteChange = vote;
 
             if (!existingVote) {
@@ -35,8 +35,8 @@ const useAnswersReply = () => {
                     )
                     const newVote: AnswerReplyVote = {
                         id: answerVoteRef.id,
-                        postId: answer.postId!,
-                        answerId: answer.id!,
+                        postId: answerReply.postId!,
+                        answerId: answerReply.id!,
                         subjectId,
                         voteValue: vote
                     }
@@ -55,7 +55,7 @@ const useAnswersReply = () => {
                     voteChange *= -1;
                 } else {
                     updatedAnswer.voteStatus = voteStatus + 2 * vote;
-                    const voteIdx = answerStateValue.answerReplyVotes.findIndex((vote) => vote.id === existingVote.id)
+                    const voteIdx = answerReplyStateValue.answerReplyVotes.findIndex((vote) => vote.id === existingVote.id)
                     updatedAnswerVotes[voteIdx] = {
                         ...existingVote,
                         voteValue: vote
@@ -65,18 +65,18 @@ const useAnswersReply = () => {
                     })
                 }
             }
-            const answerRef = doc(firestore, 'answers_reply', answer.id!);
+            const answerRef = doc(firestore, 'answers_reply', answerReply.id!);
             batch.update(answerRef, {voteStatus: voteStatus + voteChange})
             await batch.commit();
-            const answerIdx = answerStateValue.answersReply.findIndex(item => item.id === answer.id);
+            const answerIdx = answerReplyStateValue.answersReply.findIndex(item => item.id === answerReply.id);
             updatedAnswers [answerIdx] = updatedAnswer;
-            setAnswerStateValue(prev => ({
+            setAnswerReplyStateValue(prev => ({
                 ...prev,
                 answersReply: updatedAnswers,
                 answerReplyVotes: updatedAnswerVotes
             }))
-            if (answerStateValue.selectedPost) {
-                setAnswerStateValue((prev) => ({
+            if (answerReplyStateValue.selectedPost) {
+                setAnswerReplyStateValue((prev) => ({
                 ...prev, 
                 selectedPost: updatedAnswer,
                 }));
@@ -86,8 +86,8 @@ const useAnswersReply = () => {
         }
     };
 
-    const onSelectAnswer = (answer: AnswerReply) => {
-        setAnswerStateValue((prev) => ({
+    const onSelectAnswerReply = (answer: AnswerReply) => {
+        setAnswerReplyStateValue((prev) => ({
             ...prev,
             selectedPost: answer,
         }))
@@ -96,7 +96,7 @@ const useAnswersReply = () => {
 
 
 
-    const onDeleteAnswer = async (answer: AnswerReply): Promise<boolean> => {
+    const onDeleteAnswerReply = async (answer: AnswerReply): Promise<boolean> => {
         setLoadingDeleteId(answer.id!)
         try {
             const batch = writeBatch(firestore);
@@ -118,7 +118,7 @@ const useAnswersReply = () => {
                 } as Post
             }))
 
-            setAnswerStateValue((prev) => ({
+            setAnswerReplyStateValue((prev) => ({
                 ...prev,
                 answers: prev.answersReply.filter(item => item.id !== answer.id),
             }))
@@ -130,11 +130,11 @@ const useAnswersReply = () => {
     };
     
     return {
-        answerStateValue,
-        setAnswerStateValue,
-        onVote,
-        onSelectAnswer,
-        onDeleteAnswer,
+        answerReplyStateValue,
+        setAnswerReplyStateValue,
+        onAnswerReplyVote,
+        onSelectAnswerReply,
+        onDeleteAnswerReply,
     }
 }
 export default useAnswersReply;
