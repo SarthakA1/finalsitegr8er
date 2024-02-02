@@ -295,10 +295,11 @@ const PostItem:React.FC<PostItemProps> = ({
                         ?
                             <Flex  ml={5} align='center' justify='right' cursor="pointer">
                                 <Text>{highestPercentage} voted {highestPercentageName}</Text>
-                                <ul>
-                                    <li><Button onClick={() => handleClickVoting('easy')}>Easy</Button></li>
-                                    <li><Button onClick={() => handleClickVoting('medium')}>Medium</Button></li>
-                                    <li><Button onClick={() => handleClickVoting('hard')}>Hard</Button></li>
+                                <ul className='flexBar'>
+                                    <li> <span style={{fontSize:'12px',color:'#fff'}}>Vote Difficulty</span></li>
+                                    <li><Button onClick={() => handleClickVoting('easy')} className='green'>Easy</Button></li>
+                                    <li><Button onClick={() => handleClickVoting('medium')}  className='yellow'>Medium</Button></li>
+                                    <li><Button onClick={() => handleClickVoting('hard')}  className='red'>Hard</Button></li>
                                 </ul>
                             </Flex>
                         :

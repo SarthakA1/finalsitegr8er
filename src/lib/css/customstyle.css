@@ -5,7 +5,7 @@
     position: absolute;
     right: 7px;
     /* z-index: 999; */
-    bottom: 4px;
+    bottom: 6px;
 }
 
 
@@ -159,4 +159,120 @@ div#search-results .title_heading {
 .tex-button svg {
     width: 30px;
     height: 30px;
+}
+.flexBar {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #4499E0;
+    border-radius: 10px;
+    padding: 3px 10px 3px 10px;
+    margin-left:5px ;
+} 
+.flexBar li{
+list-style: none;
+line-height: 20px;
+}
+.flexBar  .css-hc8lly {
+    padding: 5px 10px;
+    font-size: 10px !important;
+    height: auto;
+}
+.flexBar .green{
+    background-color: green;
+    color: #fff;
+}
+.flexBar .yellow{
+    background-color: #FFBD59;
+    color: #fff;
+}
+.flexBar .red{
+    background-color: red;
+    color: #fff;
+}
+
+.filter_main_grade_section, .filter_main_difficulty_section {
+    display: flex !important; 
+    align-items: center !important; 
+    gap: 3px !important;
+}
+.filter_main_grade_sub_section{
+    background: rgb(66, 153, 225); 
+    color: rgb(255, 255, 255); 
+    border-radius: 15px; 
+    padding: 5px 10px;
+    font-size: 9px; 
+    gap:5px; 
+}
+.filter_main_question_sub_section_background{
+    background:#000; 
+    color:#fff; 
+    border-top-left-radius:15px; 
+    border-bottom-left-radius:15px;
+    border-top-right-radius:0px; 
+    border-bottom-right-radius:0px; 
+    padding: 5px 7px;
+    font-size: 9px; 
+}
+.filter_main_question_sub_section_without_background{
+    background: rgb(66, 153, 225); 
+    color: rgb(255, 255, 255); 
+    border-radius:0px; 
+    padding: 5px 7px;
+    font-size: 9px;
+}
+.filter_main_question_sub_section_without_backgrouund_border{
+    background: rgb(66, 153, 225); 
+    color: rgb(255, 255, 255); 
+    border-top-left-radius:0px; 
+    border-bottom-left-radius:0px; 
+    border-top-right-radius:15px; 
+    border-bottom-right-radius:15px; 
+    padding: 5px 10px;
+    font-size: 9px; 
+}
+.filter_main_criteria_sub_section_background{
+    background:#000; 
+    color:#fff; 
+    border-top-left-radius:15px;
+    border-bottom-left-radius:15px;
+    border-top-right-radius:0px; 
+    border-bottom-right-radius:0px; 
+    padding: 5px 7px;
+    font-size: 9px;
+}
+.filter_main_criteria_sub_section_without_background{
+    background: rgb(66, 153, 225); 
+    color: rgb(255, 255, 255); 
+    border-radius:0px; 
+    padding: 5px 7px;
+    font-size: 9px;
+}
+.filter_main_criteria_sub_section_without_backgrouund_border{
+    background: rgb(66, 153, 225); 
+    color: rgb(255, 255, 255); 
+    border-top-left-radius:0px; 
+    border-bottom-left-radius:0px; 
+    border-top-right-radius:15px; 
+    border-bottom-right-radius:15px; 
+    padding: 5px 7px;
+    font-size: 9px; 
+}
+.filter_main_difficulty_sub_section{
+    background: rgb(66, 153, 225); 
+    color: rgb(255, 255, 255); 
+    border-radius: 15px; 
+    padding: 5px 10px;
+    font-size: 9px; 
+    gap:5px;  
+}
+.filter_main_section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    align-items: center;
+}
+.filter_main_question_section, .filter_main_criteria_section {
+    position: relative;
+    bottom: 2px;
 }

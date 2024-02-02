@@ -80,6 +80,7 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
         try {
                 //store the question in firestore database
             const postDocRef = await addDoc(collection(firestore, 'posts'), newPost)
+            console.log(selectedFile.length);
             if (selectedFile && selectedFile.length > 0) {
               // Iterate over each file URL in the array
               for (const fileUrl of selectedFile) {
@@ -88,11 +89,11 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
                 const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
                 await uploadString(imageRef, fileUrl, 'data_url');
                 const downloadURL = await getDownloadURL(imageRef);
-            
+                console.log(downloadURL);
                 // Update question doc with the imageURL
-                await updateDoc(postDocRef, {
-                  imageURL: downloadURL
-                });
+                // await updateDoc(postDocRef, {
+                //   imageURL: downloadURL
+                // });
               }
             }
              //check if user has decided to include image or tag in the question
