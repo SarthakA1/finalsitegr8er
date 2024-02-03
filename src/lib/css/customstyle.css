@@ -203,9 +203,11 @@ line-height: 20px;
     padding: 5px 10px;
     font-size: 9px; 
     gap:5px; 
+    cursor: pointer;
 }
 .filter_main_question_sub_section_background{
-    background:#000; 
+    /* background:#000;  */
+    background: rgb(66, 153, 225);
     color:#fff; 
     border-top-left-radius:15px; 
     border-bottom-left-radius:15px;
@@ -213,6 +215,7 @@ line-height: 20px;
     border-bottom-right-radius:0px; 
     padding: 5px 7px;
     font-size: 9px; 
+    cursor: pointer;
 }
 .filter_main_question_sub_section_without_background{
     background: rgb(66, 153, 225); 
@@ -220,6 +223,7 @@ line-height: 20px;
     border-radius:0px; 
     padding: 5px 7px;
     font-size: 9px;
+    cursor: pointer;
 }
 .filter_main_question_sub_section_without_backgrouund_border{
     background: rgb(66, 153, 225); 
@@ -230,9 +234,11 @@ line-height: 20px;
     border-bottom-right-radius:15px; 
     padding: 5px 10px;
     font-size: 9px; 
+    cursor: pointer;
 }
 .filter_main_criteria_sub_section_background{
-    background:#000; 
+    /* background:#000;  */
+    background: rgb(66, 153, 225);
     color:#fff; 
     border-top-left-radius:15px;
     border-bottom-left-radius:15px;
@@ -240,6 +246,7 @@ line-height: 20px;
     border-bottom-right-radius:0px; 
     padding: 5px 7px;
     font-size: 9px;
+    cursor: pointer;
 }
 .filter_main_criteria_sub_section_without_background{
     background: rgb(66, 153, 225); 
@@ -247,6 +254,7 @@ line-height: 20px;
     border-radius:0px; 
     padding: 5px 7px;
     font-size: 9px;
+    cursor: pointer;
 }
 .filter_main_criteria_sub_section_without_backgrouund_border{
     background: rgb(66, 153, 225); 
@@ -257,6 +265,7 @@ line-height: 20px;
     border-bottom-right-radius:15px; 
     padding: 5px 7px;
     font-size: 9px; 
+    cursor: pointer;
 }
 .filter_main_difficulty_sub_section{
     background: rgb(66, 153, 225); 
@@ -265,6 +274,7 @@ line-height: 20px;
     padding: 5px 10px;
     font-size: 9px; 
     gap:5px;  
+    cursor: pointer;
 }
 .filter_main_section {
     display: flex;
@@ -275,4 +285,9 @@ line-height: 20px;
 .filter_main_question_section, .filter_main_criteria_section {
     position: relative;
     bottom: 2px;
+}
+
+.filter_main_grade_section .active, .filter_main_question_section .active, .filter_main_criteria_section .active, .filter_main_difficulty_section .active{
+    background:#000; 
+    color:#fff;
 }

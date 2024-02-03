@@ -34,7 +34,12 @@ const Home: NextPage = () => {
     onDeletePost,
     onVote,
   } = usePosts();
-  
+  const [activeFilters, setActiveFilters] = useState({
+    grade: null,
+    typeofquestion: null,
+    criteria: null,
+    difficulty: null,
+  });
   const { subjectStateValue } = useSubjectData();
 
 
@@ -119,112 +124,226 @@ const Home: NextPage = () => {
       console.log("getUserPostVotes error", error);
     }
   };
-
-  const handleChangeFilter = async(e:any) => {
-    const selectedFilterValue = e.target.value;
-    if(selectedFilterValue){
-      if(selectedFilterValue!== 'General Question' && selectedFilterValue!== 'Academic Question'){
-        setLoading(true);
+  const handleChangeTopFilter = async (label:any, value:any) => {
+    const selectedTopFilterValue = value;
+    const selectedTopFilterLabel = label;
+    const mySubjectIds = subjectStateValue.mySnippets.map((snippet) => snippet.subjectId);
+    setActiveFilters((prevFilters) => ({
+      ...prevFilters,
+      [selectedTopFilterLabel]: selectedTopFilterValue,
+    }));
+    if(selectedTopFilterLabel == 'grade'){
         try {
-          if (subjectStateValue.mySnippets.length) {
-            // get posts from users' subjects
-            const mySubjectIds = subjectStateValue.mySnippets.map(
-              (snippet) => snippet.subjectId
+            const postsQuery = query(
+                collection(firestore, 'posts'),
+                where("subjectId", "in", mySubjectIds),
+                where('grade.value', '==', selectedTopFilterValue),
+                orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
+                orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
             );
-            //console.log('mySubjectIds', mySubjectIds)
-            const postQuery = query(
-              collection(firestore, "posts"),
-              where("subjectId", "in", mySubjectIds),
-              where('criteria', 'array-contains', { label: e.target.value, value: e.target.value }),
-              limit(20),
-              orderBy('pinPost', 'desc'),
-              orderBy('createdAt', 'desc')
-            );
-            const postDocs = await getDocs(postQuery);
-            const posts = postDocs.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
+    
+            const postDocs = await getDocs(postsQuery);
+    
+            // Store in post state
+            const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setPostStateValue(prev => ({
+                ...prev,
+                posts: posts as Post[],
             }));
-            setPostStateValue((prev) => ({
-              ...prev,
-              posts: posts as Post[],
-            }));
-          } else {
-            buildNoUserHomeFeed();
-          }
-        } catch (error) {
-          console.log("buildUserHomeFeed error", error);
+        } catch(error: any){
+            console.log('getPosts error', error.message);
         }
-        setLoading(false);
-      } else {
-        setLoading(true);
+    } else if(selectedTopFilterLabel == 'typeofquestion') {
         try {
-          if (subjectStateValue.mySnippets.length) {
-            // get posts from users' subjects
-            const mySubjectIds = subjectStateValue.mySnippets.map(
-              (snippet) => snippet.subjectId
+            const postsQuery = query(
+                collection(firestore, 'posts'),
+                where("subjectId", "in", mySubjectIds),
+                where('typeOfQuestions.label', '==', selectedTopFilterValue),  // Search based on label
+                where('typeOfQuestions.value', '==', selectedTopFilterValue), 
+                orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
+                orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
             );
-            //console.log('mySubjectIds', mySubjectIds)
-            const postQuery = query(
-              collection(firestore, "posts"),
-              where("subjectId", "in", mySubjectIds),
-              where('typeOfQuestions.label', '==', e.target.value),  // Search based on label
-              where('typeOfQuestions.value', '==', e.target.value), 
-              limit(20),
-              orderBy('pinPost', 'desc'),
-              orderBy('createdAt', 'desc')
-            );
-            const postDocs = await getDocs(postQuery);
-            const posts = postDocs.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
+    
+            const postDocs = await getDocs(postsQuery);
+    
+            // Store in post state
+            const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setPostStateValue(prev => ({
+                ...prev,
+                posts: posts as Post[],
             }));
-            setPostStateValue((prev) => ({
-              ...prev,
-              posts: posts as Post[],
-            }));
-          } else {
-            buildNoUserHomeFeed();
-          }
-        } catch (error) {
-          console.log("buildUserHomeFeed error", error);
+        } catch(error: any) {
+            console.log('getPosts error', error.message);
         }
-        setLoading(false);
-      } 
+    } else if(selectedTopFilterLabel == 'criteria'){
+        try {
+            const postsQuery = query(
+                collection(firestore, 'posts'),
+                where("subjectId", "in", mySubjectIds),
+                where('criteria', 'array-contains', { label: selectedTopFilterValue, value: selectedTopFilterValue }),
+                orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
+                orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
+            );
+    
+            const postDocs = await getDocs(postsQuery);
+    
+            // Store in post state
+            const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setPostStateValue(prev => ({
+                ...prev,
+                posts: posts as Post[],
+            }));
+        } catch(error: any){
+            console.log('getPosts error', error.message);
+        }
+    } else if(selectedTopFilterLabel == 'difficulty'){
+        try {
+            const postsQuery = query(
+                collection(firestore, 'posts'),
+                where("subjectId", "in", mySubjectIds),
+                where('criteria', 'array-contains', { label: selectedTopFilterValue, value: selectedTopFilterValue }),
+                orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
+                orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
+            );
+    
+            const postDocs = await getDocs(postsQuery);
+    
+            // Store in post state
+            const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setPostStateValue(prev => ({
+                ...prev,
+                posts: posts as Post[],
+            }));
+        } catch(error: any){
+            console.log('getPosts error', error.message);
+        }
     } else {
-      setLoading(true);
-      try {
-        if (subjectStateValue.mySnippets.length) {
-          // get posts from users' subjects
-          const mySubjectIds = subjectStateValue.mySnippets.map(
-            (snippet) => snippet.subjectId
-          );
-          //console.log('mySubjectIds', mySubjectIds)
-          const postQuery = query(
-            collection(firestore, "posts"),
-            where("subjectId", "in", mySubjectIds),
-            limit(20),
-            orderBy('pinPost', 'desc'),
-            orderBy('createdAt', 'desc')
-          );
-          const postDocs = await getDocs(postQuery);
-          const posts = postDocs.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          setPostStateValue((prev) => ({
-            ...prev,
-            posts: posts as Post[],
-          }));
-        } else {
-          buildNoUserHomeFeed();
+        try {
+            const postsQuery = query(
+                collection(firestore, 'posts'),
+                where("subjectId", "in", mySubjectIds),
+                orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
+                orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
+            );
+    
+            const postDocs = await getDocs(postsQuery);
+    
+            // Store in post state
+            const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setPostStateValue(prev => ({
+                ...prev,
+                posts: posts as Post[],
+            }));
+        } catch(error: any){
+            console.log('getPosts error', error.message);
         }
-      } catch (error) {
-        console.log("buildUserHomeFeed error", error);
-      }
-      setLoading(false);
     }
   }
+  // const handleChangeFilter = async(e:any) => {
+  //   const selectedFilterValue = e.target.value;
+  //   if(selectedFilterValue){
+  //     if(selectedFilterValue!== 'General Question' && selectedFilterValue!== 'Academic Question'){
+  //       setLoading(true);
+  //       try {
+  //         if (subjectStateValue.mySnippets.length) {
+  //           // get posts from users' subjects
+  //           const mySubjectIds = subjectStateValue.mySnippets.map(
+  //             (snippet) => snippet.subjectId
+  //           );
+  //           //console.log('mySubjectIds', mySubjectIds)
+  //           const postQuery = query(
+  //             collection(firestore, "posts"),
+  //             where("subjectId", "in", mySubjectIds),
+  //             where('criteria', 'array-contains', { label: e.target.value, value: e.target.value }),
+  //             limit(20),
+  //             orderBy('pinPost', 'desc'),
+  //             orderBy('createdAt', 'desc')
+  //           );
+  //           const postDocs = await getDocs(postQuery);
+  //           const posts = postDocs.docs.map((doc) => ({
+  //             id: doc.id,
+  //             ...doc.data(),
+  //           }));
+  //           setPostStateValue((prev) => ({
+  //             ...prev,
+  //             posts: posts as Post[],
+  //           }));
+  //         } else {
+  //           buildNoUserHomeFeed();
+  //         }
+  //       } catch (error) {
+  //         console.log("buildUserHomeFeed error", error);
+  //       }
+  //       setLoading(false);
+  //     } else {
+  //       setLoading(true);
+  //       try {
+  //         if (subjectStateValue.mySnippets.length) {
+  //           // get posts from users' subjects
+  //           const mySubjectIds = subjectStateValue.mySnippets.map(
+  //             (snippet) => snippet.subjectId
+  //           );
+  //           //console.log('mySubjectIds', mySubjectIds)
+  //           const postQuery = query(
+  //             collection(firestore, "posts"),
+  //             where("subjectId", "in", mySubjectIds),
+  //             where('typeOfQuestions.label', '==', e.target.value),  // Search based on label
+  //             where('typeOfQuestions.value', '==', e.target.value), 
+  //             limit(20),
+  //             orderBy('pinPost', 'desc'),
+  //             orderBy('createdAt', 'desc')
+  //           );
+  //           const postDocs = await getDocs(postQuery);
+  //           const posts = postDocs.docs.map((doc) => ({
+  //             id: doc.id,
+  //             ...doc.data(),
+  //           }));
+  //           setPostStateValue((prev) => ({
+  //             ...prev,
+  //             posts: posts as Post[],
+  //           }));
+  //         } else {
+  //           buildNoUserHomeFeed();
+  //         }
+  //       } catch (error) {
+  //         console.log("buildUserHomeFeed error", error);
+  //       }
+  //       setLoading(false);
+  //     } 
+  //   } else {
+  //     setLoading(true);
+  //     try {
+  //       if (subjectStateValue.mySnippets.length) {
+  //         // get posts from users' subjects
+  //         const mySubjectIds = subjectStateValue.mySnippets.map(
+  //           (snippet) => snippet.subjectId
+  //         );
+  //         //console.log('mySubjectIds', mySubjectIds)
+  //         const postQuery = query(
+  //           collection(firestore, "posts"),
+  //           where("subjectId", "in", mySubjectIds),
+  //           limit(20),
+  //           orderBy('pinPost', 'desc'),
+  //           orderBy('createdAt', 'desc')
+  //         );
+  //         const postDocs = await getDocs(postQuery);
+  //         const posts = postDocs.docs.map((doc) => ({
+  //           id: doc.id,
+  //           ...doc.data(),
+  //         }));
+  //         setPostStateValue((prev) => ({
+  //           ...prev,
+  //           posts: posts as Post[],
+  //         }));
+  //       } else {
+  //         buildNoUserHomeFeed();
+  //       }
+  //     } catch (error) {
+  //       console.log("buildUserHomeFeed error", error);
+  //     }
+  //     setLoading(false);
+  //   }
+  // }
 
   // useEffects
   useEffect(() => {
@@ -272,14 +391,39 @@ const Home: NextPage = () => {
           <PostLoader />
         ) : (
           <Stack>
-            <Select placeholder='Sort By Tags' onChange={handleChangeFilter}>
+            <div className='filter_main_section'>
+                <div className='filter_main_grade_section'>
+                    <span className={`filter_main_grade_sub_section ${activeFilters.grade === '1' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '1')}>MYP 1</span>
+                    <span className={`filter_main_grade_sub_section ${activeFilters.grade === '2' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '2')}>MYP 2</span>
+                    <span className={`filter_main_grade_sub_section ${activeFilters.grade === '3' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '3')}>MYP 3</span>
+                    <span className={`filter_main_grade_sub_section ${activeFilters.grade === '4' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '4')}>MYP 4</span>
+                    <span className={`filter_main_grade_sub_section ${activeFilters.grade === '5' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '5')}>MYP 5</span>
+                </div>
+                <div className='filter_main_question_section'>
+                    <span className={`filter_main_question_sub_section_background ${activeFilters.typeofquestion === 'Academic Question' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('typeofquestion', 'Academic Question')}>Academic Question</span>
+                    <span className={`filter_main_question_sub_section_without_background ${activeFilters.typeofquestion === 'General Doubts' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('typeofquestion', 'General Doubts')}>General Doubts</span>
+                    <span className={`filter_main_question_sub_section_without_backgrouund_border ${activeFilters.typeofquestion === 'Resources' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('typeofquestion', 'Resources')}>Resources</span>
+                </div>
+                <div className='filter_main_criteria_section'>
+                    <span className={`filter_main_criteria_sub_section_background ${activeFilters.criteria === 'Criteria A' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('criteria', 'Criteria A')}>Criteria A</span>
+                    <span className={`filter_main_criteria_sub_section_without_background ${activeFilters.criteria === 'Criteria B' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('criteria', 'Criteria B')}>Criteria B</span>
+                    <span className={`filter_main_criteria_sub_section_without_background ${activeFilters.criteria === 'Criteria C' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('criteria', 'Criteria C')}>Criteria C</span>
+                    <span className={`filter_main_criteria_sub_section_without_backgrouund_border ${activeFilters.criteria === 'Criteria D' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('criteria', 'Criteria D')}>Criteria D</span>
+                </div>
+                <div className='filter_main_difficulty_section'>
+                    <span className={`filter_main_difficulty_sub_section ${activeFilters.difficulty === 'easy' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('difficulty', 'easy')}>Easy</span>
+                    <span className={`filter_main_difficulty_sub_section ${activeFilters.difficulty === 'medium' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('difficulty', 'medium')}>Medium</span>
+                    <span className={`filter_main_difficulty_sub_section ${activeFilters.difficulty === 'hard' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('difficulty', 'hard')}>Hard</span>
+                </div>
+            </div>
+            {/* <Select placeholder='Sort By Tags' onChange={handleChangeFilter}>
                 <option value='Criteria A'>Criteria A</option>
                 <option value='Criteria B'>Criteria B</option>
                 <option value='Criteria C'>Criteria C</option>
                 <option value='Criteria D'>Criteria D</option>
                 <option value='Academic Question'>Academic Question</option>
                 <option value='General Question'>General Question</option>
-            </Select>
+            </Select> */}
             {postStateValue.posts.map((post) => (
               <PostItem
                 key={post.id}
