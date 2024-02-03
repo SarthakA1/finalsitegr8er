@@ -17,7 +17,12 @@ type PostsProps = {
 const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
     const [user] = useAuthState(auth);
     const [loading, setLoading] = useState(false);
-    const [active, setActive] = useState('');
+    const [activeFilters, setActiveFilters] = useState({
+        grade: null,
+        typeofquestion: null,
+        criteria: null,
+        difficulty: null,
+    });
     const { postStateValue, setPostStateValue, onVote, onDeletePost, onSelectPost } = usePosts(subjectData!);
 
     const getPosts = async () => {
@@ -46,6 +51,10 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
     const handleChangeTopFilter = async (label:any, value:any) => {
         const selectedTopFilterValue = value;
         const selectedTopFilterLabel = label;
+        setActiveFilters((prevFilters) => ({
+            ...prevFilters,
+            [selectedTopFilterLabel]: selectedTopFilterValue,
+        }));
         if(selectedTopFilterLabel == 'grade'){
             try {
                 const postsQuery = query(
@@ -112,10 +121,18 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
             }
         } else if(selectedTopFilterLabel == 'difficulty'){
             try {
+                const difficultyQuery = query(
+                    collection(firestore, 'diffculty_voting'),
+                    where('voting', '==', selectedTopFilterValue),
+                    orderBy('createdAt', 'desc')
+                );
+                const difficultyDocs = await getDocs(difficultyQuery);
+                const postIds = difficultyDocs.docs.map(doc => doc.data().postId);
+                
                 const postsQuery = query(
                     collection(firestore, 'posts'),
                     where('subjectId', '==', subjectData.id),
-                    where('criteria', 'array-contains', { label: selectedTopFilterValue, value: selectedTopFilterValue }),
+                    where('id', 'in', postIds),
                     orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
                     orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
                 );
@@ -238,27 +255,27 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
             <Stack spacing={5}>
                 <div className='filter_main_section'>
                     <div className='filter_main_grade_section'>
-                        <span className='filter_main_grade_sub_section' onClick={() => handleChangeTopFilter('grade', '1')}>MYP 1</span>
-                        <span className='filter_main_grade_sub_section' onClick={() => handleChangeTopFilter('grade', '2')}>MYP 2</span>
-                        <span className='filter_main_grade_sub_section' onClick={() => handleChangeTopFilter('grade', '3')}>MYP 3</span>
-                        <span className='filter_main_grade_sub_section' onClick={() => handleChangeTopFilter('grade', '4')}>MYP 4</span>
-                        <span className='filter_main_grade_sub_section' onClick={() => handleChangeTopFilter('grade', '5')}>MYP 5</span>
+                        <span className={`filter_main_grade_sub_section ${activeFilters.grade === '1' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '1')}>MYP 1</span>
+                        <span className={`filter_main_grade_sub_section ${activeFilters.grade === '2' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '2')}>MYP 2</span>
+                        <span className={`filter_main_grade_sub_section ${activeFilters.grade === '3' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '3')}>MYP 3</span>
+                        <span className={`filter_main_grade_sub_section ${activeFilters.grade === '4' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '4')}>MYP 4</span>
+                        <span className={`filter_main_grade_sub_section ${activeFilters.grade === '5' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '5')}>MYP 5</span>
                     </div>
                     <div className='filter_main_question_section'>
-                        <span className='filter_main_question_sub_section_background' onClick={() => handleChangeTopFilter('typeofquestion', 'Academic Question')}>Academic Question</span>
-                        <span className='filter_main_question_sub_section_without_background' onClick={() => handleChangeTopFilter('typeofquestion', 'General Doubts')}>General Doubts</span>
-                        <span className='filter_main_question_sub_section_without_backgrouund_border' onClick={() => handleChangeTopFilter('typeofquestion', 'Resources')}>Resources</span>
+                        <span className={`filter_main_question_sub_section_background ${activeFilters.typeofquestion === 'Academic Question' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('typeofquestion', 'Academic Question')}>Academic Question</span>
+                        <span className={`filter_main_question_sub_section_without_background ${activeFilters.typeofquestion === 'General Doubts' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('typeofquestion', 'General Doubts')}>General Doubts</span>
+                        <span className={`filter_main_question_sub_section_without_backgrouund_border ${activeFilters.typeofquestion === 'Resources' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('typeofquestion', 'Resources')}>Resources</span>
                     </div>
                     <div className='filter_main_criteria_section'>
-                        <span className='filter_main_criteria_sub_section_background' onClick={() => handleChangeTopFilter('criteria', 'Criteria A')}>Criteria A</span>
-                        <span className='filter_main_criteria_sub_section_without_background' onClick={() => handleChangeTopFilter('criteria', 'Criteria B')}>Criteria B</span>
-                        <span className='filter_main_criteria_sub_section_without_background' onClick={() => handleChangeTopFilter('criteria', 'Criteria C')}>Criteria C</span>
-                        <span className='filter_main_criteria_sub_section_without_backgrouund_border' onClick={() => handleChangeTopFilter('criteria', 'Criteria D')}>Criteria D</span>
+                        <span className={`filter_main_criteria_sub_section_background ${activeFilters.criteria === 'Criteria A' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('criteria', 'Criteria A')}>Criteria A</span>
+                        <span className={`filter_main_criteria_sub_section_without_background ${activeFilters.criteria === 'Criteria B' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('criteria', 'Criteria B')}>Criteria B</span>
+                        <span className={`filter_main_criteria_sub_section_without_background ${activeFilters.criteria === 'Criteria C' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('criteria', 'Criteria C')}>Criteria C</span>
+                        <span className={`filter_main_criteria_sub_section_without_backgrouund_border ${activeFilters.criteria === 'Criteria D' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('criteria', 'Criteria D')}>Criteria D</span>
                     </div>
                     <div className='filter_main_difficulty_section'>
-                        <span className='filter_main_difficulty_sub_section' onClick={() => handleChangeTopFilter('difficulty', 'easy')}>Easy</span>
-                        <span className='filter_main_difficulty_sub_section' onClick={() => handleChangeTopFilter('difficulty', 'medium')}>Medium</span>
-                        <span className='filter_main_difficulty_sub_section' onClick={() => handleChangeTopFilter('difficulty', 'hard')}>Hard</span>
+                        <span className={`filter_main_difficulty_sub_section ${activeFilters.difficulty === 'easy' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('difficulty', 'easy')}>Easy</span>
+                        <span className={`filter_main_difficulty_sub_section ${activeFilters.difficulty === 'medium' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('difficulty', 'medium')}>Medium</span>
+                        <span className={`filter_main_difficulty_sub_section ${activeFilters.difficulty === 'hard' ? 'active' : ''}`} onClick={() => handleChangeTopFilter('difficulty', 'hard')}>Hard</span>
                     </div>
                 </div>
                 {/* <Select placeholder='Sort By Tags' onChange={handleChangeFilter}>

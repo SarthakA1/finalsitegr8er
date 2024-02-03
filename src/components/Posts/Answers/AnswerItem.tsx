@@ -85,11 +85,11 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
       console.log("fetchPost error", error);
     }
   };
-  const getPostSubAnswers = async () => {
+  const getPostSubAnswers = async (postId:any) => {
     try {
         const subAnswersQuery = query(
             collection(firestore, "answers_reply"), 
-            where('postId', '==', answer.postId), 
+            where('postId', '==', postId), 
             where('parentReplyId', '==', answer.id),
             orderBy('createdAt', 'desc'));
         const subAnswerDocs = await getDocs(subAnswersQuery);
@@ -97,7 +97,7 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
             id: doc.id, 
             ...doc.data(),
         }));
-        //console.log(subAnswers);
+        console.log(subAnswers);
         //setSubAnswer(subAnswers as SubAnswer[]);
         setAnswerReplyStateValue((prev:any)  => ({
             ...prev,
@@ -112,7 +112,9 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
     if (pid && !postStateValue.selectedPost) {
       fetchPost(pid as string);
     }
-    getPostSubAnswers();
+    if(pid){
+      getPostSubAnswers(pid as string);
+    }
   }, [router.query, postStateValue.selectedPost]);
     return (
       <Flex>
@@ -171,23 +173,22 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
               />
             </Flex> 
           </Stack>
-          {answerReplyStateValue.answersReply.length > 0
-            ?
-              answerReplyStateValue.answersReply.map((item: any, index:any) => {
-                return(
-                  <AnswerReplyItem 
+          {answerReplyStateValue.answersReply.length > 0 ? (
+            answerReplyStateValue.answersReply
+              .filter((item: any) => item.answerId === answer.id)
+              .map((item: any, index: any) => (
+                <AnswerReplyItem 
                   answerReply={item} 
                   userIsCreator={userId === item.creatorId} 
                   userVoteValue={answerReplyStateValue.answerReplyVotes.find((vote: { answerId: any; }) => vote.answerId === item.id)?.voteValue}
                   onAnswerReplyVote={onAnswerReplyVote}
                   onDeleteAnswerReply={onDeleteAnswerReply}
                   userId={userId}
-                  />
-                )
-              })
-            :
-              ''
-          }
+                />
+              ))
+          ) : (
+            ''
+          )}
           {replyForm && <AnswersReply user={user as User} selectedPost={postStateValue.selectedPost} subjectId={postStateValue.selectedPost?.subjectId as string} answerId={answer?.id as string}/>}
         </Stack>
       </Flex>
