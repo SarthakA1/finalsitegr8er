@@ -148,7 +148,7 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
             const answersQuery = query(
                 collection(firestore, "answers"), 
                 where('postId', '==', selectedPost?.id), 
-                orderBy('createdAt', 'desc'));
+                orderBy('voteStatus', 'desc'));
             const answerDocs = await getDocs(answersQuery);
             const answers = answerDocs.docs.map((doc) => ({ 
                 id: doc.id, 
