@@ -7,6 +7,7 @@ import {
   Select,
   chakraComponents 
 } from "chakra-react-select";
+import EquationEditor from '../../common/EquationEditor';
 
 type TextInputsProps = {
   textInputs: {
@@ -143,25 +144,6 @@ const TextInputs: React.FC<TextInputsProps> = ({
             onChange={(selectedGradeOptions:any) => handleInputChange("grade", selectedGradeOptions)}
             options={gradeOptions}
           />
-        {/* <Input
-          name="grade"
-          value={textInputs.grade}
-          onChange={(e) => handleInputChange('grade', e.target.value)}
-          _placeholder={{ color: "gray.500" }}
-          _focus={{
-            outline: "none",
-            bg: "white",
-            border: "1px solid",
-            borderColor: "black",
-          }}
-          fontSize="10pt"
-          borderRadius={4}
-          placeholder="MYP (Move the Slider to select your grade!)"
-          required
-          type="range" id="slider"
-          min="1" max="5" step="1" defaultValue="3"
-          />
-          <Text style={{ marginLeft: 4, marginTop: 2, marginRight: 1, fontWeight: 600,  color: "#2c75b9"}}> {textInputs.grade} </Text> */}
         </Flex>
         <Flex style={{display: "block"}}>
           <Select
@@ -176,17 +158,6 @@ const TextInputs: React.FC<TextInputsProps> = ({
         </Flex>
       </SimpleGrid>
       <SimpleGrid columns={1} spacing={10}>
-        {/* <Flex style={{display: "block"}}>
-          <Select
-            name="typeOfQuestions"
-            placeholder="Type Of Questions"
-            components={customTypeOfQuestionsComponents}
-            value={textInputs.typeOfQuestions} // Set the value prop for controlled component
-            onChange={(selectedtypeOfQuestionsOptions:any) => handleInputChange("typeOfQuestions", selectedtypeOfQuestionsOptions)}
-            options={typeOfQuestionsOptions}
-          />
-          <p style={{color: "#ff0000", fontSize: "12px", paddingLeft: "3px", paddingTop: "3px"}}>{typeOfQuestionsError}</p>
-        </Flex> */}
         <Input
           name="title"
           value={textInputs.title}
@@ -203,21 +174,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
           placeholder="Topic"
         />
       </SimpleGrid>
-      <Textarea
-        name="body"
-        value={textInputs.body}
-        onChange={(e:any) => handleInputChange('body', e.target.value)}
-        fontSize="10pt"
-        placeholder="Question"
-        _placeholder={{ color: "gray.500" }}
-        _focus={{
-          outline: "none",
-          bg: "white",
-          border: "1px solid",
-          borderColor: "black",
-        }}
-        height="400px"
-      />
+      <EquationEditor onInputChange={handleInputChange}/>
       <Flex justify="flex-end">
        
         <Button

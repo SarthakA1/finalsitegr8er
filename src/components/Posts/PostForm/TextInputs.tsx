@@ -89,23 +89,23 @@ const TextInputs: React.FC<TextInputsProps> = ({
   const gradeOptions = [
     {
       value: "1",
-      label: "Grade 1"
+      label: "MYP 1"
     },
     {
       value: "2",
-      label: "Grade 2"
+      label: "MYP 2"
     },
     {
       value: "3",
-      label: "Grade 3"
+      label: "MYP 3"
     },
     {
       value: "4",
-      label: "Grade 4"
+      label: "MYP 4"
     },
     {
       value: "5",
-      label: "Grade 5"
+      label: "MYP 5"
     },
   ];
   const customCriteriaComponents = {
@@ -138,31 +138,12 @@ const TextInputs: React.FC<TextInputsProps> = ({
         <Flex direction='row' style={{display: "block"}}>
           <Select
             name="grade"
-            placeholder="Grade"
+            placeholder="MYP"
             components={customGradeComponents}
             value={textInputs.grade} // Set the value prop for controlled component
             onChange={(selectedGradeOptions:any) => handleInputChange("grade", selectedGradeOptions)}
             options={gradeOptions}
           />
-        {/* <Input
-          name="grade"
-          value={textInputs.grade}
-          onChange={(e) => handleInputChange('grade', e.target.value)}
-          _placeholder={{ color: "gray.500" }}
-          _focus={{
-            outline: "none",
-            bg: "white",
-            border: "1px solid",
-            borderColor: "black",
-          }}
-          fontSize="10pt"
-          borderRadius={4}
-          placeholder="MYP (Move the Slider to select your grade!)"
-          required
-          type="range" id="slider"
-          min="1" max="5" step="1" defaultValue="3"
-          />
-          <Text style={{ marginLeft: 4, marginTop: 2, marginRight: 1, fontWeight: 600,  color: "#2c75b9"}}> {textInputs.grade} </Text> */}
         </Flex>
         <Flex style={{display: "block"}}>
           <Select
@@ -205,21 +186,6 @@ const TextInputs: React.FC<TextInputsProps> = ({
         />
       </SimpleGrid>
       <EquationEditor onInputChange={handleInputChange}/>
-      {/* <Textarea
-        name="body"
-        value={textInputs.body}
-        onChange={(e:any) => handleInputChange('body', e.target.value)}
-        fontSize="10pt"
-        placeholder="Question"
-        _placeholder={{ color: "gray.500" }}
-        _focus={{
-          outline: "none",
-          bg: "white",
-          border: "1px solid",
-          borderColor: "black",
-        }}
-        height="400px"
-      /> */}
       <Flex justify="flex-end">
         <Button
           height="34px"

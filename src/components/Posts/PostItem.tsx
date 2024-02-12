@@ -10,10 +10,10 @@ import { AiFillLike, AiOutlineLike, AiFillDislike, AiOutlineDislike  } from "rea
 import {
     IoCloseCircleOutline,
     IoCloseCircleSharp,
-  IoArrowRedoOutline,
-  IoArrowUpCircleOutline,
-  IoArrowUpCircleSharp,
-  IoBookmarkOutline,
+    IoArrowRedoOutline,
+    IoArrowUpCircleOutline,
+    IoArrowUpCircleSharp,
+    IoBookmarkOutline,
 } from "react-icons/io5";
 import moment from 'moment';
 import { RiGroup2Fill } from 'react-icons/ri';
@@ -58,13 +58,19 @@ const PostItem:React.FC<PostItemProps> = ({
     const [highestPercentage, setHighestPercentage] = useState('');
     const [highestPercentageName, setHighestPercentageName] = useState('');
 
+    const [deletePostMessage, setDeletePostMessage] = useState('');
+
     const handleDelete = async () => {
         try {
             const success = await onDeletePost(post);
             if (!success) {
                 throw new Error("Failed to delete post"); 
             }
-            console.log("Post was Successfully Deleted")    
+            //console.log("Post was Successfully Deleted"); 
+            setDeletePostMessage('Post was Successfully Deleted');   
+            setTimeout(function() {
+                setDeletePostMessage('');
+            }, 3000);
         } catch (error: any) {
            
         }
@@ -107,66 +113,66 @@ const PostItem:React.FC<PostItemProps> = ({
     const fetchVotingData = async () => {
         const votingQuery = query(
             collection(firestore, 'diffculty_voting'),
-            where('creatorId', '==', user?.uid),
             where('postId', '==', post.id),
-            orderBy('createdAt', 'desc')
         );
         const votingDocs = await getDocs(votingQuery);
         const allVoting = votingDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
         const easyVotingQuery = query(
             collection(firestore, 'diffculty_voting'),
-            where('creatorId', '==', user?.uid),
             where('postId', '==', post.id),
             where('voting', '==', 'easy'),
-            orderBy('createdAt', 'desc')
         );
         const easyVotingDocs = await getDocs(easyVotingQuery);
         const easyVoting = easyVotingDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
         const mediumVotingQuery = query(
             collection(firestore, 'diffculty_voting'),
-            where('creatorId', '==', user?.uid),
             where('postId', '==', post.id),
             where('voting', '==', 'medium'),
-            orderBy('createdAt', 'desc')
         );
         const mediumVotingDocs = await getDocs(mediumVotingQuery);
         const mediumVoting = mediumVotingDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
         const hardVotingQuery = query(
             collection(firestore, 'diffculty_voting'),
-            where('creatorId', '==', user?.uid),
             where('postId', '==', post.id),
             where('voting', '==', 'hard'),
-            orderBy('createdAt', 'desc')
         );
         const hardVotingDocs = await getDocs(hardVotingQuery);
         const hardVoting = hardVotingDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
-        const Easy_percentage = (easyVoting.length / allVoting.length);
-        const Medium_percentage = (mediumVoting.length / allVoting.length);
-        const Hard_percentage = (hardVoting.length / allVoting.length);
+        const Easy_percentage = ((easyVoting.length / allVoting.length) * 100).toFixed(2);
+        const Medium_percentage = ((mediumVoting.length / allVoting.length) * 100).toFixed(2);
+        const Hard_percentage = ((hardVoting.length / allVoting.length) * 100).toFixed(2);
 
-        const highestPercentage = Math.max(Easy_percentage, Medium_percentage, Hard_percentage);
+        const highestPercentage = Math.max(
+            parseFloat(Easy_percentage),
+            parseFloat(Medium_percentage),
+            parseFloat(Hard_percentage)
+        );
 
-        let highestPercentageOption;
 
-        if (highestPercentage === Easy_percentage) {
+
+        const highestPercentageAsString = highestPercentage.toFixed(2);
+
+        let highestPercentageOption = '';
+
+        if (parseFloat(highestPercentageAsString) === parseFloat(Easy_percentage)) {
             highestPercentageOption = 'Easy';
-        } else if (highestPercentage === Medium_percentage) {
+        } else if (parseFloat(highestPercentageAsString) === parseFloat(Medium_percentage)) {
             highestPercentageOption = 'Medium';
-        } else if(highestPercentage === Hard_percentage) {
+        } else if (parseFloat(highestPercentageAsString) === parseFloat(Hard_percentage)) {
             highestPercentageOption = 'Hard';
         } else {
-            highestPercentageOption = 'No Voted';
+            highestPercentageOption = '';
         }
 
         if(highestPercentage + '%' !== 'NaN%'){
             setHighestPercentage(highestPercentage + '%');
             setHighestPercentageName(highestPercentageOption);
         } else {
-            setHighestPercentage('0%');
+            setHighestPercentage('Not');
             setHighestPercentageName(highestPercentageOption);
         }
     } 
@@ -182,6 +188,7 @@ const PostItem:React.FC<PostItemProps> = ({
             _hover = 
             {{borderColor: singlePostPage ? "none" : "gray.500"}}
         >
+            <Text>{deletePostMessage}</Text>
             {/* <Flex 
                 direction="row" 
                 align="center" 
@@ -257,12 +264,13 @@ const PostItem:React.FC<PostItemProps> = ({
             </Flex>
             <StaticEquationText bodyValue={post.body}/>
             {/* <Text fontSize='11pt'> {post.body} </Text> */}
-            {post.imageURL && (
+            {/* {post.files.map((file:any) => {
+                console.log(file);
+            })} */}
                 <Flex mt={4} justify="center" align="center">  
                 <Image src={post.imageURL} maxHeight='350px' alt="post image"/>
                 
                 </Flex>
-            )}
             {/* <Icon as={AiFillTags} mt={5} fontSize={20}/> */}
 
 

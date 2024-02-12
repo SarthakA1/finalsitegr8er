@@ -124,6 +124,45 @@ const Home: NextPage = () => {
       console.log("getUserPostVotes error", error);
     }
   };
+  const getPostsByMaxVoting = async (voting:any) => {
+    try {
+        console.log(voting);
+        const difficultyQuery = query(
+            collection(firestore, 'diffculty_voting'),
+            where('voting', '==', voting),
+            orderBy('createdAt', 'desc')
+        );
+        const snapshot = await getDocs(difficultyQuery);
+        console.log(snapshot);
+        const posts: { [postTitle: string]: number } = {}; // Use an object to store postId and its voting count
+    
+        snapshot.forEach((doc) => {
+            const post = doc.data(); // Access document data using data() method
+            const postTitle = post.postTitle;
+            const votingCount = posts[postTitle] ? posts[postTitle] : 0;
+            posts[postTitle] = votingCount + 1;
+        });
+    
+        let maxVotingCount = 0;
+        for (const postTitle in posts) {
+            if (posts[postTitle] > maxVotingCount) {
+                maxVotingCount = posts[postTitle];
+            }
+        }
+    
+        const maxVotingPosts: string[] = [];
+        for (const postTitle in posts) {
+            if (posts[postTitle] === maxVotingCount) {
+                maxVotingPosts.push(postTitle);
+            }
+        }
+    
+        return maxVotingPosts;
+    } catch (error) {
+        console.error("Error getting posts:", error);
+        return [];
+    } 
+  }
   const handleChangeTopFilter = async (label:any, value:any) => {
     const selectedTopFilterValue = value;
     const selectedTopFilterLabel = label;
@@ -198,22 +237,37 @@ const Home: NextPage = () => {
         }
     } else if(selectedTopFilterLabel == 'difficulty'){
         try {
-            const postsQuery = query(
-                collection(firestore, 'posts'),
-                where("subjectId", "in", mySubjectIds),
-                where('criteria', 'array-contains', { label: selectedTopFilterValue, value: selectedTopFilterValue }),
-                orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
-                orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
-            );
-    
-            const postDocs = await getDocs(postsQuery);
-    
-            // Store in post state
-            const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setPostStateValue(prev => ({
-                ...prev,
-                posts: posts as Post[],
-            }));
+          getPostsByMaxVoting(selectedTopFilterValue)
+          .then(async (postTitles) => {
+              console.log(`Posts with maximum ${selectedTopFilterValue} voting:`, postTitles);
+              if (postTitles.length > 0) {
+                  const postsQuery = query(
+                      collection(firestore, 'posts'),
+                      where('title', 'in', postTitles),
+                      orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
+                      orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
+                  );
+          
+                  const postDocs = await getDocs(postsQuery);
+          
+                  // Store in post state
+                  const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                  setPostStateValue(prev => ({
+                      ...prev,
+                      posts: posts as Post[],
+                  }));
+              } else {
+                  const posts:any = [];
+                  console.log('No postIds found.');
+                  setPostStateValue(prev => ({
+                      ...prev,
+                      posts: posts as Post[],
+                  }));
+              }
+          })
+          .catch((error) => {
+              console.error("Error:", error);
+          });
         } catch(error: any){
             console.log('getPosts error', error.message);
         }

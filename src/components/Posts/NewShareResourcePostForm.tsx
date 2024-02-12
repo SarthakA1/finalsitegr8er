@@ -66,7 +66,7 @@ const NewShareResourcePostForm:React.FC<NewPostFormProps> = ({
           title: textInputs.title,
           body: textInputs.body,
           grade: {value: textInputs.grade.value, label: textInputs.grade.label},
-          criteria: {value: textInputs.criteria.value, label: textInputs.criteria.label},
+          criteria: textInputs.criteria,
           typeOfQuestions: {value: 'Resource', label: 'Resource'},
           numberOfAnswers: 0,
           voteStatus: 0,
@@ -79,35 +79,29 @@ const NewShareResourcePostForm:React.FC<NewPostFormProps> = ({
     
         setLoading(true)
         try {
-                //store the question in firestore database
-            const postDocRef = await addDoc(collection(firestore, 'posts'), newPost)
-            if (selectedFile && selectedFile.length > 0) {
-              // Iterate over each file URL in the array
-              for (const fileUrl of selectedFile) {
-                console.log(fileUrl);
-                // Store image in storage and get download URL
-                const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
-                await uploadString(imageRef, fileUrl, 'data_url');
-                const downloadURL = await getDownloadURL(imageRef);
-            
-                // Update question doc with the imageURL
+              //store the question in firestore database
+              const postDocRef = await addDoc(collection(firestore, 'posts'), newPost);
+              
+              if (selectedFile && selectedFile.length > 0) {
+                const imageURLs = []; // Array to store all image URLs
+              
+                // Iterate over each file URL in the array
+                for (const fileUrl of selectedFile) {
+                  console.log(fileUrl);
+                  // Store image in storage and get download URL
+                  const imageRef = ref(storage, `posts/${postDocRef.id}/${Date.now()}`);
+                  await uploadString(imageRef, fileUrl, 'data_url');
+                  const downloadURL = await getDownloadURL(imageRef);
+                  // Add download URL to the array
+                  imageURLs.push(downloadURL);
+                }
+              
+                // Update question doc with all the imageURLs
                 await updateDoc(postDocRef, {
-                  imageURL: downloadURL
+                  imageURLs: imageURLs
                 });
               }
-            }
-             //check if user has decided to include image or tag in the question
-            //  if (selectedFile) {
-            //      //if image is there, store in storage => get download URL (return imageURL)
-            //     const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
-            //     await uploadString(imageRef, selectedFile, 'data_url');
-            //     const downloadURL = await getDownloadURL(imageRef);
-
-            //     //update question doc
-            //     await updateDoc(postDocRef, {
-            //         imageURL: downloadURL
-            //     })}
-                router.back();
+              router.back();
         } catch (error: any) {
             console.log('handleCreatePost error', error.message)
             setError(true);
