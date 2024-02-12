@@ -161,12 +161,12 @@ const Searchinput:React.FC<SearchinputProps> = ({ user }) => {
             <Flex alignItems="center" cursor="pointer" justifyContent="right">
                 <Link href="https://www.youtube.com/@GR8ERIB/channels" rel="noopener noreferrer" target="_blank">
                     <a>
-                        <Image src="/images/youtubeblack.png" height="29px" mb="1px"   />
+                        <Image src="/images/youtubeblack.png" height="29px" width='25px' mb="1px"   />
                     </a>
                 </Link>
                 <Link href="https://www.instagram.com/gr8er_" rel="noopener noreferrer" target="_blank" ml={1}>
                     <a>
-                        <Image src="/images/instagramblack.png" height="29px" mb="1px"   />
+                        <Image src="/images/instagramblack.png" height="29px" width='25px' mb="1px"   />
                     </a>
                 </Link>
                 <Notification/>
