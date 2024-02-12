@@ -3,7 +3,7 @@ import { Subject } from '@/atoms/subjectsAtom';
 import { auth, firestore } from '@/firebase/clientApp';
 import usePosts from '@/hooks/usePosts';
 import { Stack, Select, Button, Flex } from '@chakra-ui/react';
-import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query, where, Firestore, doc, DocumentData, DocumentReference } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import PostItem from './PostItem';
@@ -47,6 +47,47 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
             console.log('getPosts error', error.message);
         }
     };
+
+    const getPostsByMaxVoting = async (voting:any) => {
+        try {
+            console.log(voting);
+            const difficultyQuery = query(
+                collection(firestore, 'diffculty_voting'),
+                where('voting', '==', voting),
+                orderBy('createdAt', 'desc')
+            );
+            const snapshot = await getDocs(difficultyQuery);
+            console.log(snapshot);
+            const posts: { [postTitle: string]: number } = {}; // Use an object to store postId and its voting count
+        
+            snapshot.forEach((doc) => {
+                const post = doc.data(); // Access document data using data() method
+                const postTitle = post.postTitle;
+                const votingCount = posts[postTitle] ? posts[postTitle] : 0;
+                posts[postTitle] = votingCount + 1;
+            });
+        
+            let maxVotingCount = 0;
+            for (const postTitle in posts) {
+                if (posts[postTitle] > maxVotingCount) {
+                    maxVotingCount = posts[postTitle];
+                }
+            }
+        
+            const maxVotingPosts: string[] = [];
+            for (const postTitle in posts) {
+                if (posts[postTitle] === maxVotingCount) {
+                    maxVotingPosts.push(postTitle);
+                }
+            }
+        
+            return maxVotingPosts;
+        } catch (error) {
+            console.error("Error getting posts:", error);
+            return [];
+        }
+        
+    }
 
     const handleChangeTopFilter = async (label:any, value:any) => {
         const selectedTopFilterValue = value;
@@ -121,30 +162,37 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
             }
         } else if(selectedTopFilterLabel == 'difficulty'){
             try {
-                const difficultyQuery = query(
-                    collection(firestore, 'diffculty_voting'),
-                    where('voting', '==', selectedTopFilterValue),
-                    orderBy('createdAt', 'desc')
-                );
-                const difficultyDocs = await getDocs(difficultyQuery);
-                const postIds = difficultyDocs.docs.map(doc => doc.data().postId);
+                getPostsByMaxVoting(selectedTopFilterValue)
+                .then(async (postTitles) => {
+                    console.log(`Posts with maximum ${selectedTopFilterValue} voting:`, postTitles);
+                    if (postTitles.length > 0) {
+                        const postsQuery = query(
+                            collection(firestore, 'posts'),
+                            where('title', 'in', postTitles),
+                            orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
+                            orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
+                        );
                 
-                const postsQuery = query(
-                    collection(firestore, 'posts'),
-                    where('subjectId', '==', subjectData.id),
-                    where('id', 'in', postIds),
-                    orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
-                    orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
-                );
-        
-                const postDocs = await getDocs(postsQuery);
-        
-                // Store in post state
-                const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                setPostStateValue(prev => ({
-                    ...prev,
-                    posts: posts as Post[],
-                }));
+                        const postDocs = await getDocs(postsQuery);
+                
+                        // Store in post state
+                        const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                        setPostStateValue(prev => ({
+                            ...prev,
+                            posts: posts as Post[],
+                        }));
+                    } else {
+                        const posts:any = [];
+                        console.log('No postIds found.');
+                        setPostStateValue(prev => ({
+                            ...prev,
+                            posts: posts as Post[],
+                        }));
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                });
             } catch(error: any){
                 console.log('getPosts error', error.message);
             }

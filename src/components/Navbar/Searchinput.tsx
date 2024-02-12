@@ -37,7 +37,7 @@ const Searchinput:React.FC<SearchinputProps> = ({ user }) => {
     const [resourcePostData, setResourcePostData] = useState<Post[]>([]);
     const [questionPostData, setQuestionPostData] = useState<Post[]>([]);
     const handleChange = async (e:any) => {
-        const value = e.target.value.trim();
+        const value = e.target.value;
         try {
             setSearchInputValue(value);
             if (value.length >= 3) {
