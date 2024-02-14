@@ -91,13 +91,14 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
             collection(firestore, "answers_reply"), 
             where('postId', '==', postId), 
             where('parentReplyId', '==', answer.id),
-            orderBy('createdAt', 'desc'));
+        );
         const subAnswerDocs = await getDocs(subAnswersQuery);
         const subAnswers = subAnswerDocs.docs.map((doc) => ({ 
             id: doc.id, 
             ...doc.data(),
         }));
-        console.log(subAnswers);
+        // console.log(subAnswers);
+        // console.log(answer.id);
         //setSubAnswer(subAnswers as SubAnswer[]);
         setAnswerReplyStateValue((prev:any)  => ({
             ...prev,

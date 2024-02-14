@@ -73,18 +73,18 @@ const AnswersReply:React.FC<AnswersReplyProps> = ({ user, selectedPost, subjectI
             batch.set(answerDocRef, newAnswer);
 
             newAnswer.createdAt = {seconds:Date.now() / 1000} as Timestamp
-            // if(user.uid !== selectedPost?.creatorId){
-            //     const newNotification: Notifications = {
-            //         id: notificationDocRef.id,
-            //         notifyBy: user?.displayName! || user?.email!.split("@")[0],
-            //         notifyTo: selectedPost?.creatorDisplayName!,
-            //         notification: user?.displayName! || user?.email!.split("@")[0]+' has replies on your post <a href="'+process.env.NEXT_PUBLIC_BASE_URL+'/subject/'+selectedPost?.subjectId+'/answers/'+selectedPost?.id+'">'+selectedPost?.title+'</a>',
-            //         isRead: 0,
-            //         notificationType: 'addPost',
-            //         createdAt: serverTimestamp() as Timestamp,
-            //     }
-            //     batch.set(notificationDocRef, newNotification);
-            // }
+            if(user.uid !== selectedPost?.creatorId){
+                const newNotification: Notifications = {
+                    id: notificationDocRef.id,
+                    notifyBy: user?.displayName! || user?.email!.split("@")[0],
+                    notifyTo: selectedPost?.creatorDisplayName!,
+                    notification: user?.displayName! || user?.email!.split("@")[0]+' has replies on your reply <a href="'+process.env.NEXT_PUBLIC_BASE_URL+'/subject/'+selectedPost?.subjectId+'/answers/'+selectedPost?.id+'">'+newAnswer.text+'</a>',
+                    isRead: 0,
+                    notificationType: 'replyPost',
+                    createdAt: serverTimestamp() as Timestamp,
+                }
+                batch.set(notificationDocRef, newNotification);
+            }
             const postDocRef = doc(firestore, 'posts', selectedPost?.id!);
             batch.update(postDocRef, {
                 numberOfAnswers: increment(1)
