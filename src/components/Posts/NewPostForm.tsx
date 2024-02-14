@@ -124,6 +124,9 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
       };
 
  return (
+   <Head>
+        <title>Ask Anything!</title>
+      </Head>
     
         <Flex direction="column" bg="white" borderRadius={4} mt={2} width="80%">
           <Flex>
