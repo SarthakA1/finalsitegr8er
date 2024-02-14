@@ -250,6 +250,7 @@ const PostItem:React.FC<PostItemProps> = ({
             onClick={() => onSelectPost && onSelectPost(post)} > 
 
           <Flex direction="column">
+               <Flex direction="row">
            <Text ml={2} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}> MYP  </Text>
             {post.grade && (
                 <>
@@ -258,6 +259,7 @@ const PostItem:React.FC<PostItemProps> = ({
                     </Text>
                 </>
             )}
+                    </Flex>
             <Text fontSize='13pt' fontWeight={600} mb={1}> {post.title} </Text>
               
             {/* 
@@ -274,7 +276,7 @@ const PostItem:React.FC<PostItemProps> = ({
             {/* <Icon as={AiFillTags} mt={5} fontSize={20}/> */}
 
 
-            </Flex>
+           
 
            
             <Flex 
