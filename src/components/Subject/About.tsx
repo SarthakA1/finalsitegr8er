@@ -144,12 +144,17 @@ const About: React.FC<AboutProps> = ({
                   </Flex>
 
               {user && (
-                <Link href={`${router.query.subjectId}/submit`}>
+                <Link href={`/subject/${subjectData.id}/submit`}>
                   <Button mt={2} mb={3} height="30px" width="250px">
                     Ask or Share Anything!
                   </Button>
-                  
                 </Link>
+                // <Link href={`${router.query.subjectId}/submit`}>
+                //   <Button mt={2} mb={3} height="30px" width="250px">
+                //     Ask or Share Anything!
+                //   </Button>
+                  
+                // </Link>
             
               )}
               {/* !!!ADDED AT THE VERY END!!! INITIALLY DOES NOT EXIST */}
