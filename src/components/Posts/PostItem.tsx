@@ -264,13 +264,12 @@ const PostItem:React.FC<PostItemProps> = ({
             </Flex>
             <StaticEquationText bodyValue={post.body}/>
             {/* <Text fontSize='11pt'> {post.body} </Text> */}
-            {/* {post.files.map((file:any) => {
-                console.log(file);
-            })} */}
+            {post.imageURL && (
                 <Flex mt={4} justify="center" align="center">  
                 <Image src={post.imageURL} maxHeight='350px' alt="post image"/>
                 
                 </Flex>
+            )}
             {/* <Icon as={AiFillTags} mt={5} fontSize={20}/> */}
 
 

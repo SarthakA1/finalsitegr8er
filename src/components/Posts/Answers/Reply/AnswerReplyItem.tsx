@@ -3,12 +3,16 @@ import { auth } from '@/firebase/clientApp';
 import { Box, Flex, Icon, Spinner, Stack, Text, Image } from '@chakra-ui/react';
 import { Timestamp } from 'firebase/firestore';
 import moment from 'moment';
-import React from 'react';
+import React, {useState} from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { FaUserCircle } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiFillDislike, AiOutlineDislike } from "react-icons/ai";
 import { useSetRecoilState } from 'recoil';
 import { AnswerReply } from '@/atoms/answersReplyAtom';
+import AnswersReply from "../Reply/AnswersReply";
+import useAnswersReply from '@/hooks/useAnswersReply';
+import { User } from 'firebase/auth';
+import usePosts from '@/hooks/usePosts';
 
 // export type Answer = {
 //     id: string;
@@ -40,6 +44,8 @@ type AnswerItemProps = {
 const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answerReply, userIsCreator, userVoteValue, onAnswerReplyVote, onDeleteAnswerReply, userId }) => {
   const [user] = useAuthState(auth);
   const setAuthModalState = useSetRecoilState(AuthModalState);
+  const { postStateValue, setPostStateValue } = usePosts();
+  const [replyForm, setReplyForm] = useState(false);
   const handleDelete = async () => {
     try {
         const success = await onDeleteAnswerReply(answerReply);
@@ -50,7 +56,10 @@ const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answerReply, userIsCreator,
     } catch (error: any) {
        
     }
-  }  
+  } 
+  const handleReply = async () => {
+    setReplyForm(true);
+  } 
     return (
       <Flex>
         <Box mr={2}>
@@ -86,7 +95,7 @@ const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answerReply, userIsCreator,
                 <Text
                   fontSize="9pt"
                   _hover={{ color: "blue.500" }}
-                  onClick={handleDelete}>
+                  onClick={handleReply}>
                   Reply
                 </Text>
               </>
@@ -108,6 +117,7 @@ const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answerReply, userIsCreator,
               />
             </Flex> 
           </Stack>
+          {replyForm && <AnswersReply user={user as User} selectedPost={postStateValue.selectedPost} subjectId={postStateValue.selectedPost?.subjectId as string} answerId={answerReply?.id as string}/>}
         </Stack>
       </Flex>
     );

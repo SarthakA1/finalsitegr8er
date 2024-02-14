@@ -8,6 +8,7 @@ import React, {useState} from 'react';
 import Notification from './Notifications/Notification';
 import useSubjectData from 'useSubjectData';
 import { Subject } from '@/atoms/subjectsAtom';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 type SearchinputProps = {
    user?: User | null;
@@ -36,6 +37,7 @@ const Searchinput:React.FC<SearchinputProps> = ({ user }) => {
     const [searchInputValue, setSearchInputValue] = useState('');
     const [resourcePostData, setResourcePostData] = useState<Post[]>([]);
     const [questionPostData, setQuestionPostData] = useState<Post[]>([]);
+    const [users] = useAuthState(auth);
     const handleChange = async (e:any) => {
         const value = e.target.value;
         try {
@@ -53,10 +55,12 @@ const Searchinput:React.FC<SearchinputProps> = ({ user }) => {
                 //store in post state
                 const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }))
                 const newPosts = posts as Post[];
-                const filterResourcePosts = newPosts.filter(post => post.typeOfQuestions.value === 'Resource')
-                const filterQuestionsPosts = newPosts.filter(post => post.typeOfQuestions.value === 'Academic Question' || post.typeOfQuestions.value === 'General Question')
-                setResourcePostData(filterResourcePosts as Post[]);
-                setQuestionPostData(filterQuestionsPosts as Post[]);
+                if(newPosts.length > 0){
+                    const filterResourcePosts = newPosts.filter(post => post.typeOfQuestions.value === 'Resource')
+                    const filterQuestionsPosts = newPosts.filter(post => post.typeOfQuestions.value === 'Academic Question' || post.typeOfQuestions.value === 'General Question')
+                    setResourcePostData(filterResourcePosts as Post[]);
+                    setQuestionPostData(filterQuestionsPosts as Post[]);
+                }
             }
         } catch (error: any) {
             console.log('getPosts error', error.message)
@@ -169,7 +173,8 @@ const Searchinput:React.FC<SearchinputProps> = ({ user }) => {
                         <Image src="/images/instagramblack.png" height="29px" width='25px' mb="1px"   />
                     </a>
                 </Link>
-                <Notification/>
+                {users ? <Notification/> : ''}
+                
             </Flex>
         </Flex>
     )
