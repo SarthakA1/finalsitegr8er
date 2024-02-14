@@ -124,10 +124,14 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
       };
 
  return (
-   <Head>
-        <title>Ask Anything!</title>
+   
+     <div>
+      <Head>
+        <title>GR8ER</title>
       </Head>
-    
+      
+    </div>
+   
         <Flex direction="column" bg="white" borderRadius={4} mt={2} width="80%">
           <Flex>
             {formTabs.map((item, index) => (
