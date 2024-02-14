@@ -248,10 +248,9 @@ const PostItem:React.FC<PostItemProps> = ({
             bg="white" 
             cursor={singlePostPage ? "unset" : "pointer"}
             onClick={() => onSelectPost && onSelectPost(post)} > 
- 
-                <Flex direction="row">
+
+           <Flex direction="row">
             <Text fontSize='13pt' fontWeight={600} mb={1}> {post.title} </Text>
-                  
             <Text ml={2} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}> MYP  </Text>
             {post.grade && (
                 <>
@@ -260,8 +259,6 @@ const PostItem:React.FC<PostItemProps> = ({
                     </Text>
                 </>
             )}
-                        
-              
             {/* 
             <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}> {post.grade} </Text> */}
             </Flex>
