@@ -273,7 +273,7 @@ const PostItem:React.FC<PostItemProps> = ({
             {/* <Icon as={AiFillTags} mt={5} fontSize={20}/> */}
 
 
-           
+            </Flex>
 
            
             <Flex 
@@ -341,7 +341,6 @@ const PostItem:React.FC<PostItemProps> = ({
                 </Flex>
             </Flex>    
         </Flex>
-             </Flex>
     
         )
 }
