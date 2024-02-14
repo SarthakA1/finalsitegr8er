@@ -251,11 +251,8 @@ const PostItem:React.FC<PostItemProps> = ({
 
             <Flex direction="column">
            <Flex direction="row">
-               <span key={index} style={{background: "#000000", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
-                                    
-                               
-
-           <Text ml={2} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}>MYP  </Text>
+               <span style={{background: "#000000", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
+                 <Text ml={2} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}>MYP  </Text>
             {post.grade && (
                 <>
                     <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}>
