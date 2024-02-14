@@ -4,14 +4,19 @@ import React from 'react';
 import { RiGroup2Fill } from 'react-icons/ri';
 import useSubjectData from '@/hooks/useSubjectData';
 import { IoIosCreate } from 'react-icons/io';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '@/firebase/clientApp';
+import { AuthModalState } from '@/atoms/authModalAtom';
+import { useSetRecoilState } from 'recoil';
 
 type HeaderProps = {
     subjectData: Subject;
 };
 
 const Header:React.FC<HeaderProps> = ({ subjectData }) => {
-
+    const [users] = useAuthState(auth);
     const { subjectStateValue, onJoinOrLeaveSubject, loading } = useSubjectData();
+    const setAuthModalState = useSetRecoilState(AuthModalState);
 
     const isJoined = !!subjectStateValue.mySnippets.find((item) => item.subjectId === subjectData.id)
     
@@ -51,17 +56,33 @@ const Header:React.FC<HeaderProps> = ({ subjectData }) => {
                             Subject Group
                         </Text>
                     </Flex>
-                    <Button 
-                    variant={isJoined ? "outline" : "solid"} 
-                    height="30px" 
-                    justifyContent='center'
-                    pr={6} 
-                    pl={6} 
-                    mt={3}
-                    isLoading={loading}
-                    onClick={() => onJoinOrLeaveSubject(subjectData, isJoined)}>
-                        {isJoined ? "Joined" : "Join"}
-                    </Button>
+                    {users
+                        ?
+                            <Button 
+                            variant={isJoined ? "outline" : "solid"} 
+                            height="30px" 
+                            justifyContent='center'
+                            pr={6} 
+                            pl={6} 
+                            mt={3}
+                            isLoading={loading}
+                            onClick={() => onJoinOrLeaveSubject(subjectData, isJoined)}>
+                                {isJoined ? "Joined" : "Join"}
+                            </Button>
+                        :
+                            <Button 
+                            variant="solid" 
+                            height="30px" 
+                            justifyContent='center'
+                            pr={6} 
+                            pl={6} 
+                            mt={3}
+                            isLoading={loading}
+                            onClick={() => setAuthModalState({ open:true, view: "login"})}>
+                                Join
+                            </Button>
+                    }
+                    
                 </Flex>
             </Flex>
         </Flex>   

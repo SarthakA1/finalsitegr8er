@@ -24,7 +24,9 @@ type AnswersProps = {
 export type Notifications = {
     id: string;
     notifyBy: string;
+    notifyById: string;
     notifyTo: string;
+    notifyToId: string;
     notification: string;
     isRead: number;
     notificationType: string;
@@ -74,7 +76,9 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
                 const newNotification: Notifications = {
                     id: notificationDocRef.id,
                     notifyBy: user?.displayName! || user?.email!.split("@")[0],
+                    notifyById: user?.uid!,
                     notifyTo: selectedPost?.creatorDisplayName!,
+                    notifyToId: user?.uid!,
                     notification: user?.displayName! || user?.email!.split("@")[0]+' has replies on your post <a href="'+process.env.NEXT_PUBLIC_BASE_URL+'/subject/'+selectedPost?.subjectId+'/answers/'+selectedPost?.id+'">'+selectedPost?.title+'</a>',
                     isRead: 0,
                     notificationType: 'addPost',
