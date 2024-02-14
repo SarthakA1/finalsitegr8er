@@ -74,6 +74,7 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
                 const newNotification: Notifications = {
                     id: notificationDocRef.id,
                     notifyBy: user?.displayName! || user?.email!.split("@")[0],
+                    notifyById: user?.uid!,
                     notifyTo: selectedPost?.creatorDisplayName!,
                     notification: user?.displayName! || user?.email!.split("@")[0]+' added a comment on your post <a href="'+process.env.NEXT_PUBLIC_BASE_URL+'/subject/'+selectedPost?.subjectId+'/answers/'+selectedPost?.id+'">'+selectedPost?.title+'</a>',
                     isRead: 0,

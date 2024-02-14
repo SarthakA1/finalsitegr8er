@@ -51,6 +51,7 @@ const Notification:React.FC<NotificationsProps> = () => {
                 orderBy('createdAt', 'desc')
             )
             const postDocs = await getDocs(postsQuery);
+            console.log(postDocs);
 
             //store in post state
             const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -69,6 +70,7 @@ const Notification:React.FC<NotificationsProps> = () => {
             //get posts for the subject
             const notificationsQuery = query(
                 collection(firestore, 'notifications'),
+                where('notifyTo', '==', users?.displayName!),
                 orderBy('createdAt', 'desc')
             )
             const notificationDocs = await getDocs(notificationsQuery);
