@@ -249,7 +249,7 @@ const PostItem:React.FC<PostItemProps> = ({
             cursor={singlePostPage ? "unset" : "pointer"}
             onClick={() => onSelectPost && onSelectPost(post)} > 
  
-                <Flex direction="column">
+                <Flex direction="row">
             <Text fontSize='13pt' fontWeight={600} mb={1}> {post.title} </Text>
                   
             <Text ml={2} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}> MYP  </Text>
