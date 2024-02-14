@@ -252,7 +252,7 @@ const PostItem:React.FC<PostItemProps> = ({
             <Flex direction="column">
            <Flex direction="row">
               
-                 <Text ml={2} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}>MYP  </Text>
+                 <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}>MYP  </Text>
             {post.grade && (
                 <>
                     <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}>
