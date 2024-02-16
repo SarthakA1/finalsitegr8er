@@ -20,6 +20,7 @@ import { RiGroup2Fill } from 'react-icons/ri';
 import { BsDot } from 'react-icons/bs';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import StaticEquationText from '../common/StaticEquationText';
+import { useRouter } from 'next/router';
 
 type PostItemProps = {
     post: Post;
@@ -51,6 +52,7 @@ const PostItem:React.FC<PostItemProps> = ({
     homePage
 }:any) => {
     const [user] = useAuthState(auth);
+    const router = useRouter();
     const singlePostPage = !onSelectPost
     
     const criteria = post.criteria;
@@ -70,6 +72,7 @@ const PostItem:React.FC<PostItemProps> = ({
             setDeletePostMessage('Post was Successfully Deleted');   
             setTimeout(function() {
                 setDeletePostMessage('');
+                router.push('/');
             }, 3000);
         } catch (error: any) {
            
@@ -188,7 +191,7 @@ const PostItem:React.FC<PostItemProps> = ({
             _hover = 
             {{borderColor: singlePostPage ? "none" : "gray.500"}}
         >
-            <Text>{deletePostMessage}</Text>
+            <Text style={{textAlign: "center", padding:"10px", color:"green"}}>{deletePostMessage}</Text>
             {/* <Flex 
                 direction="row" 
                 align="center" 

@@ -42,7 +42,7 @@ const Searchinput:React.FC<SearchinputProps> = ({ user }) => {
         const value = e.target.value;
         try {
             setSearchInputValue(value);
-            if (value.length >= 3) {
+            //if (value.length >= 3) {
                 //get posts for the subject
                 const postsQuery = query(
                     collection(firestore, 'posts'),
@@ -61,7 +61,7 @@ const Searchinput:React.FC<SearchinputProps> = ({ user }) => {
                     setResourcePostData(filterResourcePosts as Post[]);
                     setQuestionPostData(filterQuestionsPosts as Post[]);
                 }
-            }
+            //}
         } catch (error: any) {
             console.log('getPosts error', error.message)
         }

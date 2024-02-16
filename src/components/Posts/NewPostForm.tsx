@@ -43,11 +43,11 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
     const router = useRouter();
     const [selectedTab, setSelectedTab] = useState(formTabs[0].title)
     const [textInputs, setTextInputs] = useState({
-        grade: {value: "", label: ""},
+        grade: "",
         title: "",
         body: "",
-        typeOfQuestions: {value: "", label: ""},
-        criteria: {value: "", label: ""}
+        typeOfQuestions: "",
+        criteria: ""
     });
     const {selectedFile, setSelectedFile, onSelectFile} = useSelectFile()
     // const [selectedFile, setSelectedFile] = useState<string>()
@@ -66,9 +66,9 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
           creatorDisplayName: user.displayName! || user.email!.split('@')[0],
           title: textInputs.title,
           body: textInputs.body,
-          grade: {value: textInputs.grade.value, label: textInputs.grade.label},
+          grade: textInputs.grade,
           criteria: textInputs.criteria,
-          typeOfQuestions: {value: textInputs.typeOfQuestions.value, label: textInputs.typeOfQuestions.label},
+          typeOfQuestions: textInputs.typeOfQuestions,
           numberOfAnswers: 0,
           voteStatus: 0, 
           pinPost: false,
@@ -100,8 +100,8 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
                     imageURLs: imageURLs
                   });
                 }
-                
-                router.back();
+                router.push('/subject/'+subjectId);
+                //router.back();
         } catch (error: any) {
             console.log('handleCreatePost error', error.message)
             setError(true);

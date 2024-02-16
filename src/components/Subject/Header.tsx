@@ -24,7 +24,7 @@ const Header:React.FC<HeaderProps> = ({ subjectData }) => {
         <Flex direction='column' width='100%' height='146px'>
             <Box height='50%' bg="blue.400" ></Box>
         <Flex justify='center' bg="white" flexGrow={1}>
-            <Flex width="95%" maxWidth='1000px' align='center'>
+            <Flex width="95%" maxWidth='1200px' align='center'>
             {subjectData?.imageURL ? (
                         <Image
                           borderRadius="full"
