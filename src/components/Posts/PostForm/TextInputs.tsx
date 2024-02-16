@@ -60,53 +60,37 @@ const TextInputs: React.FC<TextInputsProps> = ({
   
   const criteriaOptions = [
     {
-      value: "Criteria A",
-      label: "Criteria A"
-    },
-    {
-      value: "Criteria B",
-      label: "Criteria B"
-    },
-    {
-      value: "Criteria C",
-      label: "Criteria C"
-    },
-    {
-      value: "Criteria D",
-      label: "Criteria D"
-    },
+      label: 'Criteria',
+      options: [
+        { value: "Criteria A", label: "Criteria A" },
+        { value: "Criteria B", label: "Criteria B" },
+        { value: "Criteria C", label: "Criteria C" },
+        { value: "Criteria D", label: "Criteria D" }
+      ]
+    }
   ];
+  
   const typeOfQuestionsOptions = [
     {
-      value: "Academic Question",
-      label: "Academic Question"
-    },
-    {
-      value: "General Question",
-      label: "General Question"
-    },
+      label: 'Type Of Questions',
+      options: [
+        { value: "Academic Question", label: "Academic Question" },
+        { value: "General Question", label: "General Question" }
+      ]
+    }
   ];
+  
   const gradeOptions = [
     {
-      value: "1",
-      label: "MYP 1"
-    },
-    {
-      value: "2",
-      label: "MYP 2"
-    },
-    {
-      value: "3",
-      label: "MYP 3"
-    },
-    {
-      value: "4",
-      label: "MYP 4"
-    },
-    {
-      value: "5",
-      label: "MYP 5"
-    },
+      label: 'MYP',
+      options: [
+        { value: "1", label: "MYP 1" },
+        { value: "2", label: "MYP 2" },
+        { value: "3", label: "MYP 3" },
+        { value: "4", label: "MYP 4" },
+        { value: "5", label: "MYP 5" }
+      ]
+    }
   ];
   const customCriteriaComponents = {
     Option: ({ children, ...props }:any) => (
