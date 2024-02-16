@@ -13,9 +13,9 @@ type TextInputsProps = {
   textInputs: {
     title: string;
     body: string;
-    grade: {value: string, label: string};
-    criteria: {value: string, label: string};
-    typeOfQuestions: {value: string, label: string};
+    grade: string;
+    criteria: string;
+    typeOfQuestions: string;
   };
   onChange: (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -39,7 +39,8 @@ const TextInputs: React.FC<TextInputsProps> = ({
     onChange({
       target: {
         name,
-        value // Assuming criteria is a comma-separated string
+        value,
+         // Assuming criteria is a comma-separated string
       }
     } as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>);
   };
