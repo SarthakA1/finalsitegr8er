@@ -122,11 +122,11 @@ const TextInputs: React.FC<TextInputsProps> = ({
         <Flex direction='row' style={{display: "block"}}>
           <Select
             name="grade"
+            options={gradeOptions}
             placeholder="MYP"
             components={customGradeComponents}
             value={textInputs.grade} // Set the value prop for controlled component
             onChange={(selectedGradeOptions:any) => handleInputChange("grade", selectedGradeOptions)}
-            options={gradeOptions}
           />
         </Flex>
         <Flex style={{display: "block"}}>
