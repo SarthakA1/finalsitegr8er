@@ -43,11 +43,11 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
     const router = useRouter();
     const [selectedTab, setSelectedTab] = useState(formTabs[0].title)
     const [textInputs, setTextInputs] = useState({
-        grade: "",
+        grade: {value: "", label: ""},
         title: "",
         body: "",
-        typeOfQuestions: "",
-        criteria: ""
+        typeOfQuestions: {value: "", label: ""},
+        criteria: {value: "", label: ""}
     });
     const {selectedFile, setSelectedFile, onSelectFile} = useSelectFile()
     // const [selectedFile, setSelectedFile] = useState<string>()

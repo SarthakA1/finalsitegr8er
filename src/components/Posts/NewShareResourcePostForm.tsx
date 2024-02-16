@@ -43,11 +43,11 @@ const NewShareResourcePostForm:React.FC<NewPostFormProps> = ({
     const router = useRouter();
     const [selectedTab, setSelectedTab] = useState(formTabs[0].title)
     const [textInputs, setTextInputs] = useState({
-        grade: "",
-        title: "",
-        body: "",
-        typeOfQuestions: "",
-        criteria: ""
+      grade: {value: "", label: ""},
+      title: "",
+      body: "",
+      typeOfQuestions: {value: "", label: ""},
+      criteria: {value: "", label: ""}
     });
     const {selectedFile, setSelectedFile, onSelectFile} = useSelectFile()
     // const [selectedFile, setSelectedFile] = useState<string>()

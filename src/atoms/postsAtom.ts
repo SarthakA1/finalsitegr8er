@@ -13,10 +13,10 @@ export type Post = {
     imageURL?: string;
     subjectImageURL?: string;
     createdAt: Timestamp;
-    grade: string;
-    typeOfQuestions: string;
+    grade: {value: string, label: string};
+    typeOfQuestions: {value: string, label: string};
     pinPost: boolean;
-    criteria: string;
+    criteria: {value: string, label: string};
 }
 
 export type PostVote = {
