@@ -24,10 +24,7 @@ type TextInputsProps = {
   loading: boolean;
 };
 
-interface OptionType {
-  value: string;
-  label: string;
-}
+
 
 const TextInputs: React.FC<TextInputsProps> = ({
   textInputs,
@@ -61,7 +58,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
     }
   };
   
-  const criteriaOptions: OptionType[] = [
+  const criteriaOptions = [
     {
       value: "Criteria A",
       label: "Criteria A"
@@ -79,7 +76,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
       label: "Criteria D"
     },
   ];
-  const typeOfQuestionsOptions: OptionType[] = [
+  const typeOfQuestionsOptions = [
     {
       value: "Academic Question",
       label: "Academic Question"
@@ -89,7 +86,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
       label: "General Question"
     },
   ];
-  const gradeOptions: OptionType[] = [
+  const gradeOptions = [
     {
       value: "1",
       label: "MYP 1"
