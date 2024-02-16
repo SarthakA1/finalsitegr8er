@@ -62,6 +62,8 @@ const PostItem:React.FC<PostItemProps> = ({
 
     const [deletePostMessage, setDeletePostMessage] = useState('');
 
+    const [fileImageUrl, setFileImageUrl] = useState('');
+
     const handleDelete = async () => {
         try {
             const success = await onDeletePost(post);
@@ -179,6 +181,21 @@ const PostItem:React.FC<PostItemProps> = ({
             setHighestPercentageName(highestPercentageOption);
         }
     } 
+    const getFileExtension = (url:any) => {
+        return fetch(url)
+        .then((response: any) => response.json())
+        .then((data: any) => {
+            if (data['contentType']) {
+                return data['contentType'];
+            } else {
+                return 'unknown';
+            }
+        })
+        .catch((error: any) => {
+            console.error('Error fetching data:', error);
+            return 'unknown'; // Handle error and return a default value
+        });
+    }
     useEffect(() => {
         fetchVotingData();
     }, [])
@@ -269,11 +286,23 @@ const PostItem:React.FC<PostItemProps> = ({
             </Flex>
             <StaticEquationText bodyValue={post.body}/>
             {/* <Text fontSize='11pt'> {post.body} </Text> */}
-            {post.imageURL && (
+            {/* {post.imageURL && (
                 <Flex mt={4} justify="center" align="center">  
                 <Image src={post.imageURL} maxHeight='350px' alt="post image"/>
                 
                 </Flex>
+            )} */}
+            {post.imageURLs && (
+                post.imageURLs.map((imageURL:any) => {
+                    
+                    return(
+                        <Flex mt={4} justify="center" align="center">
+                            <a href={imageURL} target='_blank'>
+                                <Image src={imageURL} maxHeight='350px' alt="post image"/>
+                            </a>  
+                        </Flex>
+                    )
+                })
             )}
             {/* <Icon as={AiFillTags} mt={5} fontSize={20}/> */}
 
