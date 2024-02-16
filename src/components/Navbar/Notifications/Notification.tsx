@@ -128,7 +128,7 @@ const Notification:React.FC<NotificationsProps> = () => {
                             <List spacing={3} className='notification_user_posts'>
                                 {postStateValue.slice(0, 5).map((item: any, index:any) => {
                                     return(<ListItem className='notification_user_posts_item' key={index}>
-                                        <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/subject/${item.subjectId}/answers/${item.id}`}>
+                                        <Link href={`/subject/${item.subjectId}/answers/${item.id}`}>
                                             {item.title}
                                         </Link>
                                     </ListItem>)
