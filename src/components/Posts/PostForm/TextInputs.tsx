@@ -13,9 +13,9 @@ type TextInputsProps = {
   textInputs: {
     title: string;
     body: string;
-    grade: string;
-    criteria: string;
-    typeOfQuestions: string;
+    grade: string | null; // Adjust type to allow for null value if necessary
+    criteria: string | null; // Adjust type to allow for null value if necessary
+    typeOfQuestions: string | null;
   };
   onChange: (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
