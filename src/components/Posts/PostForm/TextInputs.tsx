@@ -13,9 +13,9 @@ type TextInputsProps = {
   textInputs: {
     title: string;
     body: string;
-    grade: string | null; // Adjust type to allow for null value if necessary
-    criteria: string | null; // Adjust type to allow for null value if necessary
-    typeOfQuestions: string | null;
+    grade: string;
+    criteria: string;
+    typeOfQuestions: string;
   };
   onChange: (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -142,7 +142,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
             components={customGradeComponents}
             value={textInputs.grade} // Set the value prop for controlled component
             onChange={(selectedGradeOptions:any) => handleInputChange("grade", selectedGradeOptions)}
-            options={gradeOptions}
+            options={gradeOptions as { value: string; label: string }[]}
           />
         </Flex>
         <Flex style={{display: "block"}}>
