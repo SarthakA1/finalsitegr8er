@@ -51,7 +51,6 @@ const Notification:React.FC<NotificationsProps> = () => {
                 orderBy('createdAt', 'desc')
             )
             const postDocs = await getDocs(postsQuery);
-            console.log(postDocs);
 
             //store in post state
             const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));

@@ -43,11 +43,11 @@ const NewShareResourcePostForm:React.FC<NewPostFormProps> = ({
     const router = useRouter();
     const [selectedTab, setSelectedTab] = useState(formTabs[0].title)
     const [textInputs, setTextInputs] = useState({
-        grade: {value: "", label: ""},
-        title: "",
-        body: "",
-        typeOfQuestions: {value: "", label: ""},
-        criteria: {value: "", label: ""}
+      grade: {value: "", label: ""},
+      title: "",
+      body: "",
+      typeOfQuestions: {value: "", label: ""},
+      criteria: {value: "", label: ""}
     });
     const {selectedFile, setSelectedFile, onSelectFile} = useSelectFile()
     // const [selectedFile, setSelectedFile] = useState<string>()
@@ -56,6 +56,7 @@ const NewShareResourcePostForm:React.FC<NewPostFormProps> = ({
     const [error, setError] = useState(false)
 
     const handleCreatePost = async () => {
+      console.log(textInputs);
         const { subjectId } = router.query;
         //create new question object => type post
         const newPost: Post = {
@@ -65,9 +66,9 @@ const NewShareResourcePostForm:React.FC<NewPostFormProps> = ({
           creatorDisplayName: user.displayName! || user.email!.split('@')[0],
           title: textInputs.title,
           body: textInputs.body,
-          grade: {value: textInputs.grade.value, label: textInputs.grade.label},
+          grade: textInputs.grade,
           criteria: textInputs.criteria,
-          typeOfQuestions: {value: 'Resource', label: 'Resource'},
+          typeOfQuestions: textInputs.typeOfQuestions,
           numberOfAnswers: 0,
           voteStatus: 0,
           pinPost: false,
@@ -117,9 +118,12 @@ const NewShareResourcePostForm:React.FC<NewPostFormProps> = ({
     const onTextChange = ({
         target: { name, value },
       }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setTextInputs((prev) => ({
+        console.log(name);
+        console.log(value);
+        setTextInputs((prev:any) => ({
           ...prev,
           [name]: value,
+          ['typeOfQuestions']: {value: 'Resource', label: 'Resource'}
         }));
       };
       

@@ -66,9 +66,9 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
           creatorDisplayName: user.displayName! || user.email!.split('@')[0],
           title: textInputs.title,
           body: textInputs.body,
-          grade: {value: textInputs.grade.value, label: textInputs.grade.label},
+          grade: textInputs.grade,
           criteria: textInputs.criteria,
-          typeOfQuestions: {value: textInputs.typeOfQuestions.value, label: textInputs.typeOfQuestions.label},
+          typeOfQuestions: textInputs.typeOfQuestions,
           numberOfAnswers: 0,
           voteStatus: 0, 
           pinPost: false,
@@ -100,8 +100,8 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
                     imageURLs: imageURLs
                   });
                 }
-                
-                router.back();
+                router.push('/subject/'+subjectId);
+                //router.back();
         } catch (error: any) {
             console.log('handleCreatePost error', error.message)
             setError(true);

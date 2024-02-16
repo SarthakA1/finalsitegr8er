@@ -167,6 +167,7 @@ const Home: NextPage = () => {
     const selectedTopFilterValue = value;
     const selectedTopFilterLabel = label;
     const mySubjectIds = subjectStateValue.mySnippets.map((snippet) => snippet.subjectId);
+    console.log(subjectStateValue);
     setActiveFilters((prevFilters) => ({
       ...prevFilters,
       [selectedTopFilterLabel]: selectedTopFilterValue,
@@ -175,7 +176,7 @@ const Home: NextPage = () => {
         try {
             const postsQuery = query(
                 collection(firestore, 'posts'),
-                where("subjectId", "in", mySubjectIds),
+                //where("subjectId", "in", mySubjectIds),
                 where('grade.value', '==', selectedTopFilterValue),
                 orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
                 orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
@@ -196,7 +197,7 @@ const Home: NextPage = () => {
         try {
             const postsQuery = query(
                 collection(firestore, 'posts'),
-                where("subjectId", "in", mySubjectIds),
+                //where("subjectId", "in", mySubjectIds),
                 where('typeOfQuestions.label', '==', selectedTopFilterValue),  // Search based on label
                 where('typeOfQuestions.value', '==', selectedTopFilterValue), 
                 orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
@@ -218,7 +219,7 @@ const Home: NextPage = () => {
         try {
             const postsQuery = query(
                 collection(firestore, 'posts'),
-                where("subjectId", "in", mySubjectIds),
+                //where("subjectId", "in", mySubjectIds),
                 where('criteria', 'array-contains', { label: selectedTopFilterValue, value: selectedTopFilterValue }),
                 orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
                 orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
@@ -275,7 +276,7 @@ const Home: NextPage = () => {
         try {
             const postsQuery = query(
                 collection(firestore, 'posts'),
-                where("subjectId", "in", mySubjectIds),
+                //where("subjectId", "in", mySubjectIds),
                 orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
                 orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
             );
@@ -293,111 +294,6 @@ const Home: NextPage = () => {
         }
     }
   }
-  // const handleChangeFilter = async(e:any) => {
-  //   const selectedFilterValue = e.target.value;
-  //   if(selectedFilterValue){
-  //     if(selectedFilterValue!== 'General Question' && selectedFilterValue!== 'Academic Question'){
-  //       setLoading(true);
-  //       try {
-  //         if (subjectStateValue.mySnippets.length) {
-  //           // get posts from users' subjects
-  //           const mySubjectIds = subjectStateValue.mySnippets.map(
-  //             (snippet) => snippet.subjectId
-  //           );
-  //           //console.log('mySubjectIds', mySubjectIds)
-  //           const postQuery = query(
-  //             collection(firestore, "posts"),
-  //             where("subjectId", "in", mySubjectIds),
-  //             where('criteria', 'array-contains', { label: e.target.value, value: e.target.value }),
-  //             limit(20),
-  //             orderBy('pinPost', 'desc'),
-  //             orderBy('createdAt', 'desc')
-  //           );
-  //           const postDocs = await getDocs(postQuery);
-  //           const posts = postDocs.docs.map((doc) => ({
-  //             id: doc.id,
-  //             ...doc.data(),
-  //           }));
-  //           setPostStateValue((prev) => ({
-  //             ...prev,
-  //             posts: posts as Post[],
-  //           }));
-  //         } else {
-  //           buildNoUserHomeFeed();
-  //         }
-  //       } catch (error) {
-  //         console.log("buildUserHomeFeed error", error);
-  //       }
-  //       setLoading(false);
-  //     } else {
-  //       setLoading(true);
-  //       try {
-  //         if (subjectStateValue.mySnippets.length) {
-  //           // get posts from users' subjects
-  //           const mySubjectIds = subjectStateValue.mySnippets.map(
-  //             (snippet) => snippet.subjectId
-  //           );
-  //           //console.log('mySubjectIds', mySubjectIds)
-  //           const postQuery = query(
-  //             collection(firestore, "posts"),
-  //             where("subjectId", "in", mySubjectIds),
-  //             where('typeOfQuestions.label', '==', e.target.value),  // Search based on label
-  //             where('typeOfQuestions.value', '==', e.target.value), 
-  //             limit(20),
-  //             orderBy('pinPost', 'desc'),
-  //             orderBy('createdAt', 'desc')
-  //           );
-  //           const postDocs = await getDocs(postQuery);
-  //           const posts = postDocs.docs.map((doc) => ({
-  //             id: doc.id,
-  //             ...doc.data(),
-  //           }));
-  //           setPostStateValue((prev) => ({
-  //             ...prev,
-  //             posts: posts as Post[],
-  //           }));
-  //         } else {
-  //           buildNoUserHomeFeed();
-  //         }
-  //       } catch (error) {
-  //         console.log("buildUserHomeFeed error", error);
-  //       }
-  //       setLoading(false);
-  //     } 
-  //   } else {
-  //     setLoading(true);
-  //     try {
-  //       if (subjectStateValue.mySnippets.length) {
-  //         // get posts from users' subjects
-  //         const mySubjectIds = subjectStateValue.mySnippets.map(
-  //           (snippet) => snippet.subjectId
-  //         );
-  //         //console.log('mySubjectIds', mySubjectIds)
-  //         const postQuery = query(
-  //           collection(firestore, "posts"),
-  //           where("subjectId", "in", mySubjectIds),
-  //           limit(20),
-  //           orderBy('pinPost', 'desc'),
-  //           orderBy('createdAt', 'desc')
-  //         );
-  //         const postDocs = await getDocs(postQuery);
-  //         const posts = postDocs.docs.map((doc) => ({
-  //           id: doc.id,
-  //           ...doc.data(),
-  //         }));
-  //         setPostStateValue((prev) => ({
-  //           ...prev,
-  //           posts: posts as Post[],
-  //         }));
-  //       } else {
-  //         buildNoUserHomeFeed();
-  //       }
-  //     } catch (error) {
-  //       console.log("buildUserHomeFeed error", error);
-  //     }
-  //     setLoading(false);
-  //   }
-  // }
 
   // useEffects
   useEffect(() => {
