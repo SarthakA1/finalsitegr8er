@@ -2,13 +2,23 @@ import { AnswerReply, AnswerReplyState, AnswerReplyVote } from '@/atoms/answersR
 import { Post, PostState } from '@/atoms/postsAtom';
 import { Subject } from '@/atoms/subjectsAtom';
 import { auth, firestore, storage } from '@/firebase/clientApp';
-import { collection, deleteDoc, doc, writeBatch, increment } from 'firebase/firestore';
+import { collection, deleteDoc, doc, writeBatch, increment, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { deleteObject, ref } from 'firebase/storage';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
+export type Notifications = {
+    id: string;
+    notifyBy: string | undefined;
+    notifyTo: string;
+    notification: string;
+    isRead: number;
+    notificationType: string;
+    createdAt: Timestamp;
+
+}
 const useAnswersReply = () => {
     const [user] = useAuthState(auth);
     const router = useRouter();
@@ -44,6 +54,20 @@ const useAnswersReply = () => {
                     await batch.commit
                     updatedAnswer.voteStatus = voteStatus + vote;
                     updatedAnswerVotes = [...updatedAnswerVotes, newVote]
+
+                    const notificationDocRef = doc(collection(firestore, 'notifications'))
+                    if(user?.uid !== answerReply?.creatorId){
+                        const newNotification: Notifications = {
+                            id: notificationDocRef.id,
+                            notifyBy: user?.displayName! || user?.email!.split("@")[0],
+                            notifyTo: answerReply?.creatorDisplayText!,
+                            notification: user?.displayName! || user?.email!.split("@")[0]+' liked your comments reply <a href="'+process.env.NEXT_PUBLIC_BASE_URL+'/subject/'+answerReply?.subjectId+'/answers/'+answerReply?.postId+'">'+answerReply?.text+'</a>',
+                            isRead: 0,
+                            notificationType: 'like-dislike-post',
+                            createdAt: serverTimestamp() as Timestamp,
+                        }
+                        batch.set(notificationDocRef, newNotification);
+                    }
             }
     
             else {
@@ -63,6 +87,19 @@ const useAnswersReply = () => {
                     batch.update(answerVoteRef, {
                         voteValue: vote
                     })
+                }
+                const notificationDocRef = doc(collection(firestore, 'notifications'))
+                if(user?.uid !== answerReply?.creatorId){
+                    const newNotification: Notifications = {
+                        id: notificationDocRef.id,
+                        notifyBy: user?.displayName! || user?.email!.split("@")[0],
+                        notifyTo: answerReply?.creatorDisplayText!,
+                        notification: user?.displayName! || user?.email!.split("@")[0]+' disliked your comments reply <a href="'+process.env.NEXT_PUBLIC_BASE_URL+'/subject/'+answerReply?.subjectId+'/answers/'+answerReply?.postId+'">'+answerReply?.text+'</a>',
+                        isRead: 0,
+                        notificationType: 'like-dislike-post',
+                        createdAt: serverTimestamp() as Timestamp,
+                    }
+                    batch.set(notificationDocRef, newNotification);
                 }
             }
             const answerRef = doc(firestore, 'answers_reply', answerReply.id!);

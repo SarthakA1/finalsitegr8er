@@ -69,13 +69,14 @@ const Notification:React.FC<NotificationsProps> = () => {
             //get posts for the subject
             const notificationsQuery = query(
                 collection(firestore, 'notifications'),
-                where('notifyTo', '==', users?.displayName!),
+                where('notifyTo', '==', users?.displayName! || users?.email!.split('@')[0]),
                 orderBy('createdAt', 'desc')
             )
             const notificationDocs = await getDocs(notificationsQuery);
-
+           
             //store in post state
             const notifications = notificationDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+            console.log(notifications);
             //setNotificationsValue(notifications as Notification[]);
             setNotificationsValue(notifications as Notification[]);
             // setNotificationsValue(prev  => ({
