@@ -157,22 +157,42 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
                 </Text>
               </>
             )}
-            <Flex align='center' justify='center'>
-              <Icon as = {userVoteValue === 1 ? AiFillLike : AiOutlineLike} 
-              color={userVoteValue === 1 ? "#9FB751" : "gray.500"} 
-              fontSize={24}
-              onClick={() => onVote(answer, 1, answer.subjectId)} 
-              cursor="pointer"
-              mr={0.5}/>
-              <Text color="gray.500" fontSize='11pt'>{answer.voteStatus}</Text>
-              <Icon as = {userVoteValue === -1 ?  AiFillDislike : AiOutlineDislike} 
-              color={userVoteValue === -1 ? "#EB4E45" :  "gray.500"} 
-              fontSize={22.5}
-              onClick={() => onVote(answer, -1, answer.subjectId)} 
-              ml={0.5}
-              cursor="pointer"
-              />
-            </Flex> 
+            {user
+              ?
+                <Flex align='center' justify='center'>
+                  <Icon as = {userVoteValue === 1 ? AiFillLike : AiOutlineLike} 
+                  color={userVoteValue === 1 ? "#9FB751" : "gray.500"} 
+                  fontSize={24}
+                  onClick={() => onVote(answer, 1, answer.subjectId)} 
+                  cursor="pointer"
+                  mr={0.5}/>
+                  <Text color="gray.500" fontSize='11pt'>{answer.voteStatus}</Text>
+                  <Icon as = {userVoteValue === -1 ?  AiFillDislike : AiOutlineDislike} 
+                  color={userVoteValue === -1 ? "#EB4E45" :  "gray.500"} 
+                  fontSize={22.5}
+                  onClick={() => onVote(answer, -1, answer.subjectId)} 
+                  ml={0.5}
+                  cursor="pointer"
+                  />
+                </Flex> 
+              :
+                <Flex align='center' justify='center'>
+                  <Icon as = {AiOutlineLike} 
+                  color="gray.500" 
+                  fontSize={24}
+                  onClick={() => setAuthModalState({ open:true, view: "login"})} 
+                  cursor="pointer"
+                  mr={0.5}/>
+                  <Text color="gray.500" fontSize='11pt'>{answer.voteStatus}</Text>
+                  <Icon as = {AiOutlineDislike} 
+                  color="gray.500"
+                  fontSize={22.5}
+                  onClick={() => setAuthModalState({ open:true, view: "login"})} 
+                  ml={0.5}
+                  cursor="pointer"
+                  />
+                </Flex>
+            }
           </Stack>
           {answerReplyStateValue.answersReply.length > 0 ? (
             answerReplyStateValue.answersReply
