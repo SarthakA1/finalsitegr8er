@@ -1,7 +1,7 @@
 import { Post, PostState, PostVote } from '@/atoms/postsAtom';
 import { Subject } from '@/atoms/subjectsAtom';
 import { auth, firestore, storage } from '@/firebase/clientApp';
-import { collection, deleteDoc, doc, writeBatch } from 'firebase/firestore';
+import { collection, deleteDoc, doc, writeBatch, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { deleteObject, ref } from 'firebase/storage';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
@@ -11,6 +11,17 @@ import { useRecoilState } from 'recoil';
 type usePostsProps = {
     
 };
+
+export type Notifications = {
+    id: string;
+    notifyBy: string | undefined;
+    notifyTo: string;
+    notification: string;
+    isRead: number;
+    notificationType: string;
+    createdAt: Timestamp;
+
+}
 
 const usePosts = (subjectData?: Subject) => {
     const [user] = useAuthState(auth);
@@ -48,6 +59,19 @@ const usePosts = (subjectData?: Subject) => {
 
                     updatedPost.voteStatus = voteStatus + vote;
                     updatedPostVotes = [...updatedPostVotes, newVote]
+                    const notificationDocRef = doc(collection(firestore, 'notifications'))
+                    if(user?.uid !== post?.creatorId){
+                        const newNotification: Notifications = {
+                            id: notificationDocRef.id,
+                            notifyBy: user?.displayName! || user?.email!.split("@")[0],
+                            notifyTo: post?.creatorDisplayName!,
+                            notification: user?.displayName! || user?.email!.split("@")[0]+' liked your post <a href="'+process.env.NEXT_PUBLIC_BASE_URL+'/subject/'+post?.subjectId+'/answers/'+post?.id+'">'+post?.title+'</a>',
+                            isRead: 0,
+                            notificationType: 'like-dislike-post',
+                            createdAt: serverTimestamp() as Timestamp,
+                        }
+                        batch.set(notificationDocRef, newNotification);
+                    }
 
             }
     
@@ -78,6 +102,19 @@ const usePosts = (subjectData?: Subject) => {
                     batch.update(postVoteRef, {
                         voteValue: vote
                     })
+                }
+                const notificationDocRef = doc(collection(firestore, 'notifications'))
+                if(user?.uid !== post?.creatorId){
+                    const newNotification: Notifications = {
+                        id: notificationDocRef.id,
+                        notifyBy: user?.displayName! || user?.email!.split("@")[0],
+                        notifyTo: post?.creatorDisplayName!,
+                        notification: user?.displayName! || user?.email!.split("@")[0]+' disliked your post <a href="'+process.env.NEXT_PUBLIC_BASE_URL+'/subject/'+post?.subjectId+'/answers/'+post?.id+'">'+post?.title+'</a>',
+                        isRead: 0,
+                        notificationType: 'like-dislike-post',
+                        createdAt: serverTimestamp() as Timestamp,
+                    }
+                    batch.set(notificationDocRef, newNotification);
                 }
             }
 
