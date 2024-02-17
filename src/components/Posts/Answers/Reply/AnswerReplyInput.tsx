@@ -14,7 +14,7 @@ type AnswerReplyInputProps = {
 const AnswerReplyInput:React.FC<AnswerReplyInputProps> = ({ answerText, setAnswerText, user, createLoading, onCreateAnswerReply}) => {
     
     return (
-        <Flex direction="column" position="relative" >
+        <Flex direction="column" position="relative"  className='sub-reply-input'>
         {user ? (
           <>
             
