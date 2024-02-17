@@ -296,16 +296,29 @@ const PostItem:React.FC<PostItemProps> = ({
                 </Flex>
             )} */}
             {post.imageURLs && (
-                post.imageURLs.map((imageURL:any) => {
-                    
-                    return(
-                        <Flex mt={4} justify="center" align="center">
-                            <a href={imageURL} target='_blank'>
-                                <Image src={imageURL} maxHeight='350px' alt="post image"/>
-                            </a>  
-                        </Flex>
-                    )
-                })
+                <ul style={{listStyle: 'none', display: 'flex'}}>
+                    {post.imageURLs.map((imageURL:any) => {
+                        const parts = imageURL.split('.');
+                        const extension = parts[parts.length - 1];
+                        const orgExtension = extension.split('?');
+                        console.log(orgExtension[0]);
+                        let fileImage = '';
+                        if(orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg'){
+                            fileImage = imageURL;
+                        } else if (orgExtension[0] === 'pdf'){
+                            fileImage = '/images/pdf.png';
+                        } else {
+                            fileImage = '/images/docs.png'
+                        }
+                        return(
+                            <li style={{listStyle: 'none'}}>
+                                <a href={imageURL} target='_blank'>
+                                    <Image src={fileImage} maxHeight='350px' alt="post image"/>
+                                </a>  
+                            </li>
+                        )
+                    })}
+                </ul>
             )}
             {/* <Icon as={AiFillTags} mt={5} fontSize={20}/> */}
 

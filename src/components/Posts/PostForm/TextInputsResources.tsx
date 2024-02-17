@@ -89,23 +89,23 @@ const TextInputs: React.FC<TextInputsProps> = ({
   const gradeOptions = [
     {
       value: "1",
-      label: "Grade 1"
+      label: "MYP 1"
     },
     {
       value: "2",
-      label: "Grade 2"
+      label: "MYP 2"
     },
     {
       value: "3",
-      label: "Grade 3"
+      label: "MYP 3"
     },
     {
       value: "4",
-      label: "Grade 4"
+      label: "MYP 4"
     },
     {
       value: "5",
-      label: "Grade 5"
+      label: "MYP 5"
     },
   ];
   const customCriteriaComponents = {
@@ -138,7 +138,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
         <Flex direction='row' style={{display: "block"}}>
           <Select
             name="grade"
-            placeholder="Grade"
+            placeholder="MYP"
             components={customGradeComponents}
             value={textInputs.grade} // Set the value prop for controlled component
             onChange={(selectedGradeOptions:any) => handleInputChange("grade", selectedGradeOptions)}

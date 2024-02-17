@@ -1,5 +1,5 @@
 import React, { Ref } from "react";
-import { Flex, Stack, Button, Image } from "@chakra-ui/react";
+import { Flex, Stack, Button, Image, Grid, GridItem } from "@chakra-ui/react";
 
 type ImageUploadProps = {
   selectedFile: string[];
@@ -18,6 +18,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 }) => {
   return (
     <Flex direction="column" justify="center" align="center" width="100%">
+      <ul style={{listStyle: 'none', display: 'flex'}}>
       {selectedFile.length > 0 
         ?
           selectedFile?.map(file => {
@@ -41,20 +42,24 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             }
             return(
               <>
-                <Image
-                  src={fileImage}
-                  maxWidth="400px"
-                  maxHeight="400px"
-                />
-                <Stack direction="row" mt={4}>
-                  <Button
-                    variant="outline"
-                    height="28px"
-                    onClick={() => setSelectedFile([])}
-                  >
-                    Remove
-                  </Button>
-                </Stack>
+                  
+                    <li style={{listStyle: 'none', border: '1px solid #ccc', borderRadius: '10px', margin: "5px"}}>
+                      <Image
+                        src={fileImage}
+                        maxWidth="400px"
+                        maxHeight="400px"
+                        style={{padding: "10px", width: "100%"}}
+                      />
+                      <Stack direction="row" mt={4} style={{textAlign: "center", display: "block"}}>
+                        <Button
+                          variant="outline"
+                          height="28px"
+                          onClick={() => setSelectedFile([])}
+                        >
+                          Remove
+                        </Button>
+                      </Stack>
+                    </li>
               </>
             )
           })
@@ -86,6 +91,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             />
           </Flex>
       }
+      </ul>
     </Flex>
   );
 };

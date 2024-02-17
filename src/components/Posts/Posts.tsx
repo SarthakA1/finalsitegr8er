@@ -106,12 +106,6 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
                 .then(async (postTitles) => {
                     console.log(`Posts with maximum ${value} voting:`, postTitles);
                     if (postTitles.length > 0) {
-                        // const postsQuery = query(
-                        //     collection(firestore, 'posts'),
-                        //     where('title', 'in', postTitles),
-                        //     orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
-                        //     orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
-                        // );
                         const postsQuery = query(
                             collection(firestore, 'posts'),
                             where('subjectId', '==', subjectData.id),

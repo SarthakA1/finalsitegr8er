@@ -88,13 +88,16 @@ const NewShareResourcePostForm:React.FC<NewPostFormProps> = ({
               
                 // Iterate over each file URL in the array
                 for (const fileUrl of selectedFile) {
-                  console.log(fileUrl);
-                  // Store image in storage and get download URL
-                  const imageRef = ref(storage, `posts/${postDocRef.id}/${Date.now()}`);
-                  await uploadString(imageRef, fileUrl, 'data_url');
-                  const downloadURL = await getDownloadURL(imageRef);
-                  // Add download URL to the array
-                  imageURLs.push(downloadURL);
+                  const matchResult = fileUrl.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/);
+                  if (matchResult) {
+                    const extension = matchResult[0].split("/"); // Split the matched URL path after the slash
+                    // Store image in storage and get download URL
+                    const imageRef = ref(storage, `posts/${postDocRef.id}/${Date.now()}.${extension[1]}`);
+                    await uploadString(imageRef, fileUrl, 'data_url');
+                    const downloadURL = await getDownloadURL(imageRef);
+                    // Add download URL to the array
+                    imageURLs.push(downloadURL);
+                  }
                 }
               
                 // Update question doc with all the imageURLs

@@ -99,11 +99,11 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
         }));
         // console.log(subAnswers);
         // console.log(answer.id);
-        //setSubAnswer(subAnswers as SubAnswer[]);
-        setAnswerReplyStateValue((prev:any)  => ({
-            ...prev,
-            answersReply: subAnswers as Answer[],
-        }))
+        setSubAnswer(subAnswers as AnswerReply[]);
+        // setAnswerReplyStateValue((prev:any)  => ({
+        //     ...prev,
+        //     answersReply: subAnswers as Answer[],
+        // }))
     } catch (error) {
         console.log('getPostAnswers error', error)
     }
@@ -194,9 +194,8 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
                 </Flex>
             }
           </Stack>
-          {answerReplyStateValue.answersReply.length > 0 ? (
-            answerReplyStateValue.answersReply
-              .filter((item: any) => item.answerId === answer.id)
+          {subAnswer.length > 0 ? (
+            subAnswer.filter((item: any) => item.answerId === answer.id)
               .map((item: any, index: any) => (
                 <AnswerReplyItem 
                   answerReply={item} 
