@@ -21,6 +21,8 @@ import { BsDot } from 'react-icons/bs';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import StaticEquationText from '../common/StaticEquationText';
 import { useRouter } from 'next/router';
+import { useSetRecoilState } from 'recoil';
+import { AuthModalState } from '@/atoms/authModalAtom';
 
 type PostItemProps = {
     post: Post;
@@ -63,6 +65,7 @@ const PostItem:React.FC<PostItemProps> = ({
     const [deletePostMessage, setDeletePostMessage] = useState('');
 
     const [fileImageUrl, setFileImageUrl] = useState('');
+    const setAuthModalState = useSetRecoilState(AuthModalState);
 
     const handleDelete = async () => {
         try {
@@ -314,22 +317,38 @@ const PostItem:React.FC<PostItemProps> = ({
             direction="row" 
             bg="blue.100" 
             p={2}>
-                <Flex align='center' justify='center'>
-                <Icon as = {userVoteValue === 1 ? AiFillLike : AiOutlineLike} 
-                color={userVoteValue === 1 ? "#9FB751" : "gray.500"} 
-                fontSize={24}
-                onClick={() => onVote(post, 1, post.subjectId)} 
-                cursor="pointer"
-                mr={0.5}/>
-                <Text color="gray.500" fontSize='11pt'>{post.voteStatus}</Text>
-                <Icon as = {userVoteValue === -1 ?  AiFillDislike : AiOutlineDislike} 
-                color={userVoteValue === -1 ? "#EB4E45" :  "gray.500"} 
-                fontSize={22.5}
-                onClick={() => onVote(post, -1, post.subjectId)} 
-                ml={0.5}
-                cursor="pointer"
-                />
-               </Flex>
+                
+                    {user
+                        ?
+                            <Flex align='center' justify='center'>
+                                <Icon as = {userVoteValue === 1 ? AiFillLike : AiOutlineLike} 
+                                color={userVoteValue === 1 ? "#9FB751" : "gray.500"} 
+                                fontSize={24}
+                                onClick={() => onVote(post, 1, post.subjectId)} 
+                                cursor="pointer"
+                                mr={0.5}/>
+                                <Text color="gray.500" fontSize='11pt'>{post.voteStatus}</Text>
+                                <Icon as = {userVoteValue === -1 ?  AiFillDislike : AiOutlineDislike} 
+                                color={userVoteValue === -1 ? "#EB4E45" :  "gray.500"} 
+                                fontSize={22.5}
+                                onClick={() => onVote(post, -1, post.subjectId)} 
+                                ml={0.5}
+                                cursor="pointer"
+                                />
+                            </Flex>
+                        :
+                            <Flex align='center' justify='center'>
+                                <Icon as = {AiOutlineLike} color="gray.500" fontSize={24} cursor="pointer" mr={0.5} onClick={() => setAuthModalState({ open:true, view: "login"})}/>
+                                <Text color="gray.500" fontSize='11pt'>{post.voteStatus}</Text>
+                                <Icon as = {AiOutlineDislike} 
+                                color="gray.500" 
+                                fontSize={22.5}
+                                onClick={() => setAuthModalState({ open:true, view: "login"})} 
+                                ml={0.5}
+                                cursor="pointer"
+                                />
+                            </Flex>
+                    }
                <Flex>
                     {post.typeOfQuestions && (
                         post.typeOfQuestions.value == 'Academic Question'

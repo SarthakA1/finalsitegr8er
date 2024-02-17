@@ -100,22 +100,42 @@ const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answerReply, userIsCreator,
                 </Text>
               </>
             )}
-            <Flex align='center' justify='center'>
-              <Icon as = {userVoteValue === 1 ? AiFillLike : AiOutlineLike} 
-              color={userVoteValue === 1 ? "#9FB751" : "gray.500"} 
-              fontSize={24}
-              onClick={() => onAnswerReplyVote(answerReply, 1, answerReply.subjectId)} 
-              cursor="pointer"
-              mr={0.5}/>
-              <Text color="gray.500" fontSize='11pt'>{answerReply.voteStatus}</Text>
-              <Icon as = {userVoteValue === -1 ?  AiFillDislike : AiOutlineDislike} 
-              color={userVoteValue === -1 ? "#EB4E45" :  "gray.500"} 
-              fontSize={22.5}
-              onClick={() => onAnswerReplyVote(answerReply, -1, answerReply.subjectId)} 
-              ml={0.5}
-              cursor="pointer"
-              />
-            </Flex> 
+            {user
+              ?
+                <Flex align='center' justify='center'>
+                  <Icon as = {userVoteValue === 1 ? AiFillLike : AiOutlineLike} 
+                  color={userVoteValue === 1 ? "#9FB751" : "gray.500"} 
+                  fontSize={24}
+                  onClick={() => onAnswerReplyVote(answerReply, 1, answerReply.subjectId)} 
+                  cursor="pointer"
+                  mr={0.5}/>
+                  <Text color="gray.500" fontSize='11pt'>{answerReply.voteStatus}</Text>
+                  <Icon as = {userVoteValue === -1 ?  AiFillDislike : AiOutlineDislike} 
+                  color={userVoteValue === -1 ? "#EB4E45" :  "gray.500"} 
+                  fontSize={22.5}
+                  onClick={() => onAnswerReplyVote(answerReply, -1, answerReply.subjectId)} 
+                  ml={0.5}
+                  cursor="pointer"
+                  />
+                </Flex> 
+              :
+                <Flex align='center' justify='center'>
+                <Icon as = {AiOutlineLike} 
+                color="gray.500"
+                fontSize={24}
+                onClick={() => setAuthModalState({ open:true, view: "login"})} 
+                cursor="pointer"
+                mr={0.5}/>
+                <Text color="gray.500" fontSize='11pt'>{answerReply.voteStatus}</Text>
+                <Icon as = {AiOutlineDislike} 
+                color="gray.500"
+                fontSize={22.5}
+                onClick={() => setAuthModalState({ open:true, view: "login"})} 
+                ml={0.5}
+                cursor="pointer"
+                />
+                </Flex>
+            }
           </Stack>
           {replyForm && <AnswersReply user={user as User} selectedPost={postStateValue.selectedPost} subjectId={postStateValue.selectedPost?.subjectId as string} answerId={answerReply?.id as string}/>}
         </Stack>
