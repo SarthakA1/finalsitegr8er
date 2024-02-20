@@ -58,7 +58,7 @@ const Home: NextPage = () => {
         const postQuery = query(
           collection(firestore, "posts"),
           where("subjectId", "in", mySubjectIds),
-          limit(20),
+          limit(50),
           orderBy('pinPost', 'desc'),
           orderBy('createdAt', 'desc')
         );
