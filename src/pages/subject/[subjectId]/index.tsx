@@ -34,13 +34,6 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subjectData }) => {
   }, [subjectData]);
 
 
-const isBrowser = () => typeof window !== 'undefined'; //The approach recommended by Next.js
-
-  function scrollToTop() {
-      if (!isBrowser()) return;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
- 
 
 
   return (
@@ -49,13 +42,7 @@ const isBrowser = () => typeof window !== 'undefined'; //The approach recommende
   <PageContent>
     <>
      <About subjectData={subjectData}/>
-      <button>
-      className={`fixed bottom-0 right-0 bg-black rounded-s-full px-4 py-2 mr-6 mb-[71px] z-50 items-center text-xs flex gap-2`}
-        onClick={scrollToTop}
-      >
-        BACK TO TOP
-       
-</button>
+   
     </>
     <>
 
