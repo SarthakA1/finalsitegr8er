@@ -231,6 +231,8 @@ line-height: 20px;
     color: rgb(255, 255, 255); 
     border-radius:20px; 
     padding: 5px 7px;
+    position: sticky;
+    top: 0;
 }
 .filter_main_question_sub_section_without_backgrouund_border{
     background: rgb(66, 153, 225); 
