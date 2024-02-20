@@ -170,205 +170,81 @@ const Home: NextPage = () => {
         return [];
     } 
   }
-  const handleChangeTopFilter = async (label:any, value:any) => {
-    // Toggle the selected value in the activeFilters state
-    setActiveFilters((prevFilters:any) => ({
-      ...prevFilters,
-      [label]: prevFilters[label] && prevFilters[label].includes(value)
-          ? prevFilters[label].filter((val:any) => val !== value) // Remove value if already selected
-          : prevFilters[label]
-              ? [...prevFilters[label], value] // Add value to existing array
-              : [value] // Initialize array with the current value
-  }));
-  try {
-      const gradeFilters = activeFilters.grade || [];
-      const typeofquestionFilters = activeFilters.typeofquestion || [];
-      const criteriaFilters = activeFilters.criteria || [];
-      if(label == 'difficulty'){
-          getPostsByMaxVoting(value)
-          .then(async (postTitles) => {
-              console.log(`Posts with maximum ${value} voting:`, postTitles);
-              if (postTitles.length > 0) {
+  const handleChangeTopFilter = (label: string, value: string) => {
+    setActiveFilters((prevFilters) => {
+        const updatedFilters:any = { ... prevFilters };
+        if (updatedFilters[label] && updatedFilters[label].includes(value)) {
+            updatedFilters[label] = updatedFilters[label].filter((val: string) => val !== value);
+        } else {
+            updatedFilters[label] = [... (updatedFilters[label] || []), value];
+        }
+        return updatedFilters;
+    });
+  };
+
+  useEffect(() => {
+      const fetchData = async () => {
+          try {
+              const gradeFilters = activeFilters.grade || [];
+              const typeofquestionFilters = activeFilters.typeofquestion || [];
+              const criteriaFilters = activeFilters.criteria || [];
+              const difficultyFilters = activeFilters.difficulty || [];
+              if(difficultyFilters.length > 0){
+                  getPostsByMaxVoting(difficultyFilters)
+                  .then(async (postTitles) => {
+                      console.log(`Posts with maximum ${difficultyFilters} voting:`, postTitles);
+                      if (postTitles.length > 0) {
+                          const postsQuery = query(
+                              collection(firestore, 'posts'),
+                              ...(gradeFilters.length > 0 ? [where('grade.value', 'in', gradeFilters)] : []),
+                              ...(typeofquestionFilters.length > 0 ? [where('typeOfQuestions.label', 'in', typeofquestionFilters)] : []),
+                              ...(criteriaFilters.length > 0 ? [where('criteria', 'array-contains-any', criteriaFilters.map((val:any) => ({ label: val, value: val })))] : []),
+                              where('title', 'in', postTitles),
+                              orderBy('createdAt', 'desc')
+                          );
+                  
+                          const postDocs = await getDocs(postsQuery);
+                  
+                          // Store in post state
+                          const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                          setPostStateValue(prev => ({
+                              ...prev,
+                              posts: posts as Post[],
+                          }));
+                      } else {
+                          const posts:any = [];
+                          console.log('No postIds found.');
+                          setPostStateValue(prev => ({
+                              ...prev,
+                              posts: posts as Post[],
+                          }));
+                      }
+                  })
+                  .catch((error) => {
+                      console.error("Error:", error);
+                  });
+              } else {
+                  // Check if any of the arrays are non-empty before including them in the query
                   const postsQuery = query(
                       collection(firestore, 'posts'),
-                      //where('subjectId', '==', subjectData.id),
                       ...(gradeFilters.length > 0 ? [where('grade.value', 'in', gradeFilters)] : []),
                       ...(typeofquestionFilters.length > 0 ? [where('typeOfQuestions.label', 'in', typeofquestionFilters)] : []),
-                      ...(criteriaFilters.length > 0 ? [where('criteria', 'array-contains-any', criteriaFilters.map(val => ({ label: val, value: val })))] : []),
-                      where('title', 'in', postTitles),
-                      //orderBy('pinPost', 'desc'),
+                      ...(criteriaFilters.length > 0 ? [where('criteria', 'array-contains-any', criteriaFilters.map((val:any) => ({ label: val, value: val })))] : []),
                       orderBy('createdAt', 'desc')
                   );
-          
-                  const postDocs = await getDocs(postsQuery);
-          
-                  // Store in post state
-                  const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                  setPostStateValue(prev => ({
-                      ...prev,
-                      posts: posts as Post[],
-                  }));
-              } else {
-                  const posts:any = [];
-                  console.log('No postIds found.');
-                  setPostStateValue(prev => ({
-                      ...prev,
-                      posts: posts as Post[],
-                  }));
-              }
-          })
-          .catch((error) => {
-              console.error("Error:", error);
-          });
-      } else {
-          // Check if any of the arrays are non-empty before including them in the query
-          const postsQuery = query(
-              collection(firestore, 'posts'),
-              //where('subjectId', '==', subjectData.id),
-              ...(gradeFilters.length > 0 ? [where('grade.value', 'in', gradeFilters)] : []),
-              ...(typeofquestionFilters.length > 0 ? [where('typeOfQuestions.label', 'in', typeofquestionFilters)] : []),
-              ...(criteriaFilters.length > 0 ? [where('criteria', 'array-contains-any', criteriaFilters.map(val => ({ label: val, value: val })))] : []),
-              //orderBy('pinPost', 'desc'),
-              orderBy('createdAt', 'desc')
-          );
 
-          const postDocs = await getDocs(postsQuery);
-          const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          setPostStateValue(prev => ({ ...prev, posts: posts as Post[] }));
-      }
-  } catch(error:any) {
-      console.log('getPosts error', error.message);
-  }
-    // const selectedTopFilterValue = value;
-    // const selectedTopFilterLabel = label;
-    // const mySubjectIds = subjectStateValue.mySnippets.map((snippet) => snippet.subjectId);
-    // console.log(subjectStateValue);
-    // setActiveFilters((prevFilters) => ({
-    //   ...prevFilters,
-    //   [selectedTopFilterLabel]: selectedTopFilterValue,
-    // }));
-    // if(selectedTopFilterLabel == 'grade'){
-    //     try {
-    //         const postsQuery = query(
-    //             collection(firestore, 'posts'),
-    //             //where("subjectId", "in", mySubjectIds),
-    //             where('grade.value', '==', selectedTopFilterValue),
-    //             orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
-    //             orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
-    //         );
-    
-    //         const postDocs = await getDocs(postsQuery);
-    
-    //         // Store in post state
-    //         const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    //         setPostStateValue(prev => ({
-    //             ...prev,
-    //             posts: posts as Post[],
-    //         }));
-    //     } catch(error: any){
-    //         console.log('getPosts error', error.message);
-    //     }
-    // } else if(selectedTopFilterLabel == 'typeofquestion') {
-    //     try {
-    //         const postsQuery = query(
-    //             collection(firestore, 'posts'),
-    //             //where("subjectId", "in", mySubjectIds),
-    //             where('typeOfQuestions.label', '==', selectedTopFilterValue),  // Search based on label
-    //             where('typeOfQuestions.value', '==', selectedTopFilterValue), 
-    //             orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
-    //             orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
-    //         );
-    
-    //         const postDocs = await getDocs(postsQuery);
-    
-    //         // Store in post state
-    //         const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    //         setPostStateValue(prev => ({
-    //             ...prev,
-    //             posts: posts as Post[],
-    //         }));
-    //     } catch(error: any) {
-    //         console.log('getPosts error', error.message);
-    //     }
-    // } else if(selectedTopFilterLabel == 'criteria'){
-    //     try {
-    //         const postsQuery = query(
-    //             collection(firestore, 'posts'),
-    //             //where("subjectId", "in", mySubjectIds),
-    //             where('criteria', 'array-contains', { label: selectedTopFilterValue, value: selectedTopFilterValue }),
-    //             orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
-    //             orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
-    //         );
-    
-    //         const postDocs = await getDocs(postsQuery);
-    
-    //         // Store in post state
-    //         const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    //         setPostStateValue(prev => ({
-    //             ...prev,
-    //             posts: posts as Post[],
-    //         }));
-    //     } catch(error: any){
-    //         console.log('getPosts error', error.message);
-    //     }
-    // } else if(selectedTopFilterLabel == 'difficulty'){
-    //     try {
-    //       getPostsByMaxVoting(selectedTopFilterValue)
-    //       .then(async (postTitles) => {
-    //           console.log(`Posts with maximum ${selectedTopFilterValue} voting:`, postTitles);
-    //           if (postTitles.length > 0) {
-    //               const postsQuery = query(
-    //                   collection(firestore, 'posts'),
-    //                   where('title', 'in', postTitles),
-    //                   orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
-    //                   orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
-    //               );
-          
-    //               const postDocs = await getDocs(postsQuery);
-          
-    //               // Store in post state
-    //               const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    //               setPostStateValue(prev => ({
-    //                   ...prev,
-    //                   posts: posts as Post[],
-    //               }));
-    //           } else {
-    //               const posts:any = [];
-    //               console.log('No postIds found.');
-    //               setPostStateValue(prev => ({
-    //                   ...prev,
-    //                   posts: posts as Post[],
-    //               }));
-    //           }
-    //       })
-    //       .catch((error) => {
-    //           console.error("Error:", error);
-    //       });
-    //     } catch(error: any){
-    //         console.log('getPosts error', error.message);
-    //     }
-    // } else {
-    //     try {
-    //         const postsQuery = query(
-    //             collection(firestore, 'posts'),
-    //             //where("subjectId", "in", mySubjectIds),
-    //             orderBy('pinPost', 'desc'),  // Order by pinPost in descending order
-    //             orderBy('createdAt', 'desc') // Then, order by createdAt in descending order
-    //         );
-    
-    //         const postDocs = await getDocs(postsQuery);
-    
-    //         // Store in post state
-    //         const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    //         setPostStateValue(prev => ({
-    //             ...prev,
-    //             posts: posts as Post[],
-    //         }));
-    //     } catch(error: any){
-    //         console.log('getPosts error', error.message);
-    //     }
-    // }
-  }
+                  const postDocs = await getDocs(postsQuery);
+                  const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                  setPostStateValue(prev => ({ ...prev, posts: posts as Post[] }));
+              }
+              //console.log('Updated filters:', activeFilters);
+              //console.log('Calling API with updated filters...');
+          } catch (error: any) {
+              console.log('Error fetching data:', error.message);
+          }
+      };
+      fetchData();
+  }, [activeFilters]);
 
   // useEffects
   useEffect(() => {
