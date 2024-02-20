@@ -98,6 +98,12 @@
 .notification_user_posts {
     width: 100%;
 }
+
+.sticky_reco {
+    position:fixed;
+}
+
+
 /******searchbar css header ********/
 .company_jobs_search {
     position: absolute;
