@@ -18,6 +18,12 @@ type SubjectPageProps = {
   subjectData: Subject;
 };
 
+const isBrowser = () => typeof window !== 'undefined'; //The approach recommended by Next.js
+
+  function scrollToTop() {
+      if (!isBrowser()) return;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
 const SubjectPage: React.FC<SubjectPageProps> = ({ subjectData }) => {
   const [subjectStateValue, setSubjectStateValue] = useRecoilState(subjectState);
@@ -41,6 +47,13 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subjectData }) => {
   <PageContent>
     <>
      <About subjectData={subjectData}/>
+      <button
+        className={`back_to_top`}
+        onClick={scrollToTop}
+      >
+        BACK TO TOP
+       
+</button>
     </>
     <>
 
