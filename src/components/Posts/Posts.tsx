@@ -186,8 +186,8 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
                     </div>
                     <div className='filter_main_question_section'>
                         <span className={`filter_main_question_sub_section_background ${activeFilters.typeofquestion && (activeFilters.typeofquestion as string[]).includes('Academic Question') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('typeofquestion', 'Academic Question')}>Academic Question</span>
-                        <span className={`filter_main_question_sub_section_without_background ${activeFilters.typeofquestion && (activeFilters.typeofquestion as string[]).includes('General Question') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('typeofquestion', 'General Doubts')}>General Doubts</span>
-                        <span className={`filter_main_question_sub_section_without_backgrouund_border ${activeFilters.typeofquestion && (activeFilters.typeofquestion as string[]).includes('Resources') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('typeofquestion', 'Resources')}>Resources</span>
+                        <span className={`filter_main_question_sub_section_without_background ${activeFilters.typeofquestion && (activeFilters.typeofquestion as string[]).includes('General Question') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('typeofquestion', 'General Question')}>General Doubts</span>
+                        <span className={`filter_main_question_sub_section_without_backgrouund_border ${activeFilters.typeofquestion && (activeFilters.typeofquestion as string[]).includes('Resources') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('typeofquestion', 'Resource')}>Resources</span>
                     </div>
                     <div className='filter_main_criteria_section'>
                         <span className={`filter_main_criteria_sub_section_background ${activeFilters.criteria && (activeFilters.criteria as string[]).includes('Criteria A') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('criteria', 'Criteria A')}>Criteria A</span>
