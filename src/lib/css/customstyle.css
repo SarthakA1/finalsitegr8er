@@ -8,6 +8,9 @@
     bottom: 6px;
 }
 
+html {
+  scroll-behavior: smooth;
+}
 
 .post_list_main_section {
     padding: 10px 6px;
