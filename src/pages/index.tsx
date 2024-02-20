@@ -420,7 +420,7 @@ const isBrowser = () => typeof window !== 'undefined'; //The approach recommende
       <Stack spacing={5}>
         <Recommendations />
         <div className='filter_main_grade_section'>
-                  <span className={`filter_main_grade_sub_section ${activeFilters.grade && (activeFilters.grade as string[]).includes('1') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '1')}>MYP 1</span>
+                  <span className={`filter_main_grade_sub_section ${activeFilters.grade && (activeFilters.grade as string[]).includes('1') ? 'active' : ''}`} >BACK TO TOP</span>
                   
               </div>
            
