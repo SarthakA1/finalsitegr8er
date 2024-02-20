@@ -63,13 +63,7 @@ const scrollToTop = () => {
     
     const handleScroll = () => {
       const scrollToTopButton = document.querySelector('[data-backToTopButton]');
-      if (isScrollingDown() || window.pageYOffset == 0) {
-        scrollToTopButton.classList.add('opacity-0', 'invisible');
-        scrollToTopButton.classList.remove('opacity-100', 'visible');
-      } else {
-        scrollToTopButton.classList.remove('opacity-0', 'invisible');
-        scrollToTopButton.classList.add('opacity-100', 'visible');
-      }
+
     };
     
     window.addEventListener("scroll", handleScroll);
@@ -427,7 +421,7 @@ const scrollToTop = () => {
       <Stack spacing={5}>
         <Recommendations />
          <div data-backToTopButton role="button" onClick={scrollToTop} aria-label="Back to top" title="Back to top" className="fixed bottom-4 right-2 z-10 bg-[#9147FF] text-white group w-[60px] h-[60px] rounded-full flex items-center justify-center shadow-back-to-top opacity-0 invisible">
-      <Chevron width="30" height="20" extraClasses="transition-all duration-500 relative top-0 group-hover:-top-0.5 -mt-1" /> 
+    
     </div>
       </Stack>
       <>
