@@ -76,7 +76,8 @@ html {
 
 }
 
-stickyTab: { position: 'sticky'; top:"0"; width:'100%'; height: '50px' }
+.stickyTab
+{ position: 'sticky'; top:"0"; width:'100%'; height: '50px' }
 
 @media (max-width:370px){
     .post_list_header_section span {
