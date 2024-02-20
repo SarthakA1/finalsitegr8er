@@ -420,7 +420,7 @@ const isBrowser = () => typeof window !== 'undefined'; //The approach recommende
       <Stack spacing={5}>
         <Recommendations />
          <button
-        className={`fixed bottom-0 right-0 bg-black rounded-s-full px-4 py-2 mr-6 mb-[71px] z-50 items-center text-xs flex gap-2 scrollToTopButton ${isVisible ? 'visible' : ''}`}
+        className={`stickyTab ${isVisible ? 'visible' : ''}`}
         onClick={scrollToTop}
       >
         BACK TO TOP
