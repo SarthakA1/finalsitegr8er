@@ -233,7 +233,7 @@ line-height: 20px;
     padding: 5px 7px;
     position: sticky;
     position: -webkit-sticky; /* Safari */
-  bottom: 0;
+  top: 0;
   right: 0;
 }
 .filter_main_question_sub_section_without_backgrouund_border{
