@@ -95,7 +95,6 @@ const PostItem:React.FC<PostItemProps> = ({
         // Store in post state
         const voting = votingDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         const totalVoting = voting.length;
-        console.log(totalVoting);
         const batch = writeBatch(firestore);
         if(voting.length > 0){
             const diffcultyVotingDocRef = doc(firestore, 'diffculty_voting', voting[0].id!);
@@ -316,7 +315,14 @@ const PostItem:React.FC<PostItemProps> = ({
                                 <li style={{listStyle: 'none'}}>
                                     {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg'
                                         ?
-                                            <Image src={imageURL} maxHeight='350px' alt="post image"/>
+                                            router.pathname == '/'
+                                                ?
+                                                    <Image src={imageURL} maxHeight='350px' alt="post image"/>
+                                                :
+                                                    <a href={imageURL} target='_blank'>
+                                                        <Image src={imageURL} maxHeight='350px' alt="post image"/>
+                                                    </a>
+                                            
                                         :
                                             orgExtension[0] === 'pdf' 
                                             ?

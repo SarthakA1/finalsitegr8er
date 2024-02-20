@@ -148,7 +148,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
         <Flex style={{display: "block"}}>
           <Select
             isMulti
-            name="criteria"
+            name="criteria[]"
             options={criteriaOptions}
             placeholder="Criteria"
             components={customCriteriaComponents}

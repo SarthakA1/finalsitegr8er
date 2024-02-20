@@ -24,8 +24,6 @@ type TextInputsProps = {
   loading: boolean;
 };
 
-
-
 const TextInputs: React.FC<TextInputsProps> = ({
   textInputs,
   onChange,

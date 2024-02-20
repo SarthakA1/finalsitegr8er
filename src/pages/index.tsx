@@ -66,7 +66,7 @@ const Home: NextPage = () => {
           collection(firestore, "posts"),
           where("subjectId", "in", mySubjectIds),
           limit(50),
-          orderBy('pinPost', 'desc'),
+          //orderBy('pinPost', 'desc'),
           orderBy('createdAt', 'desc')
         );
         const postDocs = await getDocs(postQuery);
@@ -196,7 +196,7 @@ const Home: NextPage = () => {
                       ...(typeofquestionFilters.length > 0 ? [where('typeOfQuestions.label', 'in', typeofquestionFilters)] : []),
                       ...(criteriaFilters.length > 0 ? [where('criteria', 'array-contains-any', criteriaFilters.map(val => ({ label: val, value: val })))] : []),
                       where('title', 'in', postTitles),
-                      orderBy('pinPost', 'desc'),
+                      //orderBy('pinPost', 'desc'),
                       orderBy('createdAt', 'desc')
                   );
           
@@ -228,7 +228,7 @@ const Home: NextPage = () => {
               ...(gradeFilters.length > 0 ? [where('grade.value', 'in', gradeFilters)] : []),
               ...(typeofquestionFilters.length > 0 ? [where('typeOfQuestions.label', 'in', typeofquestionFilters)] : []),
               ...(criteriaFilters.length > 0 ? [where('criteria', 'array-contains-any', criteriaFilters.map(val => ({ label: val, value: val })))] : []),
-              orderBy('pinPost', 'desc'),
+              //orderBy('pinPost', 'desc'),
               orderBy('createdAt', 'desc')
           );
 
@@ -399,14 +399,14 @@ const Home: NextPage = () => {
 
       
       <Stack spacing={5}>
-        <Recommendations className={`sticky_reco`}/>
+        <Recommendations/>
         <button
         className={`back_to_top`}
         onClick={scrollToTop}
       >
         BACK TO TOP
        
-</button>
+      </button>
       </Stack>
       <>
         <CreatePostLink />

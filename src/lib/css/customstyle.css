@@ -329,3 +329,30 @@ line-height: 20px;
 .textbox-sec{
     display: unset !important;;
 }
+.notification_popup_subsection.css-2jtye9{
+  position:relative  !important;
+}
+.notification_popup_subsection.css-2jtye9::after {
+    content: " ";
+    position: absolute  !important;
+    right: 2px;
+    top: -15px;
+    border-top: none;
+    border-right: 15px solid transparent  !important;
+    border-left: 15px solid transparent  !important;
+    border-bottom: 15px solid #ffffff    !important;
+}
+li.notification_item.css-0 {
+    border-bottom: 1px solid #a5a5a5  !important;
+    padding: 0px 0px 15px !important;
+}
+li.notification_user_posts_item.css-0 {
+    border-bottom: 1px solid #5e5757  !important;
+    padding: 0px 0px 15px !important;
+}
+.notification_popup_section {
+    margin-top: 15px;
+}
+.css-13nxfuw {
+    display: unset !important;
+}
