@@ -248,15 +248,24 @@ const PostItem:React.FC<PostItemProps> = ({
                     <Flex className={homePage ? 'post_list_header_section' : 'post_list_header_without_homepage_section'}>
                         <Text style={{textAlign: "right"}} className='post_list_right_text_section'>
                             {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion:any, index:any) => (
-                                <span key={index} style={{background: "#000000", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
-                                    {criterion.value}
-                                </span>
+                                criterion.value !== ''
+                                    ?
+                                        <span key={index} style={{background: "#000000", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
+                                            {criterion.value}
+                                        </span>
+                                    :
+                                        ''
                             ))}
                             {post.typeOfQuestions && (
                                 <>
-                                    <span style={{background: "#4299E1", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
-                                        {post.typeOfQuestions.value} {/* Display value */}
-                                    </span>
+                                    {post.typeOfQuestions !== ''
+                                        ?
+                                            <span style={{background: "#4299E1", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
+                                                {post.typeOfQuestions.value} {/* Display value */}
+                                            </span>
+                                        :
+                                            ''
+                                    }
                                 </>
                             )}
                         </Text>
@@ -296,29 +305,59 @@ const PostItem:React.FC<PostItemProps> = ({
                 </Flex>
             )} */}
             {post.imageURLs && (
-                <ul style={{listStyle: 'none', display: 'flex'}}>
-                    {post.imageURLs.map((imageURL:any) => {
-                        const parts = imageURL.split('.');
-                        const extension = parts[parts.length - 1];
-                        const orgExtension = extension.split('?');
-                        console.log(orgExtension[0]);
-                        let fileImage = '';
-                        if(orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg'){
-                            fileImage = imageURL;
-                        } else if (orgExtension[0] === 'pdf'){
-                            fileImage = '/images/pdf.png';
-                        } else {
-                            fileImage = '/images/docs.png'
-                        }
-                        return(
-                            <li style={{listStyle: 'none'}}>
-                                <a href={imageURL} target='_blank'>
-                                    <Image src={fileImage} maxHeight='350px' alt="post image"/>
-                                </a>  
-                            </li>
-                        )
-                    })}
-                </ul>
+                post.imageURLs.length > 1
+                ?
+                    <ul style={{listStyle: 'none', display: 'flex'}}>
+                        {post.imageURLs.map((imageURL:any) => {
+                            const parts = imageURL.split('.');
+                            const extension = parts[parts.length - 1];
+                            const orgExtension = extension.split('?');
+                            return(
+                                <li style={{listStyle: 'none'}}>
+                                    {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg'
+                                        ?
+                                            <Image src={imageURL} maxHeight='350px' alt="post image"/>
+                                        :
+                                            orgExtension[0] === 'pdf' 
+                                            ?
+                                                <a href={imageURL} target='_blank'>
+                                                    <Image src="/images/pdf.png" maxHeight='350px' alt="post image"/>
+                                                </a>
+                                            :
+                                                <a href={imageURL} target='_blank'>
+                                                    <Image src="/images/docs.png" maxHeight='350px' alt="post image"/>
+                                                </a>
+                                    } 
+                                </li>
+                            )
+                        })}
+                    </ul>
+                :
+                    <ul style={{listStyle: 'none', display: 'unset', width: '100%', margin: '0 auto', maxWidth: '200px'}}>
+                        {post.imageURLs.map((imageURL:any) => {
+                            const parts = imageURL.split('.');
+                            const extension = parts[parts.length - 1];
+                            const orgExtension = extension.split('?');
+                            return(
+                                <li style={{listStyle: 'none'}}>
+                                    {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg'
+                                        ?
+                                            <Image src={imageURL} maxHeight='350px' alt="post image"/>
+                                        :
+                                            orgExtension[0] === 'pdf' 
+                                            ?
+                                                <a href={imageURL} target='_blank'>
+                                                    <Image src="/images/pdf.png" maxHeight='350px' alt="post image"/>
+                                                </a>
+                                            :
+                                                <a href={imageURL} target='_blank'>
+                                                    <Image src="/images/docs.png" maxHeight='350px' alt="post image"/>
+                                                </a>
+                                    } 
+                                </li>
+                            )
+                        })}
+                    </ul>
             )}
             {/* <Icon as={AiFillTags} mt={5} fontSize={20}/> */}
 

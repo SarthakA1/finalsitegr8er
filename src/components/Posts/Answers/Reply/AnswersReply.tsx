@@ -145,15 +145,14 @@ const AnswersReply:React.FC<AnswersReplyProps> = ({ user, selectedPost, subjectI
         getPostAnswersReply();
     }, [selectedPost])
     return (
-        <Box bg='white' borderRadius='0px 0px 4px 4px' p={2} border="1px solid" 
-        borderColor="gray.400" >
-            <Flex direction='column' pl={10} pr={2} mb={6} fontSize="10pt" width="100%">
+        <Box bg='white' borderRadius='0px 0px 4px 4px'>
+            <Flex direction='column' pr={2} mb={6} fontSize="10pt" width="100%">
                 {!fetchLoading && <AnswerReplyInput answerText={answerText} setAnswerText={setAnswerText} user={user} createLoading={createLoading} onCreateAnswerReply={onCreateAnswerReply}/>}
             </Flex>
             
             {/* <Stack spacing={2} p={2}>
                 {fetchLoading ? (
-                     <>
+                    <>
                      {[0, 1, 2].map((item) => (
                        <Box key={item} padding="6" bg="white">
                          <SkeletonCircle size="10" />
