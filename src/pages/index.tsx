@@ -405,7 +405,7 @@ const Home: NextPage = () => {
         onClick={scrollToTop}
       >
         BACK TO TOP
-        <IoIosArrowRoundUp className="inline-block h-4 w-4" />
+       
 </button>
       </Stack>
       <>
