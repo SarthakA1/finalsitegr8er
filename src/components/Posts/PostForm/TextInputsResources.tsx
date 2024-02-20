@@ -164,7 +164,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
                 options={criteriaOptions}
                 placeholder="Criteria"
                 components={customCriteriaComponents}
-                value={''} // Set the value prop for controlled component
+                defaultValue={''} // Set the value prop for controlled component
                 onChange={(selectedOptions:any) => handleInputChange("criteria", selectedOptions)}
               />
           }
