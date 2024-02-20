@@ -89,10 +89,10 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
 
     const handleChangeTopFilter = async (label:any, value:any) => {
         // Toggle the selected value in the activeFilters state
-        setActiveFilters((prevFilters:any) => ({
+        setActiveFilters((prevFilters: any) => ({
             ...prevFilters,
-            [label]: prevFilters[label] && prevFilters[label].includes(value)
-                ? prevFilters[label].filter((val:any) => val !== value) // Remove value if already selected
+            [label]: prevFilters[label]
+                ? prevFilters[label].filter((val: any) => val !== value) // Remove value if already selected
                 : prevFilters[label]
                     ? [...prevFilters[label], value] // Add value to existing array
                     : [value] // Initialize array with the current value
@@ -111,7 +111,7 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
                             where('subjectId', '==', subjectData.id),
                             ...(gradeFilters.length > 0 ? [where('grade.value', 'in', gradeFilters)] : []),
                             ...(typeofquestionFilters.length > 0 ? [where('typeOfQuestions.label', 'in', typeofquestionFilters)] : []),
-                            ...(criteriaFilters.length > 0 ? [where('criteria', 'array-contains-any', criteriaFilters.map(val => ({ label: val, value: val })))] : []),
+                            ...(criteriaFilters.length > 0 ? [where('criteria', 'array-contains-any', criteriaFilters.map((val:any) => ({ label: val, value: val })))] : []),
                             where('title', 'in', postTitles),
                             orderBy('pinPost', 'desc'),
                             orderBy('createdAt', 'desc')
@@ -144,7 +144,7 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
                     where('subjectId', '==', subjectData.id),
                     ...(gradeFilters.length > 0 ? [where('grade.value', 'in', gradeFilters)] : []),
                     ...(typeofquestionFilters.length > 0 ? [where('typeOfQuestions.label', 'in', typeofquestionFilters)] : []),
-                    ...(criteriaFilters.length > 0 ? [where('criteria', 'array-contains-any', criteriaFilters.map(val => ({ label: val, value: val })))] : []),
+                    ...(criteriaFilters.length > 0 ? [where('criteria', 'array-contains-any', criteriaFilters.map((val:any) => ({ label: val, value: val })))] : []),
                     orderBy('pinPost', 'desc'),
                     orderBy('createdAt', 'desc')
                 );

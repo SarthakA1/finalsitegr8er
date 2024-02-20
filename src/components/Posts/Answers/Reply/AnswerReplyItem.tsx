@@ -1,9 +1,9 @@
 import { AuthModalState } from '@/atoms/authModalAtom';
-import { auth } from '@/firebase/clientApp';
+import { auth, firestore } from '@/firebase/clientApp';
 import { Box, Flex, Icon, Spinner, Stack, Text, Image } from '@chakra-ui/react';
 import { Timestamp } from 'firebase/firestore';
 import moment from 'moment';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { FaUserCircle } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiFillDislike, AiOutlineDislike } from "react-icons/ai";
@@ -13,6 +13,8 @@ import AnswersReply from "../Reply/AnswersReply";
 import useAnswersReply from '@/hooks/useAnswersReply';
 import { User } from 'firebase/auth';
 import usePosts from '@/hooks/usePosts';
+import {query, collection, where, getDocs } from 'firebase/firestore';
+import { useRouter } from 'next/router';
 
 // export type Answer = {
 //     id: string;
@@ -46,6 +48,9 @@ const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answerReply, userIsCreator,
   const setAuthModalState = useSetRecoilState(AuthModalState);
   const { postStateValue, setPostStateValue } = usePosts();
   const [replyForm, setReplyForm] = useState(false);
+  const [subAnswer, setSubAnswer] = useState<AnswerReply[]>([]);
+  const { answerReplyStateValue, setAnswerReplyStateValue} = useAnswersReply();
+  const router = useRouter();
   const handleDelete = async () => {
     try {
         const success = await onDeleteAnswerReply(answerReply);
@@ -60,8 +65,37 @@ const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answerReply, userIsCreator,
   const handleReply = async () => {
     setReplyForm(true);
   } 
+  const getPostSubAnswers = async (postId:any) => {
+    try {
+        const subAnswersQuery = query(
+            collection(firestore, "answers_reply"), 
+            where('postId', '==', postId), 
+            where('parentReplyId', '==', answerReply.id),
+        );
+        const subAnswerDocs = await getDocs(subAnswersQuery);
+        const subAnswers = subAnswerDocs.docs.map((doc) => ({ 
+            id: doc.id, 
+            ...doc.data(),
+        }));
+        // console.log(subAnswers);
+        // console.log(answer.id);
+        setSubAnswer(subAnswers as AnswerReply[]);
+        setAnswerReplyStateValue((prev:any)  => ({
+            ...prev,
+            answersReply: subAnswers as AnswerReply[],
+        }))
+    } catch (error) {
+        console.log('getPostAnswers error', error)
+    }
+  }
+  useEffect(() => {
+    const { pid } = router.query;
+    if(pid){
+      getPostSubAnswers(pid as string);
+    }
+  }, [router.query, postStateValue.selectedPost]);
     return (
-      <Flex>
+      <Flex id='text-box-section' className='textbox-sec'>
         <Box mr={2}>
         {user?.photoURL? (
               <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
@@ -70,7 +104,7 @@ const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answerReply, userIsCreator,
               <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
             )}
         </Box>
-        <Stack spacing={1}>
+        <Stack spacing={1} className='sadasd'>
           <Stack direction="row" align="center" fontSize="8pt">
             <Text fontWeight={700}> {answerReply.creatorDisplayText} </Text>
             <Text color="gray.600">
@@ -90,7 +124,7 @@ const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answerReply, userIsCreator,
                 </Text>
               </>
             )}
-            {userId === answerReply.creatorId && (
+            {userId !== answerReply.creatorId && (
               <>
                 <Text
                   fontSize="9pt"
@@ -137,6 +171,21 @@ const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answerReply, userIsCreator,
                 </Flex>
             }
           </Stack>
+          {subAnswer.length > 0 ? (
+            subAnswer.filter((item: any) => item.answerId === answerReply.id)
+              .map((item: any, index: any) => (
+                <AnswerReplyItem 
+                  answerReply={item} 
+                  userIsCreator={userId === item.creatorId} 
+                  userVoteValue={answerReplyStateValue.answerReplyVotes.find((vote: { answerId: any; }) => vote.answerId === item.id)?.voteValue}
+                  onAnswerReplyVote={onAnswerReplyVote}
+                  onDeleteAnswerReply={onDeleteAnswerReply}
+                  userId={userId}
+                />
+              ))
+          ) : (
+            ''
+          )}
           {replyForm && <AnswersReply user={user as User} selectedPost={postStateValue.selectedPost} subjectId={postStateValue.selectedPost?.subjectId as string} answerId={answerReply?.id as string}/>}
         </Stack>
       </Flex>

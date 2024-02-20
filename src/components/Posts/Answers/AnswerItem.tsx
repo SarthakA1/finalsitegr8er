@@ -100,10 +100,10 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
         // console.log(subAnswers);
         // console.log(answer.id);
         setSubAnswer(subAnswers as AnswerReply[]);
-        // setAnswerReplyStateValue((prev:any)  => ({
-        //     ...prev,
-        //     answersReply: subAnswers as Answer[],
-        // }))
+        setAnswerReplyStateValue((prev:any)  => ({
+            ...prev,
+            answersReply: subAnswers as Answer[],
+        }))
     } catch (error) {
         console.log('getPostAnswers error', error)
     }
@@ -118,7 +118,7 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
     }
   }, [router.query, postStateValue.selectedPost]);
     return (
-      <Flex>
+      <Flex className='main-custom-answer-section'>
         <Box mr={2}>
         {user?.photoURL? (
           <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
@@ -209,7 +209,7 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
           ) : (
             ''
           )}
-          {replyForm && <AnswersReply user={user as User} selectedPost={postStateValue.selectedPost} subjectId={postStateValue.selectedPost?.subjectId as string} answerId={answer?.id as string}/>}
+          {/* {replyForm && <AnswersReply user={user as User} selectedPost={postStateValue.selectedPost} subjectId={postStateValue.selectedPost?.subjectId as string} answerId={answer?.id as string}/>} */}
         </Stack>
       </Flex>
     );

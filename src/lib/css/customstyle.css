@@ -306,3 +306,9 @@ line-height: 20px;
 .css-1hmx5pz {
     padding: 6px 0px !important;
 }
+.main-custom-answer-section{
+    display: unset !important;
+}
+.textbox-sec{
+    display: unset !important;;
+}
