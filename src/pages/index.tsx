@@ -419,13 +419,16 @@ const isBrowser = () => typeof window !== 'undefined'; //The approach recommende
       
       <Stack spacing={5}>
         <Recommendations />
+         <span className={`filter_main_grade_sub_section`}>
          <button
-        className={`stickyTab ${isVisible ? 'visible' : ''}`}
+        className={`${isVisible ? 'visible' : ''}`}
         onClick={scrollToTop}
       >
+       
         BACK TO TOP
        
 </button>
+             </span>
       </Stack>
       <>
         <CreatePostLink />
