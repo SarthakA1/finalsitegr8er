@@ -49,7 +49,7 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subjectData }) => {
   <PageContent>
     <>
      <About subjectData={subjectData}/>
-      className={`fixed bottom-0 right-0 bg-black rounded-s-full px-4 py-2 mr-6 mb-[71px] z-50 items-center text-xs flex gap-2 scrollToTopButton ${isVisible ? 'visible' : ''}`}
+      className={`fixed bottom-0 right-0 bg-black rounded-s-full px-4 py-2 mr-6 mb-[71px] z-50 items-center text-xs flex gap-2`}
         onClick={scrollToTop}
       >
         BACK TO TOP
