@@ -393,6 +393,13 @@ const Home: NextPage = () => {
       
       <Stack spacing={5}>
         <Recommendations />
+        <button
+        className={`fixed bottom-0 right-0 bg-black rounded-s-full px-4 py-2 mr-6 mb-[71px] z-50 items-center text-xs flex gap-2`}
+        onClick={scrollToTop}
+      >
+        BACK TO TOP
+        <IoIosArrowRoundUp className="inline-block h-4 w-4" />
+</button>
       </Stack>
       <>
         <CreatePostLink />
