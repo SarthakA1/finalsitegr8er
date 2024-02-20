@@ -399,7 +399,7 @@ const Home: NextPage = () => {
 
       
       <Stack spacing={5}>
-        <Recommendations className={`sticky_reco`}/>
+        <Recommendations/>
         <button
         className={`back_to_top`}
         onClick={scrollToTop}
