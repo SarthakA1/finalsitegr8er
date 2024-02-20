@@ -419,10 +419,15 @@ const isBrowser = () => typeof window !== 'undefined'; //The approach recommende
       
       <Stack spacing={5}>
         <Recommendations />
-        <div>
-                  <span className={`back_to_top`} >BACK TO TOP</span>
-                  
-              </div>
+        
+          <button
+        className={`back_to_top`}
+           align='center'
+        onClick={scrollToTop}
+      >
+        BACK TO dTOP
+        
+</button>
            
       </Stack>
       <>
