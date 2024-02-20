@@ -146,28 +146,15 @@ const TextInputs: React.FC<TextInputsProps> = ({
           />
         </Flex>
         <Flex style={{display: "block"}}>
-          {textInputs.criteria.value !== ''
-            ?
-              <Select
-                isMulti
-                name="criteria[]"
-                options={criteriaOptions}
-                placeholder="Criteria"
-                components={customCriteriaComponents}
-                value={textInputs.criteria} // Set the value prop for controlled component
-                onChange={(selectedOptions:any) => handleInputChange("criteria", selectedOptions)}
-              />
-            :
-              <Select
-                isMulti
-                name="criteria[]"
-                options={criteriaOptions}
-                placeholder="Criteria"
-                components={customCriteriaComponents}
-                defaultValue={''} // Set the value prop for controlled component
-                onChange={(selectedOptions:any) => handleInputChange("criteria", selectedOptions)}
-              />
-          }
+          <Select
+            isMulti
+            name="criteria[]"
+            options={criteriaOptions}
+            placeholder="Criteria"
+            components={customCriteriaComponents}
+            value={textInputs.criteria.value != ''} // Set the value prop for controlled component
+            onChange={(selectedOptions:any) => handleInputChange("criteria", selectedOptions)}
+          />
         </Flex>
       </SimpleGrid>
       <SimpleGrid columns={2} spacing={10}>
