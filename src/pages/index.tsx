@@ -93,7 +93,7 @@ const Home: NextPage = () => {
       const postQuery = query(
         collection(firestore, "posts"),
         orderBy("voteStatus", "desc"),
-        limit(10)
+        limit(30)
       );
 
       const postDocs = await getDocs(postQuery);
@@ -399,9 +399,9 @@ const Home: NextPage = () => {
 
       
       <Stack spacing={5}>
-        <Recommendations />
+        <Recommendations className={`sticky_reco`}/>
         <button
-        className={`fixed bottom-0 right-0 bg-black rounded-s-full px-4 py-2 mr-6 mb-[71px] z-50 items-center text-xs flex gap-2`}
+        className={`back_to_top`}
         onClick={scrollToTop}
       >
         BACK TO TOP
