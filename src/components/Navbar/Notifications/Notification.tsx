@@ -113,7 +113,7 @@ const Notification:React.FC<NotificationsProps> = () => {
                     <Flex p={4} >
                         {selectedTab === "User Notifications" && (
                             <List spacing={3} className='notifications_item_lists'>
-                                {notificationsValue.slice(0, 5).map((item: any, index:any) =>
+                                {notificationsValue.slice(0, 15).map((item: any, index:any) =>
                                     <ListItem className='notification_item' key={index}>
                                         {/* <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/subject/${item.subjectId}/answers/${item.id}`}> */}
                                             {/* {item.notification} */}
@@ -125,7 +125,7 @@ const Notification:React.FC<NotificationsProps> = () => {
                         )}
                         {selectedTab === "User Posts" && (
                             <List spacing={3} className='notification_user_posts'>
-                                {postStateValue.slice(0, 5).map((item: any, index:any) => {
+                                {postStateValue.slice(0, 15).map((item: any, index:any) => {
                                     return(<ListItem className='notification_user_posts_item' key={index}>
                                         <Link href={`/subject/${item.subjectId}/answers/${item.id}`}>
                                             {item.title.length > 53 ? item.title.substring(0, 53).concat('...') : item.title}
