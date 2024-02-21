@@ -16,8 +16,10 @@ const navbar:React.FC = () => {
     return (
     <Flex bg='white' height='50px' padding='6px 10px' direction="row">
         <Flex align="center" cursor="pointer" onClick={() => onSelectMenuItem(defaultMenuItem)} >
-        <Image src="/images/gr8er.png" ml={.3} height="45px" display={{ base: 'unset', md: 'none' }}/>
-           <Image src="/images/gr8erbetaa.png" ml={2} height="32px" mb="1px" display={{ base: 'none', md: 'unset' }}/>
+            <a href="/">
+                <Image src="/images/gr8er.png" ml={.3} height="45px" display={{ base: 'unset', md: 'none' }}/>
+                <Image src="/images/gr8erbetaa.png" ml={2} height="32px" mb="1px" display={{ base: 'none', md: 'unset' }}/>
+            </a>
         </Flex>
         
         {user && <Directory/ >}

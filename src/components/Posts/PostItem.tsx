@@ -210,7 +210,7 @@ const PostItem:React.FC<PostItemProps> = ({
             _hover = 
             {{borderColor: singlePostPage ? "none" : "gray.500"}}
         >
-            <Text style={{textAlign: "center", padding:"10px", color:"green"}}>{deletePostMessage}</Text>
+            {deletePostMessage ? <Text style={{textAlign: "center", padding:"10px", color:"green"}}>{deletePostMessage}</Text> : ''}
             {/* <Flex 
                 direction="row" 
                 align="center" 
@@ -228,7 +228,7 @@ const PostItem:React.FC<PostItemProps> = ({
                                     <Icon as ={RiGroup2Fill} fontSize="18pt" mr={1} color="blue.500"/>
                                 )}
                                 <Link href={`subject/${post.subjectId}`}>
-                                    <Text fontWeight={700} mr={3}_hover={{textDecoration:"underline"}}
+                                    <Text fontWeight={700} fontSize={16} mr={3}_hover={{textDecoration:"underline"}}
                                     onClick={(event) => event.stopPropagation()}
                                     >
                                         {`${post.subjectId}`}
@@ -317,17 +317,17 @@ const PostItem:React.FC<PostItemProps> = ({
                                         ?
                                             router.pathname == '/'
                                                 ?
-                                                    <Image src={imageURL} maxHeight='350px' alt="post image"/>
+                                                    <Image src={imageURL} maxHeight='350px' alt="post image" style={{width: '90px', height: '120px'}}/>
                                                 :
                                                     <a href={imageURL} target='_blank'>
-                                                        <Image src={imageURL} maxHeight='350px' alt="post image"/>
+                                                        <Image src={imageURL} maxHeight='350px' alt="post image" style={{width: '90px', height: '120px'}}/>
                                                     </a>
                                             
                                         :
                                             orgExtension[0] === 'pdf' 
                                             ?
                                                 <a href={imageURL} target='_blank'>
-                                                    <Image src="/images/pdf.png" maxHeight='350px' alt="post image"/>
+                                                    <Image src="/images/pdf.png" maxHeight='350px' alt="post image" style={{width: '90px', height: '120px'}}/>
                                                 </a>
                                             :
                                                 <a href={imageURL} target='_blank'>
@@ -348,12 +348,18 @@ const PostItem:React.FC<PostItemProps> = ({
                                 <li style={{listStyle: 'none'}}>
                                     {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg'
                                         ?
-                                            <Image src={imageURL} maxHeight='350px' alt="post image"/>
+                                            router.pathname == '/'
+                                            ?
+                                                <Image src={imageURL} maxHeight='350px' alt="post image" style={{width: '90px', height: '120px'}}/>
+                                            :
+                                                <a href={imageURL} target='_blank'>
+                                                    <Image src={imageURL} maxHeight='350px' alt="post image" style={{width: '90px', height: '120px'}}/>
+                                                </a>
                                         :
                                             orgExtension[0] === 'pdf' 
                                             ?
                                                 <a href={imageURL} target='_blank'>
-                                                    <Image src="/images/pdf.png" maxHeight='350px' alt="post image"/>
+                                                    <Image src="/images/pdf.png" maxHeight='350px' alt="post image" style={{width: '90px', height: '120px'}}/>
                                                 </a>
                                             :
                                                 <a href={imageURL} target='_blank'>
