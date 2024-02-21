@@ -113,7 +113,6 @@ const Home: NextPage = () => {
   const getUserPostVotes = async () => {
     try {
       const postIds = postStateValue.posts.map((post) => post.id);
-      console.log(postIds);
       let postVotes:any = []
       const limit = 10
       while (postIds.length) {

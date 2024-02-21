@@ -10,7 +10,7 @@ import { Notification } from '@/atoms/notificationsAtom';
 import { Subject } from '@/atoms/subjectsAtom';
 import usePosts from '@/hooks/usePosts';
 import { auth, firestore } from '@/firebase/clientApp';
-import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query, where, limit } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 type NotificationsProps = {
@@ -70,7 +70,8 @@ const Notification:React.FC<NotificationsProps> = () => {
             const notificationsQuery = query(
                 collection(firestore, 'notifications'),
                 where('notifyTo', '==', users?.displayName! || users?.email!.split('@')[0]),
-                orderBy('createdAt', 'desc')
+                orderBy('createdAt', 'desc'),
+                limit(5)
             )
             const notificationDocs = await getDocs(notificationsQuery);
            
@@ -113,7 +114,7 @@ const Notification:React.FC<NotificationsProps> = () => {
                     <Flex p={4} >
                         {selectedTab === "User Notifications" && (
                             <List spacing={3} className='notifications_item_lists'>
-                                {notificationsValue.slice(0, 10).map((item: any, index:any) =>
+                                {notificationsValue.map((item: any, index:any) =>
                                     <ListItem className='notification_item' key={index}>
                                         {/* <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/subject/${item.subjectId}/answers/${item.id}`}> */}
                                             {/* {item.notification} */}
@@ -125,7 +126,7 @@ const Notification:React.FC<NotificationsProps> = () => {
                         )}
                         {selectedTab === "User Posts" && (
                             <List spacing={3} className='notification_user_posts'>
-                                {postStateValue.slice(0, 10).map((item: any, index:any) => {
+                                {postStateValue.slice(0, 5).map((item: any, index:any) => {
                                     return(<ListItem className='notification_user_posts_item' key={index}>
                                         <Link href={`/subject/${item.subjectId}/answers/${item.id}`}>
                                             {item.title.length > 53 ? item.title.substring(0, 53).concat('...') : item.title}
