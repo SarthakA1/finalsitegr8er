@@ -113,20 +113,44 @@ const Home: NextPage = () => {
   const getUserPostVotes = async () => {
     try {
       const postIds = postStateValue.posts.map((post) => post.id);
-      const postVotesQuery = query(
-        collection(firestore, `users/${user?.uid}/postVotes`),
-        where("postId", "in", postIds)
-      );
-      const postVoteDocs = await getDocs(postVotesQuery);
-      const postVotes = postVoteDocs.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
+      console.log(postIds);
+      let postVotes:any = []
+      const limit = 10
+      while (postIds.length) {
+          const postVotesQuery = query(
+              collection(firestore, `users/${user?.uid}/postVotes`),
+              where('postId', 'in', postIds.slice(0, limit))
+            );
+          const postVoteDocs = await getDocs(postVotesQuery);
+          const postVotesData = postVoteDocs.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          postVotes.push(...postVotesData)
+          postIds.splice(0, limit)
+      }
       setPostStateValue((prev) => ({
         ...prev,
         postVotes: postVotes as PostVote[],
       }));
+
+      // console.log(postStateValue.posts);
+      // const postIds = postStateValue.posts.map((post) => post.id);
+      // console.log(postIds);
+      // const postVotesQuery = query(
+      //   collection(firestore, `users/${user?.uid}/postVotes`),
+      //   where("postId", "in", postIds)
+      // );
+      // const postVoteDocs = await getDocs(postVotesQuery);
+      // const postVotes = postVoteDocs.docs.map((doc) => ({
+      //   id: doc.id,
+      //   ...doc.data(),
+      // }));
+
+      // setPostStateValue((prev) => ({
+      //   ...prev,
+      //   postVotes: postVotes as PostVote[],
+      // }));
     } catch (error) {
       console.log("getUserPostVotes error", error);
     }
@@ -136,7 +160,7 @@ const Home: NextPage = () => {
         console.log(voting);
         const difficultyQuery = query(
             collection(firestore, 'diffculty_voting'),
-            where('voting', '==', voting),
+            where('voting', 'in', voting),
             orderBy('createdAt', 'desc')
         );
         const snapshot = await getDocs(difficultyQuery);
@@ -265,7 +289,6 @@ const Home: NextPage = () => {
       }));
     };
   }, [user, postStateValue.posts]);
-
   return (
     
     

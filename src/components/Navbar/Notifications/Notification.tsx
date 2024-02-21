@@ -117,7 +117,7 @@ const Notification:React.FC<NotificationsProps> = () => {
                                     <ListItem className='notification_item' key={index}>
                                         {/* <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/subject/${item.subjectId}/answers/${item.id}`}> */}
                                             {/* {item.notification} */}
-                                            <Text dangerouslySetInnerHTML={{ __html: item.notification }}/>
+                                            <Text dangerouslySetInnerHTML={{ __html: item.notification.length > 53 ? item.notification.substring(0, 53).concat('...') : item.notification }} />
                                         {/* </Link> */}
                                     </ListItem>
                                 )}
@@ -128,7 +128,7 @@ const Notification:React.FC<NotificationsProps> = () => {
                                 {postStateValue.slice(0, 5).map((item: any, index:any) => {
                                     return(<ListItem className='notification_user_posts_item' key={index}>
                                         <Link href={`/subject/${item.subjectId}/answers/${item.id}`}>
-                                            {item.title}
+                                            {item.title.length > 53 ? item.title.substring(0, 53).concat('...') : item.title}
                                         </Link>
                                     </ListItem>)
                                 })}
