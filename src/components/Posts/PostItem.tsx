@@ -296,7 +296,14 @@ const PostItem:React.FC<PostItemProps> = ({
             <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}> {post.grade} </Text> */}
             </Flex>
             {/* <StaticEquationText bodyValue={post.body}/> */}
-            <div dangerouslySetInnerHTML={{ __html: post.body }} />
+           <div 
+  dangerouslySetInnerHTML={{ __html: post.body }} 
+  style={{
+    maxWidth: '100%', // Limit the maximum width
+    overflowWrap: 'break-word', // Enable word wrapping
+  }} 
+/>
+
             {/* <Text fontSize='11pt'> {post.body} </Text> */}
             {/* {post.imageURL && (
                 <Flex mt={4} justify="center" align="center">  
