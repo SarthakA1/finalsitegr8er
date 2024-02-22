@@ -307,7 +307,7 @@ const PostItem:React.FC<PostItemProps> = ({
             {post.imageURLs && (
                 post.imageURLs.length > 1
                 ?
-                    <ul style={{listStyle: 'none', display: 'flex', align='center'}}>
+                    <ul style={{listStyle: 'none', display: 'flex'}}>
                         {post.imageURLs.map((imageURL:any) => {
                             const parts = imageURL.split('.');
                             const extension = parts[parts.length - 1];
@@ -340,7 +340,7 @@ const PostItem:React.FC<PostItemProps> = ({
                         })}
                     </ul>
                 :
-                    <ul style={{listStyle: 'none', display: 'unset', width: '100%', margin: '0 auto', maxWidth: '200px', align='center'}}>
+                    <ul style={{listStyle: 'none', display: 'unset', width: '100%', margin: '0 auto', maxWidth: '200px'}}>
                         {post.imageURLs.map((imageURL:any) => {
                             const parts = imageURL.split('.');
                             const extension = parts[parts.length - 1];
