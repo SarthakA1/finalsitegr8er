@@ -244,31 +244,33 @@ const PostItem:React.FC<PostItemProps> = ({
                             , {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
                         </Text>
                     </Flex>
-                    <Flex className={homePage ? 'post_list_header_section' : 'post_list_header_without_homepage_section'}>
-                        <Text style={{textAlign: "right"}} className='post_list_right_text_section'>
-                            {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion:any, index:any) => (
-                                criterion.value !== ''
-                                    ?
-                                        <span key={index} style={{background: "#000000", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
-                                            {criterion.value}
-                                        </span>
-                                    :
-                                        ''
-                            ))}
-                            {post.typeOfQuestions && (
-                                <>
-                                    {post.typeOfQuestions !== ''
-                                        ?
-                                            <span style={{background: "#4299E1", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
-                                                {post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value} {/* Display value */}
-                                            </span>
-                                        :
-                                            ''
-                                    }
-                                </>
-                            )}
-                        </Text>
-                    </Flex>
+                    <Flex className={homePage ? 'post_list_header_section' : 'post_list_header_without_homepage_section'} flexDirection={post.criteria && post.criteria.length > 3 ? 'column' : 'row'}>
+    <Text style={{textAlign: "right"}} className='post_list_right_text_section'>
+        {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion:any, index:any) => (
+            criterion.value !== ''
+                ?
+                    <span key={index} style={{background: "#000000", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: post.criteria && post.criteria.length > 3 ? "0" : "5px", marginBottom: post.criteria && post.criteria.length > 3 ? "5px" : "0", fontSize: "12px"}}>
+                        {criterion.value}
+                    </span>
+                :
+                    ''
+        ))}
+    </Text>
+    {(post.criteria && post.criteria.length <= 3) && (
+        <span style={{background: "#4299E1", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", fontSize: "12px", marginLeft: "5px"}}>
+            {post.typeOfQuestions && (post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value)}
+        </span>
+    )}
+    {(post.criteria && post.criteria.length > 3) && (
+        <div>
+            <br /> {/* Move to next line */}
+            <span style={{background: "#4299E1", color: "#fff", padding: "5px 10px", borderRadius: "15px", fontSize: "12px"}}>
+                {post.typeOfQuestions && (post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value)}
+            </span>
+        </div>
+    )}
+</Flex>
+
                 </Stack>
             {/* </Flex> */}
 
