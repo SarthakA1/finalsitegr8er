@@ -244,7 +244,7 @@ const PostItem:React.FC<PostItemProps> = ({
 </Flex>
 
 
-                  <Flex className={homePage ? 'post_list_header_section' : 'post_list_header_without_homepage_section'}>
+                 <Flex className={homePage ? 'post_list_header_section' : 'post_list_header_without_homepage_section'}>
     <Text style={{textAlign: "right"}} className='post_list_right_text_section'>
         {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion:any, index:any) => (
             criterion.value !== ''
@@ -255,13 +255,21 @@ const PostItem:React.FC<PostItemProps> = ({
                 :
                     ''
         ))}
-        {post.criteria && post.criteria.length >= 3 && post.typeOfQuestions && (
-            <span style={{background: "#4299E1", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px", display: "block", marginTop: "5px"}}>
+    </Text>
+    {post.criteria && post.criteria.length <= 3 && post.typeOfQuestions && (
+        <span style={{background: "#4299E1", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", fontSize: "12px", marginLeft: "5px"}}>
+            {post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value}
+        </span>
+    )}
+    {post.criteria && post.criteria.length > 3 && post.typeOfQuestions && (
+        <div style={{display: "block"}}>
+            <span style={{background: "#4299E1", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", fontSize: "12px", marginBottom: "5px"}}>
                 {post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value}
             </span>
-        )}
-    </Text>
+        </div>
+    )}
 </Flex>
+
 
 
                 </Stack>
