@@ -124,7 +124,13 @@ const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answerReply, userIsCreator,
                 </Text>
               </>
             )}
-            {userId !== answerReply.creatorId && (
+            <Text
+              fontSize="9pt"
+              _hover={{ color: "blue.500" }}
+              onClick={handleReply}>
+              Reply
+            </Text>
+            {/* {userId !== answerReply.creatorId && (
               <>
                 <Text
                   fontSize="9pt"
@@ -133,7 +139,7 @@ const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answerReply, userIsCreator,
                   Reply
                 </Text>
               </>
-            )}
+            )} */}
             {user
               ?
                 <Flex align='center' justify='center'>

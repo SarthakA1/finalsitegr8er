@@ -198,7 +198,7 @@ line-height: 20px;
 }
 
 .filter_main_grade_section, .filter_main_difficulty_section {
-    display: flex !important; 
+    /* display: flex !important;  */
     align-items: center !important; 
     gap: 3px !important;
 }
