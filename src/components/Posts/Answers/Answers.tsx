@@ -159,6 +159,7 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
                 ...prev,
                 answers: answers as Answer[],
             }))
+            setFetchLoading(false);
         } catch (error) {
             console.log('getPostAnswers error', error)
         }
