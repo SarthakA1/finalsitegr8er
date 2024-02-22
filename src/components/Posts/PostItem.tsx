@@ -203,75 +203,88 @@ const PostItem:React.FC<PostItemProps> = ({
     }, [])
     return (
         <Flex 
-    direction='column'
-    border="1px solid" 
-    borderColor={singlePostPage ? "gray.400" : "gray.400"}
-    borderRadius={singlePostPage ? "4px 4px 0px 0px" : "4px"}
-    _hover={{borderColor: singlePostPage ? "none" : "gray.500"}}
->
-    {deletePostMessage ? <Text style={{textAlign: "center", padding:"10px", color:"green"}}>{deletePostMessage}</Text> : ''}
-    <Stack direction="row" spacing={0.6} className='post_list_main_section'>
-        <Flex className={homePage ? 'post_list_subject_section' : 'post_list_subject_without_homepage_section'}>
-            {homePage && (
-                <>
-                    {post.subjectImageURL ? (
-                        <Image src={post.subjectImageURL} mr={1} mt={1} borderRadius="full" boxSize="18px"/>
-                    ) : (
-                        <Icon as ={RiGroup2Fill} fontSize="18pt" mr={1} color="blue.500"/>
-                    )}
-                    <Link href={`subject/${post.subjectId}`}>
-                        <Text fontWeight={700} fontSize={16} mr={3} _hover={{textDecoration:"underline"}} onClick={(event) => event.stopPropagation()}>
-                            {`${post.subjectId}`}
-                        </Text>
-                    </Link>
-                </>
-            )}
-        </Flex>
-        <Flex className={homePage ? 'post_list_header_section' : 'post_list_header_without_homepage_section'}>
-            <Text style={{textAlign: "right"}} className='post_list_right_text_section'>
-                {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion:any, index:any) => (
-                    criterion.value !== ''
-                        ?
-                            <span key={index} style={{background: "#000000", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
-                                {criterion.value}
+            direction='column'
+            border="1px solid" 
+            borderColor={singlePostPage ? "gray.400" : "gray.400"}
+            borderRadius={singlePostPage ? "4px 4px 0px 0px" : "4px"}
+            _hover = 
+            {{borderColor: singlePostPage ? "none" : "gray.500"}}
+        >
+            {deletePostMessage ? <Text style={{textAlign: "center", padding:"10px", color:"green"}}>{deletePostMessage}</Text> : ''}
+            {/* <Flex 
+                direction="row" 
+                align="center" 
+                bg="blue.100" 
+                p={2}
+            >  */}
+                <Stack direction="row" spacing={0.6} className='post_list_main_section'>
+                    {/* //Homepage check  */}
+                    <Flex className={homePage ? 'post_list_subject_section' : 'post_list_subject_without_homepage_section'}>
+                        {homePage && (
+                            <>
+                                {post.subjectImageURL ? (
+                                    <Image src={post.subjectImageURL} mr={1} mt={1} borderRadius="full" boxSize="18px"/>
+                                ) : (
+                                    <Icon as ={RiGroup2Fill} fontSize="18pt" mr={1} color="blue.500"/>
+                                )}
+                                <Link href={`subject/${post.subjectId}`}>
+                                    <Text fontWeight={700} fontSize={16} mr={3}_hover={{textDecoration:"underline"}}
+                                    onClick={(event) => event.stopPropagation()}
+                                    >
+                                        {`${post.subjectId}`}
+                                    </Text>
+                                </Link>
+                            </>
+                        )}
+                        <Text className='post_list_left_text_section'> 
+                            Asked by {" "}
+                            <span style={{ color: "#2c75b9" }}>
+                                {post.creatorDisplayName}
                             </span>
-                        :
-                            ''
-                ))}
-                {post.typeOfQuestions && (
-                    <>
-                        {post.typeOfQuestions !== ''
-                            ?
-                                <span style={{background: "#4299E1", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
-                                    {post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value} {/* Display value */}
-                                </span>
-                            :
-                                ''
-                        }
-                    </>
-                )}
-            </Text>
-        </Flex>
-        <Text className='post_list_left_text_section'> 
-            Asked by {" "}
-            <span style={{ color: "#2c75b9" }}>
-                {post.creatorDisplayName}
-            </span>
-            , {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
-        </Text>
-    </Stack>
+                            , {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
+                        </Text>
+                    </Flex>
+                    <Flex className={homePage ? 'post_list_header_section' : 'post_list_header_without_homepage_section'}>
+                        <Text style={{textAlign: "right"}} className='post_list_right_text_section'>
+                            {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion:any, index:any) => (
+                                criterion.value !== ''
+                                    ?
+                                        <span key={index} style={{background: "#000000", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
+                                            {criterion.value}
+                                        </span>
+                                    :
+                                        ''
+                            ))}
+                            {post.typeOfQuestions && (
+                                <>
+                                    {post.typeOfQuestions !== ''
+                                        ?
+                                            <span style={{background: "#4299E1", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
+                                                {post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value} {/* Display value */}
+                                            </span>
+                                        :
+                                            ''
+                                    }
+                                </>
+                            )}
+                        </Text>
+                    </Flex>
+                </Stack>
+            {/* </Flex> */}
 
-    <Flex 
-        direction="column" 
-        align="left" 
-        p={2}
-        bg="white" 
-        cursor={singlePostPage ? "unset" : "pointer"}
-        onClick={() => onSelectPost && onSelectPost(post)} 
-    > 
-        <Flex direction="row">
+            <Flex 
+            direction="column" 
+            align="left" 
+            p={2}
+            bg="white" 
+            cursor={singlePostPage ? "unset" : "pointer"}
+            onClick={() => onSelectPost && onSelectPost(post)} > 
+
+           
+           <Flex direction="row">
+              
             <Text fontSize='13pt' fontWeight={600} mb={1}> {post.title} </Text>
-            <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}>MYP  </Text>
+                <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}>MYP  </Text>
             {post.grade && (
                 <>
                     <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}>
@@ -279,10 +292,9 @@ const PostItem:React.FC<PostItemProps> = ({
                     </Text>
                 </>
             )}
-        </Flex>
-    </Flex>
-</Flex>)
-
+            {/* 
+            <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}> {post.grade} </Text> */}
+            </Flex>
             {/* <StaticEquationText bodyValue={post.body}/> */}
             <div dangerouslySetInnerHTML={{ __html: post.body }} />
             {/* <Text fontSize='11pt'> {post.body} </Text> */}
