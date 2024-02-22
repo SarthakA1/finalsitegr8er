@@ -8,6 +8,8 @@ import {
   chakraComponents 
 } from "chakra-react-select";
 import EquationEditor from '../../common/EquationEditor';
+import "react-quill/dist/quill.snow.css";
+import { Editor } from "../../common/Editor";
 
 type TextInputsProps = {
   textInputs: {
@@ -83,7 +85,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
     },
     {
       value: "General Question",
-      label: "General Question"
+      label: "General Doubts"
     },
   ];
   const gradeOptions = [
@@ -174,7 +176,8 @@ const TextInputs: React.FC<TextInputsProps> = ({
           placeholder="Topic"
         />
       </SimpleGrid>
-      <EquationEditor onInputChange={handleInputChange}/>
+      {/* <EquationEditor onInputChange={handleInputChange}/> */}
+      <Editor id="body" name="body" value={textInputs.body} onChange={(name:any, val:any) => {handleInputChange(name, val)}}  />
       <Flex justify="flex-end">
        
         <Button
