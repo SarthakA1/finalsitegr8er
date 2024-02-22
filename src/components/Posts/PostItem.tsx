@@ -307,7 +307,7 @@ const PostItem:React.FC<PostItemProps> = ({
             {post.imageURLs && (
                 post.imageURLs.length > 1
                 ?
-                    <ul style={{listStyle: 'none', display: 'flex'}}>
+                    <ul style={{listStyle: 'none', display: 'flex' align='center'}}>
                         {post.imageURLs.map((imageURL:any) => {
                             const parts = imageURL.split('.');
                             const extension = parts[parts.length - 1];
@@ -340,7 +340,7 @@ const PostItem:React.FC<PostItemProps> = ({
                         })}
                     </ul>
                 :
-                    <ul style={{listStyle: 'none', display: 'unset', width: '100%', margin: '0 auto', maxWidth: '200px'}}>
+                    <ul style={{listStyle: 'none', display: 'unset', width: '100%', margin: '0 auto', maxWidth: '200px' align='center'}}>
                         {post.imageURLs.map((imageURL:any) => {
                             const parts = imageURL.split('.');
                             const extension = parts[parts.length - 1];
@@ -351,7 +351,7 @@ const PostItem:React.FC<PostItemProps> = ({
                                         ?
                                             router.pathname == '/'
                                             ?
-                                                <Image src={imageURL} align='center'maxHeight='400px' maxWidth='400px' alt="post image"/>
+                                                <Image src={imageURL} align='center' maxHeight='400px' maxWidth='400px' alt="post image"/>
                                             :
                                                 <a href={imageURL} target='_blank'>
                                                     <Image src={imageURL} align='center' maxHeight='400px' style={{width: '90px', height: '120px'}} alt="post image" />
@@ -364,7 +364,7 @@ const PostItem:React.FC<PostItemProps> = ({
                                                 </a>
                                             :
                                                 <a href={imageURL} target='_blank'>
-                                                    <Image src="/images/docs.png" align='center' maxHeight='400px' style={{width: '90px', height: '120px'}} alt="post image"/>
+                                                    <Image src="/images/docs.png" align='center' maxHeight='400px' alt="post image"/>
                                                 </a>
                                     } 
                                 </li>
