@@ -304,49 +304,77 @@ const PostItem:React.FC<PostItemProps> = ({
                 
                 </Flex>
             )} */}
-            {post.imageURLs && (
-    post.imageURLs.length > 1 ? (
-        <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
-            {post.imageURLs.map((imageURL: any) => {
-                const parts = imageURL.split('.');
-                const extension = parts[parts.length - 1];
-                const orgExtension = extension.split('?');
-                return (
-                    <li key={imageURL} style={{ margin: '10px', textAlign: 'center' }}>
-                        {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
-                            router.pathname === '/' ? (
-                                <Image src={imageURL} style={{ maxWidth: '400px', maxHeight: '400px' }} alt="post image" />
-                            ) : (
-                                <a href={imageURL} target='_blank'>
-                                    <Image src={imageURL} style={{ maxWidth: '90px', maxHeight: '120px' }} alt="post image" />
-                                </a>
+           {post.imageURLs && (
+                post.imageURLs.length > 1
+                ?
+                    <ul style={{listStyle: 'none', display: 'flex'}}>
+                        {post.imageURLs.map((imageURL:any) => {
+                            const parts = imageURL.split('.');
+                            const extension = parts[parts.length - 1];
+                            const orgExtension = extension.split('?');
+                            return(
+                                <li style={{listStyle: 'none'}}>
+                                    {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg'
+                                        ?
+                                            router.pathname == '/'
+                                                ?
+                                                    <Image src={imageURL} align='center' maxHeight='400px' maxWidth='400px' alt="post image" />
+                                                :
+                                                    <a href={imageURL} target='_blank'>
+                                                        <Image src={imageURL} align='center' maxHeight='400px' style={{width: '90px', height: '120px'}} alt="post image" />
+                                                    </a>
+                                            
+                                        :
+                                            orgExtension[0] === 'pdf' 
+                                            ?
+                                                <a href={imageURL} target='_blank'>
+                                                    <Image src="/images/pdf.png" align='center' maxHeight='350px' alt="post image" style={{width: '90px', height: '120px'}}/>
+                                                </a>
+                                            :
+                                                <a href={imageURL} target='_blank'>
+                                                    <Image src="/images/docs.png" align='center' maxHeight='350px' alt="post image" style={{width: '90px', height: '120px'}}/>
+                                                </a>
+                                    } 
+                                </li>
                             )
-                        ) : (
-                            <a href={imageURL} target='_blank'>
-                                <Image src={orgExtension[0] === 'pdf' ? "/images/pdf.png" : "/images/docs.png"} style={{ maxWidth: '90px', maxHeight: '120px' }} alt="post image" />
-                            </a>
-                        )}
-                    </li>
-                );
-            })}
-        </ul>
-    ) : (
-        <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', padding: 0 }}>
-            <li style={{ margin: '10px', textAlign: 'center' }}>
-                {post.imageURLs.map((imageURL: any) => {
-                    const parts = imageURL.split('.');
-                    const extension = parts[parts.length - 1];
-                    const orgExtension = extension.split('?');
-                    return (
-                        <a key={imageURL} href={imageURL} target='_blank'>
-                            <Image src={orgExtension[0] === 'pdf' ? "/images/pdf.png" : "/images/docs.png"} style={{ maxWidth: '200px', maxHeight: '200px' }} alt="post image" />
-                        </a>
-                    );
-                })}
-            </li>
-        </ul>
-    )
-)}
+                        })}
+                    </ul>
+                :
+                    <ul style={{listStyle: 'none', display: 'unset', width: '100%', margin: '0 auto', maxWidth: '200px'}}>
+                        {post.imageURLs.map((imageURL:any) => {
+                            const parts = imageURL.split('.');
+                            const extension = parts[parts.length - 1];
+                            const orgExtension = extension.split('?');
+                            return(
+                              <div style={{ display: 'flex', justifyContent: 'center' }}> {/* Container to center the images */}
+  <ul style={{ padding: 0 }}> {/* Remove default padding from the ul */}
+    <li style={{ listStyle: 'none' }}>
+      {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
+        router.pathname == '/' ? (
+          <Image src={imageURL} maxHeight='400px' maxWidth='400px' alt="post image" />
+        ) : (
+          <a href={imageURL} target='_blank'>
+            <Image src={imageURL} style={{ width: '90px', height: '120px' }} alt="post image" />
+          </a>
+        )
+      ) : orgExtension[0] === 'pdf' ? (
+        <a href={imageURL} target='_blank'>
+          <Image src="/images/pdf.png" style={{ width: '90px', height: '120px' }} alt="post image" />
+        </a>
+      ) : (
+        <a href={imageURL} target='_blank'>
+          <Image src="/images/docs.png" alt="post image" />
+        </a>
+      )}
+    </li>
+  </ul>
+</div>
+
+
+                            )
+                        })}
+                    </ul>
+            )}
 
             {/* <Icon as={AiFillTags} mt={5} fontSize={20}/> */}
 
