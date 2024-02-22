@@ -134,6 +134,7 @@ const AnswersReply:React.FC<AnswersReplyProps> = ({ user, selectedPost, subjectI
                 ...prev,
                 answersReply: answersReply as AnswerReply[],
             }))
+            setFetchLoading(false);
         } catch (error) {
             console.log('getPostAnswersReply error', error)
         }

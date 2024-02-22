@@ -177,6 +177,7 @@ const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answerReply, userIsCreator,
                 </Flex>
             }
           </Stack>
+          {replyForm && <AnswersReply user={user as User} selectedPost={postStateValue.selectedPost} subjectId={postStateValue.selectedPost?.subjectId as string} answerId={answerReply?.id as string}/>}
           {subAnswer.length > 0 ? (
             subAnswer.filter((item: any) => item.answerId === answerReply.id)
               .map((item: any, index: any) => (
@@ -192,7 +193,6 @@ const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answerReply, userIsCreator,
           ) : (
             ''
           )}
-          {replyForm && <AnswersReply user={user as User} selectedPost={postStateValue.selectedPost} subjectId={postStateValue.selectedPost?.subjectId as string} answerId={answerReply?.id as string}/>}
         </Stack>
       </Flex>
     );
