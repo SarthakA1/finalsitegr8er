@@ -219,7 +219,7 @@ const PostItem:React.FC<PostItemProps> = ({
             >  */}
                 <Stack direction="row" spacing={0.6} className='post_list_main_section'>
                     {/* //Homepage check  */}
-                   <Flex className={homePage ? 'post_list_subject_section' : 'post_list_subject_without_homepage_section'}>
+                  <Flex className={homePage ? 'post_list_subject_section' : 'post_list_subject_without_homepage_section'}>
     {homePage && (
         <>
             {post.subjectImageURL ? (
@@ -234,7 +234,7 @@ const PostItem:React.FC<PostItemProps> = ({
             </Link>
         </>
     )}
-    <Text className='post_list_left_text_section'> 
+    <Text className='post_list_left_text_section' style={{ whiteSpace: "nowrap" }}> 
         Asked by {" "}
         <span style={{ color: "#2c75b9" }}>
             {post.creatorDisplayName}
@@ -242,6 +242,7 @@ const PostItem:React.FC<PostItemProps> = ({
         , {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
     </Text>
 </Flex>
+
 
                     <Flex className={homePage ? 'post_list_header_section' : 'post_list_header_without_homepage_section'}>
                         <Text style={{textAlign: "right"}} className='post_list_right_text_section'>
