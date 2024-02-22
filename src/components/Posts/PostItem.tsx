@@ -248,7 +248,7 @@ const PostItem:React.FC<PostItemProps> = ({
         {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion:any, index:any) => (
             criterion.value !== ''
                 ?
-                    <span key={index} style={{background: "#000000", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: post.criteria && post.criteria.length > 3 ? "0" : "5px", marginBottom: post.criteria && post.criteria.length > 3 ? "5px" : "0", fontSize: "12px"}}>
+                    <span key={index} style={{background: "#000000", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: post.criteria && post.criteria.length > 3 ? "0" : "5px", marginBottom: post.criteria && post.criteria.length > 3 ? "5px" : "0", fontSize: "12px", display: "inline-block"}}>
                         {criterion.value}
                     </span>
                 :
@@ -269,6 +269,7 @@ const PostItem:React.FC<PostItemProps> = ({
         </div>
     )}
 </Flex>
+
 
                 </Stack>
             {/* </Flex> */}
