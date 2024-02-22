@@ -220,30 +220,29 @@ const PostItem:React.FC<PostItemProps> = ({
                 <Stack direction="row" spacing={0.6} className='post_list_main_section'>
                     {/* //Homepage check  */}
                     <Flex className={homePage ? 'post_list_subject_section' : 'post_list_subject_without_homepage_section'}>
-                        {homePage && (
-                            <>
-                                {post.subjectImageURL ? (
-                                    <Image src={post.subjectImageURL} mr={1} mt={1} borderRadius="full" boxSize="18px"/>
-                                ) : (
-                                    <Icon as ={RiGroup2Fill} fontSize="18pt" mr={1} color="blue.500"/>
-                                )}
-                                <Link href={`subject/${post.subjectId}`}>
-                                    <Text fontWeight={700} fontSize={16} mr={3}_hover={{textDecoration:"underline"}}
-                                    onClick={(event) => event.stopPropagation()}
-                                    >
-                                        {`${post.subjectId}`}
-                                    </Text>
-                                </Link>
-                            </>
-                        )}
-                        <Text className='post_list_left_text_section'> 
-                            Asked by {" "}
-                            <span style={{ color: "#2c75b9" }}>
-                                {post.creatorDisplayName}
-                            </span>
-                            , {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
-                        </Text>
-                    </Flex>
+    {homePage && (
+        <>
+            {post.subjectImageURL ? (
+                <Image src={post.subjectImageURL} mr={1} mt={1} borderRadius="full" boxSize="18px"/>
+            ) : (
+                <Icon as ={RiGroup2Fill} fontSize="18pt" mr={1} color="blue.500"/>
+            )}
+            <Link href={`subject/${post.subjectId}`}>
+                <Text fontWeight={700} fontSize={16} mr={3} _hover={{textDecoration:"underline"}} onClick={(event) => event.stopPropagation()}>
+                    <span style={{ whiteSpace: "nowrap" }}>{post.subjectId}</span>
+                </Text>
+            </Link>
+        </>
+    )}
+    <Text className='post_list_left_text_section' style={{ whiteSpace: "nowrap" }}> 
+        Asked by {" "}
+        <span style={{ color: "#2c75b9" }}>
+            {post.creatorDisplayName}
+        </span>
+        , {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
+    </Text>
+</Flex>
+
                     <Flex className={homePage ? 'post_list_header_section' : 'post_list_header_without_homepage_section'} flexDirection={post.criteria && post.criteria.length > 3 ? 'column' : 'row'}>
     <Text style={{textAlign: "right"}} className='post_list_right_text_section'>
         {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion:any, index:any) => (
