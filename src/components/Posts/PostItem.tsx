@@ -281,7 +281,7 @@ const PostItem:React.FC<PostItemProps> = ({
             )}
         </Flex>
     </Flex>
-</Flex>
+</Flex>)
 
             {/* <StaticEquationText bodyValue={post.body}/> */}
             <div dangerouslySetInnerHTML={{ __html: post.body }} />
