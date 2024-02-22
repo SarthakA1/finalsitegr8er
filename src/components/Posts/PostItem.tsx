@@ -346,28 +346,31 @@ const PostItem:React.FC<PostItemProps> = ({
                             const extension = parts[parts.length - 1];
                             const orgExtension = extension.split('?');
                             return(
-                                <li style={{listStyle: 'none'}}>
-                                    {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg'
-                                        ?
-                                            router.pathname == '/'
-                                            ?
-                                                <Image src={imageURL} align='center' maxHeight='400px' maxWidth='400px' alt="post image"/>
-                                            :
-                                                <a href={imageURL} target='_blank'>
-                                                    <Image src={imageURL} align='center' maxHeight='400px' style={{width: '90px', height: '120px'}} alt="post image" />
-                                                </a>
-                                        :
-                                            orgExtension[0] === 'pdf' 
-                                            ?
-                                                <a href={imageURL} target='_blank'>
-                                                    <Image src="/images/pdf.png" align='center' maxHeight='400px' style={{width: '90px', height: '120px'}} alt="post image" />
-                                                </a>
-                                            :
-                                                <a href={imageURL} target='_blank'>
-                                                    <Image src="/images/docs.png" align='center' maxHeight='400px' alt="post image"/>
-                                                </a>
-                                    } 
-                                </li>
+                                <ul style={{textAlign: 'center'}}> {/* Add this line to center the content */}
+    <li style={{listStyle: 'none', display: 'inline-block'}}> {/* Add display: 'inline-block' to make list items align center */}
+        {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg'
+            ?
+                router.pathname == '/'
+                ?
+                    <Image src={imageURL} maxHeight='400px' maxWidth='400px' alt="post image"/>
+                :
+                    <a href={imageURL} target='_blank'>
+                        <Image src={imageURL} maxHeight='400px' style={{width: '90px', height: '120px'}} alt="post image" />
+                    </a>
+            :
+                orgExtension[0] === 'pdf' 
+                ?
+                    <a href={imageURL} target='_blank'>
+                        <Image src="/images/pdf.png" maxHeight='400px' style={{width: '90px', height: '120px'}} alt="post image" />
+                    </a>
+                :
+                    <a href={imageURL} target='_blank'>
+                        <Image src="/images/docs.png" maxHeight='400px' alt="post image"/>
+                    </a>
+        } 
+    </li>
+</ul>
+
                             )
                         })}
                     </ul>
