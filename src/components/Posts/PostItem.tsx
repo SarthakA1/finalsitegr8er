@@ -217,7 +217,7 @@ const PostItem:React.FC<PostItemProps> = ({
                 bg="blue.100" 
                 p={2}
             >  */}
-                <Stack direction="row" spacing={0.6} className='post_list_main_section'>
+                  <Stack direction="row" spacing={0.6} className='post_list_main_section'>
                     {/* //Homepage check  */}
                     <Flex className={homePage ? 'post_list_subject_section' : 'post_list_subject_without_homepage_section'}>
                         {homePage && (
@@ -296,7 +296,17 @@ const PostItem:React.FC<PostItemProps> = ({
             <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}> {post.grade} </Text> */}
             </Flex>
             {/* <StaticEquationText bodyValue={post.body}/> */}
-            <div dangerouslySetInnerHTML={{ __html: post.body }} />
+          <div style={{ maxWidth: '100%', overflow: 'auto' }}>
+  <div 
+    dangerouslySetInnerHTML={{ __html: post.body }} 
+    style={{
+      maxWidth: '100%', // Limit the maximum width
+      overflowWrap: 'break-word', // Enable word wrapping
+    }} 
+  />
+</div>
+
+
             {/* <Text fontSize='11pt'> {post.body} </Text> */}
             {/* {post.imageURL && (
                 <Flex mt={4} justify="center" align="center">  
@@ -304,74 +314,68 @@ const PostItem:React.FC<PostItemProps> = ({
                 
                 </Flex>
             )} */}
-            {post.imageURLs && (
-                post.imageURLs.length > 1
-                ?
-                    <ul style={{listStyle: 'none', display: 'flex'}}>
-                        {post.imageURLs.map((imageURL:any) => {
-                            const parts = imageURL.split('.');
-                            const extension = parts[parts.length - 1];
-                            const orgExtension = extension.split('?');
-                            return(
-                                <li style={{listStyle: 'none'}}>
-                                    {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg'
-                                        ?
-                                            router.pathname == '/'
-                                                ?
-                                                    <Image src={imageURL} align='center' maxHeight='400px' maxWidth='400px' alt="post image" />
-                                                :
-                                                    <a href={imageURL} target='_blank'>
-                                                        <Image src={imageURL} align='center' maxHeight='400px' style={{width: '90px', height: '120px'}} alt="post image" />
-                                                    </a>
-                                            
-                                        :
-                                            orgExtension[0] === 'pdf' 
-                                            ?
-                                                <a href={imageURL} target='_blank'>
-                                                    <Image src="/images/pdf.png" align='center' maxHeight='350px' alt="post image" style={{width: '90px', height: '120px'}}/>
-                                                </a>
-                                            :
-                                                <a href={imageURL} target='_blank'>
-                                                    <Image src="/images/docs.png" align='center' maxHeight='350px' alt="post image" style={{width: '90px', height: '120px'}}/>
-                                                </a>
-                                    } 
-                                </li>
+           {post.imageURLs && (
+    post.imageURLs.length > 1 ? (
+        <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            {post.imageURLs.map((imageURL: any) => {
+                const parts = imageURL.split('.');
+                const extension = parts[parts.length - 1];
+                const orgExtension = extension.split('?');
+                return (
+                    <li style={{ listStyle: 'none' }}>
+                        {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
+                            router.pathname == '/' ? (
+                                <Image src={imageURL} align='center' maxHeight='400px' maxWidth='400px' alt="post image" />
+                            ) : (
+                                <a href={imageURL} target='_blank'>
+                                    <Image src={imageURL} align='center' maxHeight='400px' style={{ width: '90px', height: '120px' }} alt="post image" />
+                                </a>
                             )
-                        })}
-                    </ul>
-                :
-                    <ul style={{listStyle: 'none', display: 'unset', width: '100%', margin: '0 auto', maxWidth: '200px'}}>
-                        {post.imageURLs.map((imageURL:any) => {
-                            const parts = imageURL.split('.');
-                            const extension = parts[parts.length - 1];
-                            const orgExtension = extension.split('?');
-                            return(
-                                <li style={{listStyle: 'none'}}>
-                                    {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg'
-                                        ?
-                                            router.pathname == '/'
-                                            ?
-                                                <Image src={imageURL} align='center' maxHeight='400px' maxWidth='400px' alt="post image"/>
-                                            :
-                                                <a href={imageURL} target='_blank'>
-                                                    <Image src={imageURL} align='center' maxHeight='400px' style={{width: '90px', height: '120px'}} alt="post image" />
-                                                </a>
-                                        :
-                                            orgExtension[0] === 'pdf' 
-                                            ?
-                                                <a href={imageURL} target='_blank'>
-                                                    <Image src="/images/pdf.png" align='center' maxHeight='400px' style={{width: '90px', height: '120px'}} alt="post image" />
-                                                </a>
-                                            :
-                                                <a href={imageURL} target='_blank'>
-                                                    <Image src="/images/docs.png" align='center' maxHeight='400px' alt="post image"/>
-                                                </a>
-                                    } 
-                                </li>
+                        ) : orgExtension[0] === 'pdf' ? (
+                            <a href={imageURL} target='_blank'>
+                                <Image src="/images/pdf.png" align='center' maxHeight='350px' alt="post image" style={{ width: '90px', height: '120px' }} />
+                            </a>
+                        ) : (
+                            <a href={imageURL} target='_blank'>
+                                <Image src="/images/docs.png" align='center' maxHeight='350px' alt="post image" style={{ width: '90px', height: '120px' }} />
+                            </a>
+                        )}
+                    </li>
+                );
+            })}
+        </ul>
+    ) : (
+        <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', margin: '0 auto', maxWidth: '200px' }}>
+            {post.imageURLs.map((imageURL: any) => {
+                const parts = imageURL.split('.');
+                const extension = parts[parts.length - 1];
+                const orgExtension = extension.split('?');
+                return (
+                    <li style={{ listStyle: 'none' }}>
+                        {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
+                            router.pathname == '/' ? (
+                                <Image src={imageURL} align='center' maxHeight='400px' maxWidth='400px' alt="post image" />
+                            ) : (
+                                <a href={imageURL} target='_blank'>
+                                    <Image src={imageURL} align='center' maxHeight='400px' style={{ width: '90px', height: '120px' }} alt="post image" />
+                                </a>
                             )
-                        })}
-                    </ul>
-            )}
+                        ) : orgExtension[0] === 'pdf' ? (
+                            <a href={imageURL} target='_blank'>
+                                <Image src="/images/pdf.png" align='center' maxHeight='400px' style={{ width: '90px', height: '120px' }} alt="post image" />
+                            </a>
+                        ) : (
+                            <a href={imageURL} target='_blank'>
+                                <Image src="/images/docs.png" align='center' maxHeight='400px' alt="post image" />
+                            </a>
+                        )}
+                    </li>
+                );
+            })}
+        </ul>
+    )
+)}
+
 
             {/* <Icon as={AiFillTags} mt={5} fontSize={20}/> */}
 
