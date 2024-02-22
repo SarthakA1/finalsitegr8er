@@ -245,30 +245,30 @@ const PostItem:React.FC<PostItemProps> = ({
 
 
                    <Flex className={homePage ? 'post_list_header_section' : 'post_list_header_without_homepage_section'}>
-    <Text style={{textAlign: "right"}} className='post_list_right_text_section'>
-        {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion:any, index:any) => (
-            criterion.value !== ''
-                ?
-                    <span key={index} style={{background: "#000000", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
-                        {criterion.value}
-                    </span>
-                :
-                    ''
-        ))}
-        {post.typeOfQuestions && (
-            <>
-                {post.typeOfQuestions !== ''
-                    ?
-                        <span style={{background: "#4299E1", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px", display: "inline-block", marginBottom: post.criteria.length > 3 ? "5px" : "0"}}>
-                            {post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value} {/* Display value */}
-                        </span>
-                    :
-                        ''
-                }
-            </>
-        )}
-    </Text>
-</Flex>
+                        <Text style={{textAlign: "right"}} className='post_list_right_text_section'>
+                            {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion:any, index:any) => (
+                                criterion.value !== ''
+                                    ?
+                                        <span key={index} style={{background: "#000000", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
+                                            {criterion.value}
+                                        </span>
+                                    :
+                                        ''
+                            ))}
+                            {post.typeOfQuestions && (
+                                <>
+                                    {post.typeOfQuestions !== ''
+                                        ?
+                                            <span style={{background: "#4299E1", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
+                                                {post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value} {/* Display value */}
+                                            </span>
+                                        :
+                                            ''
+                                    }
+                                </>
+                            )}
+                        </Text>
+                    </Flex>
 
                 </Stack>
             {/* </Flex> */}
