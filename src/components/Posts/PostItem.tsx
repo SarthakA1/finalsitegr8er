@@ -248,7 +248,7 @@ const PostItem:React.FC<PostItemProps> = ({
         {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion:any, index:any) => (
             criterion.value !== ''
                 ?
-                    <span key={index} style={{background: "#000000", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: post.criteria && post.criteria.length > 3 ? "0" : "5px", marginBottom: post.criteria && post.criteria.length > 3 ? "5px" : "0", fontSize: "12px", display: "inline-block"}}>
+                    <span key={index} style={{background: "#000000", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: post.criteria && post.criteria.length > 3 ? "0" : "5px", marginBottom: post.criteria && post.criteria.length > 3 ? "5px" : "0", fontSize: "12px"}}>
                         {criterion.value}
                     </span>
                 :
@@ -261,7 +261,7 @@ const PostItem:React.FC<PostItemProps> = ({
         </span>
     )}
     {(post.criteria && post.criteria.length > 3) && (
-        <div>
+        <div style={{marginTop: "3px"}}>
             <br /> {/* Move to next line */}
             <span style={{background: "#4299E1", color: "#fff", padding: "5px 10px", borderRadius: "15px", fontSize: "12px"}}>
                 {post.typeOfQuestions && (post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value)}
