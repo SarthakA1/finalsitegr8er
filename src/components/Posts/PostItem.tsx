@@ -260,7 +260,7 @@ const PostItem:React.FC<PostItemProps> = ({
                                     {post.typeOfQuestions !== ''
                                         ?
                                             <span style={{background: "#4299E1", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
-                                                {post.typeOfQuestions.value === 'General Question' ? 'General Doubts' : post.typeOfQuestions.value} {/* Display value */}
+                                                {post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value} {/* Display value */}
                                             </span>
                                         :
                                             ''
