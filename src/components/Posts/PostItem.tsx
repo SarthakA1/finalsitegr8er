@@ -372,6 +372,7 @@ const PostItem:React.FC<PostItemProps> = ({
                         })}
                     </ul>
             )}
+
             {/* <Icon as={AiFillTags} mt={5} fontSize={20}/> */}
 
 
