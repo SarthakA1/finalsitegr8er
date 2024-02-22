@@ -350,7 +350,7 @@ const PostItem:React.FC<PostItemProps> = ({
                                         ?
                                             router.pathname == '/'
                                             ?
-                                                <Image src={imageURL} maxHeight='350px' alt="post image" style={{width: '200px', height: '320px'}}/>
+                                                <Image src={imageURL} maxHeight='400px' maxWidth='400px' alt="post image" style={{width: '200px', height: '320px'}}/>
                                             :
                                                 <a href={imageURL} target='_blank'>
                                                     <Image src={imageURL} maxHeight='350px' alt="post image" style={{width: '200px', height: '320px'}}/>
