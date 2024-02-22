@@ -260,7 +260,7 @@ const PostItem:React.FC<PostItemProps> = ({
                                     {post.typeOfQuestions !== ''
                                         ?
                                             <span style={{background: "#4299E1", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
-                                                {post.typeOfQuestions.value} {/* Display value */}
+                                                {post.typeOfQuestions.value === 'General Question' ? 'General Doubts' : post.typeOfQuestions.value} {/* Display value */}
                                             </span>
                                         :
                                             ''
@@ -317,10 +317,10 @@ const PostItem:React.FC<PostItemProps> = ({
                                         ?
                                             router.pathname == '/'
                                                 ?
-                                                    <Image src={imageURL} maxHeight='350px' alt="post image" style={{width: '90px', height: '120px'}}/>
+                                                    <Image src={imageURL} maxHeight='350px' alt="post image" style={{width: '200px', height: '320px'}}/>
                                                 :
                                                     <a href={imageURL} target='_blank'>
-                                                        <Image src={imageURL} maxHeight='350px' alt="post image" style={{width: '90px', height: '120px'}}/>
+                                                        <Image src={imageURL} maxHeight='350px' alt="post image" style={{width: '200px', height: '320px'}}/>
                                                     </a>
                                             
                                         :
@@ -350,10 +350,10 @@ const PostItem:React.FC<PostItemProps> = ({
                                         ?
                                             router.pathname == '/'
                                             ?
-                                                <Image src={imageURL} maxHeight='350px' alt="post image" style={{width: '90px', height: '120px'}}/>
+                                                <Image src={imageURL} maxHeight='350px' alt="post image" style={{width: '200px', height: '320px'}}/>
                                             :
                                                 <a href={imageURL} target='_blank'>
-                                                    <Image src={imageURL} maxHeight='350px' alt="post image" style={{width: '90px', height: '120px'}}/>
+                                                    <Image src={imageURL} maxHeight='350px' alt="post image" style={{width: '200px', height: '320px'}}/>
                                                 </a>
                                         :
                                             orgExtension[0] === 'pdf' 
