@@ -320,7 +320,7 @@ const PostItem:React.FC<PostItemProps> = ({
                                                     <Image src={imageURL} align='center' maxHeight='400px' maxWidth='400px' alt="post image" />
                                                 :
                                                     <a href={imageURL} target='_blank'>
-                                                        <Image src={imageURL} align='center' maxHeight='400px' maxWidth='400px' alt="post image" />
+                                                        <Image src={imageURL} align='center' maxHeight='400px' style={{width: '90px', height: '120px'}} alt="post image" />
                                                     </a>
                                             
                                         :
@@ -353,7 +353,7 @@ const PostItem:React.FC<PostItemProps> = ({
                                                 <Image src={imageURL} align='center'maxHeight='400px' maxWidth='400px' alt="post image"/>
                                             :
                                                 <a href={imageURL} target='_blank'>
-                                                    <Image src={imageURL} align='center' maxHeight='400px' maxWidth='400px' alt="post image" />
+                                                    <Image src={imageURL} align='center' maxHeight='400px' style={{width: '90px', height: '120px'}} alt="post image" />
                                                 </a>
                                         :
                                             orgExtension[0] === 'pdf' 
