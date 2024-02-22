@@ -312,15 +312,15 @@ const PostItem:React.FC<PostItemProps> = ({
                             const extension = parts[parts.length - 1];
                             const orgExtension = extension.split('?');
                             return(
-                                <li style={{listStyle: 'none'}}>
+                                <li align='center' style={{listStyle: 'none'}}>
                                     {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg'
                                         ?
                                             router.pathname == '/'
                                                 ?
-                                                    <Image src={imageURL} maxHeight='350px' alt="post image" style={{width: '200px', height: '320px'}}/>
+                                                    <Image src={imageURL} maxHeight='400px' maxWidth='400px' alt="post image" />
                                                 :
                                                     <a href={imageURL} target='_blank'>
-                                                        <Image src={imageURL} maxHeight='350px' alt="post image" style={{width: '200px', height: '320px'}}/>
+                                                        <Image src={imageURL} maxHeight='400px' maxWidth='400px' alt="post image" />
                                                     </a>
                                             
                                         :
@@ -353,17 +353,17 @@ const PostItem:React.FC<PostItemProps> = ({
                                                 <Image src={imageURL} maxHeight='400px' maxWidth='400px' alt="post image"/>
                                             :
                                                 <a href={imageURL} target='_blank'>
-                                                    <Image src={imageURL} maxHeight='350px' alt="post image" />
+                                                    <Image src={imageURL} maxHeight='400px' maxWidth='400px' alt="post image" />
                                                 </a>
                                         :
                                             orgExtension[0] === 'pdf' 
                                             ?
                                                 <a href={imageURL} target='_blank'>
-                                                    <Image src="/images/pdf.png" maxHeight='400px' maxWidth='400px' alt="post image" />
+                                                    <Image src="/images/pdf.png" maxHeight='400px' style={{width: '200px', height: '320px'}} alt="post image" />
                                                 </a>
                                             :
                                                 <a href={imageURL} target='_blank'>
-                                                    <Image src="/images/docs.png" maxHeight='400px' maxWidth='400px' alt="post image"/>
+                                                    <Image src="/images/docs.png" maxHeight='400px' style={{width: '200px', height: '320px'}} alt="post image"/>
                                                 </a>
                                     } 
                                 </li>
