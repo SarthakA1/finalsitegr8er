@@ -16,12 +16,9 @@
 }
 
 .attachment-icon {
-   max-width: 200px;
-    max-height: 200px;
-    width: auto;
+    width: 40px; /* Adjust size as needed */
     height: auto;
 }
-
 
 .post_list_main_section {
     padding: 10px 6px;
