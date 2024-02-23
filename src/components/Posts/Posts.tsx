@@ -200,9 +200,9 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
                     </div>
                     <div className='filter_main_difficulty_section'>
                         <Text style={{fontSize: "12px", fontWeight: "600"}}>Difficulty (Academic Questions)</Text>
-                        <span className={`filter_main_difficulty_sub_section_easy ${activeFilters.difficulty && (activeFilters.difficulty as string[]).includes('easy') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('difficulty', 'easy')}>Easy</span>
-                        <span className={`filter_main_difficulty_sub_section_medium ${activeFilters.difficulty && (activeFilters.difficulty as string[]).includes('medium') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('difficulty', 'medium')}>Medium</span>
-                        <span className={`filter_main_difficulty_sub_section_hard ${activeFilters.difficulty && (activeFilters.difficulty as string[]).includes('hard') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('difficulty', 'hard')}>Hard</span>
+                        <span className={`filter_main_difficulty_sub_section ${activeFilters.difficulty && (activeFilters.difficulty as string[]).includes('easy') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('difficulty', 'easy')}>Easy</span>
+                        <span className={`filter_main_difficulty_sub_section ${activeFilters.difficulty && (activeFilters.difficulty as string[]).includes('medium') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('difficulty', 'medium')}>Medium</span>
+                        <span className={`filter_main_difficulty_sub_section ${activeFilters.difficulty && (activeFilters.difficulty as string[]).includes('hard') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('difficulty', 'hard')}>Hard</span>
                     </div>
                 </div>
                 {/* <Select placeholder='Sort By Tags' onChange={handleChangeFilter}>
