@@ -47,7 +47,7 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
         title: "",
         body: "",
         typeOfQuestions: {value: "", label: ""},
-        criteria: {value: "", label: ""}
+        criteria: ""
     });
     const {selectedFile, setSelectedFile, onSelectFile} = useSelectFile()
     // const [selectedFile, setSelectedFile] = useState<string>()

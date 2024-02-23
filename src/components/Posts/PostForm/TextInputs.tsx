@@ -17,7 +17,7 @@ type TextInputsProps = {
     title: string;
     body: string;
     grade: {value: string, label: string};
-    criteria: {value: string, label: string};
+    criteria: string;
     typeOfQuestions: {value: string, label: string};
   };
   onChange: (

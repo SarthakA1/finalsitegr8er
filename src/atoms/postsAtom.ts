@@ -16,7 +16,7 @@ export type Post = {
     grade: {value: string, label: string};
     typeOfQuestions: {value: string, label: string};
     pinPost: boolean;
-    criteria: {value: string, label: string};
+    criteria: string;
 }
 
 export type PostVote = {
