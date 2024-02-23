@@ -199,8 +199,10 @@ const PostItem:React.FC<PostItemProps> = ({
         });
     }
     useEffect(() => {
-        fetchVotingData();
-    }, [])
+        if(post.id){
+            fetchVotingData();
+        }
+    }, [post.id])
     return (
         <Flex 
             direction='column'
