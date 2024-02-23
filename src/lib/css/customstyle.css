@@ -315,6 +315,36 @@ line-height: 20px;
     gap:5px;  
     cursor: pointer;
 }
+
+.filter_main_difficulty_sub_section_easy{
+    background: green; 
+    color: rgb(255, 255, 255); 
+    border-radius: 15px; 
+    padding: 5px 10px;
+    font-size: 9px; 
+    gap:5px;  
+    cursor: pointer;
+}
+
+.filter_main_difficulty_sub_section_medium{
+    background: #FFBD59; 
+    color: rgb(255, 255, 255); 
+    border-radius: 15px; 
+    padding: 5px 10px;
+    font-size: 9px; 
+    gap:5px;  
+    cursor: pointer;
+}
+
+.filter_main_difficulty_sub_section_hard{
+    background: green; 
+    color: rgb(255, 255, 255); 
+    border-radius: 15px; 
+    padding: 5px 10px;
+    font-size: 9px; 
+    gap:5px;  
+    cursor: pointer;
+}
 .filter_main_section {
     display: flex;
     flex-wrap: wrap;
