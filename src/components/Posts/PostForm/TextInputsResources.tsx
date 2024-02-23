@@ -142,7 +142,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
             name="grade"
             placeholder="MYP"
             components={customGradeComponents}
-            value={textInputs.grade} // Set the value prop for controlled component
+            value={textInputs.grade.value && (textInputs.grade)} // Set the value prop for controlled component
             onChange={(selectedGradeOptions:any) => handleInputChange("grade", selectedGradeOptions)}
             options={gradeOptions}
           />
@@ -154,7 +154,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
             options={criteriaOptions}
             placeholder="Criteria"
             components={customCriteriaComponents}
-            value={textInputs.criteria} // Set the value prop for controlled component
+            value={textInputs.criteria.value && (textInputs.criteria)} // Set the value prop for controlled component
             onChange={(selectedOptions:any) => handleInputChange("criteria", selectedOptions)}
           />
         </Flex>
