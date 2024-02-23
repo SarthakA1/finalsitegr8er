@@ -1,6 +1,11 @@
 import React, { useState, useMemo } from "react";
 import dynamic from 'next/dynamic'
 import "react-quill/dist/quill.snow.css";
+import katex from "katex";
+import "katex/dist/katex.min.css";
+if (typeof window !== "undefined") {
+  window.katex = katex;
+}
 export const Editor = ({ id, name, value, onChange, onBlur }:any) => {
     const quillRef = React.useRef();
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
@@ -37,6 +42,7 @@ export const Editor = ({ id, name, value, onChange, onBlur }:any) => {
         'indent',
         'link',
         'image',
+        'formula',
     ]
     const handleChange = (val:any, delta:any, source:any, editor:any) => {
         onChange(name, val);
