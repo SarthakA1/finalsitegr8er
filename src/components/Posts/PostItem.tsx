@@ -352,7 +352,7 @@ const PostItem:React.FC<PostItemProps> = ({
                 const orgExtension = extension.split('?');
                 return (
                     <li style={{ listStyle: 'none' }}>
-                        {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
+                       {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
                             router.pathname == '/' ? (
                                 <Image src={imageURL} align='center' maxHeight='400px' maxWidth='400px' alt="post image" />
                             ) : (
@@ -362,11 +362,11 @@ const PostItem:React.FC<PostItemProps> = ({
                             )
                         ) : orgExtension[0] === 'pdf' ? (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/pdf.png" align='center' maxHeight='400px' style={{ width: '90px', height: '120px' }} alt="post image" />
+                                <Image src="/images/pdf.png" align='center' maxHeight='350px' alt="post image" style={{ width: '90px', height: '120px' }} />
                             </a>
                         ) : (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/docs.png" align='center' maxHeight='400px' alt="post image" />
+                                <Image src="/images/docs.png" align='center' maxHeight='350px' alt="post image" style={{ width: '90px', height: '120px' }} />
                             </a>
                         )}
                     </li>
