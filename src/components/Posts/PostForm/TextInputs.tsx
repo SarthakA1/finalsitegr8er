@@ -84,7 +84,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
     },
     {
       value: "General Question",
-      label: "General Doubts"
+      label: "General Doubt"
     },
   ];
   const gradeOptions = [
