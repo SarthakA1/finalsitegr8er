@@ -314,7 +314,7 @@ const PostItem:React.FC<PostItemProps> = ({
                 
                 </Flex>
             )} */}
-           {post.imageURLs && (
+        {post.imageURLs && (
     post.imageURLs.length > 1 ? (
         <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             {post.imageURLs.map((imageURL: any) => {
@@ -325,19 +325,19 @@ const PostItem:React.FC<PostItemProps> = ({
                     <li style={{ listStyle: 'none' }}>
                         {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
                             router.pathname == '/' ? (
-                                <Image src={imageURL} align='center' maxHeight='400px' maxWidth='400px' alt="post image" />
+                                <Image src={imageURL} className="post-image" alt="post image" />
                             ) : (
                                 <a href={imageURL} target='_blank'>
-                                    <Image src={imageURL} align='center' maxHeight='400px' style={{ width: '90px', height: '120px' }} alt="post image" />
+                                    <Image src={imageURL} className="post-image" alt="post image" />
                                 </a>
                             )
                         ) : orgExtension[0] === 'pdf' ? (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/pdf.png" align='center' maxHeight='350px' alt="post image" style={{ width: '90px', height: '120px' }} />
+                                <Image src="/images/pdf.png" className="post-image" alt="post image" />
                             </a>
                         ) : (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/docs.png" align='center' maxHeight='350px' alt="post image" style={{ width: '90px', height: '120px' }} />
+                                <Image src="/images/docs.png" className="post-image" alt="post image" />
                             </a>
                         )}
                     </li>
@@ -354,19 +354,19 @@ const PostItem:React.FC<PostItemProps> = ({
                     <li style={{ listStyle: 'none' }}>
                        {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
                             router.pathname == '/' ? (
-                                <Image src={imageURL} align='center' maxHeight='400px' maxWidth='400px' alt="post image" />
+                                <Image src={imageURL} className="post-image" alt="post image" />
                             ) : (
                                 <a href={imageURL} target='_blank'>
-                                    <Image src={imageURL} align='center' maxHeight='400px' style={{ width: '90px', height: '120px' }} alt="post image" />
+                                    <Image src={imageURL} className="post-image" alt="post image" />
                                 </a>
                             )
                         ) : orgExtension[0] === 'pdf' ? (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/pdf.png" align='center' maxHeight='350px' alt="post image" style={{ width: '90px', height: '120px' }} />
+                                <Image src="/images/pdf.png" className="post-image" alt="post image" />
                             </a>
                         ) : (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/docs.png" align='center' maxHeight='350px' alt="post image" style={{ width: '90px', height: '120px' }} />
+                                <Image src="/images/docs.png" className="post-image" alt="post image" />
                             </a>
                         )}
                     </li>
@@ -375,6 +375,7 @@ const PostItem:React.FC<PostItemProps> = ({
         </ul>
     )
 )}
+
 
 
             {/* <Icon as={AiFillTags} mt={5} fontSize={20}/> */}
