@@ -314,7 +314,7 @@ const PostItem:React.FC<PostItemProps> = ({
                 
                 </Flex>
             )} */}
-        {post.imageURLs && (
+       {post.imageURLs && (
     post.imageURLs.length > 1 ? (
         <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             {post.imageURLs.map((imageURL: any) => {
@@ -333,11 +333,11 @@ const PostItem:React.FC<PostItemProps> = ({
                             )
                         ) : orgExtension[0] === 'pdf' ? (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/pdf.png" className="post-image" alt="post image" />
+                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" />
                             </a>
                         ) : (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/docs.png" className="post-image" alt="post image" />
+                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" />
                             </a>
                         )}
                     </li>
@@ -362,11 +362,11 @@ const PostItem:React.FC<PostItemProps> = ({
                             )
                         ) : orgExtension[0] === 'pdf' ? (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/pdf.png" className="post-image" alt="post image" />
+                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" />
                             </a>
                         ) : (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/docs.png" className="post-image" alt="post image" />
+                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" />
                             </a>
                         )}
                     </li>
@@ -375,6 +375,7 @@ const PostItem:React.FC<PostItemProps> = ({
         </ul>
     )
 )}
+
 
 
 
