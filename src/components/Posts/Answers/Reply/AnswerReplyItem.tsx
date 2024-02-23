@@ -95,7 +95,7 @@ const AnswerReplyItem:React.FC<AnswerItemProps> = ({ answerReply, userIsCreator,
     }
   }, [router.query, postStateValue.selectedPost]);
     return (
-      <Flex id='text-box-section' className='textbox-sec'>
+      <Flex id='text-box-section' className='textbox-sec11'>
         <Box mr={2}>
         {user?.photoURL? (
               <Icon as={FaUserCircle} fontSize={30} color="gray.900" />

@@ -411,3 +411,29 @@ li.notification_user_posts_item.css-0 {
 .ql-editor{
     height: 300px !important;
 }
+@media (min-width:1024px) {
+    .chakra-stack.css-1i5x5f1  .css-k008qs {
+        display: unset;
+    }
+    .chakra-stack.css-1i5x5f1  .css-k008qs 
+     .css-11l8nwy {
+        width: 35px;
+    }
+    .chakra-stack.css-1i5x5f1 .css-k008qs .css-k008qs .chakra-stack.sadasd.css-46p1lt {
+        width: 100%;
+    }
+     
+    .chakra-stack.css-1i5x5f1 .css-k008qs .css-k008qs {
+        display: flex;
+        width: 100% !important;
+        padding-left: 4%;
+    }
+    .abcd {
+        padding-left: 60px;
+    }
+    .abcd .css-11l8nwy:first-child {
+        margin-left: -40px;
+        margin-bottom: -39px;
+    }
+    
+}
