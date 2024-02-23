@@ -141,7 +141,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
             name="grade"
             placeholder="MYP"
             components={customGradeComponents}
-            value={textInputs.grade} // Set the value prop for controlled component
+            value={textInputs.grade.value && (textInputs.grade)} // Set the value prop for controlled component
             onChange={(selectedGradeOptions:any) => handleInputChange("grade", selectedGradeOptions)}
             options={gradeOptions}
           />
@@ -170,7 +170,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
             name="typeOfQuestions"
             placeholder="Type Of Questions"
             components={customTypeOfQuestionsComponents}
-            value={textInputs.typeOfQuestions} // Set the value prop for controlled component
+            value={textInputs.typeOfQuestions.value && (textInputs.typeOfQuestions)} // Set the value prop for controlled component
             onChange={(selectedtypeOfQuestionsOptions:any) => handleInputChange("typeOfQuestions", selectedtypeOfQuestionsOptions)}
             options={typeOfQuestionsOptions}
           />
