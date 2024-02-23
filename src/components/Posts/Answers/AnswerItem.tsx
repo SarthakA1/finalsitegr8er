@@ -118,7 +118,7 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
     }
   }, [router.query, postStateValue.selectedPost]);
     return (
-      <Flex className='main-custom-answer-section'>
+      <Flex className='main-custom-answer-section abcd'>
         <Box mr={2}>
         {user?.photoURL? (
           <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
