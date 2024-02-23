@@ -52,20 +52,20 @@ const PostPage: React.FC = () => {
         )}
       </>
       <>
-    {postStateValue.selectedPost && (
-  <PostItem
-    post={postStateValue.selectedPost}
-    onVote={onVote}
-    onDeletePost={onDeletePost}
-    userVoteValue={
-      postStateValue.postVotes.find(
-        (item) => item.postId === postStateValue.selectedPost?.id
-      )?.voteValue
-    }
-    userIsCreator={user?.uid === postStateValue.selectedPost?.creatorId}
-    fullScreenMode={true} // Pass a prop to indicate full-screen mode
-  />
-)}
+      {postStateValue.selectedPost && (
+        
+          <PostItem
+            post={postStateValue.selectedPost}
+            onVote={onVote}
+            onDeletePost={onDeletePost}
+            userVoteValue={
+              postStateValue.postVotes.find(
+                (item) => item.postId === postStateValue.selectedPost?.id
+              )?.voteValue
+            }
+            userIsCreator={user?.uid === postStateValue.selectedPost?.creatorId}
+          />
+        )}
 
           <div>
 
