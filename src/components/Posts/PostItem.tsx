@@ -319,67 +319,37 @@ const PostItem:React.FC<PostItemProps> = ({
                 
                 </Flex>
             )} */}
-   {post.imageURLs && (
-    post.imageURLs.length > 1 ? (
-        <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            {post.imageURLs.map((imageURL: any, index: number) => { // Added index parameter
-                const parts = imageURL.split('.');
-                const extension = parts[parts.length - 1];
-                const orgExtension = extension.split('?');
-                return (
-                    <li style={{ listStyle: 'none', flex: '1' }} key={index}> {/* Added flex: '1' */}
-                        {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
-                            router.pathname == '/' ? (
-                                <Image src={imageURL} className="post-image" alt="post image" style={{ minWidth: '50%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> 
-                            ) : (
-                                <a href={imageURL} target='_blank'>
-                                    <Image src={imageURL} className="post-image" alt="post image" style={{ minWidth: '50%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> 
-                                </a>
-                            )
-                        ) : orgExtension[0] === 'pdf' ? (
-                            <a href={imageURL} target='_blank'>
-                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ minWidth: '50%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> 
-                            </a>
+  {post.imageURLs && (
+    <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', margin: '0 auto' }}>
+        {post.imageURLs.map((imageURL: any, index: number) => { // Added index parameter
+            const parts = imageURL.split('.');
+            const extension = parts[parts.length - 1];
+            const orgExtension = extension.split('?');
+            return (
+                <li style={{ listStyle: 'none', flex: '1', margin: '0 5px' }} key={index}> {/* Added flex: '1' */}
+                    {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
+                        router.pathname == '/' ? (
+                            <Image src={imageURL} className="post-image" alt="post image" style={{ width: '100%', height: 'auto' }} /> // Adjusted styles
                         ) : (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ minWidth: '50%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> 
+                                <Image src={imageURL} className="post-image" alt="post image" style={{ width: '100%', height: 'auto' }} /> // Adjusted styles
                             </a>
-                        )}
-                    </li>
-                );
-            })}
-        </ul>
-    ) : (
-        <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', margin: '0 auto', maxWidth: '200px' }}>
-            {post.imageURLs.map((imageURL: any, index: number) => { // Added index parameter
-                const parts = imageURL.split('.');
-                const extension = parts[parts.length - 1];
-                const orgExtension = extension.split('?');
-                return (
-                    <li style={{ listStyle: 'none', flex: '1' }} key={index}> {/* Added flex: '1' */}
-                        {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
-                            router.pathname == '/' ? (
-                                <Image src={imageURL} className="post-image" alt="post image" style={{ minWidth: '50%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Adjusted minWidth
-                            ) : (
-                                <a href={imageURL} target='_blank'>
-                                    <Image src={imageURL} className="post-image" alt="post image" style={{ minWidth: '50%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Adjusted minWidth
-                                </a>
-                            )
-                        ) : orgExtension[0] === 'pdf' ? (
-                            <a href={imageURL} target='_blank'>
-                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ minWidth: '50%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Adjusted minWidth
-                            </a>
-                        ) : (
-                            <a href={imageURL} target='_blank'>
-                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ minWidth: '50%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Adjusted minWidth
-                            </a>
-                        )}
-                    </li>
-                );
-            })}
-        </ul>
-    )
+                        )
+                    ) : orgExtension[0] === 'pdf' ? (
+                        <a href={imageURL} target='_blank'>
+                            <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '100%', height: 'auto' }} /> // Adjusted styles
+                        </a>
+                    ) : (
+                        <a href={imageURL} target='_blank'>
+                            <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '100%', height: 'auto' }} /> // Adjusted styles
+                        </a>
+                    )}
+                </li>
+            );
+        })}
+    </ul>
 )}
+
 
 
 
