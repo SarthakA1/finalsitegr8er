@@ -28,7 +28,7 @@ const AnswerReplyInput:React.FC<AnswerReplyInputProps> = ({ answerText, setAnswe
             <Textarea
               value={answerText}
               onChange={(event) => setAnswerText(event.target.value)}
-              placeholder="What is the Answer to this Question?"
+              placeholder="What would you like to reply?"
               fontSize="10pt"
               borderRadius={4}
               minHeight="160px"
