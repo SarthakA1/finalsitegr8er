@@ -20,11 +20,11 @@ type NotificationsProps = {
 
 const formTabs: TabItem[] = [
     {
-        title: 'User Notifications',
+        title: 'Notifications',
         icon: IoDocumentText
     },
     {
-        title: 'User Posts',
+        title: 'My Posts',
         icon: IoImageOutline
     },
 ]
@@ -111,7 +111,7 @@ const Notification:React.FC<NotificationsProps> = () => {
                         ))}
                     </Flex>
                     <Flex p={4} >
-                        {selectedTab === "User Notifications" && (
+                        {selectedTab === "Notifications" && (
                        <List spacing={3} className='notifications_item_lists'>
                                 {notificationsValue.slice(0, 10).map((item: any, index:any) =>
                                     <ListItem className='notification_item' key={index}>
@@ -132,15 +132,20 @@ const Notification:React.FC<NotificationsProps> = () => {
 
             
                         )}
-                        {selectedTab === "User Posts" && (
-                            <List spacing={3} className='notification_user_posts' style={{ maxHeight: '400px', overflowY: 'auto' }}>
-    {postStateValue.map((item: any, index: any) => {
-        return (
-            <ListItem className='notification_user_posts_item' key={index}>
-                <Link href={`/subject/${item.subjectId}/answers/${item.id}`}>
-                    {item.title.length > 53 ? item.title.substring(0, 53).concat('...') : item.title}
-                </Link>
-            </ListItem>
+                        {selectedTab === "My Posts" && (
+                          <div style={{ height: '300px', overflowY: 'scroll' }}>
+    <List spacing={3} className='notification_user_posts'>
+        {postStateValue.slice(0, 25).map((item: any, index: any) => {
+            return (
+                <ListItem className='notification_user_posts_item' key={index}>
+                    <Link href={`/subject/${item.subjectId}/answers/${item.id}`}>
+                        {item.title.length > 53 ? item.title.substring(0, 53).concat('...') : item.title}
+                    </Link>
+                </ListItem>
+            );
+        })}
+    </List>
+</div>
         )
     })}
 </List>
