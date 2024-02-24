@@ -25,22 +25,22 @@ const AnswerInput:React.FC<AnswerInputProps> = ({ answerText, setAnswerText, use
               </span>
             </Text>
             
-            <Textarea
-              value={answerText}
-              onChange={(event) => setAnswerText(event.target.value)}
-              placeholder="What is the Answer to this Question?"
-              fontSize="10pt"
-              borderRadius={4}
-              minHeight="160px"
-              pb={10}
-              _placeholder={{ color: "gray.500" }}
-              _focus={{
-                outline: "none",
-                border: "1px solid black",
-                bg:"white"
-                
-              }}
-            />
+           <Textarea
+    value={answerText}
+    onChange={(event) => setAnswerText(event.target.value)}
+    placeholder={post.typeOfQuestions && post.typeOfQuestions.value === 'Resource' ? 'Write a Comment' : 'What is the Answer to this Question?'}
+    fontSize="10pt"
+    borderRadius={4}
+    minHeight="160px"
+    pb={10}
+    _placeholder={{ color: "gray.500" }}
+    _focus={{
+        outline: "none",
+        border: "1px solid black",
+        bg:"white"
+    }}
+/>
+
             <Flex
              
              left="1px"
