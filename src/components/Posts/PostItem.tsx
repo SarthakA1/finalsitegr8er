@@ -239,12 +239,15 @@ const PostItem:React.FC<PostItemProps> = ({
                             </>
                         )}
                         <Text className='post_list_left_text_section'> 
-                            Asked by {" "}
-                            <span style={{ color: "#2c75b9" }}>
-                                {post.creatorDisplayName}
-                            </span>
-                            , {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
-                        </Text>
+    {post.typeOfQuestions && post.typeOfQuestions.value === 'Resource' 
+        ? 'Shared by ' 
+        : 'Asked by '}
+    <span style={{ color: "#2c75b9" }}>
+        {post.creatorDisplayName}
+    </span>
+    , {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
+</Text>
+
                     </Flex>
                     <Flex className={homePage ? 'post_list_header_section' : 'post_list_header_without_homepage_section'}>
                         <Text style={{textAlign: "right"}} className='post_list_right_text_section'>
