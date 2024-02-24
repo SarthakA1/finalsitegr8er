@@ -115,7 +115,7 @@ const Notification:React.FC<NotificationsProps> = () => {
                       <List spacing={5} className='notifications_item_lists'>
     <div className='notifications_container'>
         {notificationsValue.slice(0, 25).map((item: any, index: any) =>
-            <ListItem className='notification_item' key={index}>
+            <ListItem className='notification_user_posts_item' key={index}>
                 {/* <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/subject/${item.subjectId}/answers/${item.id}`}> */}
                 {/* {item.notification} */}
                  <Text dangerouslySetInnerHTML={{ __html: item.notification }}/>
