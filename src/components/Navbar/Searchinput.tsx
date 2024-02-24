@@ -107,7 +107,7 @@ const Searchinput:React.FC<SearchinputProps> = ({ user }) => {
             {searchInputValue && (
                 <div className="company_jobs_search">
                     <div id="search-results" className="companysas">
-                        <p className="title_heading text-start">Resource Posts</p>
+                        <p className="title_heading text-start">Resources</p>
                         <ul
                             className="list-unstyled"
                             id="company"
@@ -127,14 +127,14 @@ const Searchinput:React.FC<SearchinputProps> = ({ user }) => {
                             })
                             ) : (
                             <li className="search_result_para">
-                                No resouce posts found or enter aleast three character to get the results
+                                No Resources Found
                             </li>
                             )}
                         </ul>
                     </div>
                     <hr></hr>
                     <div id="search-results" className="josas">
-                        <p className="title_heading  text-start">Questions Posts</p>
+                        <p className="title_heading  text-start">Academic Questions and General Doubts</p>
                         <ul
                             className="list-unstyled"
                             id="company"
@@ -154,7 +154,7 @@ const Searchinput:React.FC<SearchinputProps> = ({ user }) => {
                             })
                             ) : (
                             <li className="search_result_para">
-                                No question posts found or enter aleast three character to get the results
+                                No Questions and Resources Found
                             </li>
                             )}
                         </ul>
