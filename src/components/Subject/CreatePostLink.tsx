@@ -85,6 +85,7 @@ const CreatePostLink: React.FC = () => {
           bg="gray.50"
           borderColor="gray.200"
           height="36px"
+           width="500px"
           borderRadius={4}
           mr={4}
           onClick={onClick}
@@ -107,6 +108,7 @@ const CreatePostLink: React.FC = () => {
           bg="gray.50"
           borderColor="gray.200"
           height="36px"
+          width="500px"
           borderRadius={4}
           mr={4}
           onClick={onClickResource}
