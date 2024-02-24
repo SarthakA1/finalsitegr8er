@@ -351,26 +351,51 @@ const PostItem:React.FC<PostItemProps> = ({
         </ul>
     ) : (
         <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', margin: '0 auto', maxWidth: '200px' }}>
-            {post.imageURLs.map((imageURL: any) => {
+          ...
+{post.imageURLs && (
+    post.imageURLs.length > 1 ? (
+        <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            {post.imageURLs.map((imageURL: any, index: number) => {
                 const parts = imageURL.split('.');
                 const extension = parts[parts.length - 1];
                 const orgExtension = extension.split('?');
                 return (
-                    <li style={{ listStyle: 'none' }}>
-                       {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
-                            router.pathname == '/' ? (
+                    <li style={{ listStyle: 'none' }} key={index}>
+                        {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
+                            <a href={router.pathname === '/' ? imageURL : `${imageURL}?single_tab=true`} target='_blank' rel="noreferrer">
                                 <Image src={imageURL} className="post-image" alt="post image" />
-                            ) : (
-                                <a href={imageURL} target='_blank'>
-                                    <Image src={imageURL} className="post-image" alt="post image" />
-                                </a>
-                            )
+                            </a>
                         ) : orgExtension[0] === 'pdf' ? (
-                            <a href={imageURL} target='_blank'>
+                            <a href={imageURL} target='_blank' rel="noreferrer">
                                 <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" />
                             </a>
                         ) : (
-                            <a href={imageURL} target='_blank'>
+                            <a href={imageURL} target='_blank' rel="noreferrer">
+                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" />
+                            </a>
+                        )}
+                    </li>
+                );
+            })}
+        </ul>
+    ) : (
+        <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', margin: '0 auto', maxWidth: '200px' }}>
+            {post.imageURLs.map((imageURL: any, index: number) => {
+                const parts = imageURL.split('.');
+                const extension = parts[parts.length - 1];
+                const orgExtension = extension.split('?');
+                return (
+                    <li style={{ listStyle: 'none' }} key={index}>
+                       {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
+                            <a href={router.pathname === '/' ? imageURL : `${imageURL}?single_tab=true`} target='_blank' rel="noreferrer">
+                                <Image src={imageURL} className="post-image" alt="post image" />
+                            </a>
+                        ) : orgExtension[0] === 'pdf' ? (
+                            <a href={imageURL} target='_blank' rel="noreferrer">
+                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" />
+                            </a>
+                        ) : (
+                            <a href={imageURL} target='_blank' rel="noreferrer">
                                 <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" />
                             </a>
                         )}
@@ -380,6 +405,7 @@ const PostItem:React.FC<PostItemProps> = ({
         </ul>
     )
 )}
+
 
 
 
