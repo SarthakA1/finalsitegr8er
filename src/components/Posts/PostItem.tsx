@@ -320,66 +320,38 @@ const PostItem:React.FC<PostItemProps> = ({
                 </Flex>
             )} */}
        {post.imageURLs && (
-    post.imageURLs.length > 1 ? (
-        <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            {post.imageURLs.map((imageURL: any) => {
-                const parts = imageURL.split('.');
-                const extension = parts[parts.length - 1];
-                const orgExtension = extension.split('?');
-                return (
-                    <li style={{ listStyle: 'none' }}>
-                        {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
-                            router.pathname == '/' ? (
-                                <Image src={imageURL} className="post-image" alt="post image" />
-                            ) : (
-                                <a href={imageURL} target='_blank'>
-                                    <Image src={imageURL} className="post-image" alt="post image" />
-                                </a>
-                            )
-                        ) : orgExtension[0] === 'pdf' ? (
+    <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', margin: '0 auto', maxWidth: '200px' }}>
+        {post.imageURLs.map((imageURL: any) => {
+            const parts = imageURL.split('.');
+            const extension = parts[parts.length - 1];
+            const orgExtension = extension.split('?');
+            return (
+                <li style={{ listStyle: 'none' }}>
+                    {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
+                        router.pathname == '/' ? (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" />
+                                <img src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', height: 'auto' }} />
                             </a>
                         ) : (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" />
+                                <img src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', height: 'auto' }} />
                             </a>
-                        )}
-                    </li>
-                );
-            })}
-        </ul>
-    ) : (
-        <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', margin: '0 auto', maxWidth: '200px' }}>
-            {post.imageURLs.map((imageURL: any) => {
-                const parts = imageURL.split('.');
-                const extension = parts[parts.length - 1];
-                const orgExtension = extension.split('?');
-                return (
-                    <li style={{ listStyle: 'none' }}>
-                       {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
-                            router.pathname == '/' ? (
-                                <Image src={imageURL} className="post-image" alt="post image" />
-                            ) : (
-                                <a href={imageURL} target='_blank'>
-                                    <Image src={imageURL} className="post-image" alt="post image" />
-                                </a>
-                            )
-                        ) : orgExtension[0] === 'pdf' ? (
-                            <a href={imageURL} target='_blank'>
-                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" />
-                            </a>
-                        ) : (
-                            <a href={imageURL} target='_blank'>
-                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" />
-                            </a>
-                        )}
-                    </li>
-                );
-            })}
-        </ul>
-    )
+                        )
+                    ) : orgExtension[0] === 'pdf' ? (
+                        <a href={imageURL} target='_blank'>
+                            <img src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ maxWidth: '100%', height: 'auto' }} />
+                        </a>
+                    ) : (
+                        <a href={imageURL} target='_blank'>
+                            <img src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ maxWidth: '100%', height: 'auto' }} />
+                        </a>
+                    )}
+                </li>
+            );
+        })}
+    </ul>
 )}
+
 
 
 
