@@ -319,7 +319,7 @@ const PostItem:React.FC<PostItemProps> = ({
                 
                 </Flex>
             )} */}
-     {post.imageURLs && (
+   {post.imageURLs && (
     post.imageURLs.length > 1 ? (
         <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             {post.imageURLs.map((imageURL: any, index: number) => { // Added index parameter
@@ -327,22 +327,22 @@ const PostItem:React.FC<PostItemProps> = ({
                 const extension = parts[parts.length - 1];
                 const orgExtension = extension.split('?');
                 return (
-                    <li style={{ listStyle: 'none' }} key={index}> {/* Added key prop */}
+                    <li style={{ listStyle: 'none', flex: '1' }} key={index}> {/* Added flex: '1' */}
                         {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
                             router.pathname == '/' ? (
-                                <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> 
+                                <Image src={imageURL} className="post-image" alt="post image" style={{ minWidth: '50%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Adjusted minWidth
                             ) : (
                                 <a href={imageURL} target='_blank'>
-                                    <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> 
+                                    <Image src={imageURL} className="post-image" alt="post image" style={{ minWidth: '50%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Adjusted minWidth
                                 </a>
                             )
                         ) : orgExtension[0] === 'pdf' ? (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> 
+                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ minWidth: '50%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Adjusted minWidth
                             </a>
                         ) : (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> 
+                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ minWidth: '50%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Adjusted minWidth
                             </a>
                         )}
                     </li>
@@ -356,22 +356,22 @@ const PostItem:React.FC<PostItemProps> = ({
                 const extension = parts[parts.length - 1];
                 const orgExtension = extension.split('?');
                 return (
-                    <li style={{ listStyle: 'none' }} key={index}> {/* Added key prop */}
+                    <li style={{ listStyle: 'none', flex: '1' }} key={index}> {/* Added flex: '1' */}
                         {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
                             router.pathname == '/' ? (
-                                <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Added inline styles
+                                <Image src={imageURL} className="post-image" alt="post image" style={{ minWidth: '50%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Adjusted minWidth
                             ) : (
                                 <a href={imageURL} target='_blank'>
-                                    <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Added inline styles
+                                    <Image src={imageURL} className="post-image" alt="post image" style={{ minWidth: '50%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Adjusted minWidth
                                 </a>
                             )
                         ) : orgExtension[0] === 'pdf' ? (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Added inline styles
+                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ minWidth: '50%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Adjusted minWidth
                             </a>
                         ) : (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Added inline styles
+                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ minWidth: '50%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Adjusted minWidth
                             </a>
                         )}
                     </li>
@@ -380,6 +380,7 @@ const PostItem:React.FC<PostItemProps> = ({
         </ul>
     )
 )}
+
 
 
 
