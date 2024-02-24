@@ -52,6 +52,7 @@ type AnswerItemProps = {
 
 const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteValue, onVote, onDeleteAnswer, loadingDelete, userId }) => {
   const [user] = useAuthState(auth);
+    const [creatorPhotoURL, setCreatorPhotoURL] = useState<string | null>(null);
   const [replyForm, setReplyForm] = useState(false);
   const setAuthModalState = useSetRecoilState(AuthModalState);
   const { postStateValue, setPostStateValue } = usePosts();
@@ -70,6 +71,26 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
        
     }
   }  
+    const fetchCreatorData = async () => {
+            try {
+                const creatorDocRef = doc(firestore, 'users', answer.creatorId);
+                const creatorDocSnap = await getDoc(creatorDocRef);
+                if (creatorDocSnap.exists()) {
+                    const creatorData = creatorDocSnap.data();
+                    // If the user has a photoURL, set it in the state
+                    if (creatorData && creatorData.photoURL) {
+                        setCreatorPhotoURL(creatorData.photoURL);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching creator data:', error);
+            }
+        };
+
+        // Call the fetchCreatorData function
+        fetchCreatorData();
+    }, [answer.creatorId]);
+
   const handleReply = async () => {
     setReplyForm(true);
   }
@@ -120,13 +141,12 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
     return (
       <Flex className='main-custom-answer-section abcd'>
         <Box mr={2}>
-        {user?.photoURL? (
-         <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
-            // <Image src={user.photoURL} height="35px" borderRadius={50} mt={1} minWidth={35}></Image>
-        ) : (
-          <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
-        )}
-        </Box>
+                {creatorPhotoURL ? (
+                    <Image src={creatorPhotoURL} alt="User Photo" borderRadius="full" boxSize="30px" />
+                ) : (
+                    <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
+                )}
+            </Box>
         <Stack spacing={1}>
           <Stack direction="row" align="center" fontSize="8pt">
             <Text fontWeight={700}> {answer.creatorDisplayText} </Text>
