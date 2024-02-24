@@ -319,7 +319,7 @@ const PostItem:React.FC<PostItemProps> = ({
                 
                 </Flex>
             )} */}
-       {post.imageURLs && (
+      {post.imageURLs && (
     <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', margin: '0 auto', maxWidth: '200px' }}>
         {post.imageURLs.map((imageURL: any) => {
             const parts = imageURL.split('.');
