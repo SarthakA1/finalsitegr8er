@@ -28,7 +28,7 @@ const AnswerInput:React.FC<AnswerInputProps> = ({ answerText, setAnswerText, use
             <Textarea
               value={answerText}
               onChange={(event) => setAnswerText(event.target.value)}
-placeholder={post.typeOfQuestions && post.typeOfQuestions.value === 'Resource' ? 'Write a Comment' : 'What is the Answer to this Question?'}
+                placeholder="What is the Answer to this Question?"
               fontSize="10pt"
               borderRadius={4}
               minHeight="160px"
