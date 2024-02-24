@@ -112,19 +112,34 @@ const Notification:React.FC<NotificationsProps> = () => {
                     </Flex>
                     <Flex p={4} >
                         {selectedTab === "User Notifications" && (
-                       <List spacing={3} className='notifications_item_lists'>
-                                {notificationsValue.slice(0, 10).map((item: any, index:any) =>
-                                    <ListItem className='notification_item' key={index}>
-{/*                                         <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/subject/${item.subjectId}/answers/${item.id}`}> */}
-{/*                                             {item.notification} */}
- <Text>
-                {item.notification.length > 70 ? `${item.notification.substring(0, 70)}...` : item.notification}
+//                        <List spacing={3} className='notifications_item_lists'>
+//                                 {notificationsValue.slice(0, 10).map((item: any, index:any) =>
+//                                     <ListItem className='notification_item' key={index}>
+// {/*                                         <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/subject/${item.subjectId}/answers/${item.id}`}> */}
+// {/*                                             {item.notification} */}
+//  <Text>
+//                 {item.notification.length > 70 ? `${item.notification.substring(0, 70)}...` : item.notification}
+//             </Text>
+// {/*                                             <Text dangerouslySetInnerHTML={{ __html: item.notification.length > 53 ? item.notification.substring(0, 53).concat('...') : item.notification }} /> */}
+// {/*                                         </Link> */}
+//                                     </ListItem>
+//                                 )}
+//                             </List>
+
+
+                    <List spacing={3} className='notifications_item_lists'>
+    {notificationsValue.slice(0, 10).map((item: any, index: any) =>
+        <ListItem className='notification_item' key={index}>
+            {/* <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/subject/${item.subjectId}/answers/${item.id}`}> */}
+            {/* {item.notification} */}
+            <Text>
+                {`${item.notification.substring(0, 70)}...`} <a href={/*Your link here*/}>{item.postName.length > 30 ? `${item.postName.substring(0, 30)}...` : item.postName}</a>
             </Text>
-{/*                                             <Text dangerouslySetInnerHTML={{ __html: item.notification.length > 53 ? item.notification.substring(0, 53).concat('...') : item.notification }} /> */}
-{/*                                         </Link> */}
-                                    </ListItem>
-                                )}
-                            </List>
+            {/* </Link> */}
+        </ListItem>
+    )}
+</List>
+
 
         
 
