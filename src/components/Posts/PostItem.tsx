@@ -329,19 +329,19 @@ const PostItem:React.FC<PostItemProps> = ({
                 <li style={{ listStyle: 'none', margin: '0 5px', textAlign: 'center' }} key={index}> {/* Adjusted styles */}
                     {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
                         router.pathname == '/' ? (
-                            <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', height: 'auto', verticalAlign: 'middle' }} /> // Adjusted styles
+                            <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', height: 'auto', verticalAlign: 'middle' }} /> 
                         ) : (
                             <a href={imageURL} target='_blank'>
-                                <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', height: 'auto', verticalAlign: 'middle' }} /> // Adjusted styles
+                                <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', height: 'auto', verticalAlign: 'middle' }} /> 
                             </a>
                         )
                     ) : orgExtension[0] === 'pdf' ? (
                         <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }}> {/* Adjusted styles */}
-                            <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '40px', height: 'auto' }} /> {/* Adjusted styles */}
+                            <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '90px', height: 'auto' }} /> {/* Adjusted styles */}
                         </a>
                     ) : (
                         <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }}> {/* Adjusted styles */}
-                            <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '40px', height: 'auto' }} /> {/* Adjusted styles */}
+                            <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '120px', height: 'auto' }} /> {/* Adjusted styles */}
                         </a>
                     )}
                 </li>
