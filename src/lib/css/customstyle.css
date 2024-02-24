@@ -22,7 +22,7 @@
 
 .notifications_container {
     max-height: 500px;
-    width: 400px;
+    width: 500px;
     overflow-y: auto; /* This will add a vertical scrollbar when content overflows */
 }
 
