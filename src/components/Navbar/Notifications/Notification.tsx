@@ -147,7 +147,7 @@ const Notification:React.FC<NotificationsProps> = () => {
     </List>
 </div>
         )
-    })}
+    })}}
 </List>
 
                         )}
