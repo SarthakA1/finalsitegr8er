@@ -20,11 +20,11 @@ type NotificationsProps = {
 
 const formTabs: TabItem[] = [
     {
-        title: 'Notifications',
+        title: 'User Notifications',
         icon: IoDocumentText
     },
     {
-        title: 'My Posts',
+        title: 'User Posts',
         icon: IoImageOutline
     },
 ]
@@ -111,7 +111,7 @@ const Notification:React.FC<NotificationsProps> = () => {
                         ))}
                     </Flex>
                     <Flex p={4} >
-                        {selectedTab === "Notifications" && (
+                        {selectedTab === "User Notifications" && (
                        <List spacing={3} className='notifications_item_lists'>
                                 {notificationsValue.slice(0, 10).map((item: any, index:any) =>
                                     <ListItem className='notification_item' key={index}>
@@ -132,8 +132,8 @@ const Notification:React.FC<NotificationsProps> = () => {
 
             
                         )}
-                        {selectedTab === "My Posts" && (
-                          <div style={{ height: '300px', overflowY: 'scroll' }}>
+                        {selectedTab === "User Posts" && (
+                           <div style={{ height: '300px', overflowY: 'scroll' }}>
     <List spacing={3} className='notification_user_posts'>
         {postStateValue.slice(0, 25).map((item: any, index: any) => {
             return (
@@ -146,9 +146,7 @@ const Notification:React.FC<NotificationsProps> = () => {
         })}
     </List>
 </div>
-        )
-    })}}
-</List>
+
 
                         )}
                     </Flex>
