@@ -113,20 +113,15 @@ const Notification:React.FC<NotificationsProps> = () => {
                     <Flex p={4} >
                         {selectedTab === "User Notifications" && (
                        <List spacing={3} className='notifications_item_lists'>
-  {notificationsValue.slice(0, 10).map((item: any, index:any) =>
-    <ListItem className='notification_item' key={index}>
-      {/* Extracting the post name from the notification */}
-      {item.notification.match(/(?<=added a comment on your post <a.*?>).*?(?=<\/a>)/) && (
-        <Text>
-          {/* Truncate the post name to 50 characters */}
-          {item.notification.match(/(?<=added a comment on your post <a.*?>).*?(?=<\/a>)/)[0].substring(0, 50)}
-          {item.notification.length > 53 ? '...' : ''}
-        </Text>
-      )}
-    </ListItem>
-  )}
-</List>
-
+                                {notificationsValue.slice(0, 10).map((item: any, index:any) =>
+                                    <ListItem className='notification_item' key={index}>
+                                        <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/subject/${item.subjectId}/answers/${item.id}`}>
+{/*                                             {item.notification} */}
+                                            <Text dangerouslySetInnerHTML={{ __html: item.notification.length > 53 ? item.notification.substring(0, 53).concat('...') : item.notification }} />
+                                        </Link>
+                                    </ListItem>
+                                )}
+                            </List>
                         )}
                         {selectedTab === "User Posts" && (
                             <List spacing={3} className='notification_user_posts'>
