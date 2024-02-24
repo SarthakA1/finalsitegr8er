@@ -105,7 +105,7 @@ const Searchinput:React.FC<SearchinputProps> = ({ user }) => {
                 />
             </InputGroup>
             {searchInputValue && (
-                <div className="company_jobs_search">
+                <div className="company_jobs_search" width='700px'>
                     <div id="search-results" className="companysas">
                         <p className="title_heading text-start">Resources</p>
                         <ul
