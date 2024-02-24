@@ -12,17 +12,15 @@ import { IoImageOutline } from "react-icons/io5";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import AuthModal from "../Modal/Auth/AuthModal";
 
-
-
 const CreatePostLink: React.FC = () => {
   const router = useRouter();
   const [user] = useAuthState(auth);
   const setAuthModalState = useSetRecoilState(AuthModalState);
-  const {toggleMenuOpen} = useDirectory()
+  const { toggleMenuOpen } = useDirectory();
 
   const onClick = () => {
     if (!user) {
-      setAuthModalState({ open: true, view: "login"});
+      setAuthModalState({ open: true, view: "login" });
       return;
     }
     const { subjectId } = router.query;
@@ -33,11 +31,12 @@ const CreatePostLink: React.FC = () => {
     }
 
     toggleMenuOpen();
-  }
-    // Open directory menu to select community to post to
+  };
+
+  // Open directory menu to select community to post to
   const onClickResource = () => {
     if (!user) {
-      setAuthModalState({ open: true, view: "login"});
+      setAuthModalState({ open: true, view: "login" });
       return;
     }
     const { subjectId } = router.query;
@@ -46,12 +45,11 @@ const CreatePostLink: React.FC = () => {
       return;
     }
     toggleMenuOpen();
-  }
-    
-  
+  };
+
   return (
     <Flex
-      justify="space-evenly"
+      justify="space-between"
       align="center"
       bg="white"
       height="56px"
@@ -61,12 +59,12 @@ const CreatePostLink: React.FC = () => {
       p={2}
       mb={4}
     >
-       {user?.photoURL ? (
-                <Image src={user.photoURL} height="35px" borderRadius={50} mr={2} ml={4}></Image>
-            ) : (
-              <Icon as={FaUserCircle} fontSize={36} color="gray.300" mr={2} ml={4} />
-            )}
-      <SimpleGrid columns={2}>
+      {user?.photoURL ? (
+        <Image src={user.photoURL} height="35px" borderRadius={50} mr={2} ml={4} />
+      ) : (
+        <Icon as={FaUserCircle} fontSize={36} color="gray.300" mr={2} ml={4} />
+      )}
+      <SimpleGrid columns={2} flex="1" gap={2}>
         <Input
           placeholder="Ask Anything!"
           fontSize="10pt"
@@ -85,9 +83,7 @@ const CreatePostLink: React.FC = () => {
           bg="gray.50"
           borderColor="gray.200"
           height="36px"
-           width="400px"
           borderRadius={4}
-          mr={2}
           onClick={onClick}
         />
         <Input
@@ -108,13 +104,12 @@ const CreatePostLink: React.FC = () => {
           bg="gray.50"
           borderColor="gray.200"
           height="36px"
-          width="400px"
           borderRadius={4}
-          mr={4}
           onClick={onClickResource}
         />
       </SimpleGrid>
-      {/* <Icon
+      {/* 
+      <Icon
         as={IoImageOutline}
         fontSize={24}
         mr={4}
@@ -122,8 +117,10 @@ const CreatePostLink: React.FC = () => {
         cursor="pointer"
         onClick={onClick}
       />
-      <Icon as={BsLink45Deg} fontSize={24} color="gray.400" cursor="pointer" onClick={onClick}/> */}
+      <Icon as={BsLink45Deg} fontSize={24} color="gray.400" cursor="pointer" onClick={onClick}/> 
+      */}
     </Flex>
   );
 };
+
 export default CreatePostLink;
