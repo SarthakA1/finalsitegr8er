@@ -78,7 +78,7 @@ const Searchinput:React.FC<SearchinputProps> = ({ user }) => {
         closeMenu();
     };
     return (
-        <Flex flexGrow={1} maxWidth={700} mr={3}  ml={1} direction="row" justifyContent="right">
+        <Flex flexGrow={1} maxWidth={user ? "auto" : "auto"} mr={3}  ml={1} direction="row" justifyContent="right">
             <InputGroup>
                 <Input placeholder='Search GR8ER' 
                     fontSize='10pt' 
