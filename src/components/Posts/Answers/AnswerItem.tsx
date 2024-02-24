@@ -121,8 +121,8 @@ const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteV
       <Flex className='main-custom-answer-section abcd'>
         <Box mr={2}>
         {user?.photoURL? (
-         // <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
-            <Image src={user.photoURL} height="35px" borderRadius={50} mt={1} minWidth={35}></Image>
+         <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
+            // <Image src={user.photoURL} height="35px" borderRadius={50} mt={1} minWidth={35}></Image>
         ) : (
           <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
         )}
