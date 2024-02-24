@@ -87,7 +87,7 @@ const CreatePostLink: React.FC = () => {
           height="36px"
            width="400px"
           borderRadius={4}
-          mr={4}
+          mr={2}
           onClick={onClick}
         />
         <Input
