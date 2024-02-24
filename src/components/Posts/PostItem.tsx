@@ -326,22 +326,22 @@ const PostItem:React.FC<PostItemProps> = ({
             const extension = parts[parts.length - 1];
             const orgExtension = extension.split('?');
             return (
-                <li style={{ listStyle: 'none', flex: '1', margin: '0 5px' }} key={index}> {/* Added flex: '1' */}
+                <li style={{ listStyle: 'none', flex: '1', margin: '0 5px', textAlign: 'center' }} key={index}> {/* Added flex: '1' and textAlign: 'center' */}
                     {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
                         router.pathname == '/' ? (
-                            <Image src={imageURL} className="post-image" alt="post image" style={{ width: '100%', height: 'auto' }} /> // Adjusted styles
+                            <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', height: 'auto', verticalAlign: 'middle' }} /> // Adjusted styles
                         ) : (
                             <a href={imageURL} target='_blank'>
-                                <Image src={imageURL} className="post-image" alt="post image" style={{ width: '100%', height: 'auto' }} /> // Adjusted styles
+                                <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', height: 'auto', verticalAlign: 'middle' }} /> // Adjusted styles
                             </a>
                         )
                     ) : orgExtension[0] === 'pdf' ? (
                         <a href={imageURL} target='_blank'>
-                            <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '100%', height: 'auto' }} /> // Adjusted styles
+                            <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '30px', height: '30px' }} /> // Adjusted styles
                         </a>
                     ) : (
                         <a href={imageURL} target='_blank'>
-                            <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '100%', height: 'auto' }} /> // Adjusted styles
+                            <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '30px', height: '30px' }} /> // Adjusted styles
                         </a>
                     )}
                 </li>
@@ -349,6 +349,7 @@ const PostItem:React.FC<PostItemProps> = ({
         })}
     </ul>
 )}
+
 
 
 
