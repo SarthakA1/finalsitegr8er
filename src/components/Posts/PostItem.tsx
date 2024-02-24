@@ -330,19 +330,19 @@ const PostItem:React.FC<PostItemProps> = ({
                     <li style={{ listStyle: 'none' }} key={index}> {/* Added key prop */}
                         {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
                             router.pathname == '/' ? (
-                                <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Added inline styles
+                                <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> 
                             ) : (
                                 <a href={imageURL} target='_blank'>
-                                    <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Added inline styles
+                                    <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> 
                                 </a>
                             )
                         ) : orgExtension[0] === 'pdf' ? (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Added inline styles
+                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> 
                             </a>
                         ) : (
                             <a href={imageURL} target='_blank'>
-                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> // Added inline styles
+                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> 
                             </a>
                         )}
                     </li>
