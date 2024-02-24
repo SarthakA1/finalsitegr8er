@@ -62,9 +62,9 @@ const CreatePostLink: React.FC = () => {
       mb={4}
     >
        {user?.photoURL ? (
-                <Image src={user.photoURL} height="35px" borderRadius={50} mr={2}></Image>
+                <Image src={user.photoURL} height="35px" borderRadius={50} mr={2} ml={4}></Image>
             ) : (
-              <Icon as={FaUserCircle} fontSize={36} color="gray.300" mr={2} />
+              <Icon as={FaUserCircle} fontSize={36} color="gray.300" mr={2} ml={4} />
             )}
       <SimpleGrid columns={2}>
         <Input
