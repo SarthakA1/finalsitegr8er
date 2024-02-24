@@ -133,15 +133,18 @@ const Notification:React.FC<NotificationsProps> = () => {
             
                         )}
                         {selectedTab === "User Posts" && (
-                            <List spacing={3} className='notification_user_posts'>
-                                {postStateValue.slice(0, 10).map((item: any, index:any) => {
-                                    return(<ListItem className='notification_user_posts_item' key={index}>
-                                        <Link href={`/subject/${item.subjectId}/answers/${item.id}`}>
-                                            {item.title.length > 53 ? item.title.substring(0, 53).concat('...') : item.title}
-                                        </Link>
-                                    </ListItem>)
-                                })}
-                            </List>
+                            <List spacing={3} className='notification_user_posts' style={{ maxHeight: '400px', overflowY: 'auto' }}>
+    {postStateValue.map((item: any, index: any) => {
+        return (
+            <ListItem className='notification_user_posts_item' key={index}>
+                <Link href={`/subject/${item.subjectId}/answers/${item.id}`}>
+                    {item.title.length > 53 ? item.title.substring(0, 53).concat('...') : item.title}
+                </Link>
+            </ListItem>
+        )
+    })}
+</List>
+
                         )}
                     </Flex>
                 </Flex>
