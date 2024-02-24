@@ -341,7 +341,7 @@ const PostItem:React.FC<PostItemProps> = ({
                         </a>
                     ) : (
                         <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }}> {/* Adjusted styles */}
-                            <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '120px', height: 'auto' }} /> {/* Adjusted styles */}
+                            <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
                         </a>
                     )}
                 </li>
