@@ -20,6 +20,13 @@
     height: auto;
 }
 
+.notifications_container {
+    max-height: 500px;
+    width: 400px;
+    overflow-y: auto; /* This will add a vertical scrollbar when content overflows */
+}
+
+
 .post_list_main_section {
     padding: 10px 6px;
 }
