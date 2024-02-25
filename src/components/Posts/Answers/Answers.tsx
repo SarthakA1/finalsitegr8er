@@ -143,28 +143,28 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
     // }
 
     const getPostAnswers = async () => {
-    try {
-        const answersQuery = query(
-            collection(firestore, "answers"), 
-            where('postId', '==', selectedPost?.id), 
-            orderBy('voteStatus', 'desc'), // Sort by voteStatus in descending order
-            orderBy('createdAt', 'desc') // Then sort by createdAt in descending order
-        );
-        const answerDocs = await getDocs(answersQuery);
-        const answers = answerDocs.docs.map((doc) => ({ 
-            id: doc.id, 
-            ...doc.data(),
-        }));
-        setAnswerStateValue(prev  => ({
-            ...prev,
-            answers: answers as Answer[],
-        }));
+        
+        try {
+            const answersQuery = query(
+                collection(firestore, "answers"), 
+                where('postId', '==', selectedPost?.id), 
+                orderBy('createdAt', 'desc'));
+            const answerDocs = await getDocs(answersQuery);
+            const answers = answerDocs.docs.map((doc) => ({ 
+                id: doc.id, 
+                ...doc.data(),
+            }));
+            //setAnswers(answers as Answer[]);
+            setAnswerStateValue(prev  => ({
+                ...prev,
+                answers: answers as Answer[],
+            }))
+            setFetchLoading(false);
+        } catch (error) {
+            console.log('getPostAnswers error', error)
+        }
         setFetchLoading(false);
-    } catch (error) {
-        console.log('getPostAnswers error', error)
     }
-    setFetchLoading(false);
-}
 
     useEffect(() => {
         if (!selectedPost) return;
