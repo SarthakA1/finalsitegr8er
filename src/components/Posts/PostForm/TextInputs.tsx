@@ -92,12 +92,12 @@ const TextInputs: React.FC<TextInputsProps> = ({
     {
       value: "Academic Question",
       label: "Academic Question",
-      tooltip: "Questions related to academic subjects.",
+      tooltip: "All questions that come from worksheets, question papers, past papers, assessments, or questionbanks and have one fixed answer (These include numericals and exam-style questions)",
     },
     {
       value: "General Question",
       label: "General Doubt",
-      tooltip: "Questions about general topics or concerns.",
+      tooltip: "(All Doubts that are open-ended and generic (These include resource requests, help for tips/tricks, asking for advice, etc) ",
     },
   ];
   const gradeOptions = [
