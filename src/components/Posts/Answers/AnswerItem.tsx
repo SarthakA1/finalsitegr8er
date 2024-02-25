@@ -1,224 +1,223 @@
-import { Answer, AnswerState } from '@/atoms/answersAtom';
-import { Post, PostState } from '@/atoms/postsAtom';
-import { Subject } from '@/atoms/subjectsAtom';
+import { AuthModalState } from '@/atoms/authModalAtom';
 import { auth, firestore } from '@/firebase/clientApp';
-import { Box, Flex, SkeletonCircle, SkeletonText, Stack, Text } from '@chakra-ui/react';
-import { User } from 'firebase/auth';
-import { collection, doc, Firestore, getDocs, increment, orderBy, query, serverTimestamp, Timestamp, where, writeBatch } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
-import { useSetRecoilState } from 'recoil';
-import AnswerInput from './AnswerInput';
-import AnswerItem from './AnswerItem';
-import CommentItem from './AnswerItem';
+import { Box, Flex, Icon, Spinner, Stack, Text, Image } from '@chakra-ui/react';
+import { Timestamp } from 'firebase/firestore';
+import moment from 'moment';
+import React, {useState, useEffect} from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import useAnswers from '@/hooks/useAnswers';
+import { FaUserCircle } from "react-icons/fa";
+import { AiFillLike, AiOutlineLike, AiFillDislike, AiOutlineDislike } from "react-icons/ai";
+import { useSetRecoilState } from 'recoil';
+import { Answer } from '@/atoms/answersAtom';
+import { AnswerReply } from '@/atoms/answersReplyAtom';
+import AnswersReply from "./Reply/AnswersReply";
+import AnswerReplyItem from "./Reply/AnswerReplyItem";
+import { User } from 'firebase/auth';
+import usePosts from '@/hooks/usePosts';
+import { useRouter } from 'next/router';
+import useSubjectData from '@/hooks/useSubjectData';
+import { doc, getDoc, query, collection, where, orderBy, getDocs, } from 'firebase/firestore';
+import { Post } from '@/atoms/postsAtom';
+import useAnswersReply from '@/hooks/useAnswersReply';
 
+// export type AnswerReply = {
+//     id: string;
+//     creatorId: string;
+//     creatorDisplayText: string;
+//     subjectId: string;
+//     postId: string;
+//     answerId: string;
+//     postTitle: string;
+//     text: string;
+//     parentReplyId: string,
+//     voteStatus: string;
+//     createdAt: Timestamp;
 
+// }
 
-type AnswersProps = {
-    user: User;
-    selectedPost: Post | null;
-    subjectId: string;
+type AnswerItemProps = {
+    answer: Answer;
+    userIsCreator: boolean;
+    userVoteValue?: number;
+    //onDeleteAnswer: (answer: Answer) => void;
+    onVote: (answer: Answer,
+      vote: number,
+      subjectId: string) => void;
+    onDeleteAnswer: (answer: Answer) => Promise<boolean>;
+    loadingDelete: boolean;
+    userId: string;
 };
 
-export type Notifications = {
-    id: string;
-    notifyBy: string;
-    notifyTo: string;
-    notification: string;
-    isRead: number;
-    notificationType: string;
-    createdAt: Timestamp;
-
-}
 
 
-
-const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
-    const [users] = useAuthState(auth);
-    const [answerText, setAnswerText] = useState("");
-    const [answers, setAnswers] = useState<Answer[]>([]);
-    const [fetchLoading, setFetchLoading] = useState(true);
-    const [createLoading, setCreateLoading] = useState(false);
-    const [loadingDeleteId, setLoadingDeleteId] = useState("");
-    const setPostState = useSetRecoilState(PostState);
-    const { answerStateValue, setAnswerStateValue, onVote, onDeleteAnswer } = useAnswers();
-    
-
-
-    const onCreateAnswer = async (answerText: string) => {
-        setCreateLoading(true);
-        try {
-            const batch = writeBatch(firestore);
-
-            const answerDocRef = doc(collection(firestore, 'answers'))
-            const notificationDocRef = doc(collection(firestore, 'notifications'))
-
-            const newAnswer: Answer ={
-                id: answerDocRef.id,
-                creatorId: user.uid,
-                creatorDisplayText: user?.displayName! || user?.email!.split("@")[0],
-                subjectId,
-                postId: selectedPost?.id!,
-                postTitle: selectedPost?.title!,
-                text: answerText,
-                voteStatus: 0,
-                createdAt: serverTimestamp() as Timestamp,
-                
-            }
-
-            batch.set(answerDocRef, newAnswer);
-
-            newAnswer.createdAt = {seconds:Date.now() / 1000} as Timestamp
-            if(user.uid !== selectedPost?.creatorId){
-                const newNotification: Notifications = {
-                    id: notificationDocRef.id,
-                    notifyBy: user?.displayName! || user?.email!.split("@")[0],
-                    notifyTo: selectedPost?.creatorDisplayName!,
-                    notification: user?.displayName! || user?.email!.split("@")[0]+' added a comment on your post <a href="/subject/'+selectedPost?.subjectId+'/answers/'+selectedPost?.id+'">'+selectedPost?.title+'</a>',
-                    isRead: 0,
-                    notificationType: 'commentPost',
-                    createdAt: serverTimestamp() as Timestamp,
-                }
-                batch.set(notificationDocRef, newNotification);
-            }
-            const postDocRef = doc(firestore, 'posts', selectedPost?.id!);
-            batch.update(postDocRef, {
-                numberOfAnswers: increment(1)
-            })
-
-            await batch.commit();
-
-
-            setAnswerText("")
-            //setAnswers(prev => [newAnswer, ...prev])
-            setAnswerStateValue(prev  => ({
-                ...prev,
-                answers: [newAnswer, ...prev.answers] as Answer[],
-            }))
-            setPostState(prev => ({
-                ...prev,
-                selectedPost: {
-                    ...prev.selectedPost, numberOfAnswers: prev.selectedPost?.numberOfAnswers! + 1
-                } as Post
-            }))
-
-           
-            
-
-
-        } catch (error) {
-            console.log('onCreateAnswer error', error)
-        }
-        setCreateLoading(false);
-    }
-    // const onDeleteAnswer = async (answer: Answer) => {
-    //     setLoadingDeleteId(answer.id)
-    //     try {
-    //         const batch = writeBatch(firestore);
-    //         const answerDocRef = doc(firestore, 'answers', answer.id);
-    //         batch.delete(answerDocRef);
-
-    //         const postDocRef= doc(firestore, 'posts', selectedPost?.id!)
-    //         batch.update(postDocRef, {
-    //             numberOfAnswers: increment(-1)
-    //         })
-
-    //         await batch.commit()
-
-    //         setPostState(prev => ({
-    //             ...prev,
-    //             selectedPost: {
-    //                 ...prev.selectedPost,
-    //                 numberOfAnswers: prev.selectedPost?.numberOfAnswers! -1
-    //             } as Post
-    //         }))
-
-    //         setAnswers(prev=> prev.filter(item => item.id !== answer.id))
-            
-    //     } catch (error) {
-    //         console.log('onDeleteComment error', error)
-    //     }
-    //     setLoadingDeleteId('')
-    // }
-
-    const getPostAnswers = async () => {
+const AnswerItem:React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVoteValue, onVote, onDeleteAnswer, loadingDelete, userId }) => {
+  const [user] = useAuthState(auth);
+  const [replyForm, setReplyForm] = useState(false);
+  const setAuthModalState = useSetRecoilState(AuthModalState);
+  const { postStateValue, setPostStateValue } = usePosts();
+  const router = useRouter();
+  const { subjectStateValue } = useSubjectData();
+  const [subAnswer, setSubAnswer] = useState<AnswerReply[]>([]);
+  const { answerReplyStateValue, setAnswerReplyStateValue, onAnswerReplyVote, onDeleteAnswerReply } = useAnswersReply();
+  const handleDelete = async () => {
     try {
-        const answersQuery = query(
-            collection(firestore, "answers"), 
-            where('postId', '==', selectedPost?.id), 
-        
-            orderBy('createdAt', 'desc') // Then sort by createdAt in descending order
+        const success = await onDeleteAnswer(answer);
+        if (!success) {
+            throw new Error("Failed to delete post"); 
+        }
+        console.log("Answer was Successfully Deleted");    
+    } catch (error: any) {
+       
+    }
+  }  
+  const handleReply = async () => {
+    setReplyForm(true);
+  }
+  const fetchPost = async (postId: string) => {
+    try {
+      const postDocRef = doc(firestore, "posts", postId);
+      const postDoc = await getDoc(postDocRef);
+      setPostStateValue((prev) => ({
+        ...prev,
+        selectedPost: { id: postDoc.id, ...postDoc.data() } as Post,
+      }));
+    } catch (error) {
+      console.log("fetchPost error", error);
+    }
+  };
+  const getPostSubAnswers = async (postId:any) => {
+    try {
+        const subAnswersQuery = query(
+            collection(firestore, "answers_reply"), 
+            where('postId', '==', postId), 
+            where('parentReplyId', '==', answer.id),
         );
-        const answerDocs = await getDocs(answersQuery);
-        const answers = answerDocs.docs.map((doc) => ({ 
+        const subAnswerDocs = await getDocs(subAnswersQuery);
+        const subAnswers = subAnswerDocs.docs.map((doc) => ({ 
             id: doc.id, 
             ...doc.data(),
         }));
-        setAnswerStateValue(prev  => ({
+        // console.log(subAnswers);
+        // console.log(answer.id);
+        setSubAnswer(subAnswers as AnswerReply[]);
+        setAnswerReplyStateValue((prev:any)  => ({
             ...prev,
-            answers: answers as Answer[],
-        }));
-        setFetchLoading(false);
+            answersReply: subAnswers as Answer[],
+        }))
     } catch (error) {
         console.log('getPostAnswers error', error)
     }
-    setFetchLoading(false);
 }
-
-    useEffect(() => {
-        if (!selectedPost) return;
-        getPostAnswers();
-    }, [selectedPost])
+  useEffect(() => {
+    const { pid } = router.query;
+    if (pid && !postStateValue.selectedPost) {
+      fetchPost(pid as string);
+    }
+    if(pid){
+      getPostSubAnswers(pid as string);
+    }
+  }, [router.query, postStateValue.selectedPost]);
     return (
-        <Box bg='white' borderRadius='0px 0px 4px 4px' p={2} border="1px solid" 
-        borderColor="gray.400" >
-            <Flex direction='column' pl={10} pr={2} mb={6} fontSize="10pt" width="100%">
-                {!fetchLoading && <AnswerInput answerText={answerText} setAnswerText={setAnswerText} user={user} createLoading={createLoading} onCreateAnswer={onCreateAnswer}/>}
-            </Flex>
-            
-            <Stack spacing={2} p={2}>
-                {fetchLoading ? (
-                     <>
-                     {[0, 1, 2].map((item) => (
-                       <Box key={item} padding="6" bg="white">
-                         <SkeletonCircle size="10" />
-                         <SkeletonText mt="4" noOfLines={2} spacing="4" />
-                       </Box>
-                     ))}
-                   </>
-                ) : (
-                    <>
-                        {answerStateValue.answers.length === 0 ? (
-                            <Flex
-                            direction='column'
-                            justify='center'
-                            align="center"
-                            borderTop="1px solid"
-                            borderColor="gray.100"
-                            p={20}>
-                                <Text fontWeight={700} opacity={0.3}> No Answers Yet</Text>
-                            </Flex>
-                        ) : (
-                            <>
-                                {answerStateValue.answers.map((item: any, index:any) =>
-                                    <AnswerItem
-                                    //key={answer.id}
-                                    answer={item}
-                                    userIsCreator={user?.uid === item.creatorId}
-                                    userVoteValue={answerStateValue.answerVotes.find((vote: { answerId: any; }) => vote.answerId === item.id)?.voteValue}
-                                    onVote={onVote}
-                                    onDeleteAnswer={onDeleteAnswer}
-                                    loadingDelete={loadingDeleteId === item.id}
-                                    userId={user?.uid}
-                                    />
-                                )}
-                            </>
-                        )}
-                    </>
-                )}
-            </Stack>
+      <Flex className='main-custom-answer-section abcd'>
+        <Box mr={2}>
+        {user?.photoURL? (
+         <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
+            // <Image src={user.photoURL} height="35px" borderRadius={50} mt={1} minWidth={35}></Image>
+        ) : (
+          <Icon as={FaUserCircle} fontSize={30} color="gray.900" />
+        )}
         </Box>
-    )
-}
-export default Answers;
+        <Stack spacing={1}>
+          <Stack direction="row" align="center" fontSize="8pt">
+            <Text fontWeight={700}> {answer.creatorDisplayText} </Text>
+            <Text color="gray.600">
+              {moment(new Date(answer.createdAt.seconds * 1000)).fromNow()}
+            </Text>
+            {loadingDelete && <Spinner size="sm" />}
+          </Stack>
+          <Text fontSize="10pt">{answer.text}</Text>
+          <Stack direction="row" align="center" cursor="pointer" color="gray.500">
+            {userId === answer.creatorId && (
+              <>
+                <Text
+                  fontSize="9pt"
+                  _hover={{ color: "blue.500" }}
+                  onClick={handleDelete}>
+                  Delete
+                </Text>
+              </>
+            )}
+            <Text
+              fontSize="9pt"
+              _hover={{ color: "blue.500" }}
+              onClick={handleReply}>
+              Reply
+            </Text>
+            {/* {userId === answer.creatorId && (
+              <>
+                <Text
+                  fontSize="9pt"
+                  _hover={{ color: "blue.500" }}
+                  onClick={handleReply}>
+                  Reply
+                </Text>
+              </>
+            )} */}
+            {user
+              ?
+                <Flex align='center' justify='center'>
+                  <Icon as = {userVoteValue === 1 ? AiFillLike : AiOutlineLike} 
+                  color={userVoteValue === 1 ? "#9FB751" : "gray.500"} 
+                  fontSize={24}
+                  onClick={() => onVote(answer, 1, answer.subjectId)} 
+                  cursor="pointer"
+                  mr={0.5}/>
+                  <Text color="gray.500" fontSize='11pt'>{answer.voteStatus}</Text>
+                  <Icon as = {userVoteValue === -1 ?  AiFillDislike : AiOutlineDislike} 
+                  color={userVoteValue === -1 ? "#EB4E45" :  "gray.500"} 
+                  fontSize={22.5}
+                  onClick={() => onVote(answer, -1, answer.subjectId)} 
+                  ml={0.5}
+                  cursor="pointer"
+                  />
+                </Flex> 
+              :
+                <Flex align='center' justify='center'>
+                  <Icon as = {AiOutlineLike} 
+                  color="gray.500" 
+                  fontSize={24}
+                  onClick={() => setAuthModalState({ open:true, view: "login"})} 
+                  cursor="pointer"
+                  mr={0.5}/>
+                  <Text color="gray.500" fontSize='11pt'>{answer.voteStatus}</Text>
+                  <Icon as = {AiOutlineDislike} 
+                  color="gray.500"
+                  fontSize={22.5}
+                  onClick={() => setAuthModalState({ open:true, view: "login"})} 
+                  ml={0.5}
+                  cursor="pointer"
+                  />
+                </Flex>
+            }
+          </Stack>
+          {replyForm && <AnswersReply user={user as User} selectedPost={postStateValue.selectedPost} subjectId={postStateValue.selectedPost?.subjectId as string} answerId={answer?.id as string}/>}
+          {subAnswer.length > 0 ? (
+            subAnswer.filter((item: any) => item.answerId === answer.id)
+              .map((item: any, index: any) => (
+                <AnswerReplyItem 
+                  answerReply={item} 
+                  userIsCreator={userId === item.creatorId} 
+                  userVoteValue={answerReplyStateValue.answerReplyVotes.find((vote: { answerId: any; }) => vote.answerId === item.id)?.voteValue}
+                  onAnswerReplyVote={onAnswerReplyVote}
+                  onDeleteAnswerReply={onDeleteAnswerReply}
+                  userId={userId}
+                />
+              ))
+          ) : (
+            ''
+          )}
+        </Stack>
+      </Flex>
+    );
+            }
+export default AnswerItem;
