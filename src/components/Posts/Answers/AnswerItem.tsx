@@ -13,6 +13,8 @@ import CommentItem from './AnswerItem';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import useAnswers from '@/hooks/useAnswers';
 
+
+
 type AnswersProps = {
     user: User;
     selectedPost: Post | null;
@@ -27,9 +29,12 @@ export type Notifications = {
     isRead: number;
     notificationType: string;
     createdAt: Timestamp;
-};
 
-const Answers: React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
+}
+
+
+
+const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
     const [users] = useAuthState(auth);
     const [answerText, setAnswerText] = useState("");
     const [answers, setAnswers] = useState<Answer[]>([]);
@@ -38,6 +43,8 @@ const Answers: React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
     const [loadingDeleteId, setLoadingDeleteId] = useState("");
     const setPostState = useSetRecoilState(PostState);
     const { answerStateValue, setAnswerStateValue, onVote, onDeleteAnswer } = useAnswers();
+    
+
 
     const onCreateAnswer = async (answerText: string) => {
         setCreateLoading(true);
@@ -57,6 +64,7 @@ const Answers: React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
                 text: answerText,
                 voteStatus: 0,
                 createdAt: serverTimestamp() as Timestamp,
+                
             }
 
             batch.set(answerDocRef, newAnswer);
@@ -81,7 +89,9 @@ const Answers: React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
 
             await batch.commit();
 
+
             setAnswerText("")
+            //setAnswers(prev => [newAnswer, ...prev])
             setAnswerStateValue(prev  => ({
                 ...prev,
                 answers: [newAnswer, ...prev.answers] as Answer[],
@@ -92,103 +102,116 @@ const Answers: React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
                     ...prev.selectedPost, numberOfAnswers: prev.selectedPost?.numberOfAnswers! + 1
                 } as Post
             }))
+
+           
+            
+
+
         } catch (error) {
             console.log('onCreateAnswer error', error)
         }
         setCreateLoading(false);
     }
+    // const onDeleteAnswer = async (answer: Answer) => {
+    //     setLoadingDeleteId(answer.id)
+    //     try {
+    //         const batch = writeBatch(firestore);
+    //         const answerDocRef = doc(firestore, 'answers', answer.id);
+    //         batch.delete(answerDocRef);
 
-    const getMostLikedPost = (answers: Answer[]) => {
-        let mostLikedPost = null;
-        let maxVotes = 0;
+    //         const postDocRef= doc(firestore, 'posts', selectedPost?.id!)
+    //         batch.update(postDocRef, {
+    //             numberOfAnswers: increment(-1)
+    //         })
+
+    //         await batch.commit()
+
+    //         setPostState(prev => ({
+    //             ...prev,
+    //             selectedPost: {
+    //                 ...prev.selectedPost,
+    //                 numberOfAnswers: prev.selectedPost?.numberOfAnswers! -1
+    //             } as Post
+    //         }))
+
+    //         setAnswers(prev=> prev.filter(item => item.id !== answer.id))
+            
+    //     } catch (error) {
+    //         console.log('onDeleteComment error', error)
+    //     }
+    //     setLoadingDeleteId('')
+    // }
+
+    const getPostAnswers = async () => {
+    try {
+        const answersQuery = query(
+            collection(firestore, "answers"), 
+            where('postId', '==', selectedPost?.id), 
         
-        answers.forEach(answer => {
-            if (answer.voteStatus > maxVotes) {
-                mostLikedPost = answer;
-                maxVotes = answer.voteStatus;
-            }
-        });
-
-        return mostLikedPost;
-    };
+            orderBy('createdAt', 'desc') // Then sort by createdAt in descending order
+        );
+        const answerDocs = await getDocs(answersQuery);
+        const answers = answerDocs.docs.map((doc) => ({ 
+            id: doc.id, 
+            ...doc.data(),
+        }));
+        setAnswerStateValue(prev  => ({
+            ...prev,
+            answers: answers as Answer[],
+        }));
+        setFetchLoading(false);
+    } catch (error) {
+        console.log('getPostAnswers error', error)
+    }
+    setFetchLoading(false);
+}
 
     useEffect(() => {
-        const getPostAnswers = async () => {
-            try {
-                const answersQuery = query(
-                    collection(firestore, "answers"), 
-                    where('postId', '==', selectedPost?.id), 
-                    orderBy('createdAt', 'desc')
-                );
-                const answerDocs = await getDocs(answersQuery);
-                const answers = answerDocs.docs.map((doc) => ({ 
-                    id: doc.id, 
-                    ...doc.data(),
-                }));
-                setAnswerStateValue(prev  => ({
-                    ...prev,
-                    answers: answers as Answer[],
-                }));
-                setFetchLoading(false);
-            } catch (error) {
-                console.log('getPostAnswers error', error)
-            }
-            setFetchLoading(false);
-        }
-
-        if (selectedPost) {
-            getPostAnswers();
-        }
+        if (!selectedPost) return;
+        getPostAnswers();
     }, [selectedPost])
-
     return (
-        <Box bg='white' borderRadius='0px 0px 4px 4px' p={2} border="1px solid" borderColor="gray.400">
+        <Box bg='white' borderRadius='0px 0px 4px 4px' p={2} border="1px solid" 
+        borderColor="gray.400" >
             <Flex direction='column' pl={10} pr={2} mb={6} fontSize="10pt" width="100%">
                 {!fetchLoading && <AnswerInput answerText={answerText} setAnswerText={setAnswerText} user={user} createLoading={createLoading} onCreateAnswer={onCreateAnswer}/>}
             </Flex>
             
             <Stack spacing={2} p={2}>
                 {fetchLoading ? (
-                    <>
-                        {[0, 1, 2].map((item) => (
-                            <Box key={item} padding="6" bg="white">
-                                <SkeletonCircle size="10" />
-                                <SkeletonText mt="4" noOfLines={2} spacing="4" />
-                            </Box>
-                        ))}
-                    </>
+                     <>
+                     {[0, 1, 2].map((item) => (
+                       <Box key={item} padding="6" bg="white">
+                         <SkeletonCircle size="10" />
+                         <SkeletonText mt="4" noOfLines={2} spacing="4" />
+                       </Box>
+                     ))}
+                   </>
                 ) : (
                     <>
                         {answerStateValue.answers.length === 0 ? (
                             <Flex
-                                direction='column'
-                                justify='center'
-                                align="center"
-                                borderTop="1px solid"
-                                borderColor="gray.100"
-                                p={20}>
+                            direction='column'
+                            justify='center'
+                            align="center"
+                            borderTop="1px solid"
+                            borderColor="gray.100"
+                            p={20}>
                                 <Text fontWeight={700} opacity={0.3}> No Answers Yet</Text>
                             </Flex>
                         ) : (
                             <>
                                 {answerStateValue.answers.map((item: any, index:any) =>
-                                    <Box
-                                        key={index}
-                                        border={item === getMostLikedPost(answerStateValue.answers) ? "2px solid green" : "none"}
-                                        borderRadius="md"
-                                        p={2}
-                                        mb={2}
-                                    >
-                                        <AnswerItem
-                                            answer={item}
-                                            userIsCreator={user?.uid === item.creatorId}
-                                            userVoteValue={answerStateValue.answerVotes.find((vote: { answerId: any; }) => vote.answerId === item.id)?.voteValue}
-                                            onVote={onVote}
-                                            onDeleteAnswer={onDeleteAnswer}
-                                            loadingDelete={loadingDeleteId === item.id}
-                                            userId={user?.uid}
-                                        />
-                                    </Box>
+                                    <AnswerItem
+                                    //key={answer.id}
+                                    answer={item}
+                                    userIsCreator={user?.uid === item.creatorId}
+                                    userVoteValue={answerStateValue.answerVotes.find((vote: { answerId: any; }) => vote.answerId === item.id)?.voteValue}
+                                    onVote={onVote}
+                                    onDeleteAnswer={onDeleteAnswer}
+                                    loadingDelete={loadingDeleteId === item.id}
+                                    userId={user?.uid}
+                                    />
                                 )}
                             </>
                         )}
@@ -198,5 +221,4 @@ const Answers: React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
         </Box>
     )
 }
-
 export default Answers;
