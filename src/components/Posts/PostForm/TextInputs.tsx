@@ -92,12 +92,12 @@ const TextInputs: React.FC<TextInputsProps> = ({
     {
       value: "Academic Question",
       label: "Academic Question",
-      tooltip: "All questions that come from worksheets, question papers, past papers, assessments, or questionbanks and have one fixed answer (These include numericals and exam-style questions)",
+      tooltip: "Academic questions are those that have a specific answer and usually come from school or test materials like worksheets, exams, or past papers. They often involve solving problems or answering questions with a single correct solution, such as math problems or exam-style questions.",
     },
     {
       value: "General Question",
       label: "General Doubt",
-      tooltip: "(All Doubts that are open-ended and generic (These include resource requests, help for tips/tricks, asking for advice, etc) ",
+      tooltip: "General doubts, on the other hand, are open-ended and can cover a wide range of topics. They might include asking for advice, requesting resources, seeking tips or tricks, or any other queries that aren't tied to a specific answer you may reqired help 'solving'",
     },
   ];
   const gradeOptions = [
@@ -149,7 +149,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
   return (
     <Stack spacing={3} width="100%">
       <Text style={{ marginLeft: 0.5, marginTop: 2, fontWeight: 500 }}>
-        MYP (Move the Slider to select your Grade!)
+        MYP
       </Text>
       <SimpleGrid columns={2} spacing={10}>
         <Flex direction="row" style={{ display: "block" }}>
