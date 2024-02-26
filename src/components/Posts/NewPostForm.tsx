@@ -90,7 +90,19 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
                     if (matchResult) {
                       const extension = matchResult[0].split("/"); // Split the matched URL path after the slash
                       // Store image in storage and get download URL
-                      const imageRef = ref(storage, `posts/${postDocRef.id}/${Date.now()}.${extension[1]}`);
+                      let extensionName = '';
+                      if(extension[1] == 'msword'){
+                        extensionName = '.doc';
+                      } else if(extension[1] == 'vnd.openxmlformats-officedocument.wordprocessingml.document') {
+                        extensionName = '.docx';
+                      } else if(extension[1] == 'vnd.openxmlformats-officedocument.wordprocessingml.template') {
+                        extensionName = '.dotx';
+                      } else if(extension[1] == 'vnd.ms-excel') {
+                        extensionName = '.xls';
+                      } else if(extension[1] == 'vnd.openxmlformats-officedocument.spreadsheetml.sheet'){
+                        extensionName = '.xlsx';
+                      }
+                      const imageRef = ref(storage, `posts/${postDocRef.id}/${Date.now()}${extensionName}`);
                       await uploadString(imageRef, fileUrl, 'data_url');
                       const downloadURL = await getDownloadURL(imageRef);
                       // Add download URL to the array
