@@ -23,7 +23,7 @@ const formTabs: TabItem[] = [
         icon: IoDocumentText
     },
     {
-        title: 'Image',
+        title: 'Attachment',
         icon: IoImageOutline
     },
 ]
@@ -163,7 +163,7 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
                 loading={loading}
               />
             )}
-            {selectedTab === "Image" && (
+            {selectedTab === "Attachment" && (
                 <ImageUpload 
                 selectedFile={selectedFile} 
                 onSelectImage={onSelectFile} 
