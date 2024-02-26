@@ -61,11 +61,12 @@ const usePosts = (subjectData?: Subject) => {
                     updatedPostVotes = [...updatedPostVotes, newVote]
                     const notificationDocRef = doc(collection(firestore, 'notifications'))
                     if(user?.uid !== post?.creatorId){
+                        console.log();
                         const newNotification: Notifications = {
                             id: notificationDocRef.id,
                             notifyBy: user?.displayName! || user?.email!.split("@")[0],
                             notifyTo: post?.creatorDisplayName!,
-                            notification: user?.displayName! || user?.email!.split("@")[0]+' liked your post <a href="/subject/'+post?.subjectId+'/answers/'+post?.id+'">'+post?.title+'</a>',
+                            notification: (user?.displayName! || user?.email!.split("@")[0]) + ' liked your post <a href="/subject/'+post?.subjectId+'/answers/'+post?.id+'">'+post?.title+'</a>',
                             isRead: 0,
                             notificationType: 'like-dislike-post',
                             createdAt: serverTimestamp() as Timestamp,
@@ -109,7 +110,7 @@ const usePosts = (subjectData?: Subject) => {
                         id: notificationDocRef.id,
                         notifyBy: user?.displayName! || user?.email!.split("@")[0],
                         notifyTo: post?.creatorDisplayName!,
-                        notification: user?.displayName! || user?.email!.split("@")[0]+' disliked your post <a href="/subject/'+post?.subjectId+'/answers/'+post?.id+'">'+post?.title+'</a>',
+                        notification: (user?.displayName! || user?.email!.split("@")[0]) + ' disliked your post <a href="/subject/'+post?.subjectId+'/answers/'+post?.id+'">'+post?.title+'</a>',
                         isRead: 0,
                         notificationType: 'like-dislike-post',
                         createdAt: serverTimestamp() as Timestamp,
