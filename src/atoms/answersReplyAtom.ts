@@ -7,9 +7,9 @@ export type AnswerReply = {
     postTitle: string;
     answerId: string;
     subjectId: string;
-    creatorId: string;
+    creatorId?: string;
     parentReplyId: string;
-    creatorDisplayText: string;
+    creatorDisplayText?: string;
     text: string;
     voteStatus: number;
     createdAt: Timestamp;
