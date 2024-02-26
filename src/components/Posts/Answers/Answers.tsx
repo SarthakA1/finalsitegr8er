@@ -75,7 +75,7 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
                     id: notificationDocRef.id,
                     notifyBy: users?.displayName! || users?.email!.split("@")[0],
                     notifyTo: selectedPost?.creatorDisplayName!,
-                    notification: users?.displayName! || users?.email!.split("@")[0]+' added a comment on your post <a href="/subject/'+selectedPost?.subjectId+'/answers/'+selectedPost?.id+'">'+selectedPost?.title+'</a>',
+                    notification: (users?.displayName! || users?.email!.split("@")[0]) + ' added a comment on your post <a href="/subject/'+selectedPost?.subjectId+'/answers/'+selectedPost?.id+'">'+selectedPost?.title+'</a>',
                     isRead: 0,
                     notificationType: 'commentPost',
                     createdAt: serverTimestamp() as Timestamp,

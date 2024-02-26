@@ -222,7 +222,7 @@ const Home: NextPage = () => {
                               ...(gradeFilters.length > 0 ? [where('grade.value', 'in', gradeFilters)] : []),
                               ...(typeofquestionFilters.length > 0 ? [where('typeOfQuestions.label', 'in', typeofquestionFilters)] : []),
                               ...(criteriaFilters.length > 0 ? [where('criteria', 'array-contains-any', criteriaFilters.map((val:any) => ({ label: val, value: val })))] : []),
-                              where('title', 'in', postTitles),
+                              ...(difficultyFilters.length > 0 ? [where('title', 'in', postTitles)] : []),
                               orderBy('createdAt', 'desc')
                           );
                   

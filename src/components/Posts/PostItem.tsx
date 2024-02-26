@@ -97,6 +97,7 @@ const PostItem:React.FC<PostItemProps> = ({
         const totalVoting = voting.length;
         const batch = writeBatch(firestore);
         if(voting.length > 0){
+            console.log(voting[0].id);
             const diffcultyVotingDocRef = doc(firestore, 'diffculty_voting', voting[0].id!);
             batch.update(diffcultyVotingDocRef, {
                 voting: value
