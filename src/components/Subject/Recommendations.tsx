@@ -1,3 +1,4 @@
+
 import {
   Box,
   Button,
@@ -21,7 +22,7 @@ import useSubjectData from "../../hooks/useSubjectData";
 const Recommendations: React.FC = () => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [loading, setLoading] = useState(false);
-  const { subjectStateValue, onJoinOrLeaveSubject, user } = useSubjectData();
+  const { subjectStateValue, onJoinOrLeaveSubject } = useSubjectData();
 
   const getSubjectRecommendations = async () => {
     setLoading(true);
@@ -57,14 +58,24 @@ const Recommendations: React.FC = () => {
     >
       <Flex
         align="flex-end"
+      
         p="6px 10px"
         height="100px"
         borderRadius="4px 4px 0px 0px"
         bgImage="/images/iblmao.png"
+        
+        
         backgroundSize="cover"
+        
       >
-        <Text color="white" fontWeight={700}>
-          Top Subject Groups
+        <Text
+        color="white"
+        fontWeight={700}
+
+        >
+
+        
+        Top Subject Groups
         </Text>
       </Flex>
       <Flex direction="column">
@@ -90,68 +101,64 @@ const Recommendations: React.FC = () => {
                 (snippet) => snippet.subjectId === item.id
               );
               return (
-                <Flex
-                  key={item.id}
-                  position="relative"
-                  align="center"
-                  fontSize="10pt"
-                  borderBottom="1px solid"
-                  borderColor="gray.200"
-                  p="10px 12px"
-                >
-                  <Flex width="80%" align="center">
-                    <Flex width="15%">
-                      <Text>{index + 1}</Text>
+                <Link key={item.id} href={`/subject/${item.id}`}>
+                  <Flex
+                    position="relative"
+                    align="center"
+                    fontSize="10pt"
+                    borderBottom="1px solid"
+                    borderColor="gray.200"
+                    p="10px 12px"
+                  >
+                    <Flex width="80%" align="center">
+                      <Flex width="15%">
+                        <Text>{index + 1}</Text>
+                      </Flex>
+                      <Flex align="center" width="80%">
+                        {item.imageURL ? (
+                          <Image
+                            src={item.imageURL}
+                            borderRadius="full"
+                            boxSize="28px"
+                            mr={2}
+                          />
+                        ) : (
+                          <Icon
+                            as={RiGroup2Fill}
+                            fontSize={30}
+                            color="brand.100"
+                            mr={2}
+                          />
+                        )}
+                        <span
+                          style={{
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
+                          {`${item.id}`}
+                        </span>
+                      </Flex>
                     </Flex>
-                    <Flex align="center" width="80%">
-                      {item.imageURL ? (
-                        <Image
-                          src={item.imageURL}
-                          borderRadius="full"
-                          boxSize="28px"
-                          mr={2}
-                        />
-                      ) : (
-                        <Icon
-                          as={RiGroup2Fill}
-                          fontSize={30}
-                          color="brand.100"
-                          mr={2}
-                        />
-                      )}
-                      <span
-                        style={{
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {`${item.id}`}
-                      </span>
-                    </Flex>
-                  </Flex>
-                  <Box position="absolute" right="10px">
-                    {user ? (
+                    <Box position="absolute" right="10px">
                       <Button
                         height="22px"
                         fontSize="8pt"
                         variant={isJoined ? "outline" : "solid"}
-                        onClick={(e) => {
-                          e.stopPropagation();
+                        onClick={(event) => {
+                          event.stopPropagation();
                           onJoinOrLeaveSubject(item, isJoined);
                         }}
                       >
                         {isJoined ? "Joined" : "Join"}
                       </Button>
-                    ) : (
-                      <Button height="22px" fontSize="8pt">
-                        Login to Join
-                      </Button>
-                    )}
-                  </Box>
-                </Flex>
+                    </Box>
+                  </Flex>
+                </Link>
               );
             })}
+
           </>
         )}
       </Flex>
