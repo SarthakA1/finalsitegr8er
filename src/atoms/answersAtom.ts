@@ -6,8 +6,8 @@ export type Answer = {
     postId: string;
     postTitle: string;
     subjectId: string;
-    creatorId: string;
-    creatorDisplayText: string;
+    creatorId?: string;
+    creatorDisplayText?: string;
     text: string;
     voteStatus: number;
     createdAt: Timestamp;

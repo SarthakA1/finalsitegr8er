@@ -23,9 +23,9 @@ type AnswersReplyProps = {
 };
 
 export type Notifications = {
-    id: string;
-    notifyBy: string;
-    notifyTo: string;
+    id?: string;
+    notifyBy?: string;
+    notifyTo?: string;
     notification: string;
     isRead: number;
     notificationType: string;
@@ -57,8 +57,8 @@ const AnswersReply:React.FC<AnswersReplyProps> = ({ user, selectedPost, subjectI
 
             const newAnswer: AnswerReply ={
                 id: answerDocRef.id,
-                creatorId: user.uid,
-                creatorDisplayText: user?.displayName! || user?.email!.split("@")[0],
+                creatorId: users?.uid,
+                creatorDisplayText: users?.displayName! || users?.email!.split("@")[0],
                 subjectId,
                 postId: selectedPost?.id!,
                 answerId: answerId,
@@ -73,18 +73,18 @@ const AnswersReply:React.FC<AnswersReplyProps> = ({ user, selectedPost, subjectI
             batch.set(answerDocRef, newAnswer);
 
             newAnswer.createdAt = {seconds:Date.now() / 1000} as Timestamp
-            if(user.uid !== selectedPost?.creatorId){
+            //if(user.uid !== selectedPost?.creatorId){
                 const newNotification: Notifications = {
                     id: notificationDocRef.id,
-                    notifyBy: user?.displayName! || user?.email!.split("@")[0],
+                    notifyBy: users?.displayName! || users?.email!.split("@")[0],
                     notifyTo: selectedPost?.creatorDisplayName!,
-                    notification: user?.displayName! || user?.email!.split("@")[0]+' has replies on your reply <a href="/subject/'+selectedPost?.subjectId+'/answers/'+selectedPost?.id+'">'+newAnswer.text+'</a>',
+                    notification: users?.displayName! || users?.email!.split("@")[0]+' has replies on your reply <a href="/subject/'+selectedPost?.subjectId+'/answers/'+selectedPost?.id+'">'+newAnswer.text+'</a>',
                     isRead: 0,
                     notificationType: 'replyPost',
                     createdAt: serverTimestamp() as Timestamp,
                 }
                 batch.set(notificationDocRef, newNotification);
-            }
+            //}
             const postDocRef = doc(firestore, 'posts', selectedPost?.id!);
             batch.update(postDocRef, {
                 numberOfAnswers: increment(1)

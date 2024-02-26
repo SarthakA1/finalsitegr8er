@@ -95,7 +95,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
       tooltip: "Academic questions are those that have a specific answer and usually come from school or test materials like worksheets, exams, or past papers. They often involve solving problems or answering questions with a single correct solution, such as math problems or exam-style questions.",
     },
     {
-      value: "General Question",
+      value: "General Doubt",
       label: "General Doubt",
       tooltip: "General doubts are open-ended and can cover a wide range of topics. They might include asking for advice, requesting resources, seeking tips or tricks, or any other generic queries you may want an answer to",
     },
