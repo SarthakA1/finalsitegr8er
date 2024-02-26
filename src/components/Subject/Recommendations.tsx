@@ -10,6 +10,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { FaReddit } from "react-icons/fa";
 import { RiGroup2Fill } from "react-icons/ri";
@@ -20,7 +21,7 @@ import useSubjectData from "../../hooks/useSubjectData";
 const Recommendations: React.FC = () => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [loading, setLoading] = useState(false);
-  const { subjectStateValue, onJoinOrLeaveSubject } = useSubjectData();
+  const { subjectStateValue, onJoinOrLeaveSubject, user } = useSubjectData();
 
   const getSubjectRecommendations = async () => {
     setLoading(true);
@@ -130,16 +131,23 @@ const Recommendations: React.FC = () => {
                     </Flex>
                   </Flex>
                   <Box position="absolute" right="10px">
-                    <Button
-                      height="22px"
-                      fontSize="8pt"
-                      variant={isJoined ? "outline" : "solid"}
-                      onClick={() => {
-                        onJoinOrLeaveSubject(item, isJoined);
-                      }}
-                    >
-                      {isJoined ? "Joined" : "Join"}
-                    </Button>
+                    {user ? (
+                      <Button
+                        height="22px"
+                        fontSize="8pt"
+                        variant={isJoined ? "outline" : "solid"}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onJoinOrLeaveSubject(item, isJoined);
+                        }}
+                      >
+                        {isJoined ? "Joined" : "Join"}
+                      </Button>
+                    ) : (
+                      <Button height="22px" fontSize="8pt">
+                        Login to Join
+                      </Button>
+                    )}
                   </Box>
                 </Flex>
               );
