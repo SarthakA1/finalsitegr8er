@@ -78,7 +78,7 @@ const AnswersReply:React.FC<AnswersReplyProps> = ({ user, selectedPost, subjectI
                     id: notificationDocRef.id,
                     notifyBy: users?.displayName! || users?.email!.split("@")[0],
                     notifyTo: selectedPost?.creatorDisplayName!,
-                    notification: users?.displayName! || users?.email!.split("@")[0]+' has replies on your reply <a href="/subject/'+selectedPost?.subjectId+'/answers/'+selectedPost?.id+'">'+newAnswer.text+'</a>',
+                    notification: (users?.displayName! || users?.email!.split("@")[0]) + ' has replies on your reply <a href="/subject/'+selectedPost?.subjectId+'/answers/'+selectedPost?.id+'">'+newAnswer.text+'</a>',
                     isRead: 0,
                     notificationType: 'replyPost',
                     createdAt: serverTimestamp() as Timestamp,
