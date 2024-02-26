@@ -97,7 +97,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
     {
       value: "General Question",
       label: "General Doubt",
-      tooltip: "General doubts, on the other hand, are open-ended and can cover a wide range of topics. They might include asking for advice, requesting resources, seeking tips or tricks, or any other queries that aren't tied to a specific answer you may reqired help 'solving'",
+      tooltip: "General doubts are open-ended and can cover a wide range of topics. They might include asking for advice, requesting resources, seeking tips or tricks, or any other generic queries you may want an answer to",
     },
   ];
   const gradeOptions = [
