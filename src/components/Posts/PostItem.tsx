@@ -56,6 +56,7 @@ const PostItem:React.FC<PostItemProps> = ({
     const [showFullBody, setShowFullBody] = useState(false);
 
     const toggleBodyDisplay = () => {
+         event.stopPropagation(); // Prevent the click event from propagating to parent elements
         setShowFullBody(!showFullBody);
     };
     const [user] = useAuthState(auth);
