@@ -101,61 +101,62 @@ const Recommendations: React.FC = () => {
                 (snippet) => snippet.subjectId === item.id
               );
               return (
-                <Link key={item.id} href={`/subject/${item.id}`}>
-                  <Flex
-                    position="relative"
-                    align="center"
-                    fontSize="10pt"
-                    borderBottom="1px solid"
-                    borderColor="gray.200"
-                    p="10px 12px"
-                  >
-                    <Flex width="80%" align="center">
-                      <Flex width="15%">
-                        <Text>{index + 1}</Text>
-                      </Flex>
-                      <Flex align="center" width="80%">
-                        {item.imageURL ? (
-                          <Image
-                            src={item.imageURL}
-                            borderRadius="full"
-                            boxSize="28px"
-                            mr={2}
-                          />
-                        ) : (
-                          <Icon
-                            as={RiGroup2Fill}
-                            fontSize={30}
-                            color="brand.100"
-                            mr={2}
-                          />
-                        )}
-                        <span
-                          style={{
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                          }}
-                        >
-                          {`${item.id}`}
-                        </span>
-                      </Flex>
-                    </Flex>
-                    <Box position="absolute" right="10px">
-                      <Button
-                        height="22px"
-                        fontSize="8pt"
-                        variant={isJoined ? "outline" : "solid"}
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          onJoinOrLeaveSubject(item, isJoined);
-                        }}
-                      >
-                        {isJoined ? "Joined" : "Join"}
-                      </Button>
-                    </Box>
-                  </Flex>
-                </Link>
+               <Link key={item.id} href={`/subject/${item.id}`}>
+  <Flex
+    position="relative"
+    align="center"
+    fontSize="10pt"
+    borderBottom="1px solid"
+    borderColor="gray.200"
+    p="10px 12px"
+  >
+    <Flex width="80%" align="center">
+      <Flex width="15%">
+        <Text>{index + 1}</Text>
+      </Flex>
+      <Flex align="center" width="80%">
+        {item.imageURL ? (
+          <Image
+            src={item.imageURL}
+            borderRadius="full"
+            boxSize="28px"
+            mr={2}
+          />
+        ) : (
+          <Icon
+            as={RiGroup2Fill}
+            fontSize={30}
+            color="brand.100"
+            mr={2}
+          />
+        )}
+        <span
+          style={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {`${item.id}`}
+        </span>
+      </Flex>
+    </Flex>
+    <Box position="absolute" right="10px">
+      <Button
+        height="22px"
+        fontSize="8pt"
+        variant={isJoined ? "outline" : "solid"}
+        onClick={(event) => {
+          event.stopPropagation(); // Prevent click event from propagating
+          onJoinOrLeaveSubject(item, isJoined);
+        }}
+      >
+        {isJoined ? "Joined" : "Join"}
+      </Button>
+    </Box>
+  </Flex>
+</Link>
+
               );
             })}
 
