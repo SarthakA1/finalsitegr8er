@@ -53,6 +53,11 @@ const PostItem:React.FC<PostItemProps> = ({
     onSelectPost,
     homePage
 }:any) => {
+    const [showFullBody, setShowFullBody] = useState(false);
+
+    const toggleBodyDisplay = () => {
+        setShowFullBody(!showFullBody);
+    };
     const [user] = useAuthState(auth);
     const router = useRouter();
     const singlePostPage = !onSelectPost
@@ -303,14 +308,29 @@ const PostItem:React.FC<PostItemProps> = ({
             </Flex>
             {/* <StaticEquationText bodyValue={post.body}/> */}
           <div style={{ maxWidth: '100%', overflow: 'auto' }}>
-  <div 
+{/*   <div 
     dangerouslySetInnerHTML={{ __html: post.body }} 
     style={{
       maxWidth: '100%', // Limit the maximum width
       overflowWrap: 'break-word', // Enable word wrapping
     }} 
   />
-</div>
+</div> */}
+
+                {post.body.length > 400 ? (
+                    <div style={{ maxHeight: showFullBody ? 'none' : '400px', overflow: 'hidden' }}>
+                        <div dangerouslySetInnerHTML={{ __html: post.body }} />
+                    </div>
+                ) : (
+                    <div dangerouslySetInnerHTML={{ __html: post.body }} />
+                )}
+
+                {/* Render See More button if body exceeds 400 characters */}
+                {post.body.length > 400 && (
+                    <Button onClick={toggleBodyDisplay} colorScheme="blue" mt={2}>
+                        {showFullBody ? "See Less" : "See More"}
+                    </Button>
+                )}
 
 
             {/* <Text fontSize='11pt'> {post.body} </Text> */}
