@@ -56,7 +56,7 @@ const PostItem:React.FC<PostItemProps> = ({
     const [showFullBody, setShowFullBody] = useState(false);
 
     const toggleBodyDisplay = () => {
-         event.stopPropagation(); // Prevent the click event from propagating to parent elements
+    
         setShowFullBody(!showFullBody);
     };
     const [user] = useAuthState(auth);
@@ -328,9 +328,9 @@ const PostItem:React.FC<PostItemProps> = ({
 
                 {/* Render See More button if body exceeds 400 characters */}
                 {post.body.length > 400 && (
-                     <Button onClick={(event) => toggleBodyDisplay(event)} colorScheme="blue" mt={2}>
-    {showFullBody ? "See Less" : "See More"}
-</Button>
+                      <Button onClick={toggleBodyDisplay} colorScheme="blue" mt={2}>
+                        {showFullBody ? "See Less" : "See More"}
+                    </Button>
                 )}
 
 
