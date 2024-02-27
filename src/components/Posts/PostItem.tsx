@@ -328,9 +328,9 @@ const PostItem:React.FC<PostItemProps> = ({
 
                 {/* Render See More button if body exceeds 400 characters */}
                 {post.body.length > 400 && (
-                      <Button onClick={toggleBodyDisplay} colorScheme="blue" mt={2}>
-                        {showFullBody ? "See Less" : "See More"}
-                    </Button>
+                     <Button onClick={(e) => { e.stopPropagation(); toggleBodyDisplay(); }} colorScheme="blue" mt={2}>
+            {showFullBody ? "See Less" : "See More"}
+        </Button>
                 )}
 
 
