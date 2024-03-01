@@ -358,11 +358,11 @@ const PostItem:React.FC<PostItemProps> = ({
                             </a>
                         )
                     ) : orgExtension[0] === 'pdf' ? (
-                        <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }}> {/* Adjusted styles */}
+                        <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}> {/* Added onClick handler */}
                             <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
                         </a>
                     ) : (
-                        <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }}> {/* Adjusted styles */}
+                        <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}> {/* Added onClick handler */}
                             <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
                         </a>
                     )}
@@ -371,6 +371,7 @@ const PostItem:React.FC<PostItemProps> = ({
         })}
     </ul>
 )}
+
 
 
 
