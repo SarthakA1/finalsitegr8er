@@ -61,7 +61,7 @@ const useAnswers = () => {
                         id: notificationDocRef.id,
                         notifyBy: user?.displayName! || user?.email!.split("@")[0],
                         notifyTo: answer?.creatorDisplayText!,
-                        notification: <a href="/subject/'+answer?.subjectId+'/answers/'+answer?.postId+'"> (user?.displayName! || user?.email!.split("@")[0]) + ' liked your comment ' +answer?.text</a> ,
+                        notification: (user?.displayName! || user?.email!.split("@")[0]) + ' liked your comment <a href="/subject/'+answer?.subjectId+'/answers/'+answer?.postId+'">'+answer?.text+'</a>',
                         isRead: 0,
                         notificationType: 'like-dislike-post',
                         createdAt: serverTimestamp() as Timestamp,
