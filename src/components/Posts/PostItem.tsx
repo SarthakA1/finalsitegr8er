@@ -359,11 +359,11 @@ const PostItem:React.FC<PostItemProps> = ({
                         )
                     ) : orgExtension[0] === 'pdf' ? (
                         <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }}> {/* Adjusted styles */}
-                            <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '155px', height: 'auto' }} /> {/* Adjusted styles */}
+                            <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
                         </a>
                     ) : (
                         <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }}> {/* Adjusted styles */}
-                            <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '155px', height: 'auto' }} /> {/* Adjusted styles */}
+                            <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
                         </a>
                     )}
                 </li>
