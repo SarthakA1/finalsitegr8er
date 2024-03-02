@@ -2,15 +2,23 @@ import React, { useState } from "react";
 import {
   Stack,
   Input,
+  Textarea,
   Flex,
   Button,
   Text,
   SimpleGrid,
+  FormErrorMessage,
   Tooltip,
   Icon,
 } from "@chakra-ui/react";
 import { InfoOutlineIcon } from "@chakra-ui/icons";
-import { Select, chakraComponents } from "chakra-react-select";
+import {
+  AsyncCreatableSelect,
+  AsyncSelect,
+  CreatableSelect,
+  Select,
+  chakraComponents,
+} from "chakra-react-select";
 import "react-quill/dist/quill.snow.css";
 import { Editor } from "../../common/Editor";
 
@@ -35,21 +43,24 @@ const TextInputs: React.FC<TextInputsProps> = ({
   handleCreatePost,
   loading,
 }) => {
+  function setData(value: string): void {
+    throw new Error("Function not implemented.");
+  }
   const handleInputChange = (name: any, value: any) => {
     onChange({
       target: {
         name,
-        value,
+        value, // Assuming criteria is a comma-separated string
       },
     } as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>);
   };
-
   const [gradeError, setGradeError] = useState<string | null>(null);
   const [typeOfQuestionsError, setTypeOfQuestionsError] = useState<string | null>(
     null
   );
   const [titleError, setTitleError] = useState<string | null>(null);
 
+  // Custom validation function for MYP grade options
   const validateGrade = (value: any) => {
     let error = null;
     if (!value.grade || !value.grade.value) {
@@ -58,6 +69,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
     setGradeError(error);
   };
 
+  // Custom validation function for "Type Of Questions" field
   const validateTypeOfQuestions = (value: any) => {
     let error = null;
     if (!value.typeOfQuestions || !value.typeOfQuestions.value) {
@@ -66,9 +78,10 @@ const TextInputs: React.FC<TextInputsProps> = ({
     setTypeOfQuestionsError(error);
   };
 
-  const validateTitle = (value: string) => {
+  // Custom validation function for title
+  const validateTitle = (value: any) => {
     let error = null;
-    if (!value.trim()) {
+    if (!value.title) {
       error = "Title is required";
     }
     setTitleError(error);
@@ -81,49 +94,75 @@ const TextInputs: React.FC<TextInputsProps> = ({
           <Select
             name="grade"
             placeholder="MYP"
-            value={textInputs.grade.value && textInputs.grade}
+            components={customGradeComponents}
+            value={textInputs.grade.value && textInputs.grade} // Set the value prop for controlled component
             onChange={(selectedGradeOptions: any) => {
               handleInputChange("grade", selectedGradeOptions);
               validateGrade({ grade: selectedGradeOptions });
             }}
-            options={[
-              { value: "1", label: "MYP 1" },
-              { value: "2", label: "MYP 2" },
-              { value: "3", label: "MYP 3" },
-              { value: "4", label: "MYP 4" },
-              { value: "5", label: "MYP 5" },
-            ]}
+            options={gradeOptions}
           />
-          <p style={{ color: "#ff0000", fontSize: "12px", paddingLeft: "3px", paddingTop: "3px" }}>
+          <p
+            style={{
+              color: "#ff0000",
+              fontSize: "12px",
+              paddingLeft: "3px",
+              paddingTop: "3px",
+            }}
+          >
             {gradeError}
           </p>
         </Flex>
         <Flex style={{ display: "block" }}>
+          {textInputs.criteria.value && (
+            <div>
+              <label>Criteria: </label>
+              <span>{textInputs.criteria.value}</span>
+            </div>
+          )}
+          <Select
+            isMulti
+            name="criteria[]"
+            options={criteriaOptions}
+            placeholder="Criteria"
+            components={customCriteriaComponents}
+            value={textInputs.criteria.value && textInputs.criteria} // Set the value prop for controlled component
+            onChange={(selectedOptions: any) =>
+              handleInputChange("criteria", selectedOptions)
+            }
+          />
+        </Flex>
+      </SimpleGrid>
+      <SimpleGrid columns={2} spacing={10}>
+        <Flex style={{ display: "block" }}>
           <Select
             name="typeOfQuestions"
             placeholder="Type Of Question"
-            value={textInputs.typeOfQuestions.value && textInputs.typeOfQuestions}
+            components={customTypeOfQuestionsComponents}
+            value={textInputs.typeOfQuestions.value && textInputs.typeOfQuestions} // Set the value prop for controlled component
             onChange={(selectedtypeOfQuestionsOptions: any) => {
               handleInputChange("typeOfQuestions", selectedtypeOfQuestionsOptions);
               validateTypeOfQuestions({ typeOfQuestions: selectedtypeOfQuestionsOptions });
             }}
-            options={[
-              { value: "Academic Question", label: "Academic Question" },
-              { value: "General Doubt", label: "General Doubt" },
-            ]}
+            options={typeOfQuestionsOptions}
           />
-          <p style={{ color: "#ff0000", fontSize: "12px", paddingLeft: "3px", paddingTop: "3px" }}>
+          <p
+            style={{
+              color: "#ff0000",
+              fontSize: "12px",
+              paddingLeft: "3px",
+              paddingTop: "3px",
+            }}
+          >
             {typeOfQuestionsError}
           </p>
         </Flex>
-      </SimpleGrid>
-      <SimpleGrid columns={2} spacing={10}>
         <Input
           name="title"
           value={textInputs.title}
           onChange={(e: any) => {
             handleInputChange("title", e.target.value);
-            validateTitle(e.target.value);
+            validateTitle({ title: e.target.value });
           }}
           _placeholder={{ color: "gray.500" }}
           _focus={{
@@ -134,9 +173,16 @@ const TextInputs: React.FC<TextInputsProps> = ({
           }}
           fontSize="10pt"
           borderRadius={4}
-          placeholder="Title"
+          placeholder="Topic"
         />
-        <p style={{ color: "#ff0000", fontSize: "12px", paddingLeft: "3px", paddingTop: "3px" }}>
+        <p
+          style={{
+            color: "#ff0000",
+            fontSize: "12px",
+            paddingLeft: "3px",
+            paddingTop: "3px",
+          }}
+        >
           {titleError}
         </p>
       </SimpleGrid>
@@ -152,16 +198,14 @@ const TextInputs: React.FC<TextInputsProps> = ({
         <Button
           height="34px"
           padding="0px 30px"
-          disabled={!textInputs.title || !textInputs.body || !textInputs.typeOfQuestions || !textInputs.typeOfQuestions.value || !textInputs.grade || !textInputs.grade.value}
+          disabled={!textInputs.title || !textInputs.body || !textInputs.typeOfQuestions || !textInputs.typeOfQuestions.value || !textInputs.grade || !textInputs.grade.value || titleError || typeOfQuestionsError || gradeError}
           isLoading={loading}
           onClick={() => {
-            validateGrade(textInputs);
             validateTypeOfQuestions(textInputs);
-            validateTitle(textInputs.title);
-            if (!gradeError && !typeOfQuestionsError && !titleError) {
+            validateGrade(textInputs);
+            validateTitle(textInputs);
+            if (!titleError && !typeOfQuestionsError && !gradeError) {
               handleCreatePost();
-            } else {
-              alert("Please fill in all mandatory fields.");
             }
           }}
         >
@@ -171,5 +215,4 @@ const TextInputs: React.FC<TextInputsProps> = ({
     </Stack>
   );
 };
-
 export default TextInputs;
