@@ -54,20 +54,27 @@ const TextInputs: React.FC<TextInputsProps> = ({
       },
     } as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>);
   };
+  const [gradeError, setGradeError] = useState<string | null>(null);
   const [typeOfQuestionsError, setTypeOfQuestionsError] = useState<string | null>(
     null
   );
 
+  // Custom validation function for MYP grade options
+  const validateGrade = (value: any) => {
+    let error = null;
+    if (!value.grade || !value.grade.value) {
+      error = "MYP Grade is required";
+    }
+    setGradeError(error);
+  };
+
   // Custom validation function for "Type Of Questions" field
   const validateTypeOfQuestions = (value: any) => {
     let error = null;
-    if (!value.typeOfQuestions) {
+    if (!value.typeOfQuestions || !value.typeOfQuestions.value) {
       error = "Type Of Questions is required";
     }
     setTypeOfQuestionsError(error);
-    if (error == null) {
-      handleCreatePost();
-    }
   };
 
   const criteriaOptions = [
@@ -148,9 +155,6 @@ const TextInputs: React.FC<TextInputsProps> = ({
   };
   return (
     <Stack spacing={3} width="100%">
-{/*       <Text style={{ marginLeft: 0.5, marginTop: 2, fontWeight: 500 }}>
-        MYP
-      </Text> */}
       <SimpleGrid columns={2} spacing={10}>
         <Flex direction="row" style={{ display: "block" }}>
           <Select
@@ -158,11 +162,22 @@ const TextInputs: React.FC<TextInputsProps> = ({
             placeholder="MYP"
             components={customGradeComponents}
             value={textInputs.grade.value && textInputs.grade} // Set the value prop for controlled component
-            onChange={(selectedGradeOptions: any) =>
-              handleInputChange("grade", selectedGradeOptions)
-            }
+            onChange={(selectedGradeOptions: any) => {
+              handleInputChange("grade", selectedGradeOptions);
+              validateGrade({ grade: selectedGradeOptions });
+            }}
             options={gradeOptions}
           />
+          <p
+            style={{
+              color: "#ff0000",
+              fontSize: "12px",
+              paddingLeft: "3px",
+              paddingTop: "3px",
+            }}
+          >
+            {gradeError}
+          </p>
         </Flex>
         <Flex style={{ display: "block" }}>
           {textInputs.criteria.value && (
@@ -191,9 +206,10 @@ const TextInputs: React.FC<TextInputsProps> = ({
             placeholder="Type Of Question"
             components={customTypeOfQuestionsComponents}
             value={textInputs.typeOfQuestions.value && textInputs.typeOfQuestions} // Set the value prop for controlled component
-            onChange={(selectedtypeOfQuestionsOptions: any) =>
-              handleInputChange("typeOfQuestions", selectedtypeOfQuestionsOptions)
-            }
+            onChange={(selectedtypeOfQuestionsOptions: any) => {
+              handleInputChange("typeOfQuestions", selectedtypeOfQuestionsOptions);
+              validateTypeOfQuestions({ typeOfQuestions: selectedtypeOfQuestionsOptions });
+            }}
             options={typeOfQuestionsOptions}
           />
           <p
@@ -235,9 +251,13 @@ const TextInputs: React.FC<TextInputsProps> = ({
         <Button
           height="34px"
           padding="0px 30px"
-          disabled={!textInputs.title || !textInputs.body}
+          disabled={!textInputs.title || !textInputs.body || !textInputs.typeOfQuestions || !textInputs.typeOfQuestions.value || !textInputs.grade || !textInputs.grade.value}
           isLoading={loading}
-          onClick={() => validateTypeOfQuestions(textInputs)}
+          onClick={() => {
+            validateTypeOfQuestions(textInputs);
+            validateGrade(textInputs);
+            handleCreatePost();
+          }}
         >
           Ask
         </Button>

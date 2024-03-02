@@ -318,7 +318,7 @@ const PostItem:React.FC<PostItemProps> = ({
   />
 </div> */}
 
-                {post.body.length > 350 ? (
+                {post.body.length > 450 ? (
                     <div style={{ maxHeight: showFullBody ? 'none' : '400px', overflowY: 'hidden' }}>
                         <div dangerouslySetInnerHTML={{ __html: post.body }} />
                     </div>
@@ -327,7 +327,7 @@ const PostItem:React.FC<PostItemProps> = ({
                 )}
 
                 {/* Render See More button if body exceeds 400 characters */}
-                {post.body.length > 350 && (
+                {post.body.length > 450 && (
                      <Button onClick={(e) => { e.stopPropagation(); toggleBodyDisplay(); }} colorScheme="blue" mt={2}>
             {showFullBody ? "See Less" : "See More"}
         </Button>
