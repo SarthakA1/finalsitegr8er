@@ -70,82 +70,6 @@ const TextInputs: React.FC<TextInputsProps> = ({
     }
   };
 
-  const criteriaOptions = [
-    {
-      value: "Criteria A",
-      label: "Criteria A",
-    },
-    {
-      value: "Criteria B",
-      label: "Criteria B",
-    },
-    {
-      value: "Criteria C",
-      label: "Criteria C",
-    },
-    {
-      value: "Criteria D",
-      label: "Criteria D",
-    },
-  ];
-  const typeOfQuestionsOptions = [
-    {
-      value: "Academic Question",
-      label: "Academic Question",
-      tooltip: "Academic questions are those that have a specific answer and usually come from school or test materials like worksheets, exams, or past papers. They often involve solving problems or answering questions with a single correct solution, such as math problems or exam-style questions.",
-    },
-    {
-      value: "General Doubt",
-      label: "General Doubt",
-      tooltip: "General doubts are open-ended and can cover a wide range of topics. They might include asking for advice, requesting resources, seeking tips or tricks, or any other generic queries you may want an answer to",
-    },
-  ];
-  const gradeOptions = [
-    {
-      value: "1",
-      label: "MYP 1",
-    },
-    {
-      value: "2",
-      label: "MYP 2",
-    },
-    {
-      value: "3",
-      label: "MYP 3",
-    },
-    {
-      value: "4",
-      label: "MYP 4",
-    },
-    {
-      value: "5",
-      label: "MYP 5",
-    },
-  ];
-  const customCriteriaComponents = {
-    Option: ({ children, ...props }: any) => (
-      <chakraComponents.Option {...props}>{children}</chakraComponents.Option>
-    ),
-  };
-  const customTypeOfQuestionsComponents = {
-    Option: ({ children, ...props }: any) => (
-      <chakraComponents.Option {...props}>
-        <Flex alignItems="center">
-          <Text>{children}</Text>
-          {props.data.tooltip && (
-            <Tooltip label={props.data.tooltip}>
-              <Icon as={InfoOutlineIcon} color="gray.500" ml={2} />
-            </Tooltip>
-          )}
-        </Flex>
-      </chakraComponents.Option>
-    ),
-  };
-  const customGradeComponents = {
-    Option: ({ children, ...props }: any) => (
-      <chakraComponents.Option {...props}>{children}</chakraComponents.Option>
-    ),
-  };
   return (
     <Stack spacing={3} width="100%">
       <SimpleGrid columns={2} spacing={10}>
@@ -153,8 +77,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
           <Select
             name="grade"
             placeholder="MYP"
-            components={customGradeComponents}
-            value={textInputs.grade.value && textInputs.grade} // Set the value prop for controlled component
+            value={textInputs.grade.value}
             onChange={(selectedGradeOptions: any) =>
               handleInputChange("grade", selectedGradeOptions)
             }
@@ -162,19 +85,12 @@ const TextInputs: React.FC<TextInputsProps> = ({
           />
         </Flex>
         <Flex style={{ display: "block" }}>
-          {textInputs.criteria.value && (
-            <div>
-              <label>Criteria: </label>
-              <span>{textInputs.criteria.value}</span>
-            </div>
-          )}
           <Select
             isMulti
             name="criteria[]"
             options={criteriaOptions}
             placeholder="Criteria"
-            components={customCriteriaComponents}
-            value={textInputs.criteria.value && textInputs.criteria} // Set the value prop for controlled component
+            value={textInputs.criteria}
             onChange={(selectedOptions: any) =>
               handleInputChange("criteria", selectedOptions)
             }
@@ -186,8 +102,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
           <Select
             name="typeOfQuestions"
             placeholder="Type Of Question"
-            components={customTypeOfQuestionsComponents}
-            value={textInputs.typeOfQuestions.value && textInputs.typeOfQuestions} // Set the value prop for controlled component
+            value={textInputs.typeOfQuestions.value}
             onChange={(selectedtypeOfQuestionsOptions: any) =>
               handleInputChange("typeOfQuestions", selectedtypeOfQuestionsOptions)
             }
@@ -232,7 +147,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
         <Button
           height="34px"
           padding="0px 30px"
-          disabled={!textInputs.title || !textInputs.body}
+          disabled={!textInputs.title || !textInputs.body || !textInputs.typeOfQuestions.value}
           isLoading={loading}
           onClick={() => validateTypeOfQuestions()}
         >
