@@ -102,7 +102,7 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
                       } else if(extension[1] == 'vnd.openxmlformats-officedocument.spreadsheetml.sheet'){
                         extensionName = '.xlsx';
                       } else {
-                        extensionName = extension[1];
+                        extensionName = '.'+extension[1];
                       }
                       const imageRef = ref(storage, `posts/${postDocRef.id}/${Date.now()}${extensionName}`);
                       await uploadString(imageRef, fileUrl, 'data_url');
