@@ -43,7 +43,7 @@ const UserMenu:React.FC = () => {
                     </Flex>
                          </MenuButton>
                          
-  <MenuList>
+  <MenuList style={{ height: '300px', overflowY: 'scroll' }}>
     <Subjects />
     
   </MenuList>
