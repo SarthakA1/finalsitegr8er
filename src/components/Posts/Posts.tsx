@@ -171,13 +171,10 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
         getPosts();
     }, [subjectData])
     return (
-        <>
-        { loading ? (
-            <PostLoader />
-        ) : ( 
-           <Stack spacing={8}>
-               <div className='filter_main_section'>
-                    <div className='filter_main_grade_section' style={{ display: 'flex', width: '100%'}}>
+        <Flex>
+            <Stack spacing={8} flex={1}>
+                <div className='filter_main_section'>
+                <div className='filter_main_grade_section'>
                         <Text style={{fontSize: "11px", fontWeight: "600"}}>MYP</Text>
                         <span className={`filter_main_grade_sub_section ${activeFilters.grade && (activeFilters.grade as string[]).includes('1') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '1')}>MYP 1</span>
                         <span className={`filter_main_grade_sub_section ${activeFilters.grade && (activeFilters.grade as string[]).includes('2') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '2')}>MYP 2</span>
@@ -205,30 +202,23 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
                         <span className={`filter_main_difficulty_sub_section ${activeFilters.difficulty && (activeFilters.difficulty as string[]).includes('hard') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('difficulty', 'hard')}>Hard</span>
                     </div>
                 </div>
-
-                {/* <Select placeholder='Sort By Tags' onChange={handleChangeFilter}>
-                    <option value='Criteria A'>Criteria A</option>
-                    <option value='Criteria B'>Criteria B</option>
-                    <option value='Criteria C'>Criteria C</option>
-                    <option value='Criteria D'>Criteria D</option>
-                    <option value='Academic Question'>Academic Question</option>
-                    <option value='General Question'>General Question</option>
-                </Select> */}
-                {postStateValue.posts.map((item: any, index:any) => 
-                    <PostItem 
-                    post={item} 
-                    userIsCreator={user?.uid === item.creatorId}
-                    userVoteValue={postStateValue.postVotes.find((vote: { postId: any; }) => vote.postId === item.id)?.voteValue}
-                    onVote={onVote}
-                    onSelectPost={onSelectPost}
-                    onDeletePost={onDeletePost}
-                    key={index}
-                    />
+                { loading ? (
+                    <PostLoader />
+                ) : ( 
+                    postStateValue.posts.map((item: any, index: any) => 
+                        <PostItem 
+                            post={item} 
+                            userIsCreator={user?.uid === item.creatorId}
+                            userVoteValue={postStateValue.postVotes.find((vote: { postId: any; }) => vote.postId === item.id)?.voteValue}
+                            onVote={onVote}
+                            onSelectPost={onSelectPost}
+                            onDeletePost={onDeletePost}
+                            key={index}
+                        />
+                    )
                 )}
             </Stack>
-        )}
-        
-        </>
-        )
+        </Flex>
+    );
 }
 export default Posts;

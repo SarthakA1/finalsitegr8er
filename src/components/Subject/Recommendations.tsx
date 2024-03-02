@@ -146,8 +146,11 @@ const Recommendations: React.FC = () => {
         height="22px"
         fontSize="8pt"
         variant={isJoined ? "outline" : "solid"}
-       
-        onClick={(e) => { e.stopPropagation(); onJoinOrLeaveSubject(item, isJoined) }}
+        onClick={(e) => {
+          e.stopPropagation(); // Prevent click event from propagating
+          onJoinOrLeaveSubject(item, isJoined);
+        }}
+        
       >
         {isJoined ? "Joined" : "Join"}
       </Button>
