@@ -130,9 +130,7 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
        
     }
 
-    const redirectToShareResource = () => {
-      router.push('/path/to/NewShareResourcePostForm.tsx');
-  };
+   
 
     const onTextChange = ({
         target: { name, value },
@@ -184,10 +182,10 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
                   </Alert>
 
                 )}
-                 <Flex justify="center" mt={4}>
-                <Button onClick={redirectToShareResource} variant="outline" colorScheme="blue">Or share anything!</Button>
-            </Flex>
+            
     </Flex>
+
+    
 
     
  )
