@@ -333,7 +333,7 @@ const Home: NextPage = () => {
               <div className='filter_main_question_section'>
                   <Text style={{fontSize: "12px", fontWeight: "600", marginTop: "4px"}}>Type</Text>
                   <span className={`filter_main_question_sub_section_background ${activeFilters.typeofquestion && (activeFilters.typeofquestion as string[]).includes('Academic Question') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('typeofquestion', 'Academic Question')}>Academic Questions</span>
-                  <span className={`filter_main_question_sub_section_without_background ${activeFilters.typeofquestion && (activeFilters.typeofquestion as string[]).includes('General Doubt') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('typeofquestion', 'General Doubt')}>General Doubt</span>
+                  <span className={`filter_main_question_sub_section_without_background ${activeFilters.typeofquestion && (activeFilters.typeofquestion as string[]).includes('General Doubt') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('typeofquestion', 'General Doubt')}>General Doubts</span>
                   <span className={`filter_main_question_sub_section_without_backgrouund_border ${activeFilters.typeofquestion && (activeFilters.typeofquestion as string[]).includes('Resource') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('typeofquestion', 'Resource')}>Resources</span>
               </div>
               <div className='filter_main_criteria_section'>
