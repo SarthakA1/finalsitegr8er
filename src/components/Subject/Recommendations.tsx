@@ -1,4 +1,3 @@
-
 import {
   Box,
   Button,
@@ -11,7 +10,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { FaReddit } from "react-icons/fa";
 import { RiGroup2Fill } from "react-icons/ri";
@@ -58,24 +56,14 @@ const Recommendations: React.FC = () => {
     >
       <Flex
         align="flex-end"
-      
         p="6px 10px"
         height="100px"
         borderRadius="4px 4px 0px 0px"
         bgImage="/images/iblmao.png"
-        
-        
         backgroundSize="cover"
-        
       >
-        <Text
-        color="white"
-        fontWeight={700}
-
-        >
-
-        
-        Top Subject Groups
+        <Text color="white" fontWeight={700}>
+          Top Subject Groups
         </Text>
       </Flex>
       <Flex direction="column">
@@ -101,70 +89,71 @@ const Recommendations: React.FC = () => {
                 (snippet) => snippet.subjectId === item.id
               );
               return (
-               <Link key={item.id} href={`/subject/${item.id}`}>
-  <Flex
-    position="relative"
-    align="center"
-    fontSize="10pt"
-    borderBottom="1px solid"
-    borderColor="gray.200"
-    p="10px 12px"
-  >
-    <Flex width="80%" align="center">
-      <Flex width="15%">
-        <Text>{index + 1}</Text>
-      </Flex>
-      <Flex align="center" width="80%">
-        {item.imageURL ? (
-          <Image
-            src={item.imageURL}
-            borderRadius="full"
-            boxSize="28px"
-            mr={2}
-          />
-        ) : (
-          <Icon
-            as={RiGroup2Fill}
-            fontSize={30}
-            color="brand.100"
-            mr={2}
-          />
-        )}
-        <span
-          style={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {`${item.id}`}
-        </span>
-      </Flex>
-    </Flex>
-    <Box position="absolute" right="10px">
-      <Button
-        height="22px"
-        fontSize="8pt"
-        variant={isJoined ? "outline" : "solid"}
-        onClick={(e) => {
-          e.stopPropagation(); // Prevent click event from propagating
-          onJoinOrLeaveSubject(item, isJoined);
-        }}
-        
-      >
-        {isJoined ? "Joined" : "Join"}
-      </Button>
-    </Box>
-  </Flex>
-</Link>
-
+                <Flex
+                  key={item.id}
+                  onClick={() => {
+                    window.location.href = `/subject/${item.id}`;
+                  }}
+                  position="relative"
+                  align="center"
+                  fontSize="10pt"
+                  borderBottom="1px solid"
+                  borderColor="gray.200"
+                  p="10px 12px"
+                  cursor="pointer"
+                >
+                  <Flex width="80%" align="center">
+                    <Flex width="15%">
+                      <Text>{index + 1}</Text>
+                    </Flex>
+                    <Flex align="center" width="80%">
+                      {item.imageURL ? (
+                        <Image
+                          src={item.imageURL}
+                          borderRadius="full"
+                          boxSize="28px"
+                          mr={2}
+                        />
+                      ) : (
+                        <Icon
+                          as={RiGroup2Fill}
+                          fontSize={30}
+                          color="brand.100"
+                          mr={2}
+                        />
+                      )}
+                      <span
+                        style={{
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {`${item.id}`}
+                      </span>
+                    </Flex>
+                  </Flex>
+                  <Box position="absolute" right="10px">
+                    <Button
+                      height="22px"
+                      fontSize="8pt"
+                      variant={isJoined ? "outline" : "solid"}
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent click event from propagating
+                        onJoinOrLeaveSubject(item, isJoined);
+                      }}
+                    >
+                      {isJoined ? "Joined" : "Join"}
+                    </Button>
+                  </Box>
+                </Flex>
               );
             })}
-
           </>
         )}
       </Flex>
     </Flex>
   );
 };
+
 export default Recommendations;
