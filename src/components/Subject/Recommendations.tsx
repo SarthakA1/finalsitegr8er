@@ -30,7 +30,7 @@ const Recommendations: React.FC = () => {
       const subjectQuery = query(
         collection(firestore, "subjects"),
         orderBy("numberOfMembers", "desc"),
-        limit(20)
+        limit(30)
       );
       const subjectDocs = await getDocs(subjectQuery);
       const subjects = subjectDocs.docs.map((doc) => ({
