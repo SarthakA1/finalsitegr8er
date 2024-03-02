@@ -133,9 +133,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
   }
   return (
     <Stack spacing={3} width="100%">
-      <Text style={{ marginLeft: 0.5, marginTop: 2, fontWeight: 500 }}>
-      MYP (Move the Slider to select your Grade!)
-      </Text>
+      
       <SimpleGrid columns={2} spacing={10}>
         <Flex direction='row' style={{display: "block"}}>
           <Select
