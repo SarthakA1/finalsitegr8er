@@ -232,15 +232,16 @@ const TextInputs: React.FC<TextInputsProps> = ({
         }}
       />
       <Flex justify="flex-end">
-        <Button
+      <Button
   height="34px"
   padding="0px 30px"
-  disabled={!textInputs.title || !textInputs.body || !textInputs.grade || !textInputs.criteria || !textInputs.typeOfQuestions}
+  disabled={!textInputs.title || !textInputs.body || !textInputs.grade.value || !textInputs.criteria.value || !textInputs.typeOfQuestions.value}
   isLoading={loading}
   onClick={() => validateTypeOfQuestions(textInputs)}
 >
   Ask
 </Button>
+
       </Flex>
     </Stack>
   );
