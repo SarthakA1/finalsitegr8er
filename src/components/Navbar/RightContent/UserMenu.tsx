@@ -3,6 +3,7 @@ import { Menu, MenuButton, Button, MenuList, MenuItem, Icon, Flex, Image } from 
 import { signOut, User } from 'firebase/auth';
 import React from 'react';
 import { FaUserCircle } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
 import { BsChevronDown } from "react-icons/bs";
 import { VscAccount } from "react-icons/vsc";
 import { TbLogout } from "react-icons/tb";
@@ -12,6 +13,7 @@ import { useResetRecoilState, useSetRecoilState } from 'recoil';
 import { subjectState } from '@/atoms/subjectsAtom';
 import { AuthModalState } from '@/atoms/authModalAtom';
 import router from 'next/router';
+import 
 
 type UserMenuProps = {
     user?: User | null;
@@ -68,7 +70,7 @@ const UserMenu:React.FC<UserMenuProps> = ({ user }) => {
     onClick={redirectToCodeofHonor}
     >
     <Flex align="center">
-        <Icon fontSize={20} mr={2} as={TbLogout} />
+        <Icon fontSize={20} mr={2} as={FaStar} />
         Code of Honor
     </Flex>
     </MenuItem>
