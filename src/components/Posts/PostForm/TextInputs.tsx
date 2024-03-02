@@ -27,7 +27,7 @@ type TextInputsProps = {
     title: string;
     body: string;
     grade: { value: string; label: string };
-    criteria: { value: string; label: string };
+    criteria: { value: string; label: string }[];
     typeOfQuestions: { value: string; label: string };
   };
   onChange: (
@@ -59,13 +59,13 @@ const TextInputs: React.FC<TextInputsProps> = ({
   );
 
   // Custom validation function for "Type Of Questions" field
-  const validateTypeOfQuestions = (value: any) => {
+  const validateTypeOfQuestions = () => {
     let error = null;
-    if (!value.typeOfQuestions) {
+    if (!textInputs.typeOfQuestions.value) {
       error = "Type Of Questions is required";
     }
     setTypeOfQuestionsError(error);
-    if (error == null) {
+    if (!error && textInputs.title && textInputs.body) {
       handleCreatePost();
     }
   };
@@ -148,9 +148,6 @@ const TextInputs: React.FC<TextInputsProps> = ({
   };
   return (
     <Stack spacing={3} width="100%">
-{/*       <Text style={{ marginLeft: 0.5, marginTop: 2, fontWeight: 500 }}>
-        MYP
-      </Text> */}
       <SimpleGrid columns={2} spacing={10}>
         <Flex direction="row" style={{ display: "block" }}>
           <Select
@@ -237,7 +234,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
           padding="0px 30px"
           disabled={!textInputs.title || !textInputs.body}
           isLoading={loading}
-          onClick={() => validateTypeOfQuestions(textInputs)}
+          onClick={() => validateTypeOfQuestions()}
         >
           Ask
         </Button>
