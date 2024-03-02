@@ -131,7 +131,7 @@ const About: React.FC<AboutProps> = ({
                   <Text >
                   {subjectData.numberOfMembers}
                   </Text>
-                  <Text>Member(s)</Text>
+                  <Text>Members</Text>
                 </Flex>
                 
               </Flex>
