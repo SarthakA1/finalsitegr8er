@@ -11,6 +11,7 @@ import { Text } from "@chakra-ui/react";
 import { useResetRecoilState, useSetRecoilState } from 'recoil';
 import { subjectState } from '@/atoms/subjectsAtom';
 import { AuthModalState } from '@/atoms/authModalAtom';
+import router from 'next/router';
 
 type UserMenuProps = {
     user?: User | null;
@@ -24,6 +25,10 @@ const UserMenu:React.FC<UserMenuProps> = ({ user }) => {
         await signOut(auth);
         resetSubjectState();
         //clear community state
+    };
+
+    const redirectToCodeofHonor = () => {
+        router.push('/codeofhonor');
     };
 
     return (
@@ -54,6 +59,17 @@ const UserMenu:React.FC<UserMenuProps> = ({ user }) => {
     <Flex align="center">
         <Icon fontSize={20} mr={2} as={TbLogout} />
         Log Out
+    </Flex>
+    </MenuItem>
+    <MenuItem
+    fontSize="10pt"
+    fontWeight={700}
+    _hover={{ bg: "blue.500", color:"white"}}
+    onClick={redirectToCodeofHonor}
+    >
+    <Flex align="center">
+        <Icon fontSize={20} mr={2} as={TbLogout} />
+        Code of Honor
     </Flex>
     </MenuItem>
 
