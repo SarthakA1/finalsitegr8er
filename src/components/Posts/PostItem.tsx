@@ -319,7 +319,7 @@ const PostItem:React.FC<PostItemProps> = ({
 </div> */}
 
                 {post.body.length > 350 ? (
-                    <div style={{ maxHeight: showFullBody ? 'none' : '400px', overflow: 'hidden' }}>
+                    <div style={{ maxHeight: showFullBody ? 'none' : '400px' }}>
                         <div dangerouslySetInnerHTML={{ __html: post.body }} />
                     </div>
                 ) : (

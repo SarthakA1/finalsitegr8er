@@ -32,9 +32,9 @@ const SubmitShareResourcePostPage:React.FC = () => {
              user={user}
              subjectImageURL={subjectStateValue.currentSubject?.imageURL}  />}
         </Flex>
-        <Flex justify="center" mt={4}>
+        {/* <Flex justify="center" mt={4}>
                 <Button onClick={redirectToAskAnything} variant="outline" colorScheme="blue">Or Ask Anything!</Button>
-            </Flex>
+            </Flex> */}
         </>
         
     )
