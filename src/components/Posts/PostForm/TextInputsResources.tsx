@@ -173,7 +173,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
           }}
           fontSize="10pt"
           borderRadius={4}
-          placeholder="Topic"
+          placeholder="Title"
         />
       </SimpleGrid>
       {/* <EquationEditor onInputChange={handleInputChange}/> */}

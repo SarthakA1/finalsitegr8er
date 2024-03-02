@@ -97,7 +97,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
     {
       value: "General Doubt",
       label: "General Doubt",
-      tooltip: "General doubts are open-ended and can cover a wide range of topics. They might include asking for advice, requesting resources, seeking tips or tricks, or any other generic queries you may want an answer to",
+      tooltip: "General doubts are open-ended and can cover a wide range of topics. They might include asking for advice, requesting resources, seeking tips or tricks, or any other generic queries you may want an answer to.",
     },
   ];
   const gradeOptions = [
@@ -220,7 +220,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
           }}
           fontSize="10pt"
           borderRadius={4}
-          placeholder="Topic"
+          placeholder="Title"
         />
       </SimpleGrid>
       <Editor
