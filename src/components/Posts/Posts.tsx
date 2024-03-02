@@ -175,7 +175,7 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
         { loading ? (
             <PostLoader />
         ) : ( 
-           <Stack spacing={5}>
+           <Stack spacing={8}>
                <div className='filter_main_section'>
                     <div className='filter_main_grade_section'>
                         <Text style={{fontSize: "11px", fontWeight: "600"}}>MYP</Text>
