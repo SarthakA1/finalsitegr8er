@@ -17,7 +17,7 @@ const AnswerInput: React.FC<AnswerInputProps> = ({ answerText, setAnswerText, us
 
     useEffect(() => {
         // Synchronize answerText with editorText when answerText changes
-        setEditorText(answerText);
+        setEditorText(answerText || ''); // Ensure answerText is not undefined
     }, [answerText]);
 
     // Function to handle editor content change
@@ -55,7 +55,7 @@ const AnswerInput: React.FC<AnswerInputProps> = ({ answerText, setAnswerText, us
                     >
                         <Button 
                             height="26px"
-                            disabled={!editorText.trim().length} // Check if editorText has content
+                            disabled={!editorText || !editorText.trim().length} // Check if editorText is empty or contains only whitespace
                             isLoading={createLoading}
                             onClick={() => onCreateAnswer(editorText)}
                         >
