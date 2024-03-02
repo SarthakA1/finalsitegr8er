@@ -236,7 +236,7 @@ line-height: 20px;
     color: rgb(255, 255, 255); 
     border-radius: 15px; 
     padding: 5px 10px;
-    font-size: 13px; 
+    font-size: 12px; 
     gap:5px; 
     cursor: pointer;
 }
@@ -249,7 +249,7 @@ line-height: 20px;
     border-top-right-radius:0px; 
     border-bottom-right-radius:0px; 
     padding: 5px 7px;
-    font-size: 14px; 
+    font-size: 12px; 
     cursor: pointer;
 }
 .filter_main_question_sub_section_without_background{
@@ -257,7 +257,7 @@ line-height: 20px;
     color: rgb(255, 255, 255); 
     border-radius:0px; 
     padding: 5px 7px;
-    font-size: 14px;
+    font-size: 12px;
     cursor: pointer;
 }
 
@@ -279,7 +279,7 @@ line-height: 20px;
     border-top-right-radius:15px; 
     border-bottom-right-radius:15px; 
     padding: 5px 10px;
-    font-size: 14px; 
+    font-size: 12px; 
     cursor: pointer;
 }
 .filter_main_criteria_sub_section_background{
@@ -291,7 +291,7 @@ line-height: 20px;
     border-top-right-radius:0px; 
     border-bottom-right-radius:0px; 
     padding: 5px 7px;
-    font-size: 14px;
+    font-size: 12px;
     cursor: pointer;
 }
 .filter_main_criteria_sub_section_without_background{
@@ -299,7 +299,7 @@ line-height: 20px;
     color: rgb(255, 255, 255); 
     border-radius:0px; 
     padding: 5px 7px;
-    font-size: 14px;
+    font-size: 12px;
     cursor: pointer;
 }
 .filter_main_criteria_sub_section_without_backgrouund_border{
@@ -310,7 +310,7 @@ line-height: 20px;
     border-top-right-radius:15px; 
     border-bottom-right-radius:15px; 
     padding: 5px 7px;
-    font-size: 14px; 
+    font-size: 12px; 
     cursor: pointer;
 }
 .filter_main_difficulty_sub_section{
@@ -318,7 +318,7 @@ line-height: 20px;
     color: rgb(255, 255, 255); 
     border-radius: 15px; 
     padding: 5px 10px;
-    font-size: 14px; 
+    font-size: 12px; 
     gap:5px;  
     cursor: pointer;
 }
@@ -328,7 +328,7 @@ line-height: 20px;
     color: rgb(255, 255, 255); 
     border-radius: 15px; 
     padding: 5px 10px;
-    font-size: 14px; 
+    font-size: 12px; 
     gap:5px;  
     cursor: pointer;
 }
@@ -338,7 +338,7 @@ line-height: 20px;
     color: rgb(255, 255, 255); 
     border-radius: 15px; 
     padding: 5px 10px;
-    font-size: 14px; 
+    font-size: 12px; 
     gap:5px;  
     cursor: pointer;
 }
@@ -348,7 +348,7 @@ line-height: 20px;
     color: rgb(255, 255, 255); 
     border-radius: 15px; 
     padding: 5px 10px;
-    font-size: 14px; 
+    font-size: 12px; 
     gap:5px;  
     cursor: pointer;
 }
