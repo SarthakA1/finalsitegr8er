@@ -37,11 +37,12 @@ const AnswerInput: React.FC<AnswerInputProps> = ({
             </span>
           </Text>
 
-          <Editor // Replace Textarea with Editor component
-            value={answerText}
-            onChange={(name: string, val: string) => setAnswerText(val)}
-            placeholder="What is the Answer to this Question?"
-          />
+          <Editor
+  value={answerText}
+  onChange={(newValue: string) => setAnswerText(newValue)}
+  placeholder="What is the Answer to this Question?"
+/>
+
 
           <Flex
             left="1px"
