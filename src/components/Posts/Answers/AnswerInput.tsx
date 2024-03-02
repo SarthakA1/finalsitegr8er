@@ -2,14 +2,10 @@ import AuthButtons from '@/components/Navbar/RightContent/AuthButtons';
 import { Flex, Button, Text } from '@chakra-ui/react';
 import { User } from 'firebase/auth';
 import React from 'react';
-import dynamic from 'next/dynamic'; // Import dynamic from 'next/dynamic'
+import dynamic from 'next/dynamic'; 
 
-// Import Editor dynamically to avoid SSR issues
-
-
-// @ts-ignore
+// Dynamically import Editor component to avoid SSR issues
 const Editor = dynamic(() => import('../../common/Editor'), { ssr: false });
-
 
 type AnswerInputProps = {
   answerText: string;
@@ -38,11 +34,10 @@ const AnswerInput: React.FC<AnswerInputProps> = ({
           </Text>
 
           <Editor
-  value={answerText}
-  onChange={(newValue: string) => setAnswerText(newValue)}
-  placeholder="What is the Answer to this Question?"
-/>
-
+            defaultValue={answerText}
+            onChange={(newValue: string) => setAnswerText(newValue)}
+            placeholder="What is the Answer to this Question?"
+          />
 
           <Flex
             left="1px"

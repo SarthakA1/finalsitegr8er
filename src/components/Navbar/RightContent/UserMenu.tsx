@@ -52,17 +52,7 @@ const UserMenu:React.FC<UserMenuProps> = ({ user }) => {
             </MenuButton>
                          
   <MenuList>
-    <MenuItem
-    fontSize="10pt"
-    fontWeight={700}
-    _hover={{ bg: "blue.500", color:"white"}}
-    onClick={logoutt}
-    >
-    <Flex align="center">
-        <Icon fontSize={20} mr={2} as={TbLogout} />
-        Log Out
-    </Flex>
-    </MenuItem>
+    
     <MenuItem
     fontSize="10pt"
     fontWeight={700}
@@ -72,6 +62,17 @@ const UserMenu:React.FC<UserMenuProps> = ({ user }) => {
     <Flex align="center">
         <Icon fontSize={20} mr={2} as={FaStar} />
         Code of Honor
+    </Flex>
+    </MenuItem>
+    <MenuItem
+    fontSize="10pt"
+    fontWeight={700}
+    _hover={{ bg: "blue.500", color:"white"}}
+    onClick={logoutt}
+    >
+    <Flex align="center">
+        <Icon fontSize={20} mr={2} as={TbLogout} />
+        Log Out
     </Flex>
     </MenuItem>
 
