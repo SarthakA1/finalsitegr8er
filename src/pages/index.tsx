@@ -291,6 +291,7 @@ const Home: NextPage = () => {
   return (
     
     
+    
 
     <PageContent>
      
@@ -298,15 +299,16 @@ const Home: NextPage = () => {
       
       <Stack spacing={5}>
         <Recommendations/>
-        <button
+       
+      </Stack>
+      <>
+      <button
         className={`back_to_top`}
         onClick={scrollToTop}
       >
         BACK TO TOP
        
       </button>
-      </Stack>
-      <>
         <CreatePostLink />
         <Analytics />
         

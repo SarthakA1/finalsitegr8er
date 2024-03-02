@@ -2,7 +2,7 @@ import { subjectState } from '@/atoms/subjectsAtom';
 import NewShareResourcePostForm from '@/components/Posts/NewShareResourcePostForm';
 import { auth } from '@/firebase/clientApp';
 import useSubjectData from '@/hooks/useSubjectData';
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import router from 'next/router';
 import React from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -17,6 +17,9 @@ const SubmitShareResourcePostPage:React.FC = () => {
   const [user] = useAuthState(auth);
   const { subjectStateValue } = useSubjectData();
   const setSubjectStateValue = useRecoilState(subjectState);
+  const redirectToAskAnything = () => {
+    router.push('/subject/${subjectData.id}/submit');
+};
   
      return (
         
@@ -29,6 +32,9 @@ const SubmitShareResourcePostPage:React.FC = () => {
              user={user}
              subjectImageURL={subjectStateValue.currentSubject?.imageURL}  />}
         </Flex>
+        <Flex justify="center" mt={4}>
+                <Button onClick={redirectToAskAnything} variant="outline" colorScheme="blue">Or Ask Anything!</Button>
+            </Flex>
         </>
         
     )
