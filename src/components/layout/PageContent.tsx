@@ -9,7 +9,7 @@ const PageContentLayout:React.FC<PageContentProps> = ( { children }) => {
     
     return ( 
         <Flex justify='center' p="16px 0px" > 
-            <Flex width="95%" justify='center' maxWidth='1200px' >
+            <Flex width="100%" justify='center' maxWidth='1300px' >
                 {/* {LHS} */}
                 <Flex 
                direction='column'
