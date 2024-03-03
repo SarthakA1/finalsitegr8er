@@ -19,7 +19,7 @@ type NewPostFormProps = {
 
 const formTabs: TabItem[] = [
     {
-        title: 'Question',
+        title: 'Text',
         icon: IoDocumentText
     },
     {
@@ -159,7 +159,7 @@ const NewShareResourcePostForm:React.FC<NewPostFormProps> = ({
             ))}
           </Flex>
           <Flex p={4} >
-            {selectedTab === "Question" && (
+            {selectedTab === "Text" && (
               <TextInputs
                 textInputs={textInputs}
                 onChange={onTextChange}
