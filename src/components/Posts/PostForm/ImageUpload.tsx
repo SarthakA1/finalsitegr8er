@@ -4,9 +4,11 @@ import { Flex, Button, Image } from "@chakra-ui/react";
 type ImageUploadProps = {
   selectedFile: string[];
   setSelectedFile: (value: string[]) => void;
+  setSelectedTab: (value: string) => void; // Add this line
   selectFileRef: React.RefObject<HTMLInputElement>;
   onSelectImage: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
+
 
 const ImageUpload: React.FC<ImageUploadProps> = ({
   selectedFile,
