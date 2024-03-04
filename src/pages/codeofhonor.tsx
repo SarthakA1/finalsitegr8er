@@ -6,6 +6,6 @@ type codeofhonorProps = {
 
 const codeofhonor:React.FC<codeofhonorProps> = () => {
     
-    return <div>Have a good coding</div>
+    return <div>Coming Soon!</div>
 }
 export default codeofhonor;
