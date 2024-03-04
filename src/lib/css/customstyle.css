@@ -447,6 +447,7 @@ li.notification_user_posts_item.css-0 {
         display: flex;
         flex-direction: column;
         align-items: center;
+        margin-top: 140px;
     }
     
     .code-of-honor-row {
