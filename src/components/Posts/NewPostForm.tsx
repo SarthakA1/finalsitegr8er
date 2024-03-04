@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Input, Button, Flex, Text, Icon, Alert, AlertDescription, AlertIcon, AlertTitle } from '@chakra-ui/react';
+import { Flex, Text, Alert, AlertIcon, AlertTitle } from '@chakra-ui/react';
 import { IoDocumentText, IoImageOutline } from 'react-icons/io5';
 import TabItem from './TabItem';
 import TextInputs from './PostForm/TextInputs';
@@ -9,12 +9,17 @@ import { User } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import { addDoc, collection, serverTimestamp, Timestamp, updateDoc } from 'firebase/firestore';
 import { firestore, storage } from '@/firebase/clientApp';
-import { getDownloadURL, ref, uploadString, uploadBytes } from 'firebase/storage';
+import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 import useSelectFile from '@/hooks/useSelectFile';
 
 type NewPostFormProps = {
   subjectImageURL?: string;
-    user: User;
+  user: User;
+};
+
+type TabItem = {
+  title: string;
+  icon: any;
 };
 
 const formTabs: TabItem[] = [
@@ -26,38 +31,25 @@ const formTabs: TabItem[] = [
         title: 'Attachment',
         icon: IoImageOutline
     },
-]
+];
 
-export type TabItem = {
-    title: string;
-    icon: typeof Icon.arguments
-}
-
-
-
-const NewPostForm:React.FC<NewPostFormProps> = ({ 
-  user,
-  subjectImageURL,
-
-}) => {
+const NewPostForm: React.FC<NewPostFormProps> = ({ user, subjectImageURL }) => {
     const router = useRouter();
-    const [selectedTab, setSelectedTab] = useState(formTabs[0].title)
+    const [selectedTab, setSelectedTab] = useState(formTabs[0].title);
     const [textInputs, setTextInputs] = useState({
-        grade: {value: "", label: ""},
+        grade: { value: "", label: "" },
         title: "",
         body: "",
-        typeOfQuestions: {value: "", label: ""},
-        criteria: {value: "", label: ""}
+        typeOfQuestions: { value: "", label: "" },
+        criteria: { value: "", label: "" }
     });
-    const {selectedFile, setSelectedFile, onSelectFile} = useSelectFile()
-    // const [selectedFile, setSelectedFile] = useState<string>()
+    const { selectedFile, setSelectedFile, onSelectFile } = useSelectFile();
     const selectFileRef = useRef<HTMLInputElement>(null);
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(false)
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
 
     const handleCreatePost = async () => {
         const { subjectId } = router.query;
-        //create new question object => type post
 
         const newPost: Post = {
           subjectId: subjectId as string,
@@ -73,122 +65,108 @@ const NewPostForm:React.FC<NewPostFormProps> = ({
           voteStatus: 0, 
           pinPost: false,
           createdAt: serverTimestamp() as Timestamp,
-          
-        }
-    
-        setLoading(true)
+        };
+
+        setLoading(true);
         try {
-                //store the question in firestore database
-                const postDocRef = await addDoc(collection(firestore, 'posts'), newPost);
-                
-                if (selectedFile && selectedFile.length > 0) {
-                  const imageURLs = []; // Array to store all image URLs
-                
-                  // Iterate over each file URL in the array
-                  for (const fileUrl of selectedFile) {
-                    const matchResult = fileUrl.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/);
-                    if (matchResult) {
-                      const extension = matchResult[0].split("/"); // Split the matched URL path after the slash
-                      // Store image in storage and get download URL
-                      let extensionName = '';
-                      if(extension[1] == 'msword'){
-                        extensionName = '.doc';
-                      } else if(extension[1] == 'vnd.openxmlformats-officedocument.wordprocessingml.document') {
-                        extensionName = '.docx';
-                      } else if(extension[1] == 'vnd.openxmlformats-officedocument.wordprocessingml.template') {
-                        extensionName = '.dotx';
-                      } else if(extension[1] == 'vnd.ms-excel') {
-                        extensionName = '.xls';
-                      } else if(extension[1] == 'vnd.openxmlformats-officedocument.spreadsheetml.sheet'){
-                        extensionName = '.xlsx';
-                      } else {
-                        extensionName = '.'+extension[1];
-                      }
-                      const imageRef = ref(storage, `posts/${postDocRef.id}/${Date.now()}${extensionName}`);
-                      await uploadString(imageRef, fileUrl, 'data_url');
-                      const downloadURL = await getDownloadURL(imageRef);
-                      // Add download URL to the array
-                      imageURLs.push(downloadURL);
-                    }
-                  }
-                
-                  // Update question doc with all the imageURLs
-                  await updateDoc(postDocRef, {
-                    imageURLs: imageURLs
-                  });
-                }
-                router.push('/subject/'+subjectId);
-                //router.back();
-        } catch (error: any) {
-            console.log('handleCreatePost error', error.message)
-            setError(true);
+            const postDocRef = await addDoc(collection(firestore, 'posts'), newPost);
             
+            if (selectedFile && selectedFile.length > 0) {
+              const imageURLs = [];
+              
+              for (const fileUrl of selectedFile) {
+                const matchResult = fileUrl.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/);
+                if (matchResult) {
+                  const extension = matchResult[0].split("/");
+                  let extensionName = '';
+                  if(extension[1] == 'msword'){
+                    extensionName = '.doc';
+                  } else if(extension[1] == 'vnd.openxmlformats-officedocument.wordprocessingml.document') {
+                    extensionName = '.docx';
+                  } else if(extension[1] == 'vnd.openxmlformats-officedocument.wordprocessingml.template') {
+                    extensionName = '.dotx';
+                  } else if(extension[1] == 'vnd.ms-excel') {
+                    extensionName = '.xls';
+                  } else if(extension[1] == 'vnd.openxmlformats-officedocument.spreadsheetml.sheet'){
+                    extensionName = '.xlsx';
+                  } else {
+                    extensionName = '.'+extension[1];
+                  }
+                  const imageRef = ref(storage, `posts/${postDocRef.id}/${Date.now()}${extensionName}`);
+                  await uploadString(imageRef, fileUrl, 'data_url');
+                  const downloadURL = await getDownloadURL(imageRef);
+                  imageURLs.push(downloadURL);
+                }
+              }
+            
+              await updateDoc(postDocRef, {
+                imageURLs: imageURLs
+              });
+            }
+            router.push('/subject/'+subjectId);
+        } catch (error: any) {
+            console.log('handleCreatePost error', error.message);
+            setError(true);
         }
         setLoading(false);
+    };
 
-         //redirect user back to subject group or homepage using router
-       
-         
-    }
-
-  
-
-    const onTextChange = ({
-        target: { name, value },
-      }: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setTextInputs((prev) => ({
-          ...prev,
-          [name]: value,
+    const onTextChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = event.target;
+        setTextInputs(prev => ({
+            ...prev,
+            [name]: value
         }));
-      };
+    };
 
- return (
-  
-  
+    const onCriteriaChange = (selectedOptions: any) => {
+        setTextInputs(prev => ({
+            ...prev,
+            criteria: selectedOptions
+        }));
+    };
+
+    return (
         <Flex direction="column" bg="white" borderRadius={4} mt={2} width="80%">
-           
-          <Flex>
-            {formTabs.map((item:any, index) => (
-              <TabItem
-                key={item.title}
-                item={item}
-                selected={item.title === selectedTab}
-                setSelectedTab={setSelectedTab}
-              />
-            ))}
-          </Flex>
-          <Flex p={4} >
-            {selectedTab === "Question" && (
-              <TextInputs
-                textInputs={textInputs}
-                onChange={onTextChange}
-                handleCreatePost={handleCreatePost}
-                loading={loading}
-              />
-            )}
-            {selectedTab === "Attachment" && (
-                <ImageUpload 
-                selectedFile={selectedFile} 
-                onSelectImage={onSelectFile} 
-                setSelectedTab={setSelectedTab} 
-                selectFileRef={selectFileRef}
-                setSelectedFile={setSelectedFile}/>
-            )}
-
-                </Flex>
-                { error && (
-                    <Alert status='error'>
+            <Flex>
+                {formTabs.map((item, index) => (
+                    <TabItem
+                        key={item.title}
+                        item={item}
+                        selected={item.title === selectedTab}
+                        setSelectedTab={setSelectedTab}
+                    />
+                ))}
+            </Flex>
+            <Flex p={4}>
+                {selectedTab === "Question" && (
+                    <TextInputs
+                        textInputs={textInputs}
+                        onChange={onTextChange}
+                        onCriteriaChange={onCriteriaChange}
+                        handleCreatePost={handleCreatePost}
+                        loading={loading}
+                    />
+                )}
+                {selectedTab === "Attachment" && (
+                    <ImageUpload
+                        selectedFile={selectedFile}
+                        onSelectImage={onSelectFile}
+                        setSelectedTab={setSelectedTab}
+                        selectFileRef={selectFileRef}
+                        setSelectedFile={setSelectedFile}
+                    />
+                )}
+            </Flex>
+            { error && (
+                <Alert status='error'>
                     <AlertIcon />
                     <AlertTitle>The Question could not be Posted!</AlertTitle>
-                  </Alert>
+                </Alert>
+            )}
+        </Flex>
+    );
+};
 
-                )}
-            
-    </Flex>
-
-    
-
-    
- )
-}
 export default NewPostForm;
+

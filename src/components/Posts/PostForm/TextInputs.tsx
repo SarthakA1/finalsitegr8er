@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Stack,
   Input,
@@ -35,6 +35,7 @@ type TextInputsProps = {
   onChange: (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
+  onCriteriaChange: (selectedOptions: any) => void;
   handleCreatePost: () => void;
   loading: boolean;
 };
@@ -42,20 +43,10 @@ type TextInputsProps = {
 const TextInputs: React.FC<TextInputsProps> = ({
   textInputs,
   onChange,
+  onCriteriaChange,
   handleCreatePost,
   loading,
 }) => {
-  function setData(value: string): void {
-    throw new Error("Function not implemented.");
-  }
-  const handleInputChange = (name: any, value: any) => {
-    onChange({
-      target: {
-        name,
-        value, // Assuming criteria is a comma-separated string
-      },
-    } as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>);
-  };
   const [typeOfQuestionsError, setTypeOfQuestionsError] = useState<string | null>(
     null
   );
@@ -93,64 +84,13 @@ const TextInputs: React.FC<TextInputsProps> = ({
       label: "Criteria D",
     },
   ];
-  const typeOfQuestionsOptions = [
-    {
-      value: "Academic Question",
-      label: "Academic Question",
-      tooltip: "Academic questions are those that have a specific answer and usually come from school or test materials like worksheets, exams, or past papers. They often involve solving problems or answering questions with a single correct solution, such as math problems or exam-style questions.",
-    },
-    {
-      value: "General Doubt",
-      label: "General Doubt",
-      tooltip: "General doubts are open-ended and can cover a wide range of topics. They might include asking for advice, requesting resources, seeking tips or tricks, or any other generic queries you may want an answer to.",
-    },
-  ];
-  const gradeOptions = [
-    {
-      value: "1",
-      label: "MYP 1",
-    },
-    {
-      value: "2",
-      label: "MYP 2",
-    },
-    {
-      value: "3",
-      label: "MYP 3",
-    },
-    {
-      value: "4",
-      label: "MYP 4",
-    },
-    {
-      value: "5",
-      label: "MYP 5",
-    },
-  ];
+
   const customCriteriaComponents = {
     Option: ({ children, ...props }: any) => (
       <chakraComponents.Option {...props}>{children}</chakraComponents.Option>
     ),
   };
-  const customTypeOfQuestionsComponents = {
-    Option: ({ children, ...props }: any) => (
-      <chakraComponents.Option {...props}>
-        <Flex alignItems="center">
-          <Text>{children}</Text>
-          {props.data.tooltip && (
-            <Tooltip label={props.data.tooltip}>
-              <Icon as={InfoOutlineIcon} color="gray.500" ml={2} />
-            </Tooltip>
-          )}
-        </Flex>
-      </chakraComponents.Option>
-    ),
-  };
-  const customGradeComponents = {
-    Option: ({ children, ...props }: any) => (
-      <chakraComponents.Option {...props}>{children}</chakraComponents.Option>
-    ),
-  };
+
   return (
     <Stack spacing={3} width="100%">
       <SimpleGrid columns={2} spacing={10}>
@@ -158,12 +98,22 @@ const TextInputs: React.FC<TextInputsProps> = ({
           <Select
             name="grade"
             placeholder="MYP"
-            components={customGradeComponents}
             value={textInputs.grade.value && textInputs.grade} // Set the value prop for controlled component
             onChange={(selectedGradeOptions: any) =>
-              handleInputChange("grade", selectedGradeOptions)
+              onChange({
+                target: {
+                  name: "grade",
+                  value: selectedGradeOptions,
+                },
+              } as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)
             }
-            options={gradeOptions}
+            options={[
+              { value: "1", label: "MYP 1" },
+              { value: "2", label: "MYP 2" },
+              { value: "3", label: "MYP 3" },
+              { value: "4", label: "MYP 4" },
+              { value: "5", label: "MYP 5" },
+            ]}
           />
         </Flex>
         <Flex style={{ display: "block" }}>
@@ -178,11 +128,17 @@ const TextInputs: React.FC<TextInputsProps> = ({
             name="criteria[]"
             options={criteriaOptions}
             placeholder="Criteria"
-            components={customCriteriaComponents}
             value={textInputs.criteria.value && textInputs.criteria} // Set the value prop for controlled component
-            onChange={(selectedOptions: any) =>
-              handleInputChange("criteria", selectedOptions)
-            }
+            onChange={(selectedOptions: any) => {
+              onCriteriaChange(selectedOptions);
+              onChange({
+                target: {
+                  name: "criteria",
+                  value: selectedOptions,
+                },
+              } as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>);
+            }}
+            components={customCriteriaComponents}
           />
         </Flex>
       </SimpleGrid>
@@ -191,12 +147,28 @@ const TextInputs: React.FC<TextInputsProps> = ({
           <Select
             name="typeOfQuestions"
             placeholder="Type Of Question"
-            components={customTypeOfQuestionsComponents}
             value={textInputs.typeOfQuestions.value && textInputs.typeOfQuestions} // Set the value prop for controlled component
-            onChange={(selectedtypeOfQuestionsOptions: any) =>
-              handleInputChange("typeOfQuestions", selectedtypeOfQuestionsOptions)
-            }
-            options={typeOfQuestionsOptions}
+            onChange={(selectedtypeOfQuestionsOptions: any) => {
+              onChange({
+                target: {
+                  name: "typeOfQuestions",
+                  value: selectedtypeOfQuestionsOptions,
+                },
+              } as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>);
+              validateTypeOfQuestions(selectedtypeOfQuestionsOptions);
+            }}
+            options={[
+              {
+                value: "Academic Question",
+                label: "Academic Question",
+                tooltip: "Academic questions are those that have a specific answer and usually come from school or test materials like worksheets, exams, or past papers. They often involve solving problems or answering questions with a single correct solution, such as math problems or exam-style questions.",
+              },
+              {
+                value: "General Doubt",
+                label: "General Doubt",
+                tooltip: "General doubts are open-ended and can cover a wide range of topics. They might include asking for advice, requesting resources, seeking tips or tricks, or any other generic queries you may want an answer to.",
+              },
+            ]}
           />
           <p
             style={{
@@ -212,7 +184,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
         <Input
           name="title"
           value={textInputs.title}
-          onChange={(e: any) => handleInputChange("title", e.target.value)}
+          onChange={(e: any) => onChange(e)}
           _placeholder={{ color: "gray.500" }}
           _focus={{
             outline: "none",
@@ -230,7 +202,12 @@ const TextInputs: React.FC<TextInputsProps> = ({
         name="body"
         value={textInputs.body}
         onChange={(name: any, val: any) => {
-          handleInputChange(name, val);
+          onChange({
+            target: {
+              name,
+              value: val,
+            },
+          } as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>);
         }}
       />
       <Flex justify="flex-end">
@@ -265,4 +242,5 @@ const TextInputs: React.FC<TextInputsProps> = ({
     </Stack>
   );
 };
+
 export default TextInputs;
