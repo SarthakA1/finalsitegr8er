@@ -462,14 +462,23 @@ li.notification_user_posts_item.css-0 {
         margin-right: 20px; /* Add some space between rule items */
     }
     
+    .rule-content {
+        flex-grow: 1;
+    }
+    
     .rule-heading {
         font-size: 1.5em;
         font-weight: bold;
-        margin-left: 10px; /* Add some space between the image and heading */
+        margin-bottom: 10px; /* Add some space between heading and body text */
     }
     
     .rule-text {
         font-size: 0.9em;
+    }
+    
+    .rule-image {
+        width: 100px; /* Adjust image width as needed */
+        margin-right: 10px; /* Add some space between image and text */
     }
     
     /* Different vibrant colors for headings */
