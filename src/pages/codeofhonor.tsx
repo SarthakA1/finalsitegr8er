@@ -1,5 +1,5 @@
 import React from 'react';
-import './codeofhonor.css'; // Import CSS file for styling
+import '/src/lib/css/codeofhonor.css'; // Import CSS file for styling
 
 const CodeOfHonor: React.FC = () => {
     return (
