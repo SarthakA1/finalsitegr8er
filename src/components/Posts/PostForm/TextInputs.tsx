@@ -10,6 +10,8 @@ import {
   FormErrorMessage,
   Tooltip,
   Icon,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import { InfoOutlineIcon } from "@chakra-ui/icons";
 import {
@@ -55,6 +57,9 @@ const TextInputs: React.FC<TextInputsProps> = ({
     } as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>);
   };
   const [typeOfQuestionsError, setTypeOfQuestionsError] = useState<string | null>(
+    null
+  );
+  const [missingFieldsAlert, setMissingFieldsAlert] = useState<string | null>(
     null
   );
 
@@ -148,9 +153,6 @@ const TextInputs: React.FC<TextInputsProps> = ({
   };
   return (
     <Stack spacing={3} width="100%">
-{/*       <Text style={{ marginLeft: 0.5, marginTop: 2, fontWeight: 500 }}>
-        MYP
-      </Text> */}
       <SimpleGrid columns={2} spacing={10}>
         <Flex direction="row" style={{ display: "block" }}>
           <Select
@@ -232,24 +234,34 @@ const TextInputs: React.FC<TextInputsProps> = ({
         }}
       />
       <Flex justify="flex-end">
-      <Button
-  height="34px"
-  padding="0px 30px"
-  disabled={!textInputs.title || !textInputs.body || !textInputs.grade.value || !textInputs.criteria.value || !textInputs.typeOfQuestions.value}
-  isLoading={loading}
-  onClick={() => {
-    if (!textInputs.title || !textInputs.typeOfQuestions.value) {
-      // If title or typeOfQuestions is empty, don't proceed with post creation
-      return;
-    }
-    handleCreatePost(); // Otherwise, proceed with post creation
-  }}
->
-  Ask
-</Button>
-
-
+        <Button
+          height="34px"
+          padding="0px 30px"
+          isLoading={loading}
+          onClick={() => {
+            const missingFields = [];
+            if (!textInputs.title) missingFields.push("Title");
+            if (!textInputs.grade.value) missingFields.push("MYP");
+            if (!textInputs.typeOfQuestions.value) missingFields.push("Type Of Questions");
+            
+            if (missingFields.length > 0) {
+              // Display alert if any required field is missing
+              setMissingFieldsAlert(`Please fill in the following fields: ${missingFields.join(", ")}`);
+            } else {
+              // Proceed with post creation
+              handleCreatePost();
+            }
+          }}
+        >
+          Ask
+        </Button>
       </Flex>
+      {missingFieldsAlert && (
+        <Alert status="warning">
+          <AlertIcon />
+          {missingFieldsAlert}
+        </Alert>
+      )}
     </Stack>
   );
 };
