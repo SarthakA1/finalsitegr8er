@@ -245,8 +245,13 @@ const TextInputs: React.FC<TextInputsProps> = ({
             if (!textInputs.typeOfQuestions.value) missingFields.push("Type Of Questions");
             
             if (missingFields.length > 0) {
-              // Display alert if any required field is missing
-              setMissingFieldsAlert(`Please fill in the following fields: ${missingFields.join(", ")}`);
+              // Display alert if any required field is missing, including placeholder text
+              const missingFieldsWithPlaceholders = missingFields.map(field => {
+                if (field === "Title") return `"${field}" (${textInputs.title})`;
+                if (field === "MYP") return `"${field}" (${textInputs.grade.label})`;
+                if (field === "Type Of Questions") return `"${field}" (${textInputs.typeOfQuestions.label})`;
+              });
+              setMissingFieldsAlert(`Please fill in the following fields: ${missingFieldsWithPlaceholders.join(", ")}`);
             } else {
               // Proceed with post creation
               handleCreatePost();
