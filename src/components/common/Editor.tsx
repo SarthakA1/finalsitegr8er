@@ -20,7 +20,7 @@ export const Editor = ({ id, name, value, onChange, onBlur }:any) => {
                 { indent: '-1' },
                 { indent: '+1' },
             ],
-            ['link','image','formula'],
+            ['formula'],
             ['clean'],
         ],
         clipboard: {
@@ -40,8 +40,6 @@ export const Editor = ({ id, name, value, onChange, onBlur }:any) => {
         'list',
         'bullet',
         'indent',
-        'link',
-        'image',
         'formula',
     ]
     const handleChange = (val:any, delta:any, source:any, editor:any) => {
