@@ -237,10 +237,17 @@ const TextInputs: React.FC<TextInputsProps> = ({
   padding="0px 30px"
   disabled={!textInputs.title || !textInputs.body || !textInputs.grade.value || !textInputs.criteria.value || !textInputs.typeOfQuestions.value}
   isLoading={loading}
-  onClick={() => validateTypeOfQuestions(textInputs)}
+  onClick={() => {
+    if (!textInputs.title || !textInputs.typeOfQuestions.value) {
+      // If title or typeOfQuestions is empty, don't proceed with post creation
+      return;
+    }
+    handleCreatePost(); // Otherwise, proceed with post creation
+  }}
 >
   Ask
 </Button>
+
 
       </Flex>
     </Stack>
