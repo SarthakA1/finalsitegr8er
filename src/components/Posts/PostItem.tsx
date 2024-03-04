@@ -363,7 +363,7 @@ const PostItem:React.FC<PostItemProps> = ({
                                 <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
                             </a>
                         ) : (
-                            <a href="#" style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => { e.preventDefault(); setAuthModalState({ open: true, view: "login" }) }}> {/* Added onClick handler */}
+                            <a href="#" style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => { e.stopPropagation(); e.preventDefault(); setAuthModalState({ open: true, view: "login" }) }}> {/* Added onClick handler */}
                                 <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
                             </a>
                         )
@@ -373,7 +373,7 @@ const PostItem:React.FC<PostItemProps> = ({
                                 <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
                             </a>
                         ) : (
-                            <a href="#" style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => { e.preventDefault(); setAuthModalState({ open: true, view: "login" }) }}> {/* Added onClick handler */}
+                            <a href="#" style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => { e.stopPropagation(); e.preventDefault(); setAuthModalState({ open: true, view: "login" }) }}> {/* Added onClick handler */}
                                 <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
                             </a>
                         )
