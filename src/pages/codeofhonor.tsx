@@ -8,7 +8,7 @@ const codeofhonor: React.FC<codeofhonorProps> = () => {
     
     return  (
         <div className="code-of-honor-container">
-          <h1 style={{ textAlign: 'center', fontSize: '1.5em', fontWeight: 'bold', marginBottom: '25px' }}>tode of Honor</h1> {/* Heading with increased font size and bold */}
+          <h1 style={{ textAlign: 'center', fontSize: '1.5em', fontWeight: 'bold', marginBottom: '25px' }}>Code of Honor</h1> {/* Heading with increased font size and bold */}
           {/* Top Row */}
           <div className="code-of-honor-row">
               {/* First Rule */}
