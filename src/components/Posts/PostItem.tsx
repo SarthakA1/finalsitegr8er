@@ -341,7 +341,7 @@ const PostItem:React.FC<PostItemProps> = ({
                 
                 </Flex>
             )} */}
-  {post.imageURLs && (
+ {post.imageURLs && ( // Always render the icon
     <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', margin: '0 auto' }}>
         {post.imageURLs.map((imageURL: any, index: number) => { // Added index parameter
             const parts = imageURL.split('.');
@@ -358,13 +358,27 @@ const PostItem:React.FC<PostItemProps> = ({
                             </a>
                         )
                     ) : orgExtension[0] === 'pdf' ? (
-                        <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}> {/* Added onClick handler */}
-                            <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
-                        </a>
+                        user ? ( // Check if user is signed in
+                            <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}> {/* Added onClick handler */}
+                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
+                            </a>
+                        ) : (
+                            <a href="#" style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => { e.preventDefault(); setAuthModalState({ open: true, view: "login" }) }}> {/* Added onClick handler */}
+                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
+                            </a>
+                        )
+                    ) : orgExtension[0] === 'doc' || orgExtension[0] === 'docx' ? (
+                        user ? ( // Check if user is signed in
+                            <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}> {/* Added onClick handler */}
+                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
+                            </a>
+                        ) : (
+                            <a href="#" style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => { e.preventDefault(); setAuthModalState({ open: true, view: "login" }) }}> {/* Added onClick handler */}
+                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
+                            </a>
+                        )
                     ) : (
-                        <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}> {/* Added onClick handler */}
-                            <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
-                        </a>
+                        <span>Unsupported file format</span> // Handle unsupported file format
                     )}
                 </li>
             );
