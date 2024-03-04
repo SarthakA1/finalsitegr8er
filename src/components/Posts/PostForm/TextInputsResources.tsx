@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { Stack, Input, Textarea, Flex, Button, Text, SimpleGrid, FormErrorMessage} from "@chakra-ui/react";
+import {
+  Stack,
+  Input,
+  Textarea,
+  Flex,
+  Button,
+  Text,
+  SimpleGrid,
+  FormErrorMessage,
+  Alert,
+  AlertIcon,
+} from "@chakra-ui/react";
 import {
   AsyncCreatableSelect,
   AsyncSelect,
@@ -7,7 +18,6 @@ import {
   Select,
   chakraComponents 
 } from "chakra-react-select";
-import EquationEditor from '../../common/EquationEditor';
 import "react-quill/dist/quill.snow.css";
 import { Editor } from "../../common/Editor";
 
@@ -26,8 +36,6 @@ type TextInputsProps = {
   loading: boolean;
 };
 
-
-
 const TextInputs: React.FC<TextInputsProps> = ({
   textInputs,
   onChange,
@@ -45,21 +53,11 @@ const TextInputs: React.FC<TextInputsProps> = ({
       }
     } as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>);
   };
-  //const [typeOfQuestionsError, setTypeOfQuestionsError] = useState<string | null>(null);
-
-  // Custom validation function for "Type Of Questions" field
-//   const validateTypeOfQuestions = (value: any) => {
-
-//     let error = null;
-//     if (!value.typeOfQuestions) {
-//       error = "Type Of Questions is required";
-//     }
-//     setTypeOfQuestionsError(error);
-//     if(error == null){
-//       handleCreatePost();
-//     }
-//   };
   
+  const [missingFieldsAlert, setMissingFieldsAlert] = useState<string | null>(
+    null
+  );
+
   const criteriaOptions = [
     {
       value: "Criteria A",
@@ -76,16 +74,6 @@ const TextInputs: React.FC<TextInputsProps> = ({
     {
       value: "Criteria D",
       label: "Criteria D"
-    },
-  ];
-  const typeOfQuestionsOptions = [
-    {
-      value: "Academic Question",
-      label: "Academic Question"
-    },
-    {
-      value: "General Doubt",
-      label: "General Doubt"
     },
   ];
   const gradeOptions = [
@@ -117,13 +105,6 @@ const TextInputs: React.FC<TextInputsProps> = ({
       </chakraComponents.Option>
     ),
   };
-  const customTypeOfQuestionsComponents = {
-    Option: ({ children, ...props }:any) => (
-      <chakraComponents.Option {...props}>
-        {children}
-      </chakraComponents.Option>
-    ),
-  }
   const customGradeComponents = {
     Option: ({ children, ...props }:any) => (
       <chakraComponents.Option {...props}>
@@ -174,22 +155,35 @@ const TextInputs: React.FC<TextInputsProps> = ({
           placeholder="Title"
         />
       </SimpleGrid>
-      {/* <EquationEditor onInputChange={handleInputChange}/> */}
       <Editor id="body" name="body" value={textInputs.body} onChange={(name:any, val:any) => {handleInputChange(name, val)}}  />
       <Flex justify="flex-end">
-       
         <Button
           height="34px"
           padding="0px 30px"
-          disabled={!textInputs.title || !textInputs.body}
+          disabled={!textInputs.title || !textInputs.grade.value || !textInputs.body}
           isLoading={loading}
-          onClick={handleCreatePost}
-          //onClick={() => validateTypeOfQuestions(textInputs)}
+          onClick={() => {
+            const missingFields = [];
+            if (!textInputs.title) missingFields.push("Title");
+            if (!textInputs.grade.value) missingFields.push("MYP");
+            if (missingFields.length > 0) {
+              // Display alert if any required field is missing
+              setMissingFieldsAlert(`Please fill in the following fields: ${missingFields.join(", ")}`);
+            } else {
+              // Proceed with post creation
+              handleCreatePost();
+            }
+          }}
         >
           Ask
         </Button>
-        
       </Flex>
+      {missingFieldsAlert && (
+        <Alert status="warning">
+          <AlertIcon />
+          {missingFieldsAlert}
+        </Alert>
+      )}
     </Stack>
   );
 };
