@@ -451,22 +451,44 @@ li.notification_user_posts_item.css-0 {
     
     .code-of-honor-row {
         display: flex;
-        justify-content: space-around;
+        justify-content: center;
         margin-bottom: 20px;
     }
     
     .code-of-honor-rule {
+        display: flex;
+        align-items: center;
         width: 45%;
+        margin-right: 20px; /* Add some space between rule items */
     }
     
     .rule-heading {
         font-size: 1.5em;
         font-weight: bold;
+        margin-left: 10px; /* Add some space between the image and heading */
     }
     
     .rule-text {
         font-size: 0.9em;
     }
+    
+    /* Different vibrant colors for headings */
+    .blue-heading {
+        color: #3498db; /* Blue */
+    }
+    
+    .green-heading {
+        color: #2ecc71; /* Green */
+    }
+    
+    .orange-heading {
+        color: #e67e22; /* Orange */
+    }
+    
+    .red-heading {
+        color: #e74c3c; /* Red */
+    }
+    
     
     
 }
