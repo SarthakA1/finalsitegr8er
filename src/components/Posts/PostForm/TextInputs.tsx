@@ -167,19 +167,13 @@ const TextInputs: React.FC<TextInputsProps> = ({
           />
         </Flex>
         <Flex style={{ display: "block" }}>
-          {textInputs.criteria.value && (
-            <div>
-              <label>Criteria: </label>
-              <span>{textInputs.criteria.value}</span>
-            </div>
-          )}
           <Select
             isMulti
             name="criteria[]"
             options={criteriaOptions}
             placeholder="Criteria"
             components={customCriteriaComponents}
-            value={textInputs.criteria.value && textInputs.criteria} // Set the value prop for controlled component
+            value={textInputs.criteria.value !=='' && (textInputs.criteria)} // Set the value prop for controlled component
             onChange={(selectedOptions: any) =>
               handleInputChange("criteria", selectedOptions)
             }
