@@ -133,7 +133,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
             options={criteriaOptions}
             placeholder="Criteria"
             components={customCriteriaComponents}
-            value={textInputs.criteria.value && (textInputs.criteria)} // Set the value prop for controlled component
+            value={textInputs.criteria.value !=='' && (textInputs.criteria)} // Set the value prop for controlled component
             onChange={(selectedOptions:any) => handleInputChange("criteria", selectedOptions)}
           />
         </Flex>
