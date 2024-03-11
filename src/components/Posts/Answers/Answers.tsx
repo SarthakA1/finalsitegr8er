@@ -1,13 +1,19 @@
-import AuthButtons from '@/components/Navbar/RightContent/AuthButtons';
+import { Answer, AnswerState } from '@/atoms/answersAtom';
+import { Post, PostState } from '@/atoms/postsAtom';
+import { Subject } from '@/atoms/subjectsAtom';
+import { auth, firestore } from '@/firebase/clientApp';
 import { Box, Flex, SkeletonCircle, SkeletonText, Stack, Text } from '@chakra-ui/react';
 import { User } from 'firebase/auth';
-import { collection, doc, getDocs, increment, orderBy, query, serverTimestamp, Timestamp, where, writeBatch } from 'firebase/firestore';
+import { collection, doc, Firestore, getDocs, increment, orderBy, query, serverTimestamp, Timestamp, where, writeBatch } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import AnswerInput from './AnswerInput';
 import AnswerItem from './AnswerItem';
+import CommentItem from './AnswerItem';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import useAnswers from '@/hooks/useAnswers';
+
+
 
 type AnswersProps = {
     user: User;
@@ -15,34 +21,145 @@ type AnswersProps = {
     subjectId: string;
 };
 
-const Answers: React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
+export type Notifications = {
+    id?: string;
+    notifyBy?: string;
+    notifyTo?: string;
+    notification: string;
+    isRead: number;
+    notificationType: string;
+    createdAt: Timestamp;
+
+}
+
+
+
+const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
     const [users] = useAuthState(auth);
     const [answerText, setAnswerText] = useState("");
+    const [answers, setAnswers] = useState<Answer[]>([]);
     const [fetchLoading, setFetchLoading] = useState(true);
     const [createLoading, setCreateLoading] = useState(false);
     const [loadingDeleteId, setLoadingDeleteId] = useState("");
     const setPostState = useSetRecoilState(PostState);
     const { answerStateValue, setAnswerStateValue, onVote, onDeleteAnswer } = useAnswers();
+    
+
 
     const onCreateAnswer = async (answerText: string) => {
-        // Check if the answer text is empty or only contains whitespace
-        if (!answerText.trim()) {
-            // Return early if the answer is empty
-            return;
-        }
-
         setCreateLoading(true);
         try {
-            // Your code to create the answer...
+            const batch = writeBatch(firestore);
+
+            const answerDocRef = doc(collection(firestore, 'answers'))
+            const notificationDocRef = doc(collection(firestore, 'notifications'))
+
+            const newAnswer: Answer ={
+                id: answerDocRef.id,
+                creatorId: users?.uid,
+                creatorDisplayText: users?.displayName! || users?.email!.split("@")[0],
+                subjectId,
+                postId: selectedPost?.id!,
+                postTitle: selectedPost?.title!,
+                text: answerText,
+                voteStatus: 0,
+                createdAt: serverTimestamp() as Timestamp,
+                
+            }
+
+            batch.set(answerDocRef, newAnswer);
+
+            newAnswer.createdAt = {seconds:Date.now() / 1000} as Timestamp
+            //if(user.uid !== selectedPost?.creatorId){
+                const newNotification: Notifications = {
+                    id: notificationDocRef.id,
+                    notifyBy: users?.displayName! || users?.email!.split("@")[0],
+                    notifyTo: selectedPost?.creatorDisplayName!,
+                    notification: (users?.displayName! || users?.email!.split("@")[0]) + ' commented on your post <a href="/subject/'+selectedPost?.subjectId+'/answers/'+selectedPost?.id+'">'+selectedPost?.title+'</a>',
+                    isRead: 0,
+                    notificationType: 'commentPost',
+                    createdAt: serverTimestamp() as Timestamp,
+                }
+                batch.set(notificationDocRef, newNotification);
+            //}
+            const postDocRef = doc(firestore, 'posts', selectedPost?.id!);
+            batch.update(postDocRef, {
+                numberOfAnswers: increment(1)
+            })
+
+            await batch.commit();
+
+
+            setAnswerText("")
+            //setAnswers(prev => [newAnswer, ...prev])
+            setAnswerStateValue(prev  => ({
+                ...prev,
+                answers: [newAnswer, ...prev.answers] as Answer[],
+            }))
+            setPostState(prev => ({
+                ...prev,
+                selectedPost: {
+                    ...prev.selectedPost, numberOfAnswers: prev.selectedPost?.numberOfAnswers! + 1
+                } as Post
+            }))
+
+           
+            
+
+
         } catch (error) {
             console.log('onCreateAnswer error', error)
         }
         setCreateLoading(false);
     }
+    // const onDeleteAnswer = async (answer: Answer) => {
+    //     setLoadingDeleteId(answer.id)
+    //     try {
+    //         const batch = writeBatch(firestore);
+    //         const answerDocRef = doc(firestore, 'answers', answer.id);
+    //         batch.delete(answerDocRef);
+
+    //         const postDocRef= doc(firestore, 'posts', selectedPost?.id!)
+    //         batch.update(postDocRef, {
+    //             numberOfAnswers: increment(-1)
+    //         })
+
+    //         await batch.commit()
+
+    //         setPostState(prev => ({
+    //             ...prev,
+    //             selectedPost: {
+    //                 ...prev.selectedPost,
+    //                 numberOfAnswers: prev.selectedPost?.numberOfAnswers! -1
+    //             } as Post
+    //         }))
+
+    //         setAnswers(prev=> prev.filter(item => item.id !== answer.id))
+            
+    //     } catch (error) {
+    //         console.log('onDeleteComment error', error)
+    //     }
+    //     setLoadingDeleteId('')
+    // }
 
     const getPostAnswers = async () => {
+        
         try {
-            // Your code to fetch answers...
+            const answersQuery = query(
+                collection(firestore, "answers"), 
+                where('postId', '==', selectedPost?.id), 
+                orderBy('createdAt', 'desc'));
+            const answerDocs = await getDocs(answersQuery);
+            const answers = answerDocs.docs.map((doc) => ({ 
+                id: doc.id, 
+                ...doc.data(),
+            }));
+            //setAnswers(answers as Answer[]);
+            setAnswerStateValue(prev  => ({
+                ...prev,
+                answers: answers as Answer[],
+            }))
+            setFetchLoading(false);
         } catch (error) {
             console.log('getPostAnswers error', error)
         }
@@ -53,9 +170,9 @@ const Answers: React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
         if (!selectedPost) return;
         getPostAnswers();
     }, [selectedPost])
-
     return (
-        <Box bg='white' borderRadius='0px 0px 4px 4px' p={2} border="1px solid" borderColor="gray.400" >
+        <Box bg='white' borderRadius='0px 0px 4px 4px' p={2} border="1px solid" 
+        borderColor="gray.400" >
             <Flex direction='column' pl={10} pr={2} mb={6} fontSize="10pt" width="100%">
                 {!fetchLoading && <AnswerInput answerText={answerText} setAnswerText={setAnswerText} user={user} createLoading={createLoading} onCreateAnswer={onCreateAnswer}/>}
             </Flex>
@@ -80,13 +197,13 @@ const Answers: React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
                             borderTop="1px solid"
                             borderColor="gray.100"
                             p={20}>
-                                <Text fontWeight={700} opacity={0.3}>No Answers Yet</Text>
+                                <Text fontWeight={700} opacity={0.3}> No Answers Yet</Text>
                             </Flex>
                         ) : (
                             <>
                                 {answerStateValue.answers.map((item: any, index:any) =>
                                     <AnswerItem
-                                    key={index} // Assuming index can be used as a key here
+                                    //key={answer.id}
                                     answer={item}
                                     userIsCreator={user?.uid === item.creatorId}
                                     userVoteValue={answerStateValue.answerVotes.find((vote: { answerId: any; }) => vote.answerId === item.id)?.voteValue}
@@ -104,5 +221,4 @@ const Answers: React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
         </Box>
     )
 }
-
 export default Answers;
