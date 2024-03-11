@@ -175,7 +175,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
             }
           }}
         >
-          Ask
+          Share
         </Button>
       </Flex>
       {missingFieldsAlert && (

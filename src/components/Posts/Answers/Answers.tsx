@@ -197,7 +197,7 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
                             borderTop="1px solid"
                             borderColor="gray.100"
                             p={20}>
-                                <Text fontWeight={700} opacity={0.3}> No Answers Yet</Text>
+                                <Text fontWeight={700} opacity={0.3}>No Answers Yet</Text>
                             </Flex>
                         ) : (
                             <>
