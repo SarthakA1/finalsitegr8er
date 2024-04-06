@@ -315,6 +315,8 @@ const Home: NextPage = () => {
         
         <div>
       <Head>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6442166008118008"
+     crossorigin="anonymous"></script>
         <title>GR8ER</title>
       </Head>
       
