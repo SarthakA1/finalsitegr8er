@@ -362,7 +362,7 @@ const Home: NextPage = () => {
                 <option value='Academic Question'>Academic Question</option>
                 <option value='General Question'>General Question</option>
             </Select> */}
-            {postStateValue.posts.slice(0, 50).map((post) => (
+            {postStateValue.posts.slice(0, 100).map((post) => (
   <PostItem
     key={post.id}
     post={post}
