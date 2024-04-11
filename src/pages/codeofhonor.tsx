@@ -1,4 +1,3 @@
-import { Head } from 'next/document';
 import React from 'react';
 
 type codeofhonorProps = {
@@ -8,12 +7,7 @@ type codeofhonorProps = {
 const codeofhonor: React.FC<codeofhonorProps> = () => {
     
     return  (
-       
         <div className="code-of-honor-container">
-             <Head>
-       
-       <title>Code of Honor</title>
-     </Head>
           <h1 style={{ textAlign: 'center', fontSize: '1.5em', fontWeight: 'bold', marginBottom: '25px' }}>Code of Honor</h1> {/* Heading with increased font size and bold */}
           {/* Top Row */}
           <div className="code-of-honor-row">
@@ -53,7 +47,6 @@ const codeofhonor: React.FC<codeofhonorProps> = () => {
                   <img src="/images/accountability.png" className="rule-image" alt="Community Accountability" />
               </div>
           </div>
-          
       </div>
       );
 }
