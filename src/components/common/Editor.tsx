@@ -14,12 +14,6 @@ export const Editor = ({ id, name, value, onChange, onBlur }:any) => {
             [{ header: [1, 2, 3, 4, 5, 6] }, { font: [] }],
             [{ size: [] }],
             ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [
-                { list: 'ordered' },
-                { list: 'bullet' },
-                { indent: '-1' },
-                { indent: '+1' },
-            ],
             ['formula'],
             ['clean'],
         ],
@@ -37,8 +31,6 @@ export const Editor = ({ id, name, value, onChange, onBlur }:any) => {
         'underline',
         'strike',
         'blockquote',
-        'list',
-        'bullet',
         'indent',
         'formula',
     ]
