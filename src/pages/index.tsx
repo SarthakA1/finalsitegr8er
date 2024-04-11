@@ -362,22 +362,23 @@ const Home: NextPage = () => {
                 <option value='Academic Question'>Academic Question</option>
                 <option value='General Question'>General Question</option>
             </Select> */}
-            {postStateValue.posts.map((post) => (
-              <PostItem
-                key={post.id}
-                post={post}
-                onSelectPost={onSelectPost}
-                onDeletePost={onDeletePost}
-                onVote={onVote}
-                userVoteValue={
-                  postStateValue.postVotes.find(
-                    (item) => item.postId === post.id
-                  )?.voteValue
-                }
-                userIsCreator={user?.uid === post.creatorId}
-                homePage
-              />
-            ))}
+            {postStateValue.posts.slice(0, 50).map((post) => (
+  <PostItem
+    key={post.id}
+    post={post}
+    onSelectPost={onSelectPost}
+    onDeletePost={onDeletePost}
+    onVote={onVote}
+    userVoteValue={
+      postStateValue.postVotes.find(
+        (item) => item.postId === post.id
+      )?.voteValue
+    }
+    userIsCreator={user?.uid === post.creatorId}
+    homePage
+  />
+))}
+
           </Stack>
         )}
       </>
