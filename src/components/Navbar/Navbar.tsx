@@ -22,20 +22,14 @@ const Navbar: React.FC = () => {
             </Flex>
 
             {user && (
-                <Flex align="center">
+                <Flex align="center" display={{ base: 'none', md: 'flex' }}>
                     <Directory />
                 </Flex>
             )}
 
-            {user ? (
-                <Box display={{ base: 'flex', sm: 'flex' }} flex="1" justifyContent={{ base: 'flex-start', sm: 'center' }} maxWidth={{ base: '100px', sm: 'auto' }}>
-                    <Searchinput />
-                </Box>
-            ) : (
-                <Box display={{ base: 'none', sm: 'flex' }} flex="1" justifyContent="center">
-                    <Searchinput />
-                </Box>
-            )}
+            <Box display={{ base: 'flex', sm: 'flex' }} flex="1" justifyContent={{ base: 'flex-start', sm: 'center' }} maxWidth={{ base: '100px', sm: 'auto' }}>
+                <Searchinput />
+            </Box>
 
             <Button 
                 height="35px"
