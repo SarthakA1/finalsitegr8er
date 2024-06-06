@@ -28,7 +28,7 @@ const navbar: React.FC = () => {
                 </Flex>
             )}
             
-            <Searchinput display={{ base: 'none', sm: 'unset' }} />
+            <Searchinput />
 
             <Button 
         height="35px"
