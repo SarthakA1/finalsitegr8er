@@ -24,11 +24,12 @@ const navbar: React.FC = () => {
             {user && (
                 <Flex align="center">
                     <Directory />
-                    <Button ml={4} onClick={() => window.location.href = 'https://your-link.com'}>
-                        Coming soon!
-                    </Button>
+                    
                 </Flex>
             )}
+            <Button ml={4} onClick={() => window.location.href = 'https://your-link.com'}>
+                        Coming
+                    </Button>
             <Searchinput />
 
             <Flex >
