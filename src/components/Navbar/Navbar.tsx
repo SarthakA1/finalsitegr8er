@@ -27,10 +27,11 @@ const navbar: React.FC = () => {
                     
                 </Flex>
             )}
-            <Button ml={4} onClick={() => window.location.href = 'https://your-link.com'}>
-                        Coming
-                    </Button>
+            
             <Searchinput />
+            <Button ml={4} onClick={() => window.location.href = 'https://your-link.com'}>
+                        Coming Soon!
+                    </Button>
 
             <Flex >
                 <RightContent user={user} />
