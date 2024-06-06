@@ -28,14 +28,14 @@ const navbar: React.FC = () => {
                 </Flex>
             )}
             
-            <Searchinput   />
+            <Searchinput display={{ base: 'none', sm: 'unset' }} />
 
             <Button 
         height="35px"
         width= "150px"
         onClick={() => window.location.href = 'https://www.gr8er.live/'}
         mr={3} 
-        mt={1}>
+        mt={0.5}>
          Coming soon!
          </Button>
            
