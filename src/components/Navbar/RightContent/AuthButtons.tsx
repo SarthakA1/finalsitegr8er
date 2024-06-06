@@ -10,7 +10,7 @@ const AuthButtons:React.FC = () => {
         <Button 
         variant="outline"
         height="33px"
-        display={{ base:"none", sm:"flex"}}
+        
         width= {{ base: "70px", md:"110px"}}
         onClick={() => setAuthModalState({ open:true, view: "login"})}
         mr={2} >
@@ -18,7 +18,7 @@ const AuthButtons:React.FC = () => {
          </Button>
         <Button 
         height="33px"
-        display={{ base:"none", sm:"flex"}}
+    
         width= {{ base: "70px", md:"110px"}}
         onClick={() => setAuthModalState({ open:true, view: "signup"})}
      
