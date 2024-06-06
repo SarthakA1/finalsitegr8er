@@ -31,11 +31,10 @@ const navbar: React.FC = () => {
             <Searchinput />
 
             <Button 
-        variant="outline"
-        height="33px"
-        width= {{ base: "70px", md:"110px"}}
+        height="35px"
+        width= {{ base: "70px", md:"130px"}}
         onClick={() => window.location.href = 'https://your-link.com'}
-        mr={2} >
+        mr={3} >
          Coming soon!
          </Button>
            
