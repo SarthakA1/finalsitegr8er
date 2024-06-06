@@ -29,9 +29,16 @@ const navbar: React.FC = () => {
             )}
             
             <Searchinput />
-            <Button ml={4} onClick={() => window.location.href = 'https://your-link.com'}>
-                        Coming Soon!
-                    </Button>
+
+            <Button 
+        variant="outline"
+        height="33px"
+        width= {{ base: "70px", md:"110px"}}
+        onClick={() => window.location.href = 'https://your-link.com'}
+        mr={2} >
+         Coming soon!
+         </Button>
+           
 
             <Flex >
                 <RightContent user={user} />
