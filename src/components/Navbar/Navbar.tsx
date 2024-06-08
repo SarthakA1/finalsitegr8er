@@ -32,15 +32,15 @@ const navbar: React.FC = () => {
                 <Searchinput />
 
 
-            <Button 
-        height="35px"
-        width= "150px"
-        onClick={() => window.location.href = 'https://forms.gle/8cN1Gry81Y21mUp7A'}
-        mr={3} 
-        mt={0.5}>
-         Peer Tutoring
-         </Button>
-           
+                <Button 
+    height="35px"
+    width= "150px"
+    onClick={() => window.open('https://forms.gle/8cN1Gry81Y21mUp7A', '_blank')}
+    mr={3} 
+    mt={0.5}>
+    Peer Tutoring
+</Button>
+
 
             <Flex >
                 <RightContent user={user} />
