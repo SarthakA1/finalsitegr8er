@@ -35,10 +35,10 @@ const navbar: React.FC = () => {
             <Button 
         height="35px"
         width= "150px"
-        onClick={() => window.location.href = 'https://www.gr8er.live/'}
+        onClick={() => window.location.href = 'https://forms.gle/8cN1Gry81Y21mUp7A'}
         mr={3} 
         mt={0.5}>
-         Coming soon!
+         Peer Tutoring
          </Button>
            
 
