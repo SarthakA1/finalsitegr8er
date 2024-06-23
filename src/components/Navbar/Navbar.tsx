@@ -35,7 +35,7 @@ const navbar: React.FC = () => {
                 <Button 
     height="35px"
     width= "150px"
-    onClick={() => window.open('https://forms.gle/8cN1Gry81Y21mUp7A', '_blank')}
+    onClick={() => window.open('https://appt.link/GR8ERtutoring', '_blank')}
     mr={3} 
     mt={0.5}>
     Peer Tutoring
