@@ -1,9 +1,6 @@
-// Import necessary libraries and styles if using CSS-in-JS or CSS modules
 import React from 'react';
-import './styles.css'; // Assuming your CSS styles are in a separate file
 
-// Define the component
-const Gr8erLandingPage: React.FC = () => {
+const WelcomePage: React.FC = () => {
   return (
     <main>
       <div className="big-wrapper light">
@@ -36,14 +33,15 @@ const Gr8erLandingPage: React.FC = () => {
           <div className="container">
             <div className="left">
               <div className="big-title">
-                <h1> The academic network for IB MYP students</h1>
+                <h1>The academic </h1>
+                <h1>network for IB MYP students</h1>
               </div>
               <p className="text">
                 At GR8ER, we revolutionize the MYP learning experience with innovative
                 personalization technology and a community-centric approach.
               </p>
               <div className="cta">
-                <a href="https://www.gr8er.live/home" className="btn">Get started</a>
+                <a href="https://www.gr8er.live/" className="btn">Get started</a>
               </div>
             </div>
 
@@ -60,6 +58,6 @@ const Gr8erLandingPage: React.FC = () => {
       </div>
     </main>
   );
-}
+};
 
-export default Gr8erLandingPage;
+export default WelcomePage;
