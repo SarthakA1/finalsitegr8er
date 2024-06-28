@@ -1,6 +1,7 @@
 // pages/index.tsx
 
 import Head from 'next/head';
+import '../lib/css/welcome.css';
 
 const Home = () => {
   return (
@@ -10,7 +11,7 @@ const Home = () => {
         <meta charSet="UTF-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="/Users/sarthakahuja/Downloads/GR8ER/finalsitegr8er/src/pages/welcome.css" />
+        <link rel="stylesheet" href="/Users/sarthakahuja/Downloads/GR8ER/finalsitegr8er/src/lib/css/welcome.css" />
         <style>{`
           body {
             overflow: hidden; /* Prevent scrolling */
