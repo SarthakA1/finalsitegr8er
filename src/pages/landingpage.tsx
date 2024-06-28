@@ -91,7 +91,18 @@ const styles = {
     width: 100%;
     margin: 0 auto;
     padding: 0 3rem;
+    z-index: 1;
+  `,
+  backgroundShape: css`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.1;
     z-index: 0;
+    pointer-events: none;
+    background: url('images/shape.png') no-repeat center center / cover;
   `,
   logo: css`
     display: flex;
@@ -143,10 +154,11 @@ const styles = {
     justify-content: center;
   `,
   bigTitle: css`
-    font-size: 1.4rem;
+    font-size: 2rem;
     color: var(--darkOne);
     text-transform: capitalize;
     line-height: 1.4;
+    margin-bottom: 1rem;
   `,
   text: css`
     color: var(--lightOne);
@@ -165,7 +177,7 @@ const styles = {
     transition: 0.3s;
     &:hover {
       background-color: var(--hoverColor);
-      transform: scale(1) !important;
+      transform: scale(1.05) !important;
     }
   `,
   person: css`
@@ -179,8 +191,7 @@ const WelcomePage: React.FC = () => {
   return (
     <main css={globalStyles}>
       <div css={styles.bigWrapper} className="big-wrapper light">
-        {/* <img src="images/shape.png" alt="" className="shape" /> */}
-
+        <div css={styles.backgroundShape} />
         <header css={styles.header} className="container">
           <div css={styles.logo} className="logo">
             <img src="images/The-logo.png" alt="Logo" />
