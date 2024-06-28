@@ -20,7 +20,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </>
       ) : (
         <iframe
-          src="/path-to-your-html-file.html"
+          src="/Users/sarthakahuja/Downloads/GR8ER/finalsitegr8er/src/pages/landingpage.html"
           title="Login Required"
           style={{
             position: "fixed",
