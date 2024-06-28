@@ -19,7 +19,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </>
       ) : (
         <iframe
-          src="/Users/sarthakahuja/Downloads/GR8ER/finalsitegr8er/src/pages/landingpage.html" // Replace with the correct path
+          src="/landingpage.html" // Adjust the path based on your project structure
           style={{ width: '100%', height: '100vh', border: 'none' }}
           title="landing-page"
         />
