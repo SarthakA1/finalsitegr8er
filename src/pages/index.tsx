@@ -16,7 +16,7 @@ const Home = () => {
             overflow: hidden; /* Prevent scrolling */
           }
         `}</style>
-      </Head>
+      </Head> 
 
       <main>
         <div className="big-wrapper light">
