@@ -9,30 +9,20 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [user, loading, error] = useAuthState(auth);
-  
 
   return (
     <>
       {user ? (
         <>
-          <Navbar/>
+          <Navbar />
           <main>{children}</main>
         </>
       ) : (
         <iframe
-          src="/Users/sarthakahuja/Downloads/GR8ER/finalsitegr8er/src/pages/landingpage.html"
-          title="Login Required"
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            border: "none",
-            zIndex: 9999, // Adjust z-index as needed
-          }}
+          src="/Users/sarthakahuja/Downloads/GR8ER/finalsitegr8er/src/pages/landingpage.html" // Replace with the correct path
+          style={{ width: '100%', height: '100vh', border: 'none' }}
+          title="landing-page"
         />
-        // Replace "/path-to-your-html-file.html" with the actual path to your HTML file
       )}
     </>
   );
