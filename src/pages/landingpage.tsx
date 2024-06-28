@@ -264,7 +264,7 @@ const WelcomePage: React.FC = () => {
           <h3>Used by students from:</h3>
           <img
             src="images/schoools.png"
-            style={{ maxWidth: '50%', height: 'auto', marginTop: '20px' }}
+            style={{ maxWidth: '50%', height: 'auto', marginTop: '20px', alignItems: 'center' }}
           />
         </div>
       </div>
