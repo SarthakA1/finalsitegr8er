@@ -252,7 +252,7 @@ const WelcomePage: React.FC = () => {
         <div style={{ textAlign: 'center' }}>
           <h3>Used by students from:</h3>
           <img
-            src="/Users/sarthakahuja/Downloads/GR8ER/finalsitegr8er/public/images/Screenshot 2024-06-28 at 1.12.41 PM.png"
+            src="/Users/sarthakahuja/Downloads/GR8ER/finalsitegr8er/public/images/schoools.png"
             style={{ maxWidth: '50%', height: 'auto', marginTop: '20px' }}
           />
         </div>
