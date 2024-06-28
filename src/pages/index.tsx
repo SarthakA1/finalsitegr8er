@@ -318,6 +318,7 @@ const Home: NextPage = () => {
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6442166008118008"
      crossOrigin="anonymous"></script>
         <title>GR8ER</title>
+        <iframe src="/Users/sarthakahuja/Downloads/GR8ER/finalsitegr8er/src/pages/landingpage.html" style={{ width: "100%", height: "100vh", border: "none" }} />
       </Head>
       
     </div>
