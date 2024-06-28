@@ -1,13 +1,38 @@
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import React from 'react';
+
+const styles = {
+  bigWrapper: css`
+    position: relative;
+    padding: 1.7rem 0 2rem;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+    background-color: var(--backgroundColor);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  `,
+  container: css`
+    position: relative;
+    max-width: 81rem;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 3rem;
+    z-index: 0;
+  `,
+  // Add other styles here
+};
 
 const WelcomePage: React.FC = () => {
   return (
     <main>
-      <div className="big-wrapper light">
+      <div css={styles.bigWrapper} className="big-wrapper light">
         <img src="Images/shape.png" alt="" className="shape" />
 
         <header>
-          <div className="container">
+          <div css={styles.container} className="container">
             <div className="logo">
               <img src="Images/The-logo.png" alt="Logo" />
               <h3>GR8ER</h3>
@@ -15,9 +40,27 @@ const WelcomePage: React.FC = () => {
 
             <div className="links">
               <ul>
-                <li><a href="https://www.linkedin.com/company/gr8er/" className="special"><i className="fab fa-linkedin-in fa-2x"></i></a></li>
-                <li><a href="https://www.youtube.com/@GR8ERIB" className="special"><i className="fab fa-youtube fa-2x"></i></a></li>
-                <li><a href="https://www.instagram.com/gr8er_/" className="special"><i className="fab fa-instagram fa-2x"></i></a></li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/company/gr8er/"
+                    className="special"
+                  >
+                    <i className="fab fa-linkedin-in fa-2x"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.youtube.com/@GR8ERIB" className="special">
+                    <i className="fab fa-youtube fa-2x"></i>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.instagram.com/gr8er_/"
+                    className="special"
+                  >
+                    <i className="fab fa-instagram fa-2x"></i>
+                  </a>
+                </li>
               </ul>
             </div>
 
@@ -37,23 +80,33 @@ const WelcomePage: React.FC = () => {
                 <h1>network for IB MYP students</h1>
               </div>
               <p className="text">
-                At GR8ER, we revolutionize the MYP learning experience with innovative
-                personalization technology and a community-centric approach.
+                At GR8ER, we revolutionize the MYP learning experience with
+                innovative personalization technology and a community-centric
+                approach.
               </p>
               <div className="cta">
-                <a href="https://www.gr8er.live/home" className="btn">Get started</a>
+                <a href="https://www.gr8er.live/home" className="btn">
+                  Get started
+                </a>
               </div>
             </div>
 
             <div className="right">
-              <img src="Images/Screenshot 2024-06-28 at 10.47.10 AM.png" alt="Person Image" className="person" />
+              <img
+                src="Images/Screenshot 2024-06-28 at 10.47.10 AM.png"
+                alt="Person Image"
+                className="person"
+              />
             </div>
           </div>
         </div>
 
         <div style={{ textAlign: 'center' }}>
           <h3>Used by students from:</h3>
-          <img src="/Users/sarthakahuja/Downloads/GR8ER landing page/Images/Screenshot 2024-06-28 at 1.12.41 PM.png" style={{ maxWidth: '50%', height: 'auto', marginTop: '20px' }} />
+          <img
+            src="/Users/sarthakahuja/Downloads/GR8ER landing page/Images/Screenshot 2024-06-28 at 1.12.41 PM.png"
+            style={{ maxWidth: '50%', height: 'auto', marginTop: '20px' }}
+          />
         </div>
       </div>
     </main>
