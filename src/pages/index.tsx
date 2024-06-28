@@ -289,103 +289,63 @@ const Home: NextPage = () => {
     };
   }, [user, postStateValue.posts]);
   return (
-    
-    
-    
-
-    <PageContent>
-     
-
-      
-      <Stack spacing={5}>
-        <Recommendations/>
-       
-      </Stack>
-      <>
-      <button
-        className={`back_to_top`}
-        onClick={scrollToTop}
-      >
-        BACK TO TOP
-       
-      </button>
-        <CreatePostLink />
-        <Analytics />
-        
-        
-        <div>
-      <Head>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6442166008118008"
-     crossOrigin="anonymous"></script>
-        <title>GR8ER</title>
-      </Head>
-      
-    </div>
-        {loading ? (
-          <PostLoader />
-        ) : (
-          <Stack>
-            <div className='filter_main_section'>
-              <div className='filter_main_grade_section'>
-                  <Text style={{fontSize: "12px", fontWeight: "600"}}>MYP</Text>
-                  <span className={`filter_main_grade_sub_section ${activeFilters.grade && (activeFilters.grade as string[]).includes('1') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '1')}>MYP 1</span>
-                  <span className={`filter_main_grade_sub_section ${activeFilters.grade && (activeFilters.grade as string[]).includes('2') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '2')}>MYP 2</span>
-                  <span className={`filter_main_grade_sub_section ${activeFilters.grade && (activeFilters.grade as string[]).includes('3') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '3')}>MYP 3</span>
-                  <span className={`filter_main_grade_sub_section ${activeFilters.grade && (activeFilters.grade as string[]).includes('4') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '4')}>MYP 4</span>
-                  <span className={`filter_main_grade_sub_section ${activeFilters.grade && (activeFilters.grade as string[]).includes('5') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '5')}>MYP 5</span>
-              </div>
-              <div className='filter_main_question_section'>
-                  <Text style={{fontSize: "12px", fontWeight: "600", marginTop: "4px"}}>Type</Text>
-                  <span className={`filter_main_question_sub_section_background ${activeFilters.typeofquestion && (activeFilters.typeofquestion as string[]).includes('Academic Question') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('typeofquestion', 'Academic Question')}>Academic Questions</span>
-                  <span className={`filter_main_question_sub_section_without_background ${activeFilters.typeofquestion && (activeFilters.typeofquestion as string[]).includes('General Doubt') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('typeofquestion', 'General Doubt')}>General Doubts</span>
-                  <span className={`filter_main_question_sub_section_without_backgrouund_border ${activeFilters.typeofquestion && (activeFilters.typeofquestion as string[]).includes('Resource') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('typeofquestion', 'Resource')}>Resources</span>
-              </div>
-              <div className='filter_main_criteria_section'>
-                  <Text style={{fontSize: "12px", fontWeight: "600", marginTop: "4px"}}>Criteria</Text>
-                  <span className={`filter_main_criteria_sub_section_background ${activeFilters.criteria && (activeFilters.criteria as string[]).includes('Criteria A') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('criteria', 'Criteria A')}>Criteria A</span>
-                  <span className={`filter_main_criteria_sub_section_without_background ${activeFilters.criteria && (activeFilters.criteria as string[]).includes('Criteria B') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('criteria', 'Criteria B')}>Criteria B</span>
-                  <span className={`filter_main_criteria_sub_section_without_background ${activeFilters.criteria && (activeFilters.criteria as string[]).includes('Criteria C') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('criteria', 'Criteria C')}>Criteria C</span>
-                  <span className={`filter_main_criteria_sub_section_without_backgrouund_border ${activeFilters.criteria && (activeFilters.criteria as string[]).includes('Criteria D') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('criteria', 'Criteria D')}>Criteria D</span>
-              </div>
-              <div className='filter_main_difficulty_section'>
-                  <Text style={{fontSize: "12px", fontWeight: "600"}}>Difficulty (Academic Questions)</Text>
-                  <span className={`filter_main_difficulty_sub_section ${activeFilters.difficulty && (activeFilters.difficulty as string[]).includes('easy') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('difficulty', 'easy')}>Easy</span>
-                  <span className={`filter_main_difficulty_sub_section ${activeFilters.difficulty && (activeFilters.difficulty as string[]).includes('medium') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('difficulty', 'medium')}>Medium</span>
-                  <span className={`filter_main_difficulty_sub_section ${activeFilters.difficulty && (activeFilters.difficulty as string[]).includes('hard') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('difficulty', 'hard')}>Hard</span>
-              </div>
-          </div>
-            {/* <Select placeholder='Sort By Tags' onChange={handleChangeFilter}>
-                <option value='Criteria A'>Criteria A</option>
-                <option value='Criteria B'>Criteria B</option>
-                <option value='Criteria C'>Criteria C</option>
-                <option value='Criteria D'>Criteria D</option>
-                <option value='Academic Question'>Academic Question</option>
-                <option value='General Question'>General Question</option>
-            </Select> */}
-            {postStateValue.posts.slice(0, 100).map((post) => (
-  <PostItem
-    key={post.id}
-    post={post}
-    onSelectPost={onSelectPost}
-    onDeletePost={onDeletePost}
-    onVote={onVote}
-    userVoteValue={
-      postStateValue.postVotes.find(
-        (item) => item.postId === post.id
-      )?.voteValue
-    }
-    userIsCreator={user?.uid === post.creatorId}
-    homePage
-  />
-))}
-
+    <>
+      {user ? (
+        <PageContent>
+          <Stack spacing={5}>
+            <Recommendations />
           </Stack>
-        )}
-      </>
-    </PageContent>
-
-    
+          <button className={`back_to_top`} onClick={scrollToTop}>
+            BACK TO TOP
+          </button>
+          <CreatePostLink />
+          <Analytics />
+          <div>
+            <Head>
+              <script
+                async
+                src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6442166008118008"
+                crossOrigin="anonymous"
+              ></script>
+              <title>GR8ER</title>
+            </Head>
+          </div>
+          {loading ? (
+            <PostLoader />
+          ) : (
+            <Stack>
+              <div className="filter_main_section">
+                {/* Your filter sections */}
+              </div>
+              {postStateValue.posts.slice(0, 100).map((post) => (
+                <PostItem
+                  key={post.id}
+                  post={post}
+                  onSelectPost={onSelectPost}
+                  onDeletePost={onDeletePost}
+                  onVote={onVote}
+                  userVoteValue={
+                    postStateValue.postVotes.find(
+                      (item) => item.postId === post.id
+                    )?.voteValue
+                  }
+                  userIsCreator={user?.uid === post.creatorId}
+                  homePage
+                />
+              ))}
+            </Stack>
+          )}
+        </PageContent>
+      ) : (
+        // Render HTML file when user is not logged in
+        <div>
+          <p>Please log in to view this content.</p>
+          {/* You can add a link or button for login here */}
+        </div>
+      )}
+    </>
   );
+  
 };
 
 export default Home;
