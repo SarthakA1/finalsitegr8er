@@ -179,7 +179,7 @@ const WelcomePage: React.FC = () => {
   return (
     <main css={globalStyles}>
       <div css={styles.bigWrapper} className="big-wrapper light">
-        <img src="images/shape.png" alt="" className="shape" />
+        {/* <img src="images/shape.png" alt="" className="shape" /> */}
 
         <header css={styles.header} className="container">
           <div css={styles.logo} className="logo">
