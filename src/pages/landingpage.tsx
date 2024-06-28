@@ -199,33 +199,34 @@ const WelcomePage: React.FC = () => {
           </div>
 
           <div css={styles.links} className="links">
-            <ul>
-              <li>
-                <a
-                  href="https://www.linkedin.com/company/gr8er/"
-                  className="special"
-                >
-                  <i className="fab fa-linkedin-in fa-2x"></i>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://www.youtube.com/@GR8ERIB"
-                  className="special"
-                >
-                  <i className="fab fa-youtube fa-2x"></i>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://www.instagram.com/gr8er_/"
-                  className="special"
-                >
-                  <i className="fab fa-instagram fa-2x"></i>
-                </a>
-              </li>
-            </ul>
-          </div>
+  <ul>
+    <li>
+      <a
+        href="https://www.linkedin.com/company/gr8er/"
+        className="special"
+      >
+        <img src="/path/to/linkedin-image.png" alt="LinkedIn" width="32" height="32" />
+      </a>
+    </li>
+    <li>
+      <a
+        href="https://www.youtube.com/@GR8ERIB"
+        className="special"
+      >
+        <img src="/path/to/youtube-image.png" alt="YouTube" width="32" height="32" />
+      </a>
+    </li>
+    <li>
+      <a
+        href="https://www.instagram.com/gr8er_/"
+        className="special"
+      >
+        <img src="/path/to/instagram-image.png" alt="Instagram" width="32" height="32" />
+      </a>
+    </li>
+  </ul>
+</div>
+
         </header>
 
         <div css={styles.showcaseArea} className="showcase-area container">
@@ -264,7 +265,7 @@ const WelcomePage: React.FC = () => {
           <h3>Used by students from:</h3>
           <img
             src="images/schoools.png"
-            style={{ maxWidth: '50%', height: 'auto', marginTop: '20px', alignItems: 'center' }}
+            style={{ maxWidth: '50%', height: 'auto', marginTop: '20px', alignContent: 'center' }}
           />
         </div>
       </div>
