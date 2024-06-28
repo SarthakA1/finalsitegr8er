@@ -43,7 +43,7 @@ const Gr8erLandingPage: React.FC = () => {
                 personalization technology and a community-centric approach.
               </p>
               <div className="cta">
-                <a href="https://www.gr8er.live/home" className="btn">Get started</a>
+                <a href="https://www.gr8er.live/" className="btn">Get started</a>
               </div>
             </div>
 
