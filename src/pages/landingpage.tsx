@@ -179,11 +179,11 @@ const WelcomePage: React.FC = () => {
   return (
     <main css={globalStyles}>
       <div css={styles.bigWrapper} className="big-wrapper light">
-        <img src="Images/shape.png" alt="" className="shape" />
+        <img src="images/shape.png" alt="" className="shape" />
 
         <header css={styles.header} className="container">
           <div css={styles.logo} className="logo">
-            <img src="Images/The-logo.png" alt="Logo" />
+            <img src="images/The-logo.png" alt="Logo" />
             <h3>GR8ER</h3>
           </div>
 
@@ -241,7 +241,7 @@ const WelcomePage: React.FC = () => {
 
           <div className="right">
             <img
-              src="Images/Screenshot 2024-06-28 at 10.47.10 AM.png"
+              src="images/Screenshot 2024-06-28 at 10.47.10 AM.png"
               alt="Person Image"
               css={styles.person}
               className="person"
@@ -252,7 +252,7 @@ const WelcomePage: React.FC = () => {
         <div style={{ textAlign: 'center' }}>
           <h3>Used by students from:</h3>
           <img
-            src="/Users/sarthakahuja/Downloads/GR8ER landing page/Images/Screenshot 2024-06-28 at 1.12.41 PM.png"
+            src="/Users/sarthakahuja/Downloads/GR8ER/finalsitegr8er/public/images/Screenshot 2024-06-28 at 1.12.41 PM.png"
             style={{ maxWidth: '50%', height: 'auto', marginTop: '20px' }}
           />
         </div>
