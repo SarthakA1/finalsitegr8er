@@ -8,12 +8,12 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const [user, loading, error] = useAuthState(auth); // Firebase auth state
-  const userLoggedIn = user !== null && !loading && !error; // Check if user is logged in
+  const [user, loading, error] = useAuthState(auth);
+  
 
   return (
     <>
-      {userLoggedIn ? (
+      {user ? (
         <>
           <Navbar/>
           <main>{children}</main>
