@@ -264,9 +264,17 @@ const WelcomePage: React.FC = () => {
         <div style={{ textAlign: 'center' }}>
           <h3>Used by students from:</h3>
           <img
-            src="images/schoools.png"
-            style={{ maxWidth: '50%', height: 'auto', marginTop: '20px', alignContent: 'center' }}
-          />
+  src="images/schoools.png"
+  style={{
+    maxWidth: '50%',
+    height: 'auto',
+    marginTop: '20px',
+    display: 'block',
+    marginLeft: 'auto',
+    marginRight: 'auto'
+  }}
+/>
+
         </div>
       </div>
     </main>
