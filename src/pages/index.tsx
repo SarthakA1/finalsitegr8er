@@ -77,7 +77,8 @@ const styles = {
   bigWrapper: css`
     position: relative;
     padding: 1.7rem 0 2rem;
-    width: 100%;
+    width: calc(100% - 4rem); /* Subtract 4rem from the total width */
+    margin: 0 2rem; /* Add 2rem margin on both sides */
     min-height: 100vh;
     overflow: hidden;
     background-color: var(--backgroundColor);
