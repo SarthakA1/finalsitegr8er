@@ -15,7 +15,7 @@ const navbar: React.FC = () => {
     return (
         <Flex bg='white' height='50px' padding='6px 10px' direction="row">
             <Flex align="center" cursor="pointer" onClick={() => onSelectMenuItem(defaultMenuItem)} >
-                <a href="/">
+                <a href="/home">
                     <Image src="/images/gr8er.png" ml={.3} height="45px" display={{ base: 'unset', md: 'none' }} />
                     <Image src="/images/gr8er logo.png" ml={2} mt={2} height="37px" mb="1px" display={{ base: 'none', md: 'unset' }} />
                 </a>
