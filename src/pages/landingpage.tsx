@@ -205,7 +205,7 @@ const WelcomePage: React.FC = () => {
         href="https://www.linkedin.com/company/gr8er/"
         className="special"
       >
-        <img src="/path/to/linkedin-image.png" alt="LinkedIn" width="32" height="32" />
+        <img src="public/images/linkedin-logo-linkedin-logo-transparent-linkedin-icon-transparent-free-free-png.png" alt="LinkedIn" width="32" height="32" />
       </a>
     </li>
     <li>
@@ -213,7 +213,7 @@ const WelcomePage: React.FC = () => {
         href="https://www.youtube.com/@GR8ERIB"
         className="special"
       >
-        <img src="/path/to/youtube-image.png" alt="YouTube" width="32" height="32" />
+        <img src="public/images/Youtube_logo.png" alt="YouTube" width="32" height="32" />
       </a>
     </li>
     <li>
@@ -221,7 +221,7 @@ const WelcomePage: React.FC = () => {
         href="https://www.instagram.com/gr8er_/"
         className="special"
       >
-        <img src="/path/to/instagram-image.png" alt="Instagram" width="32" height="32" />
+        <img src="public/images/instagramfinal.png" alt="Instagram" width="32" height="32" />
       </a>
     </li>
   </ul>
