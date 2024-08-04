@@ -57,7 +57,7 @@ const UserMenu:React.FC<UserMenuProps> = ({ user }) => {
                          
   <MenuList>
     
-    <MenuItem
+    {/* <MenuItem
     fontSize="10pt"
     fontWeight={700}
     _hover={{ bg: "blue.500", color:"white"}}
@@ -67,7 +67,7 @@ const UserMenu:React.FC<UserMenuProps> = ({ user }) => {
         <Icon fontSize={20} mr={2} as={FaStar} />
         About GR8ER
     </Flex>
-    </MenuItem>
+    </MenuItem> */}
     <MenuItem
     fontSize="10pt"
     fontWeight={700}

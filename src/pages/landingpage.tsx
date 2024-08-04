@@ -201,31 +201,23 @@ const WelcomePage: React.FC = () => {
           <div css={styles.links} className="links">
   <ul>
     <li>
-      <a
-        href="https://www.linkedin.com/company/gr8er/"
-        className="special"
-      >
-        <img src="public/images/linkedin-logo-linkedin-logo-transparent-linkedin-icon-transparent-free-free-png.png" alt="LinkedIn" width="32" height="32" />
+      <a href="https://www.linkedin.com/company/gr8er/" className="special">
+        <img src="/images/linkedin-logo-linkedin-logo-transparent-linkedin-icon-transparent-free-free-png.png" alt="LinkedIn" width="32" height="32" />
       </a>
     </li>
     <li>
-      <a
-        href="https://www.youtube.com/@GR8ERIB"
-        className="special"
-      >
-        <img src="public/images/Youtube_logo.png" alt="YouTube" width="32" height="32" />
+      <a href="https://www.youtube.com/@GR8ERIB" className="special">
+        <img src="/images/Youtube_logo.png" alt="YouTube" width="32" height="32" />
       </a>
     </li>
     <li>
-      <a
-        href="https://www.instagram.com/gr8er_/"
-        className="special"
-      >
-        <img src="public/images/instagramfinal.png" alt="Instagram" width="32" height="32" />
+      <a href="https://www.instagram.com/gr8er_/" className="special">
+        <img src="/images/instagramfinal.png" alt="Instagram" width="32" height="32" />
       </a>
     </li>
   </ul>
 </div>
+
 
         </header>
 
@@ -242,7 +234,7 @@ const WelcomePage: React.FC = () => {
             </p>
             <div className="cta">
               <a
-                href="https://www.gr8er.live/home"
+                href="https://www.gr8er.live/"
                 css={styles.btn}
                 className="btn"
               >
