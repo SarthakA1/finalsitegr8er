@@ -5,12 +5,12 @@ type FounderPageProps = {};
 const FounderPage: React.FC<FounderPageProps> = () => {
     return (
         <div style={styles.pageContainer}>
-            <h1 style={styles.pageTitle}>Get to Know the Founder</h1>
+            <h1 style={styles.pageTitle}>The Founder</h1>
 
             {/* Founder Bio Section */}
-            <Section title="Meet the Founder" imageSrc="/images/founder-photo.jpg">
+            <Section title="Sarthak Ahuja" imageSrc="https://media.licdn.com/dms/image/v2/D5603AQG0BWdI8Fjf9A/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1720973014753?e=1737590400&v=beta&t=RFK2_v7ydw_cYSSP99lxU9Bv66IHoYT82_Slg3mjXJg">
                 <p>
-                    [Founder’s Name] is the visionary behind this platform, creating a space for students to share knowledge and grow. With years of experience in education and a deep passion for supporting learners, [Founder’s Name] believes in the power of community and collaboration to foster success.
+                    Hi! Connect with me @ sarthak.ahuja231@gmail.com
                 </p>
             </Section>
         </div>
