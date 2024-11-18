@@ -34,12 +34,10 @@ const UserMenu:React.FC<UserMenuProps> = ({ user }) => {
     };
 
     const redirectToFounder = () => {
-        router.push('/landingpage');
+        router.push('/founder');
     };
 
-    const redirectToLandingPage = () => {
-        router.push('/landingpage');
-    };
+    
 
     return (
         <Menu>
