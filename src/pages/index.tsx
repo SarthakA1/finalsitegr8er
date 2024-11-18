@@ -27,6 +27,7 @@ import { Analytics } from '@vercel/analytics/react';
  
 
 const Home: NextPage = () => {
+  const [isHovered, setIsHovered] = useState(false);
   const [user, loadingUser] = useAuthState(auth);
   const [loading, setLoading] = useState(false);
   const {
@@ -364,11 +365,18 @@ const Home: NextPage = () => {
              marginBottom="16px" // Space between the image and the PostItem
            >
              <Image
-              onClick={() => window.open('https://www.sparkl.me/register', '_blank')}
-               src="/images/finalsparkl.png" // Replace with the actual image URL
-               width="100%"
-               borderRadius="md" // Optional: Adds rounded corners
-             />
+      onClick={() => window.open('https://www.sparkl.me/register', '_blank')}
+      onMouseEnter={() => setIsHovered(true)} // Handle hover start
+      onMouseLeave={() => setIsHovered(false)} // Handle hover end
+      src="/images/finalsparkl.png" // Replace with the actual image URL
+      width="100%"
+      borderRadius="md" // Optional: Adds rounded corners
+      style={{
+        filter: isHovered ? 'brightness(0.8)' : 'none', // Example effect: darken on hover
+        transition: 'filter 0.2s ease-in-out', // Smooth transition effect
+        cursor: 'pointer', // Change cursor to pointer on hover
+      }}
+    />
            </Box>
             {/* <Select placeholder='Sort By Tags' onChange={handleChangeFilter}>
                 <option value='Criteria A'>Criteria A</option>
