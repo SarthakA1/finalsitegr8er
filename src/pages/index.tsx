@@ -1,3 +1,4 @@
+
 import { Stack, Select, Text, Flex, Box } from "@chakra-ui/react";
 import {
   collection,
@@ -23,22 +24,10 @@ import Head from 'next/head'
 import { Image } from "@chakra-ui/react";
 
 import { Analytics } from '@vercel/analytics/react';
-import { getAnalytics, logEvent } from "firebase/analytics"; // Import Firebase Analytics logEvent function
-import { analytics } from "../firebase/clientApp"; // Ensure analytics is initialized properly
-
 
  
 
 const Home: NextPage = () => {
-  const analytics = getAnalytics();
-  const handleImageClick = () => {
-    // Log the image click event
-    logEvent(analytics, "image_click", {
-      image: "finalsparkl.png",
-      link: "https://www.sparkl.me/register",
-    });
-    window.open("https://www.sparkl.me/register", "_blank");
-  };
   const [isHovered, setIsHovered] = useState(false);
   const [user, loadingUser] = useAuthState(auth);
   const [loading, setLoading] = useState(false);
@@ -348,7 +337,7 @@ const Home: NextPage = () => {
              marginBottom="8px" // Space between the image and the PostItem
            >
              <Image
-      onClick={handleImageClick}
+      onClick={() => window.open('https://www.sparkl.me/register', '_blank')}
       onMouseEnter={() => setIsHovered(true)} // Handle hover start
       onMouseLeave={() => setIsHovered(false)} // Handle hover end
       src="/images/finalsparkl.png" // Replace with the actual image URL
@@ -428,5 +417,3 @@ const Home: NextPage = () => {
 };
 
 export default Home;
-
-
