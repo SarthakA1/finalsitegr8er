@@ -83,11 +83,12 @@ const UserMenu:React.FC<UserMenuProps> = ({ user }) => {
         Code of Honor
     </Flex>
     </MenuItem>
+
     <MenuItem
     fontSize="10pt"
     fontWeight={700}
     _hover={{ bg: "blue.500", color:"white"}}
-    onClick={redirectToCodeofHonor}
+    onClick={redirectToFounder}
     >
     <Flex align="center">
         <Icon fontSize={20} mr={2} as={FaStar} />
