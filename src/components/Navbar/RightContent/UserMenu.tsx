@@ -3,7 +3,7 @@ import { Menu, MenuButton, Button, MenuList, MenuItem, Icon, Flex, Image } from 
 import { signOut, User } from 'firebase/auth';
 import React from 'react';
 import { FaUserCircle } from "react-icons/fa";
-import { FaPersonBurst } from "react-icons/fa6";
+import { FaPersonBooth } from "react-icons/fa";
 import { BsChevronDown } from "react-icons/bs";
 import { VscAccount } from "react-icons/vsc";
 import { TbLogout } from "react-icons/tb";
@@ -90,7 +90,7 @@ const UserMenu:React.FC<UserMenuProps> = ({ user }) => {
     onClick={redirectToFounder}
     >
     <Flex align="center">
-        <Icon fontSize={20} mr={2} as={FaPersonBurst} />
+        <Icon fontSize={20} mr={2} as={FaPersonBooth} />
         Meet the Founder
     </Flex>
     </MenuItem>
