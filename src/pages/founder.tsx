@@ -1,5 +1,5 @@
 import React from 'react';
-import './FounderPage.css';
+
 
 type FounderPageProps = {};
 
