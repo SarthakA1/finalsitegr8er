@@ -11,16 +11,14 @@ const FounderPage: React.FC<FounderPageProps> = () => {
             {/* Founder Bio Section */}
             <Section title="Meet the Founder" imageSrc="/images/founder-photo.jpg">
                 <p>
-                    [Founder’s Name] is the visionary behind this platform, creating a space where students can come together to share knowledge and grow. With years of experience in education and a deep passion for supporting learners, [Founder’s Name] believes in the power of community and collaboration to foster success.
+                    [Founder’s Name] is the visionary behind this platform, creating a space for students to share knowledge and grow. With years of experience in education and a deep passion for supporting learners, [Founder’s Name] believes in the power of community and collaboration to foster success.
                 </p>
             </Section>
-
-            
         </div>
     );
 };
 
-// Modular Section Component
+// Reusable Section Component
 interface SectionProps {
     title: string;
     imageSrc: string;
