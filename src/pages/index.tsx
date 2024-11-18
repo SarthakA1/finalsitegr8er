@@ -330,6 +330,23 @@ const Home: NextPage = () => {
         ) : (
           
           <Stack>
+            <Box
+             display={{ base: "none", lg: "block" }} // Visible only on large screens and above
+             maxWidth="100%" // Same width as the PostItem's parent container
+             marginBottom="16px" // Space between the image and the PostItem
+           >
+             <Image
+      onClick={() => window.open('https://www.sparkl.me/register', '_blank')}
+      onMouseEnter={() => setIsHovered(true)} // Handle hover start
+      onMouseLeave={() => setIsHovered(false)} // Handle hover end
+      src="/images/finalsparkl.png" // Replace with the actual image URL
+      width="100%"
+      borderRadius="md" // Optional: Adds rounded corners
+      style={{
+        cursor: 'pointer', // Change cursor to pointer on hover
+      }}
+    />
+           </Box>
             <div className='filter_main_section'>
               <div className='filter_main_grade_section'>
                   <Text style={{fontSize: "12px", fontWeight: "600"}}>MYP</Text>
@@ -359,24 +376,7 @@ const Home: NextPage = () => {
                   <span className={`filter_main_difficulty_sub_section ${activeFilters.difficulty && (activeFilters.difficulty as string[]).includes('hard') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('difficulty', 'hard')}>Hard</span>
               </div>
           </div>
-          <Box
-             display={{ base: "none", lg: "block" }} // Visible only on large screens and above
-             maxWidth="100%" // Same width as the PostItem's parent container
-             marginBottom="16px" // Space between the image and the PostItem
-           >
-             <Image
-      onClick={() => window.open('https://www.sparkl.me/register', '_blank')}
-      onMouseEnter={() => setIsHovered(true)} // Handle hover start
-      onMouseLeave={() => setIsHovered(false)} // Handle hover end
-      src="/images/finalsparkl.png" // Replace with the actual image URL
-      width="100%"
-      borderRadius="md" // Optional: Adds rounded corners
-      style={{
-        filter: isHovered ? 'brightness(0.9)' : 'none', // Example effect: darken on hover
-        cursor: 'pointer', // Change cursor to pointer on hover
-      }}
-    />
-           </Box>
+          
             {/* <Select placeholder='Sort By Tags' onChange={handleChangeFilter}>
                 <option value='Criteria A'>Criteria A</option>
                 <option value='Criteria B'>Criteria B</option>
