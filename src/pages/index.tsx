@@ -96,7 +96,7 @@ const Home: NextPage = () => {
     try {
       const postQuery = query(
         collection(firestore, "posts"),
-        orderBy("voteStatus", "desc"),
+        orderBy("createdAt", "desc"),
         limit(50)
       );
 
