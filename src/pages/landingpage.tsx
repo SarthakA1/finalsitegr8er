@@ -114,26 +114,7 @@ const FounderPage: React.FC<FounderPageProps> = () => {
         </p>
       </Section>
 
-      {/* Founder’s Vision Section */}
-      <Section title="Founder’s Vision" imageSrc="/images/vision.jpg" reverse={true}>
-        <p>
-          [Founder’s Name] aims to revolutionize the way students interact with learning resources. By creating a global community where every student can collaborate and succeed, the platform empowers individuals to reach their full potential. The vision is to make education accessible and supportive for all.
-        </p>
-      </Section>
 
-      {/* The Journey So Far Section */}
-      <Section title="The Journey So Far" imageSrc="/images/journey.jpg">
-        <p>
-          Starting as a simple idea, this platform has grown into a thriving community of learners from across the globe. The journey has been filled with learning, innovation, and a commitment to always putting students first. With each milestone, [Founder’s Name] and the team continue to push boundaries to improve the platform.
-        </p>
-      </Section>
-
-      {/* Get in Touch Section */}
-      <Section title="Get in Touch" imageSrc="/images/contact.jpg" reverse={true}>
-        <p>
-          Have questions or want to learn more? Reach out to [Founder’s Name] through our contact page. Your feedback is invaluable in helping us continue to improve and provide the best experience for our community.
-        </p>
-      </Section>
     </div>
   );
 };
