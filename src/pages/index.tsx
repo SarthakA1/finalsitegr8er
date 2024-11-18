@@ -60,9 +60,14 @@ const Home: NextPage = () => {
   
   const handleClick = () => {
     logEvent(analytics, "image_click", {
-      item_id: "finalsparkl_image",
-      item_name: "Register Now Image",
+        item_id: "finalsparkl_image",
+        item_name: "Register Now Image",
     });
+
+    // Open the URL in a new tab
+    window.open('https://www.sparkl.me/register', '_blank');
+};
+
 
 
 
@@ -347,7 +352,7 @@ const Home: NextPage = () => {
              marginBottom="8px" // Space between the image and the PostItem
            >
              <Image
-      onClick={() => window.open('https://www.sparkl.me/register', '_blank')}
+      onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)} // Handle hover start
       onMouseLeave={() => setIsHovered(false)} // Handle hover end
       src="/images/finalsparkl.png" // Replace with the actual image URL
