@@ -364,7 +364,7 @@ const Home: NextPage = () => {
              marginBottom="16px" // Space between the image and the PostItem
            >
              <Image
-               src="/public/images/sparklgr8er.png" // Replace with the actual image URL
+               src="/images/iblmao.png" // Replace with the actual image URL
                width="100%"
                borderRadius="md" // Optional: Adds rounded corners
              />
