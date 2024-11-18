@@ -15,7 +15,7 @@ import CreatePostLink from "../components/Subject/CreatePostLink";
 import Recommendations from "../components/Subject/Recommendations";
 import PostItem from "../components/Posts/PostItem";
 import PostLoader from "../components/Posts/PostLoader";
-import { app, auth, firestore } from "../firebase/clientApp";
+import { auth, firestore } from "../firebase/clientApp";
 import useSubjectData from "../hooks/useSubjectData";
 import usePosts from "../hooks/usePosts";
 import PageContent from "@/components/layout/PageContent";
@@ -23,13 +23,10 @@ import Head from 'next/head'
 import { Image } from "@chakra-ui/react";
 
 import { Analytics } from '@vercel/analytics/react';
-import { getAnalytics, logEvent } from "firebase/analytics";
-import { initializeApp } from "firebase/app";
 
  
 
 const Home: NextPage = () => {
-  
   const [isHovered, setIsHovered] = useState(false);
   const [user, loadingUser] = useAuthState(auth);
   const [loading, setLoading] = useState(false);
@@ -53,15 +50,7 @@ const Home: NextPage = () => {
   function scrollToTop() {
       if (!isBrowser()) return;
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      
   }
-
-  const analytics = getAnalytics(app);
-  
-  const handleClick = () => {
-   
-    window.open('https://www.sparkl.me/register', '_blank');
-};
 
 
 
@@ -347,7 +336,7 @@ const Home: NextPage = () => {
              marginBottom="8px" // Space between the image and the PostItem
            >
              <Image
-      onClick={handleClick}
+      onClick={() => window.open('https://www.sparkl.me/register', '_blank')}
       onMouseEnter={() => setIsHovered(true)} // Handle hover start
       onMouseLeave={() => setIsHovered(false)} // Handle hover end
       src="/images/finalsparkl.png" // Replace with the actual image URL
