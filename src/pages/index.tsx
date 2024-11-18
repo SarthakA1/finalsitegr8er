@@ -59,12 +59,7 @@ const Home: NextPage = () => {
   const analytics = getAnalytics(app);
   
   const handleClick = () => {
-    logEvent(analytics, "image_click", {
-        item_id: "finalsparkl_image",
-        item_name: "Register Now Image",
-    });
-
-    // Open the URL in a new tab
+   
     window.open('https://www.sparkl.me/register', '_blank');
 };
 
