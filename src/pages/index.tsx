@@ -19,11 +19,25 @@ import { auth, firestore } from "../firebase/clientApp";
 import useSubjectData from "../hooks/useSubjectData";
 import usePosts from "../hooks/usePosts";
 import PageContent from "@/components/layout/PageContent";
-import Head from "next/head";
+import Head from 'next/head'
 import { Image } from "@chakra-ui/react";
-import { Analytics, logEvent } from "@firebase/analytics"; // Ensure analytics import
+
+import { Analytics } from '@vercel/analytics/react';
+import { logEvent } from "firebase/analytics"; // Import Firebase Analytics logEvent function
+import { analytics } from "../firebase/clientApp"; // Ensure analytics is initialized properly
+
+
+ 
 
 const Home: NextPage = () => {
+  const handleImageClick = () => {
+    // Log the image click event
+    logEvent(analytics, "image_click", {
+      image: "finalsparkl.png",
+      link: "https://www.sparkl.me/register",
+    });
+    window.open("https://www.sparkl.me/register", "_blank");
+  };
   const [isHovered, setIsHovered] = useState(false);
   const [user, loadingUser] = useAuthState(auth);
   const [loading, setLoading] = useState(false);
@@ -42,33 +56,32 @@ const Home: NextPage = () => {
   });
   const { subjectStateValue } = useSubjectData();
 
-  const isBrowser = () => typeof window !== "undefined";
+  const isBrowser = () => typeof window !== 'undefined'; //The approach recommended by Next.js
 
   function scrollToTop() {
-    if (!isBrowser()) return;
-    window.scrollTo({ top: 0, behavior: "smooth" });
+      if (!isBrowser()) return;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // Log the click event for Sparkl image
-  const handleSparklImageClick = () => {
-    if (typeof window !== "undefined" && window.analytics) {
-      logEvent(window.analytics, "sparkl_image_click");
-    }
-    window.open("https://www.sparkl.me/register", "_blank");
-  };
+
+
+
 
   const buildUserHomeFeed = async () => {
     setLoading(true);
     try {
       if (subjectStateValue.mySnippets.length) {
+        // get posts from users' subjects
         const mySubjectIds = subjectStateValue.mySnippets.map(
           (snippet) => snippet.subjectId
         );
+        //console.log('mySubjectIds', mySubjectIds)
         const postQuery = query(
           collection(firestore, "posts"),
           where("subjectId", "in", mySubjectIds),
           limit(50),
-          orderBy("createdAt", "desc")
+          //orderBy('pinPost', 'desc'),
+          orderBy('createdAt', 'desc')
         );
         const postDocs = await getDocs(postQuery);
         const posts = postDocs.docs.map((doc) => ({
@@ -103,6 +116,8 @@ const Home: NextPage = () => {
         ...prev,
         posts: posts as Post[],
       }));
+
+      // setPostState
     } catch (error) {
       console.log("buildNoUserHomeFeed error", error);
     }
@@ -112,32 +127,163 @@ const Home: NextPage = () => {
   const getUserPostVotes = async () => {
     try {
       const postIds = postStateValue.posts.map((post) => post.id);
-      let postVotes: any = [];
-      const limit = 10;
+      let postVotes:any = []
+      const limit = 10
       while (postIds.length) {
-        const postVotesQuery = query(
-          collection(firestore, `users/${user?.uid}/postVotes`),
-          where("postId", "in", postIds.slice(0, limit))
-        );
-        const postVoteDocs = await getDocs(postVotesQuery);
-        const postVotesData = postVoteDocs.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        postVotes.push(...postVotesData);
-        postIds.splice(0, limit);
+          const postVotesQuery = query(
+              collection(firestore, `users/${user?.uid}/postVotes`),
+              where('postId', 'in', postIds.slice(0, limit))
+            );
+          const postVoteDocs = await getDocs(postVotesQuery);
+          const postVotesData = postVoteDocs.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          postVotes.push(...postVotesData)
+          postIds.splice(0, limit)
       }
       setPostStateValue((prev) => ({
         ...prev,
         postVotes: postVotes as PostVote[],
       }));
+
+      // console.log(postStateValue.posts);
+      // const postIds = postStateValue.posts.map((post) => post.id);
+      // console.log(postIds);
+      // const postVotesQuery = query(
+      //   collection(firestore, `users/${user?.uid}/postVotes`),
+      //   where("postId", "in", postIds)
+      // );
+      // const postVoteDocs = await getDocs(postVotesQuery);
+      // const postVotes = postVoteDocs.docs.map((doc) => ({
+      //   id: doc.id,
+      //   ...doc.data(),
+      // }));
+
+      // setPostStateValue((prev) => ({
+      //   ...prev,
+      //   postVotes: postVotes as PostVote[],
+      // }));
     } catch (error) {
       console.log("getUserPostVotes error", error);
     }
   };
+  const getPostsByMaxVoting = async (voting:any) => {
+    try {
+        console.log(voting);
+        const difficultyQuery = query(
+            collection(firestore, 'diffculty_voting'),
+            where('voting', 'in', voting),
+            orderBy('createdAt', 'desc')
+        );
+        const snapshot = await getDocs(difficultyQuery);
+        console.log(snapshot);
+        const posts: { [postTitle: string]: number } = {}; // Use an object to store postId and its voting count
+    
+        snapshot.forEach((doc) => {
+            const post = doc.data(); // Access document data using data() method
+            const postTitle = post.postTitle;
+            const votingCount = posts[postTitle] ? posts[postTitle] : 0;
+            posts[postTitle] = votingCount + 1;
+        });
+    
+        let maxVotingCount = 0;
+        for (const postTitle in posts) {
+            if (posts[postTitle] > maxVotingCount) {
+                maxVotingCount = posts[postTitle];
+            }
+        }
+    
+        const maxVotingPosts: string[] = [];
+        for (const postTitle in posts) {
+            if (posts[postTitle] === maxVotingCount) {
+                maxVotingPosts.push(postTitle);
+            }
+        }
+    
+        return maxVotingPosts;
+    } catch (error) {
+        console.error("Error getting posts:", error);
+        return [];
+    } 
+  }
+  const handleChangeTopFilter = (label: string, value: string) => {
+    setActiveFilters((prevFilters) => {
+        const updatedFilters:any = { ... prevFilters };
+        if (updatedFilters[label] && updatedFilters[label].includes(value)) {
+            updatedFilters[label] = updatedFilters[label].filter((val: string) => val !== value);
+        } else {
+            updatedFilters[label] = [... (updatedFilters[label] || []), value];
+        }
+        return updatedFilters;
+    });
+  };
 
-  // ... Additional unchanged code ...
+  useEffect(() => {
+      const fetchData = async () => {
+          try {
+              const gradeFilters = activeFilters.grade || [];
+              const typeofquestionFilters = activeFilters.typeofquestion || [];
+              const criteriaFilters = activeFilters.criteria || [];
+              const difficultyFilters = activeFilters.difficulty || [];
+              if(difficultyFilters.length > 0){
+                  getPostsByMaxVoting(difficultyFilters)
+                  .then(async (postTitles) => {
+                      console.log(`Posts with maximum ${difficultyFilters} voting:`, postTitles);
+                      if (postTitles.length > 0) {
+                          const postsQuery = query(
+                              collection(firestore, 'posts'),
+                              ...(gradeFilters.length > 0 ? [where('grade.value', 'in', gradeFilters)] : []),
+                              ...(typeofquestionFilters.length > 0 ? [where('typeOfQuestions.label', 'in', typeofquestionFilters)] : []),
+                              ...(criteriaFilters.length > 0 ? [where('criteria', 'array-contains-any', criteriaFilters.map((val:any) => ({ label: val, value: val })))] : []),
+                              ...(difficultyFilters.length > 0 ? [where('title', 'in', postTitles)] : []),
+                              orderBy('createdAt', 'desc')
+                          );
+                  
+                          const postDocs = await getDocs(postsQuery);
+                  
+                          // Store in post state
+                          const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                          setPostStateValue(prev => ({
+                              ...prev,
+                              posts: posts as Post[],
+                          }));
+                      } else {
+                          const posts:any = [];
+                          console.log('No postIds found.');
+                          setPostStateValue(prev => ({
+                              ...prev,
+                              posts: posts as Post[],
+                          }));
+                      }
+                  })
+                  .catch((error) => {
+                      console.error("Error:", error);
+                  });
+              } else {
+                  // Check if any of the arrays are non-empty before including them in the query
+                  const postsQuery = query(
+                      collection(firestore, 'posts'),
+                      ...(gradeFilters.length > 0 ? [where('grade.value', 'in', gradeFilters)] : []),
+                      ...(typeofquestionFilters.length > 0 ? [where('typeOfQuestions.label', 'in', typeofquestionFilters)] : []),
+                      ...(criteriaFilters.length > 0 ? [where('criteria', 'array-contains-any', criteriaFilters.map((val:any) => ({ label: val, value: val })))] : []),
+                      orderBy('createdAt', 'desc')
+                  );
 
+                  const postDocs = await getDocs(postsQuery);
+                  const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                  setPostStateValue(prev => ({ ...prev, posts: posts as Post[] }));
+              }
+              //console.log('Updated filters:', activeFilters);
+              //console.log('Calling API with updated filters...');
+          } catch (error: any) {
+              console.log('Error fetching data:', error.message);
+          }
+      };
+      fetchData();
+  }, [activeFilters]);
+
+  // useEffects
   useEffect(() => {
     if (subjectStateValue.snippetsFetched) buildUserHomeFeed();
   }, [subjectStateValue.snippetsFetched]);
@@ -156,43 +302,62 @@ const Home: NextPage = () => {
       }));
     };
   }, [user, postStateValue.posts]);
-
   return (
+    
+    
+    
+
     <PageContent>
+     
+
+      
       <Stack spacing={5}>
-        <Recommendations />
+        <Recommendations/>
+       
       </Stack>
       <>
-        <button className="back_to_top" onClick={scrollToTop}>
-          BACK TO TOP
-        </button>
+      <button
+        className={`back_to_top`}
+        onClick={scrollToTop}
+      >
+        BACK TO TOP
+       
+      </button>
         <CreatePostLink />
         <Analytics />
+        
+        
         <div>
-          <Head>
-            <script
-              async
-              src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6442166008118008"
-              crossOrigin="anonymous"
-            ></script>
-            <title>GR8ER</title>
-          </Head>
-        </div>
+      <Head>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6442166008118008"
+     crossOrigin="anonymous"></script>
+        <title>GR8ER</title>
+        
+      </Head>
+      
+    </div>
         {loading ? (
           <PostLoader />
         ) : (
+          
           <Stack>
-            <Box display={{ base: "none", lg: "block" }} maxWidth="100%" marginBottom="8px">
-              <Image
-                onClick={handleSparklImageClick}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                src="/images/finalsparkl.png"
-                width="100%"
-                borderRadius="md"
-                style={{ cursor: "pointer" }}
-              />
-            </Box>
+            <Box
+             display={{ base: "none", lg: "block" }} // Visible only on large screens and above
+             maxWidth="100%" // Same width as the PostItem's parent container
+             marginBottom="8px" // Space between the image and the PostItem
+           >
+             <Image
+      onClick={handleImageClick}
+      onMouseEnter={() => setIsHovered(true)} // Handle hover start
+      onMouseLeave={() => setIsHovered(false)} // Handle hover end
+      src="/images/finalsparkl.png" // Replace with the actual image URL
+      width="100%"
+      borderRadius="md" // Optional: Adds rounded corners
+      style={{
+        cursor: 'pointer', // Change cursor to pointer on hover
+      }}
+    />
+           </Box>
             <div className='filter_main_section'>
               <div className='filter_main_grade_section'>
                   <Text style={{fontSize: "12px", fontWeight: "600"}}>MYP</Text>
