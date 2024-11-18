@@ -15,7 +15,7 @@ import CreatePostLink from "../components/Subject/CreatePostLink";
 import Recommendations from "../components/Subject/Recommendations";
 import PostItem from "../components/Posts/PostItem";
 import PostLoader from "../components/Posts/PostLoader";
-import { auth, firestore } from "../firebase/clientApp";
+import { app, auth, firestore } from "../firebase/clientApp";
 import useSubjectData from "../hooks/useSubjectData";
 import usePosts from "../hooks/usePosts";
 import PageContent from "@/components/layout/PageContent";
@@ -23,10 +23,13 @@ import Head from 'next/head'
 import { Image } from "@chakra-ui/react";
 
 import { Analytics } from '@vercel/analytics/react';
+import { getAnalytics, logEvent } from "firebase/analytics";
+import { initializeApp } from "firebase/app";
 
  
 
 const Home: NextPage = () => {
+  
   const [isHovered, setIsHovered] = useState(false);
   const [user, loadingUser] = useAuthState(auth);
   const [loading, setLoading] = useState(false);
@@ -50,8 +53,16 @@ const Home: NextPage = () => {
   function scrollToTop() {
       if (!isBrowser()) return;
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      
   }
 
+  const analytics = getAnalytics(app);
+  
+  const handleClick = () => {
+    logEvent(analytics, "image_click", {
+      item_id: "finalsparkl_image",
+      item_name: "Register Now Image",
+    });
 
 
 
