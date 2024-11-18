@@ -52,6 +52,8 @@ const styles: Record<string, React.CSSProperties> = {
         alignItems: 'center',
         flexDirection: 'column',
         textAlign: 'center',
+        position: 'relative',
+        overflow: 'hidden',
     },
     pageTitle: {
         fontSize: '3rem',
@@ -71,6 +73,8 @@ const styles: Record<string, React.CSSProperties> = {
         padding: '30px',
         maxWidth: '1000px',
         width: '80%',
+        position: 'relative',
+        overflow: 'hidden',
     },
     reverse: {
         flexDirection: 'row-reverse',
@@ -95,12 +99,47 @@ const styles: Record<string, React.CSSProperties> = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        position: 'relative',
     },
     image: {
-        maxWidth: '90%',
-        height: 'auto',
-        borderRadius: '10px',
+        width: '150px', // Smaller image size
+        height: '150px',
+        borderRadius: '50%', // Circular image
         boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+        objectFit: 'cover',
+    },
+    splash1: {
+        position: 'absolute',
+        top: '20%',
+        left: '15%',
+        width: '200px',
+        height: '200px',
+        backgroundColor: '#ff6f61',
+        borderRadius: '50%',
+        opacity: 0.2,
+        zIndex: -1,
+    },
+    splash2: {
+        position: 'absolute',
+        bottom: '10%',
+        right: '25%',
+        width: '180px',
+        height: '180px',
+        backgroundColor: '#4caf50',
+        borderRadius: '50%',
+        opacity: 0.2,
+        zIndex: -1,
+    },
+    splash3: {
+        position: 'absolute',
+        top: '30%',
+        right: '10%',
+        width: '220px',
+        height: '220px',
+        backgroundColor: '#2980b9',
+        borderRadius: '50%',
+        opacity: 0.15,
+        zIndex: -1,
     },
 };
 

@@ -271,123 +271,102 @@ line-height: 20px;
   bottom: 0;
   right: 0;
 }
-/* General Tag Styling */
-.filter_main_grade_sub_section,
-.filter_main_question_sub_section_background,
-.filter_main_question_sub_section_without_background,
-.filter_main_criteria_sub_section_background,
-.filter_main_criteria_sub_section_without_background,
-.filter_main_difficulty_sub_section {
-  font-size: 14px;
-  font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 16px;
-  cursor: pointer;
-  margin: 5px;
-  transition: all 0.3s ease;
+.filter_main_question_sub_section_without_backgrouund_border{
+    background: rgb(66, 153, 225); 
+    color: rgb(255, 255, 255); 
+    border-top-left-radius:0px; 
+    border-bottom-left-radius:0px; 
+    border-top-right-radius:15px; 
+    border-bottom-right-radius:15px; 
+    padding: 5px 10px;
+    font-size: 10.5px; 
+    cursor: pointer;
+}
+.filter_main_criteria_sub_section_background{
+    /* background:#000;  */
+    background: rgb(66, 153, 225);
+    color:#fff; 
+    border-top-left-radius:15px;
+    border-bottom-left-radius:15px;
+    border-top-right-radius:0px; 
+    border-bottom-right-radius:0px; 
+    padding: 5px 7px;
+    font-size: 10.5px;
+    cursor: pointer;
+}
+.filter_main_criteria_sub_section_without_background{
+    background: rgb(66, 153, 225); 
+    color: rgb(255, 255, 255); 
+    border-radius:0px; 
+    padding: 5px 7px;
+    font-size: 10.5px;
+    cursor: pointer;
+}
+.filter_main_criteria_sub_section_without_backgrouund_border{
+    background: rgb(66, 153, 225); 
+    color: rgb(255, 255, 255); 
+    border-top-left-radius:0px; 
+    border-bottom-left-radius:0px; 
+    border-top-right-radius:15px; 
+    border-bottom-right-radius:15px; 
+    padding: 5px 7px;
+    font-size: 10.5px; 
+    cursor: pointer;
+}
+.filter_main_difficulty_sub_section{
+    background: rgb(66, 153, 225); 
+    color: rgb(255, 255, 255); 
+    border-radius: 15px; 
+    padding: 5px 10px;
+    font-size: 10.5px; 
+    gap:5px;  
+    cursor: pointer;
 }
 
-/* Active State */
-.filter_main_grade_sub_section.active,
-.filter_main_question_sub_section_background.active,
-.filter_main_criteria_sub_section_background.active,
-.filter_main_difficulty_sub_section.active {
-  background-color: #3182ce;
-  color: white;
+.filter_main_difficulty_sub_section_easy{
+    background: green; 
+    color: rgb(255, 255, 255); 
+    border-radius: 15px; 
+    padding: 5px 10px;
+    font-size: 10.5px; 
+    gap:5px;  
+    cursor: pointer;
 }
 
-.filter_main_question_sub_section_without_background.active,
-.filter_main_criteria_sub_section_without_background.active {
-  background-color: #edf2f7;
-  color: #3182ce;
-  border: 1px solid #3182ce;
+.filter_main_difficulty_sub_section_medium{
+    background: #FFBD59; 
+    color: rgb(255, 255, 255); 
+    border-radius: 15px; 
+    padding: 5px 10px;
+    font-size: 10.5px; 
+    gap:5px;  
+    cursor: pointer;
 }
 
-.filter_main_question_sub_section_without_backgrouund_border.active,
-.filter_main_criteria_sub_section_without_backgrouund_border.active {
-  background-color: #e2e8f0;
-  color: #3182ce;
-  border: 1px solid #3182ce;
+.filter_main_difficulty_sub_section_hard{
+    background: green; 
+    color: rgb(255, 255, 255); 
+    border-radius: 15px; 
+    padding: 5px 10px;
+    font-size: 10.5px; 
+    gap:5px;  
+    cursor: pointer;
 }
-
-/* Hover Effect */
-.filter_main_grade_sub_section:hover,
-.filter_main_question_sub_section_background:hover,
-.filter_main_criteria_sub_section_background:hover,
-.filter_main_difficulty_sub_section:hover,
-.filter_main_question_sub_section_without_background:hover,
-.filter_main_criteria_sub_section_without_background:hover {
-  transform: scale(1.05);
-}
-
-/* Filter Section Layout */
 .filter_main_section {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    align-items: center;
+}
+.filter_main_question_section, .filter_main_criteria_section {
+    position: relative;
+    bottom: 2px;
 }
 
-.filter_main_grade_section,
-.filter_main_question_section,
-.filter_main_criteria_section,
-.filter_main_difficulty_section {
-  flex: 1 1 45%; /* Ensures each section takes up 45% of the container on large screens */
-  margin-right: 10px;
-  margin-bottom: 20px;
+.filter_main_grade_section .active, .filter_main_question_section .active, .filter_main_criteria_section .active, .filter_main_difficulty_section .active{
+    background:#000; 
+    color:#fff;
 }
-
-.filter_main_grade_section,
-.filter_main_question_section {
-  flex-basis: 48%;
-}
-
-.filter_main_difficulty_section {
-  margin-left: 20px;
-}
-
-@media (max-width: 768px) {
-  .filter_main_section {
-    flex-direction: column;
-  }
-
-  .filter_main_grade_section,
-  .filter_main_question_section,
-  .filter_main_criteria_section,
-  .filter_main_difficulty_section {
-    flex: 1 1 100%;
-    margin-right: 0;
-  }
-}
-
-/* Label Styling */
-.filter_main_grade_section Text,
-.filter_main_question_section Text,
-.filter_main_criteria_section Text,
-.filter_main_difficulty_section Text {
-  font-size: 12px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 8px;
-}
-
-/* Optional: Enhance button for filter reset */
-.filter_reset_button {
-  padding: 8px 16px;
-  border-radius: 8px;
-  background-color: #e2e8f0;
-  border: 1px solid #3182ce;
-  cursor: pointer;
-  font-weight: 600;
-  margin-top: 20px;
-  transition: background-color 0.3s ease;
-}
-
-.filter_reset_button:hover {
-  background-color: #3182ce;
-  color: white;
-}
-
 .css-1szs79{
     gap: 5px;
 }
