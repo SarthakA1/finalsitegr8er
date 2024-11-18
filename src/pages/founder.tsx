@@ -1,12 +1,11 @@
 import React from 'react';
 
-
 type FounderPageProps = {};
 
 const FounderPage: React.FC<FounderPageProps> = () => {
     return (
-        <div className="founder-page-container">
-            <h1 className="page-title">Get to Know the Founder</h1>
+        <div style={styles.pageContainer}>
+            <h1 style={styles.pageTitle}>Get to Know the Founder</h1>
 
             {/* Founder Bio Section */}
             <Section title="Meet the Founder" imageSrc="/images/founder-photo.jpg">
@@ -28,16 +27,69 @@ interface SectionProps {
 
 const Section: React.FC<SectionProps> = ({ title, imageSrc, reverse = false, children }) => {
     return (
-        <div className={`section-container ${reverse ? 'reverse' : ''}`}>
-            <div className="section-content">
-                <h2 className="section-title">{title}</h2>
-                <div className="section-text">{children}</div>
+        <div style={reverse ? { ...styles.sectionContainer, ...styles.reverse } : styles.sectionContainer}>
+            <div style={styles.sectionContent}>
+                <h2 style={styles.sectionTitle}>{title}</h2>
+                <div style={styles.sectionText}>{children}</div>
             </div>
-            <div className="section-image">
-                <img src={imageSrc} alt={title} />
+            <div style={styles.sectionImage}>
+                <img src={imageSrc} alt={title} style={styles.image} />
             </div>
         </div>
     );
+};
+
+// Inline styling
+const styles: Record<string, React.CSSProperties> = {
+    pageContainer: {
+        padding: '20px',
+        fontFamily: 'Arial, sans-serif',
+        backgroundColor: '#f5f5f5',
+        minHeight: '100vh',
+    },
+    pageTitle: {
+        textAlign: 'center',
+        fontSize: '2.5rem',
+        color: '#333',
+        marginBottom: '20px',
+    },
+    sectionContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: '40px',
+        backgroundColor: '#fff',
+        borderRadius: '8px',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        overflow: 'hidden',
+        padding: '20px',
+    },
+    reverse: {
+        flexDirection: 'row-reverse',
+    },
+    sectionContent: {
+        flex: 1,
+        paddingRight: '20px',
+    },
+    sectionTitle: {
+        fontSize: '1.8rem',
+        color: '#333',
+        marginBottom: '10px',
+    },
+    sectionText: {
+        fontSize: '1.1rem',
+        color: '#555',
+        lineHeight: '1.6',
+    },
+    sectionImage: {
+        flex: 1,
+        textAlign: 'center',
+    },
+    image: {
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: '8px',
+    },
 };
 
 export default FounderPage;
