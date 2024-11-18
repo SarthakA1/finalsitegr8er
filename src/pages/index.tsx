@@ -1,4 +1,4 @@
-import { Stack, Select, Text, Flex } from "@chakra-ui/react";
+import { Stack, Select, Text, Flex, Box } from "@chakra-ui/react";
 import {
   collection,
   getDocs,
@@ -20,6 +20,7 @@ import useSubjectData from "../hooks/useSubjectData";
 import usePosts from "../hooks/usePosts";
 import PageContent from "@/components/layout/PageContent";
 import Head from 'next/head'
+import { Image } from "@chakra-ui/react";
 import { Analytics } from '@vercel/analytics/react';
 
  
@@ -365,20 +366,34 @@ const Home: NextPage = () => {
                 <option value='General Question'>General Question</option>
             </Select> */}
             {postStateValue.posts.slice(0, 100).map((post) => (
-  <PostItem
-    key={post.id}
-    post={post}
-    onSelectPost={onSelectPost}
-    onDeletePost={onDeletePost}
-    onVote={onVote}
-    userVoteValue={
-      postStateValue.postVotes.find(
-        (item) => item.postId === post.id
-      )?.voteValue
-    }
-    userIsCreator={user?.uid === post.creatorId}
-    homePage
-  />
+           <>
+           <Box
+             display={{ base: "none", lg: "block" }} // Visible only on large screens and above
+             maxWidth="100%" // Same width as the PostItem's parent container
+             marginBottom="16px" // Space between the image and the PostItem
+           >
+             <Image
+               src="/Users/sarthakahuja/Downloads/GR8ER/finalsitegr8er/public/images/Gr8er Banner.png" // Replace with the actual image URL
+               width="100%"
+               borderRadius="md" // Optional: Adds rounded corners
+             />
+           </Box>
+         
+           <PostItem
+             key={post.id}
+             post={post}
+             onSelectPost={onSelectPost}
+             onDeletePost={onDeletePost}
+             onVote={onVote}
+             userVoteValue={
+               postStateValue.postVotes.find(
+                 (item) => item.postId === post.id
+               )?.voteValue
+             }
+             userIsCreator={user?.uid === post.creatorId}
+             homePage
+           />
+         </>
 ))}
 
           </Stack>
