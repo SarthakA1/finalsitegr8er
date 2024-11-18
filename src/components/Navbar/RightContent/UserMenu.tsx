@@ -82,6 +82,7 @@ const UserMenu:React.FC<UserMenuProps> = ({ user }) => {
         <Icon fontSize={20} mr={2} as={FaStar} />
         Code of Honor
     </Flex>
+    </MenuItem>
     <MenuItem
     fontSize="10pt"
     fontWeight={700}
@@ -93,7 +94,7 @@ const UserMenu:React.FC<UserMenuProps> = ({ user }) => {
         Meet the Founder
     </Flex>
     </MenuItem>
-    </MenuItem>
+   
     <MenuItem
     fontSize="10pt"
     fontWeight={700}
