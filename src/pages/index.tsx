@@ -364,7 +364,7 @@ const Home: NextPage = () => {
              marginBottom="16px" // Space between the image and the PostItem
            >
              <Image
-               src="/Users/sarthakahuja/Downloads/GR8ER/finalsitegr8er/public/images/Gr8er Banner.png" // Replace with the actual image URL
+               src="/public/images/sparklgr8er.png" // Replace with the actual image URL
                width="100%"
                borderRadius="md" // Optional: Adds rounded corners
              />
