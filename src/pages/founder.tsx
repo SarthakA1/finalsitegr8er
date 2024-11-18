@@ -43,6 +43,7 @@ const Section: React.FC<SectionProps> = ({ title, imageSrc, reverse = false, chi
 const styles: Record<string, React.CSSProperties> = {
     pageContainer: {
         padding: '20px',
+        marginTop: '40px',
         fontFamily: 'Arial, sans-serif',
         backgroundColor: '#f5f5f5',
         minHeight: '100vh',
@@ -83,7 +84,7 @@ const styles: Record<string, React.CSSProperties> = {
     },
     sectionImage: {
         flex: 1,
-        textAlign: 'center',
+        textAlign: 'right',
     },
     image: {
         maxWidth: '40%',
