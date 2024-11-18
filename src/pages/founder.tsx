@@ -86,7 +86,7 @@ const styles: Record<string, React.CSSProperties> = {
         textAlign: 'center',
     },
     image: {
-        maxWidth: '100%',
+        maxWidth: '40%',
         height: 'auto',
         borderRadius: '8px',
     },
