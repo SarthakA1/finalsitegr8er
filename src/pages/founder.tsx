@@ -8,7 +8,10 @@ const FounderPage: React.FC<FounderPageProps> = () => {
             <h1 style={styles.pageTitle}>The Founder</h1>
 
             {/* Founder Bio Section */}
-            <Section title="Sarthak Ahuja" imageSrc="https://media.licdn.com/dms/image/v2/D5603AQG0BWdI8Fjf9A/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1720973014753?e=1737590400&v=beta&t=RFK2_v7ydw_cYSSP99lxU9Bv66IHoYT82_Slg3mjXJg">
+            <Section 
+                title="Sarthak Ahuja" 
+                imageSrc="https://media.licdn.com/dms/image/v2/D5603AQG0BWdI8Fjf9A/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1720973014753?e=1737590400&v=beta&t=RFK2_v7ydw_cYSSP99lxU9Bv66IHoYT82_Slg3mjXJg"
+            >
                 <p>
                     Hi! Connect with me @ sarthak.ahuja231@gmail.com
                 </p>
@@ -27,7 +30,9 @@ interface SectionProps {
 
 const Section: React.FC<SectionProps> = ({ title, imageSrc, reverse = false, children }) => {
     return (
-        <div style={reverse ? { ...styles.sectionContainer, ...styles.reverse } : styles.sectionContainer}>
+        <div 
+            style={reverse ? { ...styles.sectionContainer, ...styles.reverse } : styles.sectionContainer}
+        >
             <div style={styles.sectionContent}>
                 <h2 style={styles.sectionTitle}>{title}</h2>
                 <div style={styles.sectionText}>{children}</div>
@@ -43,21 +48,21 @@ const Section: React.FC<SectionProps> = ({ title, imageSrc, reverse = false, chi
 const styles: Record<string, React.CSSProperties> = {
     pageContainer: {
         padding: '20px',
-        alignContent: 'center',
+        textAlign: 'center',
         fontFamily: 'Arial, sans-serif',
         backgroundColor: '#f5f5f5',
         minHeight: '100vh',
     },
     pageTitle: {
-        textAlign: 'center',
         fontSize: '2.5rem',
         color: '#333',
-        marginBottom: '20px',
+        marginBottom: '40px',
     },
     sectionContainer: {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
         marginBottom: '40px',
         backgroundColor: '#fff',
         borderRadius: '8px',
@@ -84,10 +89,10 @@ const styles: Record<string, React.CSSProperties> = {
     },
     sectionImage: {
         flex: 1,
-        textAlign: 'right',
+        textAlign: 'center', // Ensures the image is centered when it's not reversed
     },
     image: {
-        maxWidth: '40%',
+        maxWidth: '80%',
         height: 'auto',
         borderRadius: '8px',
     },
