@@ -372,8 +372,6 @@ const Home: NextPage = () => {
       width="100%"
       borderRadius="md" // Optional: Adds rounded corners
       style={{
-        filter: isHovered ? 'brightness(0.8)' : 'none', // Example effect: darken on hover
-        transition: 'filter 0.2s ease-in-out', // Smooth transition effect
         cursor: 'pointer', // Change cursor to pointer on hover
       }}
     />
