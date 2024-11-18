@@ -333,7 +333,7 @@ const Home: NextPage = () => {
             <Box
              display={{ base: "none", lg: "block" }} // Visible only on large screens and above
              maxWidth="100%" // Same width as the PostItem's parent container
-             marginBottom="16px" // Space between the image and the PostItem
+             marginBottom="10px" // Space between the image and the PostItem
            >
              <Image
       onClick={() => window.open('https://www.sparkl.me/register', '_blank')}
