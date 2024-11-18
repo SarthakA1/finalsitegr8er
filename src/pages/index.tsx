@@ -23,13 +23,14 @@ import Head from 'next/head'
 import { Image } from "@chakra-ui/react";
 
 import { Analytics } from '@vercel/analytics/react';
-import { logEvent } from "firebase/analytics"; // Import Firebase Analytics logEvent function
+import { getAnalytics, logEvent } from "firebase/analytics"; // Import Firebase Analytics logEvent function
 import { analytics } from "../firebase/clientApp"; // Ensure analytics is initialized properly
 
 
  
 
 const Home: NextPage = () => {
+  const analytics = getAnalytics();
   const handleImageClick = () => {
     // Log the image click event
     logEvent(analytics, "image_click", {
