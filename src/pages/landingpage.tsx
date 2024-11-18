@@ -1,268 +1,163 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 import React from 'react';
 
-const globalStyles = css`
-  @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+type FounderPageProps = {};
 
-  * {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-  }
+const FounderPage: React.FC<FounderPageProps> = () => {
+  return (
+    <div className="founder-page-container">
+      <style>
+        {`
+        /* Global Styles */
+        * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+          font-family: 'Helvetica Neue', sans-serif;
+        }
 
-  body {
-    font-family: "Poppins", sans-serif;
-    height: 1000px;
-  }
+        body {
+          background-color: #fafafa;
+          color: #333;
+          padding: 20px;
+          line-height: 1.6;
+        }
 
-  .stop-scrolling {
-    height: 100%;
-    overflow: hidden;
-  }
+        /* Page Title */
+        .page-title {
+          text-align: center;
+          font-size: 3rem;
+          font-weight: 600;
+          margin-bottom: 50px;
+          color: #333;
+        }
 
-  img {
-    width: 100%;
-  }
+        /* Section Styles */
+        .section-container {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 50px;
+          padding: 30px;
+          background-color: #fff;
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+          transition: all 0.3s ease;
+        }
 
-  a {
-    text-decoration: none;
-  }
+        .section-container.reverse {
+          flex-direction: row-reverse;
+        }
 
-  .light {
-    --mainColor: #489ce4;
-    --hoverColor: #489ce4;
-    --backgroundColor: #ffffff;
-    --darkOne: #312f3a;
-    --darkTwo: #45424b;
-    --lightOne: #919191;
-    --lightTwo: #aaa;
-  }
+        .section-container:hover {
+          box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+          transform: translateY(-5px);
+        }
 
-  .dark {
-    --mainColor: #489ce4;
-    --hoverColor: #489ce4;
-    --backgroundColor: black;
-    --darkOne: #f3f3f3;
-    --darkTwo: #fff;
-    --lightOne: #ccc;
-    --lightTwo: #e7e3e3;
-  }
+        .section-content {
+          flex: 1;
+          max-width: 600px;
+        }
 
-  .special {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    padding: 8px;
-    margin-right: 10px;
-    color: black !important;
-    background-color: white;
-    border-radius: 4px;
-    text-transform: capitalize;
-    transition: 0.2s;
-    border-spacing: 5px;
-  }
+        .section-title {
+          font-size: 2rem;
+          font-weight: 500;
+          color: #2c3e50;
+          margin-bottom: 20px;
+        }
 
-  .usedby {
-    height: 95px;
-    width: 100%;
-    max-width: 850px;
-    margin: 0 auto;
-    text-align: center;
-    margin-top: 20px;
-  }
-`;
+        .section-text {
+          font-size: 1.1rem;
+          color: #7f8c8d;
+          line-height: 1.8;
+        }
 
-const styles = {
-  bigWrapper: css`
-    position: relative;
-    padding: 1.7rem 0 2rem;
-    width: 100%;
-    min-height: 100vh;
-    overflow: hidden;
-    background-color: var(--backgroundColor);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  `,
-  container: css`
-    position: relative;
-    max-width: 81rem;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 3rem;
-    z-index: 1;
-  `,
-  backgroundShape: css`
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.1;
-    z-index: 0;
-    pointer-events: none;
-    background: url('images/shape.png') no-repeat center center / cover;
-  `,
-  logo: css`
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    img {
-      width: 90px;
-      margin-right: 0.6rem;
-      margin-top: -0.6rem;
-    }
-    h3 {
-      color: var(--darkTwo);
-      font-size: 1.55rem;
-      line-height: 1.2;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-  `,
-  links: css`
-    ul {
-      display: flex;
-      list-style: none;
-      align-items: center;
-      li {
-        a {
-          color: var(--lightTwo);
-          margin-left: 4.5rem;
-          display: inline-block;
-          transition: 0.3s;
-          &:hover {
-            color: var(--hoverColor);
-            transform: scale(1.05);
+        .section-image img {
+          width: 350px;
+          height: 350px;
+          object-fit: cover;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Hover Effects for Images */
+        .section-image img:hover {
+          transform: scale(1.05);
+          transition: all 0.3s ease;
+        }
+
+        /* Responsive Layout */
+        @media (max-width: 768px) {
+          .section-container {
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+          }
+
+          .section-image {
+            margin-top: 20px;
+          }
+
+          .section-image img {
+            width: 100%;
+            height: auto;
           }
         }
-      }
-    }
-  `,
-  header: css`
-    position: relative;
-    z-index: 70;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  `,
-  showcaseArea: css`
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    align-items: center;
-    justify-content: center;
-  `,
-  bigTitle: css`
-    font-size: 2rem;
-    color: var(--darkOne);
-    text-transform: capitalize;
-    line-height: 1.4;
-    margin-bottom: 1rem;
-  `,
-  text: css`
-    color: var(--lightOne);
-    font-size: 1.1rem;
-    margin: 1.9rem 0 2.5rem;
-    max-width: 600px;
-    line-height: 2.3;
-  `,
-  btn: css`
-    display: inline-block;
-    padding: 0.9rem 1.9rem;
-    color: #fff !important;
-    background-color: var(--mainColor);
-    border-radius: 16px;
-    text-transform: capitalize;
-    transition: 0.3s;
-    &:hover {
-      background-color: var(--hoverColor);
-      transform: scale(1.05) !important;
-    }
-  `,
-  person: css`
-    width: 110%;
-    transform: translate(10%, 15px);
-    height: 425px;
-  `,
-};
+        `}
+      </style>
 
-const WelcomePage: React.FC = () => {
-  return (
-    <main css={globalStyles}>
-      <div css={styles.bigWrapper} className="big-wrapper light">
-        <div css={styles.backgroundShape} />
-        <header css={styles.header} className="container">
-          <div css={styles.logo} className="logo">
-            <img src="images/The-logo.png" alt="Logo" />
-            <h3>GR8ER</h3>
-          </div>
+      <h1 className="page-title">Get to Know the Founder</h1>
 
-          <div css={styles.links} className="links">
-  <ul>
-    <li>
-      <a href="https://www.linkedin.com/company/gr8er/" className="special">
-        <img src="/images/linkedin-logo-linkedin-logo-transparent-linkedin-icon-transparent-free-free-png.png" alt="LinkedIn" width="32" height="32" />
-      </a>
-    </li>
-    <li>
-      <a href="https://www.youtube.com/@GR8ERIB" className="special">
-        <img src="/images/Youtube_logo.png" alt="YouTube" width="32" height="32" />
-      </a>
-    </li>
-    <li>
-      <a href="https://www.instagram.com/gr8er_/" className="special">
-        <img src="/images/instagramfinal.png" alt="Instagram" width="32" height="32" />
-      </a>
-    </li>
-  </ul>
-</div>
+      {/* Founder Bio Section */}
+      <Section title="Meet the Founder" imageSrc="/images/founder-photo.jpg">
+        <p>
+          [Founder’s Name] is the visionary behind this platform, creating a space where students can come together to share knowledge and grow. With years of experience in education and a deep passion for supporting learners, [Founder’s Name] believes in the power of community and collaboration to foster success.
+        </p>
+      </Section>
 
+      {/* Founder’s Vision Section */}
+      <Section title="Founder’s Vision" imageSrc="/images/vision.jpg" reverse={true}>
+        <p>
+          [Founder’s Name] aims to revolutionize the way students interact with learning resources. By creating a global community where every student can collaborate and succeed, the platform empowers individuals to reach their full potential. The vision is to make education accessible and supportive for all.
+        </p>
+      </Section>
 
-        </header>
+      {/* The Journey So Far Section */}
+      <Section title="The Journey So Far" imageSrc="/images/journey.jpg">
+        <p>
+          Starting as a simple idea, this platform has grown into a thriving community of learners from across the globe. The journey has been filled with learning, innovation, and a commitment to always putting students first. With each milestone, [Founder’s Name] and the team continue to push boundaries to improve the platform.
+        </p>
+      </Section>
 
-        <div css={styles.showcaseArea} className="showcase-area container">
-          <div className="left">
-            <div css={styles.bigTitle} className="big-title">
-              <h1>The academic</h1>
-              <h1>network for IB MYP students</h1>
-            </div>
-            <p css={styles.text} className="text">
-              At GR8ER, we revolutionize the MYP learning experience with
-              innovative personalization technology and a community-centric
-              approach.
-            </p>
-            <div className="cta">
-              <a
-                href="https://www.gr8er.live/"
-                css={styles.btn}
-                className="btn"
-              >
-                Get started
-              </a>
-            </div>
-          </div>
-
-          <div className="right">
-            <img
-              src="images/Screenshot 2024-06-28 at 10.47.10 AM.png"
-              alt="Person Image"
-              css={styles.person}
-              className="person"
-            />
-          </div>
-        </div>
-
-        <div style={{ textAlign: 'center' }}>
-          <h3>Used by students from:</h3>
-          <img
-            src="images/schoools.png"
-            style={{ maxWidth: '50%', height: 'auto', marginTop: '20px', alignContent: 'center' }}
-          />
-        </div>
-      </div>
-    </main>
+      {/* Get in Touch Section */}
+      <Section title="Get in Touch" imageSrc="/images/contact.jpg" reverse={true}>
+        <p>
+          Have questions or want to learn more? Reach out to [Founder’s Name] through our contact page. Your feedback is invaluable in helping us continue to improve and provide the best experience for our community.
+        </p>
+      </Section>
+    </div>
   );
 };
 
-export default WelcomePage;
+// Modular Section Component
+interface SectionProps {
+  title: string;
+  imageSrc: string;
+  reverse?: boolean;
+  children: React.ReactNode;
+}
+
+const Section: React.FC<SectionProps> = ({ title, imageSrc, reverse = false, children }) => {
+  return (
+    <div className={`section-container ${reverse ? 'reverse' : ''}`}>
+      <div className="section-content">
+        <h2 className="section-title">{title}</h2>
+        <div className="section-text">{children}</div>
+      </div>
+      <div className="section-image">
+        <img src={imageSrc} alt={title} />
+      </div>
+    </div>
+  );
+};
+
+export default FounderPage;

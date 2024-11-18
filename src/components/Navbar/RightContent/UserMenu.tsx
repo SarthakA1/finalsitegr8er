@@ -33,6 +33,10 @@ const UserMenu:React.FC<UserMenuProps> = ({ user }) => {
         router.push('/codeofhonor');
     };
 
+    const redirectToFounder = () => {
+        router.push('/landingpage');
+    };
+
     const redirectToLandingPage = () => {
         router.push('/landingpage');
     };
@@ -78,6 +82,17 @@ const UserMenu:React.FC<UserMenuProps> = ({ user }) => {
         <Icon fontSize={20} mr={2} as={FaStar} />
         Code of Honor
     </Flex>
+    <MenuItem
+    fontSize="10pt"
+    fontWeight={700}
+    _hover={{ bg: "blue.500", color:"white"}}
+    onClick={redirectToCodeofHonor}
+    >
+    <Flex align="center">
+        <Icon fontSize={20} mr={2} as={FaStar} />
+        Meet the Founder
+    </Flex>
+    </MenuItem>
     </MenuItem>
     <MenuItem
     fontSize="10pt"
