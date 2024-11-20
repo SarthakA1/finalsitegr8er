@@ -350,7 +350,7 @@ const Home: NextPage = () => {
            </Box>
             <div className='filter_main_section'>
               <div className='filter_main_grade_section'>
-                  <Text style={{fontSize: "12px", fontWeight: "600"}}>MYP</Text>
+                  <Text style={{fontFamily: "Roboto, sans-serif", fontSize: "12px", fontWeight: "600"}}>MYP</Text>
                   <span className={`filter_main_grade_sub_section ${activeFilters.grade && (activeFilters.grade as string[]).includes('1') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '1')}>MYP 1</span>
                   <span className={`filter_main_grade_sub_section ${activeFilters.grade && (activeFilters.grade as string[]).includes('2') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '2')}>MYP 2</span>
                   <span className={`filter_main_grade_sub_section ${activeFilters.grade && (activeFilters.grade as string[]).includes('3') ? 'active' : ''}`} onClick={() => handleChangeTopFilter('grade', '3')}>MYP 3</span>
