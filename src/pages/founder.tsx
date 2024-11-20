@@ -89,6 +89,7 @@ const styles: Record<string, React.CSSProperties> = {
         fontSize: '3rem',
         color: '#2c3e50',
         marginBottom: '30px',
+        marginTop: '15px',
         fontWeight: '700',
     },
     sectionContainer: {
