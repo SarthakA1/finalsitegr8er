@@ -340,7 +340,7 @@ const Home: NextPage = () => {
       onClick={() => window.open('https://www.sparkl.me/webinar', '_blank')}
       onMouseEnter={() => setIsHovered(true)} // Handle hover start
       onMouseLeave={() => setIsHovered(false)} // Handle hover end
-      src="/images/sparklwebinar.png" // Replace with the actual image URL
+      src="/images/sparklfinalfinalfinal.png" // Replace with the actual image URL
       width="100%"
       borderRadius="md" // Optional: Adds rounded corners
       style={{
