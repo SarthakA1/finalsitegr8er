@@ -331,23 +331,23 @@ const Home: NextPage = () => {
         ) : (
           
           <Stack>
-            {/* <Box
+            <Box
              display={{ base: "none", lg: "block" }} // Visible only on large screens and above
              maxWidth="100%" // Same width as the PostItem's parent container
              marginBottom="8px" // Space between the image and the PostItem
            >
              <Image
-      onClick={() => window.open('https://www.sparkl.me/register', '_blank')}
+      onClick={() => window.open('https://sparkl.me/webinar', '_blank')}
       onMouseEnter={() => setIsHovered(true)} // Handle hover start
       onMouseLeave={() => setIsHovered(false)} // Handle hover end
-      src="/images/finalsparkl.png" // Replace with the actual image URL
+      src="/Users/sarthakahuja/Downloads/GR8ER/finalsitegr8er/public/images/sparklfinalfinalfinal.png" // Replace with the actual image URL
       width="100%"
       borderRadius="md" // Optional: Adds rounded corners
       style={{
         cursor: 'pointer', // Change cursor to pointer on hover
       }}
     />
-           </Box> */}
+           </Box>
             <div className='filter_main_section'>
               <div className='filter_main_grade_section'>
                   <Text style={{fontFamily: "Roboto, sans-serif", fontSize: "12px", fontWeight: "600"}}>MYP</Text>
