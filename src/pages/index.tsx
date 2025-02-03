@@ -337,10 +337,10 @@ const Home: NextPage = () => {
              marginBottom="8px" // Space between the image and the PostItem
            >
              <Image
-      onClick={() => window.open('https://www.sparkl.me/webinar', '_blank')}
+      onClick={() => window.open('https://www.sparkl.me/', '_blank')}
       onMouseEnter={() => setIsHovered(true)} // Handle hover start
       onMouseLeave={() => setIsHovered(false)} // Handle hover end
-      src="/images/sparklfinalfinalfinal.png" // Replace with the actual image URL
+      src="/images/sparklfinalsparkl.png" // Replace with the actual image URL
       width="100%"
       borderRadius="md" // Optional: Adds rounded corners
       style={{
