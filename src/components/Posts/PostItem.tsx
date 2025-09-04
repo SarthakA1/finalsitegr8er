@@ -453,7 +453,7 @@ const PostItem:React.FC<PostItemProps> = ({
                             </Flex>
                         :
                             ''
-                    )} */}
+                    )} */
                     
                     <Flex  ml={5} align='center' justify='right' cursor="pointer">
                     <Icon 
