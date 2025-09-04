@@ -438,7 +438,7 @@ const PostItem:React.FC<PostItemProps> = ({
                                 />
                             </Flex>
                     }
-               <Flex>
+{/*                <Flex>
                     {post.typeOfQuestions && (
                         post.typeOfQuestions.value == 'Academic Question'
                         ?
@@ -450,7 +450,7 @@ const PostItem:React.FC<PostItemProps> = ({
                                     <li><Button onClick={() => handleClickVoting('medium')}  className='yellow'>Medium</Button></li>
                                     <li><Button onClick={() => handleClickVoting('hard')}  className='red'>Hard</Button></li>
                                 </ul>
-                            </Flex>
+                            </Flex> */}
                         :
                             ''
                     )}
