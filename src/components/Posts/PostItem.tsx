@@ -407,7 +407,7 @@ const PostItem:React.FC<PostItemProps> = ({
             bg="blue.100" 
             p={2}>
                 
-                    {user
+{/*                     {user
                         ?
                             <Flex align='center' justify='center'>
                                 <Icon as = {userVoteValue === 1 ? AiFillLike : AiOutlineLike} 
@@ -437,7 +437,7 @@ const PostItem:React.FC<PostItemProps> = ({
                                 cursor="pointer"
                                 />
                             </Flex>
-                    }
+                    } */}
 {/*                <Flex>
                     {post.typeOfQuestions && (
                         post.typeOfQuestions.value == 'Academic Question'
@@ -450,10 +450,10 @@ const PostItem:React.FC<PostItemProps> = ({
                                     <li><Button onClick={() => handleClickVoting('medium')}  className='yellow'>Medium</Button></li>
                                     <li><Button onClick={() => handleClickVoting('hard')}  className='red'>Hard</Button></li>
                                 </ul>
-                            </Flex> */}
+                            </Flex>
                         :
                             ''
-                    )}
+                    )} */}
                     
                     <Flex  ml={5} align='center' justify='right' cursor="pointer">
                     <Icon 
