@@ -442,15 +442,13 @@ const PostItem:React.FC<PostItemProps> = ({
                     {post.typeOfQuestions && (
                         post.typeOfQuestions.value == 'Academic Question'
                         ?
-                            // <Flex  ml={5} align='center' justify='right' cursor="pointer">
-                            //     <Text>{highestPercentage} voted {highestPercentageName}</Text>
-                            //     <ul className='flexBar'>
-                            //         <li> <span style={{fontSize:'12px',color:'#fff'}}>Vote Difficulty</span></li>
-                            //         <li><Button onClick={() => handleClickVoting('easy')} className='green'>Easy</Button></li>
-                            //         <li><Button onClick={() => handleClickVoting('medium')}  className='yellow'>Medium</Button></li>
-                            //         <li><Button onClick={() => handleClickVoting('hard')}  className='red'>Hard</Button></li>
-                            //     </ul>
-                            // </Flex>
+                            <Flex  ml={5} align='center' justify='right' cursor="pointer">
+                                <Text>{highestPercentage} voted {highestPercentageName}</Text>
+                                <ul className='flexBar'>
+                                    <li> <span style={{fontSize:'12px',color:'#fff'}}>trial</span></li>
+                                    
+                                </ul>
+                            </Flex>
                         :
                             ''
                     )} 
