@@ -336,7 +336,7 @@ const Home: NextPage = () => {
              maxWidth="100%" // Same width as the PostItem's parent container
              marginBottom="8px" // Space between the image and the PostItem
            >
-  <Image
+{/*   <Image
       onClick={() => window.open('https://www.sparkl.me/register', '_blank')}
       onMouseEnter={() => setIsHovered(true)} // Handle hover start
       onMouseLeave={() => setIsHovered(false)} // Handle hover end
@@ -346,7 +346,7 @@ const Home: NextPage = () => {
       style={{
         cursor: 'pointer', // Change cursor to pointer on hover
       }}
-    /> 
+    />  */}
            </Box>
             <div className='filter_main_section'>
               <div className='filter_main_grade_section'>
