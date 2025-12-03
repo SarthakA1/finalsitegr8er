@@ -1,5 +1,6 @@
 
-import { Stack, Select, Text, Flex, Box, Button, Wrap } from "@chakra-ui/react";
+import { Stack, Select, Text, Flex, Box, Button, Wrap, Skeleton } from "@chakra-ui/react";
+import useContentLibrary from "@/hooks/useContentLibrary";
 import {
   collection,
   getDocs,
@@ -45,6 +46,7 @@ const Home: NextPage = () => {
     difficulty: null,
   });
   const { subjectStateValue } = useSubjectData();
+  const { contentItems, loading: contentLoading } = useContentLibrary();
 
   const isBrowser = () => typeof window !== 'undefined'; //The approach recommended by Next.js
 
@@ -355,16 +357,35 @@ const Home: NextPage = () => {
                 <Button size="xs" variant="ghost" colorScheme="brand">View All</Button>
               </Flex>
               <Stack spacing={3}>
-                {[
-                  { title: "MYP 5 Math Formula Booklet", type: "PDF" },
-                  { title: "Physics Revision Guide", type: "PDF" },
-                  { title: "Chemistry Data Booklet", type: "PDF" }
-                ].map((item, index) => (
-                  <Flex key={index} align="center" p={2} _hover={{ bg: "gray.50" }} borderRadius="md" cursor="pointer" transition="all 0.2s">
-                    <Image src="/images/pdf.png" height="24px" width="24px" mr={3} alt="PDF" />
-                    <Text fontSize="sm" fontWeight="500" color="gray.600" noOfLines={1}>{item.title}</Text>
-                  </Flex>
-                ))}
+                {contentLoading ? (
+                  <Stack>
+                    <Skeleton height="20px" />
+                    <Skeleton height="20px" />
+                    <Skeleton height="20px" />
+                  </Stack>
+                ) : (
+                  <>
+                    {contentItems.length > 0 ? (
+                      contentItems.map((item, index) => (
+                        <Flex
+                          key={item.id}
+                          align="center"
+                          p={2}
+                          _hover={{ bg: "gray.50" }}
+                          borderRadius="md"
+                          cursor="pointer"
+                          transition="all 0.2s"
+                          onClick={() => window.open(item.url, '_blank')}
+                        >
+                          <Image src="/images/pdf.png" height="24px" width="24px" mr={3} alt="PDF" />
+                          <Text fontSize="sm" fontWeight="500" color="gray.600" noOfLines={1}>{item.title}</Text>
+                        </Flex>
+                      ))
+                    ) : (
+                      <Text fontSize="sm" color="gray.500">No content available.</Text>
+                    )}
+                  </>
+                )}
               </Stack>
             </Box>
 

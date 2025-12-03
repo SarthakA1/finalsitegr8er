@@ -53,18 +53,19 @@ const Recommendations: React.FC = () => {
       borderRadius={4}
       border="1px solid"
       borderColor="gray.300"
+      shadow="sm"
     >
       <Flex
         align="flex-end"
+        color="white"
         p="6px 10px"
-        height="100px"
+        height="70px"
         borderRadius="4px 4px 0px 0px"
-        bgImage="/images/iblmao.png"
+        bgGradient="linear(to-r, brand.500, brand.600)"
+        fontWeight={700}
         backgroundSize="cover"
       >
-        <Text color="white" fontWeight={700}>
-          Top Subject Groups
-        </Text>
+        Top Subject Groups
       </Flex>
       <Flex direction="column">
         {loading ? (
@@ -101,10 +102,12 @@ const Recommendations: React.FC = () => {
                   borderColor="gray.200"
                   p="10px 12px"
                   cursor="pointer"
+                  _hover={{ bg: "gray.50" }}
+                  transition="all 0.2s"
                 >
                   <Flex width="80%" align="center">
                     <Flex width="15%">
-                      <Text>{index + 1}</Text>
+                      <Text fontWeight={600} color="gray.500">{index + 1}</Text>
                     </Flex>
                     <Flex align="center" width="80%">
                       {item.imageURL ? (
@@ -118,7 +121,7 @@ const Recommendations: React.FC = () => {
                         <Icon
                           as={RiGroup2Fill}
                           fontSize={30}
-                          color="brand.100"
+                          color="brand.500"
                           mr={2}
                         />
                       )}
@@ -127,6 +130,8 @@ const Recommendations: React.FC = () => {
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
+                          fontWeight: 600,
+                          color: "#2D3748"
                         }}
                       >
                         {`${item.id}`}
@@ -138,6 +143,7 @@ const Recommendations: React.FC = () => {
                       height="22px"
                       fontSize="8pt"
                       variant={isJoined ? "outline" : "solid"}
+                      colorScheme={isJoined ? "gray" : "brand"}
                       onClick={(e) => {
                         e.stopPropagation(); // Prevent click event from propagating
                         onJoinOrLeaveSubject(item, isJoined);
