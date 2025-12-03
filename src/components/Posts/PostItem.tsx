@@ -1,5 +1,5 @@
 import { Post } from '@/atoms/postsAtom';
-import { Flex, Icon, Stack, Text, Image, Link, textDecoration, SimpleGrid, Button } from '@chakra-ui/react';
+import { Flex, Icon, Stack, Text, Image, Link, textDecoration, SimpleGrid, Button, Badge } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineDelete, AiFillTags } from "react-icons/ai";
 import { TfiCommentAlt } from "react-icons/tfi";
@@ -215,11 +215,11 @@ const PostItem: React.FC<PostItemProps> = ({
             direction='column'
             border="1px solid"
             borderColor={singlePostPage ? "gray.200" : "gray.200"}
-            borderRadius={singlePostPage ? "4px 4px 0px 0px" : "lg"}
+            borderRadius={singlePostPage ? "4px 4px 0px 0px" : "xl"}
             bg="white"
             shadow={singlePostPage ? "none" : "sm"}
             _hover=
-            {{ borderColor: singlePostPage ? "none" : "gray.300", shadow: singlePostPage ? "none" : "md" }}
+            {{ borderColor: singlePostPage ? "none" : "brand.500", shadow: singlePostPage ? "none" : "lg", transform: singlePostPage ? "none" : "translateY(-2px)" }}
             transition="all 0.2s"
         >
             {deletePostMessage ? <Text style={{ textAlign: "center", padding: "10px", color: "green" }}>{deletePostMessage}</Text> : ''}
@@ -237,7 +237,7 @@ const PostItem: React.FC<PostItemProps> = ({
                             {post.subjectImageURL ? (
                                 <Image src={post.subjectImageURL} mr={1} mt={1} borderRadius="full" boxSize="18px" />
                             ) : (
-                                <Icon as={RiGroup2Fill} fontSize="18pt" mr={1} color="blue.500" />
+                                <Icon as={RiGroup2Fill} fontSize="18pt" mr={1} color="brand.500" />
                             )}
                             <Link href={`subject/${post.subjectId}`}>
                                 <Text fontWeight={700} fontSize={16} mr={3} _hover={{ textDecoration: "underline" }}
@@ -252,7 +252,7 @@ const PostItem: React.FC<PostItemProps> = ({
                         {post.typeOfQuestions && post.typeOfQuestions.value === 'Resource'
                             ? 'Shared by '
                             : 'Asked by '}
-                        <span style={{ color: "#2c75b9" }}>
+                        <span style={{ color: "#4682B4", fontWeight: "600" }}>
                             {post.creatorDisplayName}
                         </span>
                         , {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
@@ -264,9 +264,9 @@ const PostItem: React.FC<PostItemProps> = ({
                         {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion: any, index: any) => (
                             criterion.value !== ''
                                 ?
-                                <span key={index} style={{ background: "#000000", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px" }}>
+                                <Badge key={index} bg="#2D3748" color="#fff" px="12px" py="4px" borderRadius="12px" mr="5px" fontSize="11px" fontWeight={600}>
                                     {criterion.value}
-                                </span>
+                                </Badge>
                                 :
                                 ''
                         ))}
@@ -274,9 +274,9 @@ const PostItem: React.FC<PostItemProps> = ({
                             <>
                                 {post.typeOfQuestions !== ''
                                     ?
-                                    <span style={{ background: "#4299E1", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px" }}>
+                                    <Badge bg="#4682B4" color="#fff" px="12px" py="4px" borderRadius="12px" mr="5px" fontSize="11px" fontWeight={600}>
                                         {post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value} {/* Display value */}
-                                    </span>
+                                    </Badge>
                                     :
                                     ''
                                 }
@@ -296,26 +296,15 @@ const PostItem: React.FC<PostItemProps> = ({
                 onClick={() => onSelectPost && onSelectPost(post)} >
 
 
-                <Flex direction="row">
+                <Flex direction="row" align="center" mb={2}>
 
-                    <Text fontFamily='Roboto, sans-serif' fontSize='13pt' fontWeight={600} mb={1}> {post.title} </Text>
-                    <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}>MYP  </Text>
-                    {post.grade && (
-                        <>
-                            <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}>
-                                {post.grade.value}
-                            </Text>
-                        </>
-                    )}
-                    {/* 
-            <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}> {post.grade} </Text> */}
+                    <Text fontSize='14pt' fontWeight={700} color="gray.800"> {post.title} </Text>
+                    <Text ml={2} fontSize='10pt' color="gray.500" fontWeight={600} bg="gray.100" px={2} py={0.5} borderRadius="md">MYP {post.grade?.value}</Text>
                 </Flex>
                 {/* <StaticEquationText bodyValue={post.body}/> */}
                 {/*           <div style={{ maxWidth: '100%', overflow: 'auto' }}> */}
                 {/*   <div 
     dangerouslySetInnerHTML={{ __html: post.body }} 
-    style={{
-      maxWidth: '100%', // Limit the maximum width
       overflowWrap: 'break-word', // Enable word wrapping
     }} 
   />

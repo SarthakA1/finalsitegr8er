@@ -105,7 +105,7 @@ const About: React.FC<AboutProps> = ({
         align="center"
         p={3}
         color="white"
-        bg="brand.500"
+        bgGradient="linear(to-r, brand.500, brand.600)"
         borderRadius="4px 4px 0px 0px"
       >
         <Text fontSize="10pt" fontWeight={700}>

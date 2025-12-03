@@ -22,7 +22,7 @@ const Header: React.FC<HeaderProps> = ({ subjectData }) => {
 
     return (
         <Flex direction='column' width='100%' height='146px'>
-            <Box height='50%' bg="brand.500" ></Box>
+            <Box height='50%' bgGradient="linear(to-r, brand.500, brand.600)" ></Box>
             <Flex justify='center' bg="white" flexGrow={1}>
                 <Flex width="95%" maxWidth='1200px' align='center'>
                     {subjectData?.imageURL ? (
