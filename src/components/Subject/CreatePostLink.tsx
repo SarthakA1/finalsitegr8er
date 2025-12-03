@@ -48,78 +48,68 @@ const CreatePostLink: React.FC = () => {
   };
 
   return (
-   <Flex
-  justify="space-between"
-  align="center"
-  bg="white"
-  height="56px"
-  borderRadius={4}
-  border="1px solid"
-  borderColor="gray.300"
-  p={2}
-  mb={4}
->
-  {user?.photoURL ? (
-    <Image src={user.photoURL} height="35px" borderRadius={50} mr={2} ml={4} />
-  ) : (
-    <Icon as={FaUserCircle} fontSize={36} color="gray.300" mr={2} ml={4} />
-  )}
-  <SimpleGrid columns={2} flex="1" gap={2} maxWidth="calc(100% - 72px)"> {/* Adjusted maxWidth */}
-    <Input
-      placeholder="Ask Anything!"
-      fontSize="10pt"
-      _placeholder={{ color: "gray.500" }}
-      _hover={{
-        bg: "white",
-        border: "1px solid",
-        borderColor: "blue.500",
-      }}
-      _focus={{
-        outline: "none",
-        bg: "white",
-        border: "1px solid",
-        borderColor: "blue.500",
-      }}
-      bg="gray.50"
+    <Flex
+      justify="space-between"
+      align="center"
+      bg="white"
+      height="60px"
+      borderRadius="md"
+      border="1px solid"
       borderColor="gray.200"
-      height="36px"
-      borderRadius={4}
-      onClick={onClick}
-    />
-    <Input
-      placeholder="Share a Resource"
-      fontSize="10pt"
-      _placeholder={{ color: "gray.500" }}
-      _hover={{
-        bg: "white",
-        border: "1px solid",
-        borderColor: "blue.500",
-      }}
-      _focus={{
-        outline: "none",
-        bg: "white",
-        border: "1px solid",
-        borderColor: "blue.500",
-      }}
-      bg="gray.50"
-      borderColor="gray.200"
-      height="36px"
-      borderRadius={4}
-      onClick={onClickResource}
-    />
-  </SimpleGrid>
-  {/* 
-  <Icon
-    as={IoImageOutline}
-    fontSize={24}
-    mr={4}
-    color="gray.400"
-    cursor="pointer"
-    onClick={onClick}
-  />
-  <Icon as={BsLink45Deg} fontSize={24} color="gray.400" cursor="pointer" onClick={onClick}/> 
-  */}
-</Flex>
+      p={3}
+      mb={4}
+      shadow="sm"
+      _hover={{ shadow: "md", borderColor: "gray.300" }}
+      transition="all 0.2s"
+    >
+      {user?.photoURL ? (
+        <Image src={user.photoURL} height="36px" width="36px" borderRadius="full" mr={3} ml={1} objectFit="cover" border="1px solid" borderColor="gray.100" />
+      ) : (
+        <Icon as={FaUserCircle} fontSize={36} color="gray.300" mr={3} ml={1} />
+      )}
+      <SimpleGrid columns={2} flex="1" gap={3} maxWidth="calc(100% - 60px)">
+        <Input
+          placeholder="Ask Anything!"
+          fontSize="sm"
+          _placeholder={{ color: "gray.400", fontWeight: "500" }}
+          _hover={{
+            bg: "gray.50",
+            borderColor: "gray.300",
+          }}
+          _focus={{
+            outline: "none",
+            bg: "white",
+            borderColor: "brand.500",
+            boxShadow: "0 0 0 1px #4682B4",
+          }}
+          bg="gray.50"
+          borderColor="gray.100"
+          height="40px"
+          borderRadius="full"
+          onClick={onClick}
+        />
+        <Input
+          placeholder="Share a Resource"
+          fontSize="sm"
+          _placeholder={{ color: "gray.400", fontWeight: "500" }}
+          _hover={{
+            bg: "gray.50",
+            borderColor: "gray.300",
+          }}
+          _focus={{
+            outline: "none",
+            bg: "white",
+            borderColor: "brand.500",
+            boxShadow: "0 0 0 1px #4682B4",
+          }}
+          bg="gray.50"
+          borderColor="gray.100"
+          height="40px"
+          borderRadius="full"
+          onClick={onClickResource}
+        />
+      </SimpleGrid>
+    </Flex>
 
   );
 };
