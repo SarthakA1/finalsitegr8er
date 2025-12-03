@@ -47,13 +47,7 @@ const PostPage: React.FC = () => {
   return (
     <PageContent>
       <>
-      {subjectStateValue.currentSubject && (
-          <About subjectData={subjectStateValue.currentSubject} />
-        )}
-      </>
-      <>
-      {postStateValue.selectedPost && (
-        
+        {postStateValue.selectedPost && (
           <PostItem
             post={postStateValue.selectedPost}
             onVote={onVote}
@@ -67,24 +61,24 @@ const PostPage: React.FC = () => {
           />
         )}
 
-          <div>
+        <div>
+          <Head>
+            <title>{postStateValue.selectedPost?.title || postStateValue.selectedPost?.subjectId} </title>
+          </Head>
+        </div>
 
-            
-
-      <Head>
-        <title>{postStateValue.selectedPost?.title || postStateValue.selectedPost?.subjectId} </title>
-      </Head>
-      
-    </div>
         <Answers
           user={user as User}
           selectedPost={postStateValue.selectedPost}
           subjectId={postStateValue.selectedPost?.subjectId as string}
         />
-        
+      </>
+      <>
+        {subjectStateValue.currentSubject && (
+          <About subjectData={subjectStateValue.currentSubject} />
+        )}
       </>
     </PageContent>
   );
-        
 }
 export default PostPage;
