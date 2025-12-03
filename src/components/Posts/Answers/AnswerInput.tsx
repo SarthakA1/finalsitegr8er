@@ -1,7 +1,8 @@
 import AuthButtons from '@/components/Navbar/RightContent/AuthButtons';
-import { Flex, Textarea, Button, Text } from '@chakra-ui/react';
+import { Flex, Textarea, Button, Text, Box } from '@chakra-ui/react';
 import { User } from 'firebase/auth';
 import React from 'react';
+import { Editor } from '@/components/common/Editor';
 
 type AnswerInputProps = {
   answerText: string;
@@ -29,21 +30,12 @@ const AnswerInput: React.FC<AnswerInputProps> = ({
             </span>
           </Text>
 
-          <Textarea
-            value={answerText}
-            onChange={(event) => setAnswerText(event.target.value)}
-            placeholder="What is the Answer to this Question?"
-            fontSize="10pt"
-            borderRadius={4}
-            minHeight="160px"
-            pb={10}
-            _placeholder={{ color: "gray.500" }}
-            _focus={{
-              outline: "none",
-              border: "1px solid black",
-              bg: "white",
-            }}
-          />
+          <Box border="1px solid" borderColor="gray.200" borderRadius={4}>
+            <Editor
+              value={answerText}
+              onChange={(name: string, val: string) => setAnswerText(val)}
+            />
+          </Box>
 
           <Flex
             left="1px"
