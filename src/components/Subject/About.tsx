@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { RiCakeLine } from "react-icons/ri";
+import { FaUserCircle } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -101,116 +102,81 @@ const About: React.FC<AboutProps> = ({
   return (
     <Box pt={pt} position="sticky" top="14px">
       <Flex
-        justify="space-between"
-        align="center"
-        p={3}
-        color="white"
-        bgGradient="linear(to-r, brand.500, brand.600)"
-        borderRadius="4px 4px 0px 0px"
+        direction="column"
+        bg="white"
+        borderRadius="xl"
+        border="1px solid"
+        borderColor="gray.200"
+        overflow="hidden"
+        shadow="sm"
       >
-        <Text fontSize="10pt" fontWeight={700}>
-          About Subject Group
-        </Text>
-      </Flex>
-      <Flex direction="column" p={3} bg="white" borderRadius="0px 0px 4px 4px">
-        {loading ? (
-          <Stack mt={2}>
-            <SkeletonCircle size="10" />
-            <Skeleton height="10px" />
-            <Skeleton height="20px" />
-            <Skeleton height="20px" />
-            <Skeleton height="20px" />
-          </Stack>
-        ) : (
-          <>
-
-
-            <Stack spacing={2} maxWidth="300px" align="center">
-              <Flex width="100%" p={2} fontWeight={600} fontSize="10pt">
-                <Flex direction="column" flexGrow={1} align='center'>
-                  <Text >
+        <Flex
+          justify="space-between"
+          align="center"
+          p={4}
+          color="white"
+          bgGradient="linear(to-r, brand.500, brand.600)"
+        >
+          <Text fontSize="sm" fontWeight={700}>
+            About Subject Group
+          </Text>
+        </Flex>
+        <Flex direction="column" p={4}>
+          {loading ? (
+            <Stack mt={2}>
+              <SkeletonCircle size="10" />
+              <Skeleton height="10px" />
+              <Skeleton height="20px" />
+              <Skeleton height="20px" />
+              <Skeleton height="20px" />
+            </Stack>
+          ) : (
+            <>
+              <Stack spacing={3}>
+                <Flex
+                  direction="column"
+                  align="center"
+                  p={4}
+                  bg="gray.50"
+                  borderRadius="lg"
+                >
+                  <Text fontSize="2xl" fontWeight={700} color="brand.600">
                     {subjectData.numberOfMembers}
                   </Text>
-                  <Text>Members</Text>
+                  <Text fontSize="sm" color="gray.600" fontWeight={500}>Members</Text>
                 </Flex>
 
-              </Flex>
-              <Divider />
-              <Flex align="center" width="100%" p={1} fontWeight={500} fontSize="10pt">
+                <Divider />
 
-                <Text mt={1} textAlign="center">
+                <Text fontSize="sm" color="gray.700" lineHeight="1.6" textAlign="center">
                   {subjectData.subjectInfo}
                 </Text>
-              </Flex>
 
-              {user && (
-                <Link href={`/subject/${subjectData.id}/submit`}>
-                  <Button mt={2} mb={3} height="30px" width="250px">
-                    Ask or Share Anything!
-                  </Button>
-                </Link>
-                // <Link href={`${router.query.subjectId}/submit`}>
-                //   <Button mt={2} mb={3} height="30px" width="250px">
-                //     Ask or Share Anything!
-                //   </Button>
+                {user && (
+                  <Link href={`/subject/${subjectData.id}/submit`}>
+                    <Button width="100%" size="md" colorScheme="brand" borderRadius="full">
+                      Ask or Share Anything!
+                    </Button>
+                  </Link>
+                )}
+              </Stack>
 
-                // </Link>
-
-              )}
-              {/* !!!ADDED AT THE VERY END!!! INITIALLY DOES NOT EXIST */}
-
-              <>
-                {/* <Divider /> */}
-                {/* <Stack fontSize="10pt" spacing={1}>
-                    <Text fontWeight={600}>Admin</Text>
-                    <Flex align="center" justify="space-between">
-                      <Text
-                        color="blue.500"
-                        cursor="pointer"
-                        _hover={{ textDecoration: "underline" }}
-                        onClick={() => selectFileRef.current?.click()}
-                      >
-                        Change Image
-                      </Text>
-                      {subjectData?.imageURL || selectedFile ? (
-                        <Image
-                          borderRadius="full"
-                          boxSize="40px"
-                          src={selectedFile || subjectData?.imageURL}
-                          alt="Dan Abramov"
-                        />
-                      ) : (
-                        <Icon
-                          as={IoIosCreate}
-                          fontSize={30}
-                          color="brand.100"
-                          mr={2}
-                          mb={2}
-                        />
-                      )}
-                    </Flex>
-                    {selectedFile &&
-                      (imageLoading ? (
-                        <Spinner />
-                      ) : (
-                        <Text cursor="pointer" onClick={updateImage}>
-                          Save Changes
-                        </Text>
-                      ))}
-                    <input
-                      id="file-upload"
-                      type="file"
-                      accept="image/x-png,image/gif,image/jpeg"
-                      hidden
-                      ref={selectFileRef}
-                      onChange={onSelectImage}
-                    />
-                  </Stack> */}
-              </>
-
-            </Stack>
-          </>
-        )}
+              <Stack spacing={3} mt={4}>
+                <Text fontSize="xs" fontWeight={700} color="gray.500" textTransform="uppercase">
+                  Moderators
+                </Text>
+                {subjectData.creatorId && (
+                  <Flex align="center" gap={2}>
+                    <Icon as={FaUserCircle} fontSize={24} color="brand.500" />
+                    <Text fontSize="sm" fontWeight={500} color="gray.700">
+                      {subjectData.creatorId}
+                    </Text>
+                  </Flex>
+                )}
+              </Stack>
+            </>
+          )}
+        </Flex>
       </Flex>
     </Box>
   );

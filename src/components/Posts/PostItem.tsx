@@ -229,62 +229,48 @@ const PostItem: React.FC<PostItemProps> = ({
                 bg="blue.100" 
                 p={2}
             >  */}
-            <Stack direction="row" spacing={0.6} className='post_list_main_section'>
-                {/* //Homepage check  */}
-                <Flex className={homePage ? 'post_list_subject_section' : 'post_list_subject_without_homepage_section'}>
-                    {homePage && (
-                        <>
-                            {post.subjectImageURL ? (
-                                <Image src={post.subjectImageURL} mr={1} mt={1} borderRadius="full" boxSize="18px" />
-                            ) : (
-                                <Icon as={RiGroup2Fill} fontSize="18pt" mr={1} color="brand.500" />
-                            )}
-                            <Link href={`subject/${post.subjectId}`}>
-                                <Text fontWeight={700} fontSize={16} mr={3} _hover={{ textDecoration: "underline" }}
-                                    onClick={(event) => event.stopPropagation()}
-                                >
-                                    {`${post.subjectId}`}
-                                </Text>
-                            </Link>
-                        </>
-                    )}
-                    <Text className='post_list_left_text_section'>
-                        {post.typeOfQuestions && post.typeOfQuestions.value === 'Resource'
-                            ? 'Shared by '
-                            : 'Asked by '}
-                        <span style={{ color: "#4682B4", fontWeight: "600" }}>
-                            {post.creatorDisplayName}
-                        </span>
-                        , {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
-                    </Text>
-
-                </Flex>
-                <Flex className={homePage ? 'post_list_header_section' : 'post_list_header_without_homepage_section'}>
-                    <Text style={{ textAlign: "right" }} className='post_list_right_text_section'>
-                        {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion: any, index: any) => (
-                            criterion.value !== ''
-                                ?
-                                <Badge key={index} bg="#2D3748" color="#fff" px="12px" py="4px" borderRadius="12px" mr="5px" fontSize="11px" fontWeight={600}>
-                                    {criterion.value}
-                                </Badge>
-                                :
-                                ''
-                        ))}
-                        {post.typeOfQuestions && (
+            <Flex direction="column" p={3} gap={2}>
+                <Flex justify="space-between" align="center" wrap="wrap" gap={2}>
+                    <Flex align="center" gap={2}>
+                        {homePage && (
                             <>
-                                {post.typeOfQuestions !== ''
-                                    ?
-                                    <Badge bg="#4682B4" color="#fff" px="12px" py="4px" borderRadius="12px" mr="5px" fontSize="11px" fontWeight={600}>
-                                        {post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value} {/* Display value */}
-                                    </Badge>
-                                    :
-                                    ''
-                                }
+                                {post.subjectImageURL ? (
+                                    <Image src={post.subjectImageURL} borderRadius="full" boxSize="24px" />
+                                ) : (
+                                    <Icon as={RiGroup2Fill} fontSize="24px" color="brand.500" />
+                                )}
+                                <Link href={`subject/${post.subjectId}`}>
+                                    <Text fontWeight={700} fontSize="sm" color="brand.600" _hover={{ textDecoration: "underline" }}
+                                        onClick={(event) => event.stopPropagation()}
+                                    >
+                                        {post.subjectId}
+                                    </Text>
+                                </Link>
+                                <Icon as={BsDot} color="gray.400" />
                             </>
                         )}
-                    </Text>
+                        <Text fontSize="xs" color="gray.600">
+                            {post.typeOfQuestions && post.typeOfQuestions.value === 'Resource' ? 'Shared by ' : 'Asked by '}
+                            <Text as="span" color="brand.600" fontWeight="600">{post.creatorDisplayName}</Text>
+                            {' • '}{moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
+                        </Text>
+                    </Flex>
+                    <Flex gap={1.5} wrap="wrap">
+                        {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion: any, index: any) => (
+                            criterion.value !== '' && (
+                                <Badge key={index} colorScheme="gray" px={3} py={1} borderRadius="full" fontSize="10px" fontWeight={600}>
+                                    {criterion.value}
+                                </Badge>
+                            )
+                        ))}
+                        {post.typeOfQuestions && post.typeOfQuestions !== '' && (
+                            <Badge colorScheme="blue" px={3} py={1} borderRadius="full" fontSize="10px" fontWeight={600}>
+                                {post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value}
+                            </Badge>
+                        )}
+                    </Flex>
                 </Flex>
-            </Stack>
+            </Flex>
             {/* </Flex> */}
 
             <Flex
@@ -296,10 +282,9 @@ const PostItem: React.FC<PostItemProps> = ({
                 onClick={() => onSelectPost && onSelectPost(post)} >
 
 
-                <Flex direction="row" align="center" mb={2}>
-
-                    <Text fontSize='14pt' fontWeight={700} color="gray.800"> {post.title} </Text>
-                    <Text ml={2} fontSize='10pt' color="gray.500" fontWeight={600} bg="gray.100" px={2} py={0.5} borderRadius="md">MYP {post.grade?.value}</Text>
+                <Flex direction="row" align="center" mb={3} gap={2}>
+                    <Text fontSize='lg' fontWeight={700} color="gray.900" lineHeight="1.4"> {post.title} </Text>
+                    <Badge colorScheme="gray" px={2} py={1} borderRadius="md" fontSize="10px" fontWeight={600}>MYP {post.grade?.value}</Badge>
                 </Flex>
                 {/* <StaticEquationText bodyValue={post.body}/> */}
                 {/*           <div style={{ maxWidth: '100%', overflow: 'auto' }}> */}

@@ -9,19 +9,19 @@ const AuthButtons: React.FC = () => {
     <>
       <Button
         variant="outline"
-        height="32px"
-        width={{ base: "70px", md: "100px" }}
+        height="33px"
+
+        width={{ base: "70px", md: "110px" }}
         onClick={() => setAuthModalState({ open: true, view: "login" })}
-        mr={2}
-        fontWeight={600}
-      >
+        mr={2} >
         Log In
       </Button>
       <Button
-        height="32px"
-        width={{ base: "70px", md: "100px" }}
+        height="33px"
+
+        width={{ base: "70px", md: "110px" }}
         onClick={() => setAuthModalState({ open: true, view: "signup" })}
-        fontWeight={600}
+
       >Sign Up
       </Button>
 

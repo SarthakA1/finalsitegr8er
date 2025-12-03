@@ -1,7 +1,7 @@
 import { AuthModalState } from "@/atoms/authModalAtom";
 import { auth } from "@/firebase/clientApp";
 import useDirectory from "@/hooks/useDirectory";
-import { Flex, Icon, Input, Image, SimpleGrid } from "@chakra-ui/react";
+import { Flex, Icon, Input, Image, SimpleGrid, Text } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
@@ -9,6 +9,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { BsLink45Deg } from "react-icons/bs";
 import { FaUserCircle } from "react-icons/fa";
 import { IoImageOutline } from "react-icons/io5";
+import { TfiCommentAlt } from "react-icons/tfi";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import AuthModal from "../Modal/Auth/AuthModal";
 
@@ -49,68 +50,76 @@ const CreatePostLink: React.FC = () => {
 
   return (
     <Flex
-      justify="space-between"
-      align="center"
+      direction="column"
       bg="white"
-      height="60px"
-      borderRadius="md"
+      borderRadius="xl"
       border="1px solid"
       borderColor="gray.200"
-      p={3}
+      p={4}
       mb={4}
       shadow="sm"
       _hover={{ shadow: "md", borderColor: "gray.300" }}
       transition="all 0.2s"
     >
-      {user?.photoURL ? (
-        <Image src={user.photoURL} height="36px" width="36px" borderRadius="full" mr={3} ml={1} objectFit="cover" border="1px solid" borderColor="gray.100" />
-      ) : (
-        <Icon as={FaUserCircle} fontSize={36} color="gray.300" mr={3} ml={1} />
-      )}
-      <SimpleGrid columns={2} flex="1" gap={3} maxWidth="calc(100% - 60px)">
+      <Flex align="center" mb={3}>
+        {user?.photoURL ? (
+          <Image src={user.photoURL} height="40px" width="40px" borderRadius="full" mr={3} />
+        ) : (
+          <Icon as={FaUserCircle} fontSize={40} color="gray.300" mr={3} />
+        )}
         <Input
-          placeholder="Ask Anything!"
+          placeholder="Ask a question or share your thoughts..."
           fontSize="sm"
-          _placeholder={{ color: "gray.400", fontWeight: "500" }}
+          _placeholder={{ color: "gray.400" }}
           _hover={{
-            bg: "gray.50",
-            borderColor: "gray.300",
+            borderColor: "brand.300",
           }}
           _focus={{
             outline: "none",
-            bg: "white",
             borderColor: "brand.500",
             boxShadow: "0 0 0 1px #4682B4",
           }}
           bg="gray.50"
-          borderColor="gray.100"
+          borderColor="gray.200"
           height="40px"
           borderRadius="full"
           onClick={onClick}
+          cursor="pointer"
         />
-        <Input
-          placeholder="Share a Resource"
-          fontSize="sm"
-          _placeholder={{ color: "gray.400", fontWeight: "500" }}
-          _hover={{
-            bg: "gray.50",
-            borderColor: "gray.300",
-          }}
-          _focus={{
-            outline: "none",
-            bg: "white",
-            borderColor: "brand.500",
-            boxShadow: "0 0 0 1px #4682B4",
-          }}
+      </Flex>
+      <Flex gap={2}>
+        <Flex
+          align="center"
+          justify="center"
+          flex={1}
+          p={2}
+          borderRadius="lg"
           bg="gray.50"
-          borderColor="gray.100"
-          height="40px"
-          borderRadius="full"
+          cursor="pointer"
+          _hover={{ bg: "brand.50", color: "brand.600" }}
+          transition="all 0.2s"
+          onClick={onClick}
+        >
+          <Icon as={TfiCommentAlt} fontSize={18} mr={2} />
+          <Text fontSize="sm" fontWeight="500">Ask Question</Text>
+        </Flex>
+        <Flex
+          align="center"
+          justify="center"
+          flex={1}
+          p={2}
+          borderRadius="lg"
+          bg="gray.50"
+          cursor="pointer"
+          _hover={{ bg: "green.50", color: "green.600" }}
+          transition="all 0.2s"
           onClick={onClickResource}
-        />
-      </SimpleGrid>
+        >
+          <Icon as={IoImageOutline} fontSize={18} mr={2} />
+          <Text fontSize="sm" fontWeight="500">Share Resource</Text>
+        </Flex>
+      </Flex>
     </Flex>
-
   );
 };
 
