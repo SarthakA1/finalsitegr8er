@@ -303,24 +303,6 @@ const Home: NextPage = () => {
 
       <Stack spacing={5}>
         <Recommendations />
-        <Box p={4} bg="white" borderRadius="md" border="1px solid" borderColor="gray.200" shadow="sm">
-          <Flex align="center" justify="space-between" mb={2}>
-            <Text fontSize="md" fontWeight="700" color="gray.700">Content Library</Text>
-            <Button size="xs" variant="ghost" colorScheme="brand">View All</Button>
-          </Flex>
-          <Stack spacing={3}>
-            {[
-              { title: "MYP 5 Math Formula Booklet", type: "PDF" },
-              { title: "Physics Revision Guide", type: "PDF" },
-              { title: "Chemistry Data Booklet", type: "PDF" }
-            ].map((item, index) => (
-              <Flex key={index} align="center" p={2} _hover={{ bg: "gray.50" }} borderRadius="md" cursor="pointer" transition="all 0.2s">
-                <Image src="/images/pdf.png" height="24px" width="24px" mr={3} alt="PDF" />
-                <Text fontSize="sm" fontWeight="500" color="gray.600" noOfLines={1}>{item.title}</Text>
-              </Flex>
-            ))}
-          </Stack>
-        </Box>
       </Stack>
       <>
         <button
@@ -347,7 +329,7 @@ const Home: NextPage = () => {
           <PostLoader />
         ) : (
 
-          <Stack>
+          <Stack spacing={4}>
             <Box
               display={{ base: "none", lg: "block" }} // Visible only on large screens and above
               maxWidth="100%" // Same width as the PostItem's parent container
@@ -365,67 +347,80 @@ const Home: NextPage = () => {
                 }}
               />
             </Box>
-            <Stack spacing={4} p={4} bg="white" borderRadius="md" border="1px solid" borderColor="gray.200" shadow="sm">
-              <Box>
-                <Text fontSize="xs" fontWeight="700" color="gray.500" mb={2} textTransform="uppercase" letterSpacing="wide">MYP Grade</Text>
-                <Wrap spacing={2}>
-                  {['1', '2', '3', '4', '5'].map((grade) => (
-                    <Button
-                      key={grade}
-                      size="sm"
-                      variant={activeFilters.grade && (activeFilters.grade as string[]).includes(grade) ? "solid" : "outline"}
-                      colorScheme="brand"
-                      onClick={() => handleChangeTopFilter('grade', grade)}
-                      borderRadius="full"
-                      fontSize="xs"
-                    >
-                      MYP {grade}
-                    </Button>
-                  ))}
-                </Wrap>
-              </Box>
 
-              <Box>
-                <Text fontSize="xs" fontWeight="700" color="gray.500" mb={2} textTransform="uppercase" letterSpacing="wide">Type</Text>
-                <Wrap spacing={2}>
-                  {[
-                    { label: 'Academic Questions', value: 'Academic Question' },
-                    { label: 'General Doubts', value: 'General Doubt' },
-                    { label: 'Resources', value: 'Resource' }
-                  ].map((type) => (
-                    <Button
-                      key={type.value}
-                      size="sm"
-                      variant={activeFilters.typeofquestion && (activeFilters.typeofquestion as string[]).includes(type.value) ? "solid" : "outline"}
-                      colorScheme={type.value === 'Resource' ? "green" : type.value === 'General Doubt' ? "orange" : "blue"}
-                      onClick={() => handleChangeTopFilter('typeofquestion', type.value)}
-                      borderRadius="full"
-                      fontSize="xs"
-                    >
-                      {type.label}
-                    </Button>
-                  ))}
-                </Wrap>
-              </Box>
+            {/* Content Library */}
+            <Box p={4} bg="white" borderRadius="md" border="1px solid" borderColor="gray.200" shadow="sm">
+              <Flex align="center" justify="space-between" mb={2}>
+                <Text fontSize="md" fontWeight="700" color="gray.700">Content Library</Text>
+                <Button size="xs" variant="ghost" colorScheme="brand">View All</Button>
+              </Flex>
+              <Stack spacing={3}>
+                {[
+                  { title: "MYP 5 Math Formula Booklet", type: "PDF" },
+                  { title: "Physics Revision Guide", type: "PDF" },
+                  { title: "Chemistry Data Booklet", type: "PDF" }
+                ].map((item, index) => (
+                  <Flex key={index} align="center" p={2} _hover={{ bg: "gray.50" }} borderRadius="md" cursor="pointer" transition="all 0.2s">
+                    <Image src="/images/pdf.png" height="24px" width="24px" mr={3} alt="PDF" />
+                    <Text fontSize="sm" fontWeight="500" color="gray.600" noOfLines={1}>{item.title}</Text>
+                  </Flex>
+                ))}
+              </Stack>
+            </Box>
 
-              <Box>
-                <Text fontSize="xs" fontWeight="700" color="gray.500" mb={2} textTransform="uppercase" letterSpacing="wide">Criteria</Text>
-                <Wrap spacing={2}>
-                  {['Criteria A', 'Criteria B', 'Criteria C', 'Criteria D'].map((criteria) => (
-                    <Button
-                      key={criteria}
-                      size="sm"
-                      variant={activeFilters.criteria && (activeFilters.criteria as string[]).includes(criteria) ? "solid" : "outline"}
-                      colorScheme="gray"
-                      onClick={() => handleChangeTopFilter('criteria', criteria)}
-                      borderRadius="full"
-                      fontSize="xs"
-                    >
-                      {criteria}
-                    </Button>
-                  ))}
-                </Wrap>
-              </Box>
+            {/* Filters */}
+            <Stack spacing={3} p={2} bg="white" borderRadius="md">
+              <Flex align="center" wrap="wrap" gap={2}>
+                <Text fontSize="xs" fontWeight="700" color="gray.500" textTransform="uppercase" mr={2}>MYP Grade:</Text>
+                {['1', '2', '3', '4', '5'].map((grade) => (
+                  <Button
+                    key={grade}
+                    size="xs"
+                    variant={activeFilters.grade && (activeFilters.grade as string[]).includes(grade) ? "solid" : "outline"}
+                    colorScheme="brand"
+                    onClick={() => handleChangeTopFilter('grade', grade)}
+                    borderRadius="full"
+                  >
+                    MYP {grade}
+                  </Button>
+                ))}
+              </Flex>
+
+              <Flex align="center" wrap="wrap" gap={2}>
+                <Text fontSize="xs" fontWeight="700" color="gray.500" textTransform="uppercase" mr={2}>Type:</Text>
+                {[
+                  { label: 'Academic Questions', value: 'Academic Question' },
+                  { label: 'General Doubts', value: 'General Doubt' },
+                  { label: 'Resources', value: 'Resource' }
+                ].map((type) => (
+                  <Button
+                    key={type.value}
+                    size="xs"
+                    variant={activeFilters.typeofquestion && (activeFilters.typeofquestion as string[]).includes(type.value) ? "solid" : "outline"}
+                    colorScheme={type.value === 'Resource' ? "green" : type.value === 'General Doubt' ? "orange" : "blue"}
+                    onClick={() => handleChangeTopFilter('typeofquestion', type.value)}
+                    borderRadius="full"
+                  >
+                    {type.label}
+                  </Button>
+                ))}
+              </Flex>
+
+              <Flex align="center" wrap="wrap" gap={2}>
+                <Text fontSize="xs" fontWeight="700" color="gray.500" textTransform="uppercase" mr={2}>Criteria:</Text>
+                {['Criteria A', 'Criteria B', 'Criteria C', 'Criteria D'].map((criteria) => (
+                  <Button
+                    key={criteria}
+                    size="xs"
+                    variant={activeFilters.criteria && (activeFilters.criteria as string[]).includes(criteria) ? "solid" : "outline"}
+                    colorScheme="gray"
+                    onClick={() => handleChangeTopFilter('criteria', criteria)}
+                    borderRadius="full"
+                  >
+                    {criteria}
+                  </Button>
+                ))}
+              </Flex>
             </Stack>
 
             {/* <Select placeholder='Sort By Tags' onChange={handleChangeFilter}>
