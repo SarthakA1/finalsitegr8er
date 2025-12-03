@@ -1,5 +1,5 @@
 import { SearchIcon } from '@chakra-ui/icons';
-import { Flex, Input, InputGroup, InputRightElement, Image, Link } from '@chakra-ui/react';
+import { Flex, Input, InputGroup, InputRightElement, Image, Link, Box, Text, Stack } from '@chakra-ui/react';
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { auth, firestore } from '@/firebase/clientApp';
 import { User } from 'firebase/auth';
@@ -8,7 +8,7 @@ import Notification from './Notifications/Notification';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 type SearchinputProps = {
-   user?: User | null;
+    user?: User | null;
 };
 
 type Post = {
@@ -75,65 +75,81 @@ const Searchinput: React.FC<SearchinputProps> = ({ user }) => {
     return (
         <Flex flexGrow={1} maxWidth={user ? "auto" : "auto"} mr={3} ml={1} direction="row" justifyContent="right">
             <InputGroup>
-                <Input placeholder='Search GR8ER' 
-                    fontSize='10pt' 
-                    _placeholder={{ color: "gray.500" }}
+                <Input placeholder='Search GR8ER'
+                    fontSize='10pt'
+                    _placeholder={{ color: "gray.400" }}
                     _hover={{
                         bg: "white",
-                        border: "1px solid",
-                        borderColor: "blue.500",
+                        borderColor: "gray.300",
                     }}
                     _focus={{
                         outline: "none",
-                        border: "1px solid",
-                        borderColor: "blue.500",
+                        bg: "white",
+                        borderColor: "brand.500",
+                        boxShadow: "0 0 0 1px #4682B4",
                     }}
                     value={searchInputValue}
                     onChange={handleChange}
                     height="36px"
-                    bg="gray.100"
-                    borderRadius="50px"
+                    bg="gray.50"
+                    borderRadius="full"
+                    border="1px solid"
+                    borderColor="gray.200"
                 />
                 <InputRightElement pointerEvents='none'>
                     <SearchIcon color='gray.300' mb="5px" />
                 </InputRightElement>
             </InputGroup>
             {searchInputValue && (
-                <div className="company_jobs_search">
-                    <div id="search-results" className="companysas">
-                        <p className="title_heading text-start">Resources</p>
-                        <ul className="list-unstyled" id="company" style={{ height: resourcePostData.length >= 3 ? '150px' : 'auto' }}>
+                <Box
+                    position="absolute"
+                    top="45px"
+                    left="0"
+                    right="0"
+                    bg="white"
+                    zIndex="9999"
+                    borderRadius="md"
+                    boxShadow="lg"
+                    border="1px solid"
+                    borderColor="gray.200"
+                    overflow="hidden"
+                    maxHeight="400px"
+                    overflowY="auto"
+                >
+                    <Box p={3}>
+                        <Text fontSize="xs" fontWeight="700" color="gray.500" mb={2} textTransform="uppercase">Resources</Text>
+                        <Stack spacing={1}>
                             {resourcePostData.length > 0 ? (
                                 resourcePostData.map((resourcePost: any, index: any) => (
-                                    <a key={index} target="_blank" href={`/subject/${resourcePost.subjectId}/answers/${resourcePost.id}`} className="search_result_para">
-                                        <li>{resourcePost.title}</li>
-                                    </a>
+                                    <Link key={index} href={`/subject/${resourcePost.subjectId}/answers/${resourcePost.id}`} _hover={{ textDecoration: 'none' }}>
+                                        <Box p={2} _hover={{ bg: "brand.50" }} borderRadius="md" cursor="pointer" transition="all 0.2s">
+                                            <Text fontSize="sm" fontWeight="500" color="gray.700">{resourcePost.title}</Text>
+                                        </Box>
+                                    </Link>
                                 ))
                             ) : (
-                                <li className="search_result_para">
-                                    No Resources Found
-                                </li>
+                                <Text fontSize="sm" color="gray.400" p={2}>No Resources Found</Text>
                             )}
-                        </ul>
-                    </div>
-                    <hr></hr>
-                    <div id="search-results" className="josas">
-                        <p className="title_heading text-start">Academic Questions and General Doubts</p>
-                        <ul className="list-unstyled" id="company" style={{ height: questionPostData.length >= 3 ? '150px' : 'auto' }}>
+                        </Stack>
+                    </Box>
+                    <Box height="1px" bg="gray.100" mx={3} />
+                    <Box p={3}>
+                        <Text fontSize="xs" fontWeight="700" color="gray.500" mb={2} textTransform="uppercase">Academic Questions & Doubts</Text>
+                        <Stack spacing={1}>
                             {questionPostData.length > 0 ? (
                                 questionPostData.map((questionPost: any, index: any) => (
-                                    <a key={index} target="_blank" href={`/subject/${questionPost.subjectId}/answers/${questionPost.id}`} className="search_result_para">
-                                        <li>{questionPost.title}</li>
-                                    </a>
+                                    <Link key={index} href={`/subject/${questionPost.subjectId}/answers/${questionPost.id}`} _hover={{ textDecoration: 'none' }}>
+                                        <Box p={2} _hover={{ bg: "brand.50" }} borderRadius="md" cursor="pointer" transition="all 0.2s">
+                                            <Text fontSize="sm" fontWeight="500" color="gray.700">{questionPost.title}</Text>
+                                        </Box>
+                                    </Link>
                                 ))
                             ) : (
-                                <li className="search_result_para">
-                                    No Questions and Doubts Found
-                                </li>
+                                <Text fontSize="sm" color="gray.400" p={2}>No Questions Found</Text>
                             )}
-                        </ul>
-                    </div>
-                </div>
+                        </Stack>
+                    </Box>
+                </Box>
             )}
             <Flex alignItems="center" cursor="pointer" justifyContent="right">
                 <Link href="https://www.youtube.com/@GR8ERIB/channels" rel="noopener noreferrer" target="_blank" display={{ base: 'none', md: 'block' }}>

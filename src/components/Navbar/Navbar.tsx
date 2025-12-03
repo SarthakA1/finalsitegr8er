@@ -21,7 +21,20 @@ const navbar: React.FC = () => {
 
 
     return (
-        <Flex bg='white' height='50px' padding='6px 10px' direction="row">
+        <Flex
+            bg='rgba(255, 255, 255, 0.9)'
+            backdropFilter="blur(10px)"
+            height='60px'
+            padding='6px 12px'
+            direction="row"
+            position="sticky"
+            top="0"
+            zIndex="999"
+            borderBottom="1px solid"
+            borderColor="gray.200"
+            shadow="sm"
+            align="center"
+        >
             <Flex align="center" cursor="pointer" onClick={() => onSelectMenuItem(defaultMenuItem)} >
                 <a onClick={redirectToCodeofHonor}>
                     <Image src="/images/gr8er.png" ml={.3} height="45px" display={{ base: 'unset', md: 'none' }} />
@@ -32,15 +45,15 @@ const navbar: React.FC = () => {
             {user && (
                 <Flex align="center">
                     <Directory />
-                    
+
                 </Flex>
             )}
-            
-           
-                <Searchinput />
 
 
-{/*                 <Button 
+            <Searchinput />
+
+
+            {/*                 <Button 
     height="35px"
     width= "150px"
     onClick={() => window.open('https://forms.gle/VqLu2seSNzi1JneZ9', '_blank')}
