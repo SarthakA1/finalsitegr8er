@@ -160,20 +160,6 @@ const About: React.FC<AboutProps> = ({
                   </Link>
                 )}
               </Stack>
-
-              <Stack spacing={3} mt={4}>
-                <Text fontSize="xs" fontWeight={700} color="gray.500" textTransform="uppercase">
-                  Moderators
-                </Text>
-                {subjectData.creatorId && (
-                  <Flex align="center" gap={2}>
-                    <Icon as={FaUserCircle} fontSize={24} color="brand.500" />
-                    <Text fontSize="sm" fontWeight={500} color="gray.700">
-                      {subjectData.creatorId}
-                    </Text>
-                  </Flex>
-                )}
-              </Stack>
             </>
           )}
         </Flex>
