@@ -5,7 +5,7 @@ type ImageUploadProps = {
   selectedFile: string[];
   setSelectedFile: (value: string[]) => void;
   setSelectedTab: (value: string) => void;
-  selectFileRef: React.RefObject<HTMLInputElement>;
+  selectFileRef: any;
   onSelectImage: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 

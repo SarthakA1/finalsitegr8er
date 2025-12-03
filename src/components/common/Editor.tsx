@@ -4,11 +4,11 @@ import "react-quill/dist/quill.snow.css";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 if (typeof window !== "undefined") {
-  window.katex = katex;
+    window.katex = katex;
 }
-export const Editor = ({ id, name, value, onChange, onBlur }:any) => {
-    const quillRef = React.useRef();
-    const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
+export const Editor = ({ id, name, value, onChange, onBlur }: any) => {
+    const quillRef = React.useRef(null);
+    const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }), []);
     const modules = {
         toolbar: [
             [{ header: [1, 2, 3, 4, 5, 6] }, { font: [] }],
@@ -34,7 +34,7 @@ export const Editor = ({ id, name, value, onChange, onBlur }:any) => {
         'indent',
         'formula',
     ]
-    const handleChange = (val:any, delta:any, source:any, editor:any) => {
+    const handleChange = (val: any, delta: any, source: any, editor: any) => {
         onChange(name, val);
     };
 

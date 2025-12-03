@@ -11,12 +11,13 @@ export type Post = {
     numberOfAnswers: number;
     voteStatus: number;
     imageURL?: string;
+    imageURLs?: string[];
     subjectImageURL?: string;
     createdAt: Timestamp;
-    grade: {value: string, label: string};
-    typeOfQuestions: {value: string, label: string};
+    grade: { value: string, label: string };
+    typeOfQuestions: { value: string, label: string };
     pinPost: boolean;
-    criteria: {value: string, label: string};
+    criteria: { value: string, label: string };
 }
 
 export type PostVote = {
@@ -27,9 +28,9 @@ export type PostVote = {
 }
 interface PostState {
     selectedPost: Post | null;
-    posts: Post []
+    posts: Post[]
     postVotes: PostVote[],
-    
+
 }
 
 const DefaultPostState: PostState = {
@@ -40,6 +41,6 @@ const DefaultPostState: PostState = {
 
 
 export const PostState = atom<PostState>({
-    key:'PostState',
+    key: 'PostState',
     default: DefaultPostState
 })

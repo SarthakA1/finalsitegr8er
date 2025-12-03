@@ -24,18 +24,18 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { FaReddit } from "react-icons/fa";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { doc, updateDoc } from "firebase/firestore";
-import { IoIosCreate  } from 'react-icons/io'
+import { IoIosCreate } from 'react-icons/io'
 
 type AboutProps = {
-  
+
   subjectData: Subject;
   pt?: number;
   onCreatePage?: boolean;
   loading?: boolean;
-  
 
-  
-  
+
+
+
 };
 
 const About: React.FC<AboutProps> = ({
@@ -82,14 +82,14 @@ const About: React.FC<AboutProps> = ({
       });
       console.log("HERE IS DOWNLOAD URL", downloadURL);
 
-    //   // April 24 - added state update
-    //   setSubjectStateValue((prev) => ({
-    //     ...prev,
-    //     currentSubject: {
-    //       ...prev.currentSubject,
-    //       imageURL: downloadURL,
-    //     },
-    //   }));
+      //   // April 24 - added state update
+      //   setSubjectStateValue((prev) => ({
+      //     ...prev,
+      //     currentSubject: {
+      //       ...prev.currentSubject,
+      //       imageURL: downloadURL,
+      //     },
+      //   }));
     } catch (error: any) {
       console.log("updateImage error", error.message);
     }
@@ -105,7 +105,7 @@ const About: React.FC<AboutProps> = ({
         align="center"
         p={3}
         color="white"
-        bg="blue.400"
+        bg="brand.500"
         borderRadius="4px 4px 0px 0px"
       >
         <Text fontSize="10pt" fontWeight={700}>
@@ -123,25 +123,25 @@ const About: React.FC<AboutProps> = ({
           </Stack>
         ) : (
           <>
-            
-              
+
+
             <Stack spacing={2} maxWidth="300px" align="center">
               <Flex width="100%" p={2} fontWeight={600} fontSize="10pt">
                 <Flex direction="column" flexGrow={1} align='center'>
                   <Text >
-                  {subjectData.numberOfMembers}
+                    {subjectData.numberOfMembers}
                   </Text>
                   <Text>Members</Text>
                 </Flex>
-                
+
               </Flex>
               <Divider />
               <Flex align="center" width="100%" p={1} fontWeight={500} fontSize="10pt">
-                   
-                    <Text mt={1} textAlign="center">
-                   {subjectData.subjectInfo}
-                  </Text>
-                  </Flex>
+
+                <Text mt={1} textAlign="center">
+                  {subjectData.subjectInfo}
+                </Text>
+              </Flex>
 
               {user && (
                 <Link href={`/subject/${subjectData.id}/submit`}>
@@ -153,15 +153,15 @@ const About: React.FC<AboutProps> = ({
                 //   <Button mt={2} mb={3} height="30px" width="250px">
                 //     Ask or Share Anything!
                 //   </Button>
-                  
+
                 // </Link>
-            
+
               )}
               {/* !!!ADDED AT THE VERY END!!! INITIALLY DOES NOT EXIST */}
-             
-                <>
-                  {/* <Divider /> */}
-                  {/* <Stack fontSize="10pt" spacing={1}>
+
+              <>
+                {/* <Divider /> */}
+                {/* <Stack fontSize="10pt" spacing={1}>
                     <Text fontWeight={600}>Admin</Text>
                     <Flex align="center" justify="space-between">
                       <Text
@@ -206,8 +206,8 @@ const About: React.FC<AboutProps> = ({
                       onChange={onSelectImage}
                     />
                   </Stack> */}
-                </>
-              
+              </>
+
             </Stack>
           </>
         )}

@@ -1,12 +1,12 @@
 import { Post } from '@/atoms/postsAtom';
-import { Flex, Icon, Stack, Text , Image, Link, textDecoration, SimpleGrid, Button } from '@chakra-ui/react';
+import { Flex, Icon, Stack, Text, Image, Link, textDecoration, SimpleGrid, Button } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineDelete, AiFillTags } from "react-icons/ai";
 import { TfiCommentAlt } from "react-icons/tfi";
 import { collection, Timestamp, writeBatch, doc, serverTimestamp, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { auth, firestore } from '@/firebase/clientApp';
 import { MdOutlineComment } from "react-icons/md";
-import { AiFillLike, AiOutlineLike, AiFillDislike, AiOutlineDislike  } from "react-icons/ai";
+import { AiFillLike, AiOutlineLike, AiFillDislike, AiOutlineDislike } from "react-icons/ai";
 import {
     IoCloseCircleOutline,
     IoCloseCircleSharp,
@@ -44,7 +44,7 @@ export type DifficultyVoting = {
     voting: string;
     createdAt: Timestamp;
 }
-const PostItem:React.FC<PostItemProps> = ({
+const PostItem: React.FC<PostItemProps> = ({
     post,
     userIsCreator,
     userVoteValue,
@@ -52,17 +52,17 @@ const PostItem:React.FC<PostItemProps> = ({
     onDeletePost,
     onSelectPost,
     homePage
-}:any) => {
+}: any) => {
     const [showFullBody, setShowFullBody] = useState(false);
 
     const toggleBodyDisplay = () => {
-    
+
         setShowFullBody(!showFullBody);
     };
     const [user] = useAuthState(auth);
     const router = useRouter();
     const singlePostPage = !onSelectPost
-    
+
     const criteria = post.criteria;
 
     const [highestPercentage, setHighestPercentage] = useState('');
@@ -77,19 +77,19 @@ const PostItem:React.FC<PostItemProps> = ({
         try {
             const success = await onDeletePost(post);
             if (!success) {
-                throw new Error("Failed to delete post"); 
+                throw new Error("Failed to delete post");
             }
             //console.log("Post was Successfully Deleted"); 
-            setDeletePostMessage('Post was Successfully Deleted');   
-            setTimeout(function() {
+            setDeletePostMessage('Post was Successfully Deleted');
+            setTimeout(function () {
                 setDeletePostMessage('');
                 router.push('/');
             }, 3000);
         } catch (error: any) {
-           
+
         }
-    }  
-    const handleClickVoting = async (value:any) => {
+    }
+    const handleClickVoting = async (value: any) => {
         const votingQuery = query(
             collection(firestore, 'diffculty_voting'),
             where('creatorId', '==', user?.uid),
@@ -102,7 +102,7 @@ const PostItem:React.FC<PostItemProps> = ({
         const voting = votingDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         const totalVoting = voting.length;
         const batch = writeBatch(firestore);
-        if(voting.length > 0){
+        if (voting.length > 0) {
             console.log(voting[0].id);
             const diffcultyVotingDocRef = doc(firestore, 'diffculty_voting', voting[0].id!);
             batch.update(diffcultyVotingDocRef, {
@@ -120,10 +120,10 @@ const PostItem:React.FC<PostItemProps> = ({
                 createdAt: serverTimestamp() as Timestamp,
             }
             batch.set(diffcultyVotingDocRef, newDifficultyVoting);
-            newDifficultyVoting.createdAt = {seconds:Date.now() / 1000} as Timestamp
+            newDifficultyVoting.createdAt = { seconds: Date.now() / 1000 } as Timestamp
         }
         await batch.commit();
-    } 
+    }
     const fetchVotingData = async () => {
         const votingQuery = query(
             collection(firestore, 'diffculty_voting'),
@@ -155,7 +155,7 @@ const PostItem:React.FC<PostItemProps> = ({
         );
         const hardVotingDocs = await getDocs(hardVotingQuery);
         const hardVoting = hardVotingDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        
+
         const Easy_percentage = ((easyVoting.length / allVoting.length) * 100).toFixed(2);
         const Medium_percentage = ((mediumVoting.length / allVoting.length) * 100).toFixed(2);
         const Hard_percentage = ((hardVoting.length / allVoting.length) * 100).toFixed(2);
@@ -182,134 +182,137 @@ const PostItem:React.FC<PostItemProps> = ({
             highestPercentageOption = '';
         }
 
-        if(highestPercentage + '%' !== 'NaN%'){
+        if (highestPercentage + '%' !== 'NaN%') {
             setHighestPercentage(highestPercentage + '%');
             setHighestPercentageName(highestPercentageOption);
         } else {
             setHighestPercentage('Not');
             setHighestPercentageName(highestPercentageOption);
         }
-    } 
-    const getFileExtension = (url:any) => {
+    }
+    const getFileExtension = (url: any) => {
         return fetch(url)
-        .then((response: any) => response.json())
-        .then((data: any) => {
-            if (data['contentType']) {
-                return data['contentType'];
-            } else {
-                return 'unknown';
-            }
-        })
-        .catch((error: any) => {
-            console.error('Error fetching data:', error);
-            return 'unknown'; // Handle error and return a default value
-        });
+            .then((response: any) => response.json())
+            .then((data: any) => {
+                if (data['contentType']) {
+                    return data['contentType'];
+                } else {
+                    return 'unknown';
+                }
+            })
+            .catch((error: any) => {
+                console.error('Error fetching data:', error);
+                return 'unknown'; // Handle error and return a default value
+            });
     }
     useEffect(() => {
-        if(post.id){
+        if (post.id) {
             fetchVotingData();
         }
     }, [post.id])
     return (
-        <Flex 
+        <Flex
             direction='column'
-            border="1px solid" 
-            borderColor={singlePostPage ? "gray.400" : "gray.400"}
-            borderRadius={singlePostPage ? "4px 4px 0px 0px" : "4px"}
-            _hover = 
-            {{borderColor: singlePostPage ? "none" : "gray.500"}}
+            border="1px solid"
+            borderColor={singlePostPage ? "gray.200" : "gray.200"}
+            borderRadius={singlePostPage ? "4px 4px 0px 0px" : "lg"}
+            bg="white"
+            shadow={singlePostPage ? "none" : "sm"}
+            _hover=
+            {{ borderColor: singlePostPage ? "none" : "gray.300", shadow: singlePostPage ? "none" : "md" }}
+            transition="all 0.2s"
         >
-            {deletePostMessage ? <Text style={{textAlign: "center", padding:"10px", color:"green"}}>{deletePostMessage}</Text> : ''}
+            {deletePostMessage ? <Text style={{ textAlign: "center", padding: "10px", color: "green" }}>{deletePostMessage}</Text> : ''}
             {/* <Flex 
                 direction="row" 
                 align="center" 
                 bg="blue.100" 
                 p={2}
             >  */}
-                  <Stack direction="row" spacing={0.6} className='post_list_main_section'>
-                    {/* //Homepage check  */}
-                    <Flex className={homePage ? 'post_list_subject_section' : 'post_list_subject_without_homepage_section'}>
-                        {homePage && (
-                            <>
-                                {post.subjectImageURL ? (
-                                    <Image src={post.subjectImageURL} mr={1} mt={1} borderRadius="full" boxSize="18px"/>
-                                ) : (
-                                    <Icon as ={RiGroup2Fill} fontSize="18pt" mr={1} color="blue.500"/>
-                                )}
-                                <Link href={`subject/${post.subjectId}`}>
-                                    <Text fontWeight={700} fontSize={16} mr={3}_hover={{textDecoration:"underline"}}
+            <Stack direction="row" spacing={0.6} className='post_list_main_section'>
+                {/* //Homepage check  */}
+                <Flex className={homePage ? 'post_list_subject_section' : 'post_list_subject_without_homepage_section'}>
+                    {homePage && (
+                        <>
+                            {post.subjectImageURL ? (
+                                <Image src={post.subjectImageURL} mr={1} mt={1} borderRadius="full" boxSize="18px" />
+                            ) : (
+                                <Icon as={RiGroup2Fill} fontSize="18pt" mr={1} color="blue.500" />
+                            )}
+                            <Link href={`subject/${post.subjectId}`}>
+                                <Text fontWeight={700} fontSize={16} mr={3} _hover={{ textDecoration: "underline" }}
                                     onClick={(event) => event.stopPropagation()}
-                                    >
-                                        {`${post.subjectId}`}
-                                    </Text>
-                                </Link>
+                                >
+                                    {`${post.subjectId}`}
+                                </Text>
+                            </Link>
+                        </>
+                    )}
+                    <Text className='post_list_left_text_section'>
+                        {post.typeOfQuestions && post.typeOfQuestions.value === 'Resource'
+                            ? 'Shared by '
+                            : 'Asked by '}
+                        <span style={{ color: "#2c75b9" }}>
+                            {post.creatorDisplayName}
+                        </span>
+                        , {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
+                    </Text>
+
+                </Flex>
+                <Flex className={homePage ? 'post_list_header_section' : 'post_list_header_without_homepage_section'}>
+                    <Text style={{ textAlign: "right" }} className='post_list_right_text_section'>
+                        {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion: any, index: any) => (
+                            criterion.value !== ''
+                                ?
+                                <span key={index} style={{ background: "#000000", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px" }}>
+                                    {criterion.value}
+                                </span>
+                                :
+                                ''
+                        ))}
+                        {post.typeOfQuestions && (
+                            <>
+                                {post.typeOfQuestions !== ''
+                                    ?
+                                    <span style={{ background: "#4299E1", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px" }}>
+                                        {post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value} {/* Display value */}
+                                    </span>
+                                    :
+                                    ''
+                                }
                             </>
                         )}
-                        <Text className='post_list_left_text_section'> 
-    {post.typeOfQuestions && post.typeOfQuestions.value === 'Resource' 
-        ? 'Shared by ' 
-        : 'Asked by '}
-    <span style={{ color: "#2c75b9" }}>
-        {post.creatorDisplayName}
-    </span>
-    , {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
-</Text>
-
-                    </Flex>
-                    <Flex className={homePage ? 'post_list_header_section' : 'post_list_header_without_homepage_section'}>
-                        <Text style={{textAlign: "right"}} className='post_list_right_text_section'>
-                            {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion:any, index:any) => (
-                                criterion.value !== ''
-                                    ?
-                                        <span key={index} style={{background: "#000000", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
-                                            {criterion.value}
-                                        </span>
-                                    :
-                                        ''
-                            ))}
-                            {post.typeOfQuestions && (
-                                <>
-                                    {post.typeOfQuestions !== ''
-                                        ?
-                                            <span style={{background: "#4299E1", color: "#fff", padding: "5px 10px 5px 10px", borderRadius: "15px", marginRight: "5px", fontSize: "12px"}}>
-                                                {post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value} {/* Display value */}
-                                            </span>
-                                        :
-                                            ''
-                                    }
-                                </>
-                            )}
-                        </Text>
-                    </Flex>
-                </Stack>
+                    </Text>
+                </Flex>
+            </Stack>
             {/* </Flex> */}
 
-            <Flex 
-            direction="column" 
-            align="left" 
-            p={2}
-            bg="white" 
-            cursor={singlePostPage ? "unset" : "pointer"}
-            onClick={() => onSelectPost && onSelectPost(post)} > 
+            <Flex
+                direction="column"
+                align="left"
+                p={2}
+                bg="white"
+                cursor={singlePostPage ? "unset" : "pointer"}
+                onClick={() => onSelectPost && onSelectPost(post)} >
 
-           
-           <Flex direction="row">
-              
-            <Text fontFamily='Roboto, sans-serif' fontSize='13pt' fontWeight={600} mb={1}> {post.title} </Text>
-                <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}>MYP  </Text>
-            {post.grade && (
-                <>
-                    <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}>
-                        {post.grade.value}
-                    </Text>
-                </>
-            )}
-            {/* 
+
+                <Flex direction="row">
+
+                    <Text fontFamily='Roboto, sans-serif' fontSize='13pt' fontWeight={600} mb={1}> {post.title} </Text>
+                    <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}>MYP  </Text>
+                    {post.grade && (
+                        <>
+                            <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}>
+                                {post.grade.value}
+                            </Text>
+                        </>
+                    )}
+                    {/* 
             <Text ml={1} fontSize='13pt' color="#2596be" fontWeight={600} mb={1}> {post.grade} </Text> */}
-            </Flex>
-            {/* <StaticEquationText bodyValue={post.body}/> */}
-{/*           <div style={{ maxWidth: '100%', overflow: 'auto' }}> */}
-{/*   <div 
+                </Flex>
+                {/* <StaticEquationText bodyValue={post.body}/> */}
+                {/*           <div style={{ maxWidth: '100%', overflow: 'auto' }}> */}
+                {/*   <div 
     dangerouslySetInnerHTML={{ __html: post.body }} 
     style={{
       maxWidth: '100%', // Limit the maximum width
@@ -328,63 +331,63 @@ const PostItem:React.FC<PostItemProps> = ({
 
                 {/* Render See More button if body exceeds 400 characters */}
                 {post.body.length > 450 && (
-                     <Button onClick={(e) => { e.stopPropagation(); toggleBodyDisplay(); }} colorScheme="blue" mt={2}>
-            {showFullBody ? "See Less" : "See More"}
-        </Button>
+                    <Button onClick={(e) => { e.stopPropagation(); toggleBodyDisplay(); }} colorScheme="blue" mt={2}>
+                        {showFullBody ? "See Less" : "See More"}
+                    </Button>
                 )}
 
 
-            {/* <Text fontSize='11pt'> {post.body} </Text> */}
-            {/* {post.imageURL && (
+                {/* <Text fontSize='11pt'> {post.body} </Text> */}
+                {/* {post.imageURL && (
                 <Flex mt={4} justify="center" align="center">  
                 <Image src={post.imageURL} maxHeight='350px' alt="post image"/>
                 
                 </Flex>
             )} */}
- {post.imageURLs && ( // Always render the icon
-    <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', margin: '0 auto' }}>
-        {post.imageURLs.map((imageURL: any, index: number) => { // Added index parameter
-            const parts = imageURL.split('.');
-            const extension = parts[parts.length - 1];
-            const orgExtension = extension.split('?');
-            return (
-                <li style={{ listStyle: 'none', margin: '0 5px', textAlign: 'center' }} key={index}> {/* Adjusted styles */}
-                    {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
-                        router.pathname == '/' ? (
-                            <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', height: 'auto', verticalAlign: 'middle' }} /> 
-                        ) : (
-                            <a href={imageURL} target='_blank'>
-                                <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', height: 'auto', verticalAlign: 'middle' }} /> 
-                            </a>
-                        )
-                    ) : orgExtension[0] === 'pdf' ? (
-                        user ? ( // Check if user is signed in
-                            <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}> {/* Added onClick handler */}
-                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
-                            </a>
-                        ) : (
-                            <a href="#" style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => { e.stopPropagation(); e.preventDefault(); setAuthModalState({ open: true, view: "login" }) }}> {/* Added onClick handler */}
-                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
-                            </a>
-                        )
-                    ) : orgExtension[0] === 'doc' || orgExtension[0] === 'docx' ? (
-                        user ? ( // Check if user is signed in
-                            <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}> {/* Added onClick handler */}
-                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
-                            </a>
-                        ) : (
-                            <a href="#" style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => { e.stopPropagation(); e.preventDefault(); setAuthModalState({ open: true, view: "login" }) }}> {/* Added onClick handler */}
-                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
-                            </a>
-                        )
-                    ) : (
-                        <span>Unsupported file format</span> // Handle unsupported file format
-                    )}
-                </li>
-            );
-        })}
-    </ul>
-)}
+                {post.imageURLs && ( // Always render the icon
+                    <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', margin: '0 auto' }}>
+                        {post.imageURLs.map((imageURL: any, index: number) => { // Added index parameter
+                            const parts = imageURL.split('.');
+                            const extension = parts[parts.length - 1];
+                            const orgExtension = extension.split('?');
+                            return (
+                                <li style={{ listStyle: 'none', margin: '0 5px', textAlign: 'center' }} key={index}> {/* Adjusted styles */}
+                                    {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
+                                        router.pathname == '/' ? (
+                                            <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', height: 'auto', verticalAlign: 'middle' }} />
+                                        ) : (
+                                            <a href={imageURL} target='_blank'>
+                                                <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', height: 'auto', verticalAlign: 'middle' }} />
+                                            </a>
+                                        )
+                                    ) : orgExtension[0] === 'pdf' ? (
+                                        user ? ( // Check if user is signed in
+                                            <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}> {/* Added onClick handler */}
+                                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
+                                            </a>
+                                        ) : (
+                                            <a href="#" style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => { e.stopPropagation(); e.preventDefault(); setAuthModalState({ open: true, view: "login" }) }}> {/* Added onClick handler */}
+                                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
+                                            </a>
+                                        )
+                                    ) : orgExtension[0] === 'doc' || orgExtension[0] === 'docx' ? (
+                                        user ? ( // Check if user is signed in
+                                            <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}> {/* Added onClick handler */}
+                                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
+                                            </a>
+                                        ) : (
+                                            <a href="#" style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => { e.stopPropagation(); e.preventDefault(); setAuthModalState({ open: true, view: "login" }) }}> {/* Added onClick handler */}
+                                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
+                                            </a>
+                                        )
+                                    ) : (
+                                        <span>Unsupported file format</span> // Handle unsupported file format
+                                    )}
+                                </li>
+                            );
+                        })}
+                    </ul>
+                )}
 
 
 
@@ -396,89 +399,89 @@ const PostItem:React.FC<PostItemProps> = ({
 
 
 
-            {/* <Icon as={AiFillTags} mt={5} fontSize={20}/> */}
+                {/* <Icon as={AiFillTags} mt={5} fontSize={20}/> */}
 
 
             </Flex>
 
-           
-            <Flex 
-            direction="row" 
-            bg="blue.100" 
-            p={2}>
-                
-                    {user
-                        ?
-                            <Flex align='center' justify='center'>
-                                <Icon as = {userVoteValue === 1 ? AiFillLike : AiOutlineLike} 
-                                color={userVoteValue === 1 ? "#9FB751" : "gray.500"} 
-                                fontSize={24}
-                                onClick={() => onVote(post, 1, post.subjectId)} 
-                                cursor="pointer"
-                                mr={0.5}/>
-                                <Text color="gray.500" fontSize='11pt'>{post.voteStatus}</Text>
-                                <Icon as = {userVoteValue === -1 ?  AiFillDislike : AiOutlineDislike} 
-                                color={userVoteValue === -1 ? "#EB4E45" :  "gray.500"} 
-                                fontSize={22.5}
-                                onClick={() => onVote(post, -1, post.subjectId)} 
-                                ml={0.5}
-                                cursor="pointer"
-                                />
-                            </Flex>
-                        :
-                            <Flex align='center' justify='center'>
-                                <Icon as = {AiOutlineLike} color="gray.500" fontSize={24} cursor="pointer" mr={0.5} onClick={() => setAuthModalState({ open:true, view: "login"})}/>
-                                <Text color="gray.500" fontSize='11pt'>{post.voteStatus}</Text>
-                                <Icon as = {AiOutlineDislike} 
-                                color="gray.500" 
-                                fontSize={22.5}
-                                onClick={() => setAuthModalState({ open:true, view: "login"})} 
-                                ml={0.5}
-                                cursor="pointer"
-                                />
-                            </Flex>
-                    } 
+
+            <Flex
+                direction="row"
+                bg="blue.100"
+                p={2}>
+
+                {user
+                    ?
+                    <Flex align='center' justify='center'>
+                        <Icon as={userVoteValue === 1 ? AiFillLike : AiOutlineLike}
+                            color={userVoteValue === 1 ? "#9FB751" : "gray.500"}
+                            fontSize={24}
+                            onClick={() => onVote(post, 1, post.subjectId)}
+                            cursor="pointer"
+                            mr={0.5} />
+                        <Text color="gray.500" fontSize='11pt'>{post.voteStatus}</Text>
+                        <Icon as={userVoteValue === -1 ? AiFillDislike : AiOutlineDislike}
+                            color={userVoteValue === -1 ? "#EB4E45" : "gray.500"}
+                            fontSize={22.5}
+                            onClick={() => onVote(post, -1, post.subjectId)}
+                            ml={0.5}
+                            cursor="pointer"
+                        />
+                    </Flex>
+                    :
+                    <Flex align='center' justify='center'>
+                        <Icon as={AiOutlineLike} color="gray.500" fontSize={24} cursor="pointer" mr={0.5} onClick={() => setAuthModalState({ open: true, view: "login" })} />
+                        <Text color="gray.500" fontSize='11pt'>{post.voteStatus}</Text>
+                        <Icon as={AiOutlineDislike}
+                            color="gray.500"
+                            fontSize={22.5}
+                            onClick={() => setAuthModalState({ open: true, view: "login" })}
+                            ml={0.5}
+                            cursor="pointer"
+                        />
+                    </Flex>
+                }
                 <Flex>
                     {post.typeOfQuestions && (
                         post.typeOfQuestions.value == 'Academic Question'
-                        ?
-                            <Flex  ml={5} align='center' justify='right' cursor="pointer">
-                             
-                               
+                            ?
+                            <Flex ml={5} align='center' justify='right' cursor="pointer">
+
+
                             </Flex>
-                        :
+                            :
                             ''
-                    )} 
-                    
-                    <Flex  ml={5} align='center' justify='right' cursor="pointer">
-                    <Icon 
-                    as={MdOutlineComment} 
-                    fontSize={22.5} 
-                    color="gray.500"
-                    onClick={() => onSelectPost && onSelectPost(post)} 
-                    />
-                    <Text color="gray.500" ml={1}> {post.numberOfAnswers}</Text>
+                    )}
+
+                    <Flex ml={5} align='center' justify='right' cursor="pointer">
+                        <Icon
+                            as={MdOutlineComment}
+                            fontSize={22.5}
+                            color="gray.500"
+                            onClick={() => onSelectPost && onSelectPost(post)}
+                        />
+                        <Text color="gray.500" ml={1}> {post.numberOfAnswers}</Text>
                     </Flex>
 
                     {userIsCreator && (
                         <Flex
-                        align='center'
-                        p="8px 10px"
-                        borderRadius={singlePostPage ? "0" : "10"}
-                        _hover={{bg:"blue.200"}}
-                        cursor="pointer"
-                        ml={2}
-                        onClick={handleDelete}
-                        color="#ff0000"
+                            align='center'
+                            p="8px 10px"
+                            borderRadius={singlePostPage ? "0" : "10"}
+                            _hover={{ bg: "blue.200" }}
+                            cursor="pointer"
+                            ml={2}
+                            onClick={handleDelete}
+                            color="#ff0000"
                         >
-                            <Icon as = {AiOutlineDelete}/>
+                            <Icon as={AiOutlineDelete} />
 
                         </Flex>
-                        )}
+                    )}
                 </Flex>
-            </Flex>    
+            </Flex>
         </Flex>
-    
-        )
+
+    )
 }
 export default PostItem;
