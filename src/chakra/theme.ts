@@ -6,15 +6,15 @@ import { Button } from './button'
 export const theme = extendTheme({
   colors: {
     brand: {
-      50: "#eef2ff",
-      100: "#e0e7ff",
-      500: "#6366f1", // Electric Indigo
-      600: "#4f46e5", // Violet
-      700: "#4338ca",
+      50: "#eff6ff",
+      100: "#dbeafe",
+      500: "#1e40af", // Dark Blue (Primary)
+      600: "#1e3a8a", // Darker Blue (Hover)
+      700: "#172554",
     },
     accent: {
-      100: "#f3e8ff",
-      500: "#a855f7", // Purple
+      100: "#e0f2fe",
+      500: "#0ea5e9", // Sky Blue accent
     }
   },
   fonts: {
@@ -51,7 +51,7 @@ export const theme = extendTheme({
           _hover: {
             bgGradient: "linear(to-r, brand.600, brand.700)",
             transform: "translateY(-2px)",
-            boxShadow: "0 4px 12px rgba(99, 102, 241, 0.4)", // Glow effect
+            boxShadow: "0 4px 12px rgba(30, 64, 175, 0.4)", // Glow effect (Blue)
           },
           _active: {
             transform: "translateY(0)",
