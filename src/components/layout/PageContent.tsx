@@ -8,7 +8,7 @@ type PageContentProps = {
 const PageContentLayout: React.FC<PageContentProps> = ({ children }) => {
 
     return (
-        <Flex justify='center' p="16px 0px" >
+        <Flex justify='center' py="16px" px={{ base: 4, md: 8 }}>
             <Flex width="100%" justify='center' maxWidth='1600px'  >
                 {/* {LHS - Main Content} */}
                 <Flex
