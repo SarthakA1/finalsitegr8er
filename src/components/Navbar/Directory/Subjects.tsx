@@ -13,21 +13,21 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import MenuListItem from './MenuListItem';
 
 type subjectsProps = {
-    
+
 };
 
-const subjects:React.FC<subjectsProps> = () => {
+const subjects: React.FC<subjectsProps> = () => {
     const [open, setOpen] = useState(false);
     const mySnippets = useRecoilValue(subjectState).mySnippets;
 
     const [user] = useAuthState(auth);
     return (
         <>
-        <CreateSubjectModal open={open} handleClose={() => setOpen(false)} userId={user?.uid!}/>
-        <Box mt={3} mb={3} >
-            <Text pl={3} mb={1} fontSize="10pt" fontWeight={500} color="gray.500"> MY SUBJECT GROUPS </Text>
-        </Box>
-        {/* <MenuItem
+            <CreateSubjectModal open={open} handleClose={() => setOpen(false)} userId={user?.uid!} />
+            <Box mt={3} mb={3} >
+                <Text pl={3} mb={1} fontSize="10pt" fontWeight={500} color="gray.500"> MY SUBJECT GROUPS </Text>
+            </Box>
+            {/* <MenuItem
         onClick={() => setOpen(true)}
         >
         <Flex fontSize="10pt" align="center">
@@ -35,13 +35,30 @@ const subjects:React.FC<subjectsProps> = () => {
             Create Subject
         </Flex>
         </MenuItem> */}
-        {mySnippets.map(snippet => (
-            <MenuListItem key={snippet.subjectId} 
-            icon={RiGroup2Fill} 
-            displayText={`${snippet.subjectId}`} 
-            link={`/subject/${snippet.subjectId}`} iconColor="blue.500" imageURL={snippet.imageURL}/>
-            
-        ))}
+            {mySnippets.map(snippet => (
+                <MenuListItem key={snippet.subjectId}
+                    icon={RiGroup2Fill}
+                    displayText={`${snippet.subjectId}`}
+                    link={`/subject/${snippet.subjectId}`} iconColor="blue.500" imageURL={snippet.imageURL} />
+
+            ))}
+            <Box mt={3} mb={3} >
+                <Text pl={3} mb={1} fontSize="10pt" fontWeight={500} color="gray.500"> GENERAL </Text>
+            </Box>
+            <MenuListItem
+                icon={RiGroup2Fill}
+                displayText="Code of Honor"
+                link="/codeofhonor"
+                iconColor="brand.500"
+                imageURL=""
+            />
+            <MenuListItem
+                icon={RiGroup2Fill}
+                displayText="Meet the Founder"
+                link="/founder"
+                iconColor="brand.500"
+                imageURL=""
+            />
         </>
     )
 }

@@ -42,29 +42,6 @@ const navbar: React.FC = () => {
                 </a>
             </Flex>
 
-            {/* Navigation Links */}
-            <Flex display={{ base: 'none', md: 'flex' }} mr={4} gap={3}>
-                <Button
-                    variant="ghost"
-                    fontSize="sm"
-                    fontWeight={600}
-                    color="gray.600"
-                    _hover={{ bg: "brand.50", color: "brand.500" }}
-                    onClick={() => router.push('/codeofhonor')}
-                >
-                    Code of Honor
-                </Button>
-                <Button
-                    variant="ghost"
-                    fontSize="sm"
-                    fontWeight={600}
-                    color="gray.600"
-                    _hover={{ bg: "brand.50", color: "brand.500" }}
-                    onClick={() => router.push('/founder')}
-                >
-                    Meet the Founder
-                </Button>
-            </Flex>
 
             {user && (
                 <Flex align="center">
