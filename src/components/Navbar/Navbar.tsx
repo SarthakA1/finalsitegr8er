@@ -22,8 +22,8 @@ const navbar: React.FC = () => {
 
     return (
         <Flex
-            bg='rgba(255, 255, 255, 0.9)'
-            backdropFilter="blur(10px)"
+            bg='rgba(255, 255, 255, 0.8)'
+            backdropFilter="blur(12px)"
             height='60px'
             padding='6px 12px'
             direction="row"
@@ -31,7 +31,7 @@ const navbar: React.FC = () => {
             top="0"
             zIndex="999"
             borderBottom="1px solid"
-            borderColor="gray.200"
+            borderColor="whiteAlpha.300"
             shadow="sm"
             align="center"
         >

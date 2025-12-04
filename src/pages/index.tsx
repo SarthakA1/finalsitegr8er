@@ -1,5 +1,6 @@
 
 import { Stack, Select, Text, Flex, Box, Button, Wrap, Skeleton, Icon } from "@chakra-ui/react";
+import { IoArrowUpCircleOutline } from "react-icons/io5";
 import useContentLibrary from "@/hooks/useContentLibrary";
 import {
   collection,
@@ -334,6 +335,10 @@ const Home: NextPage = () => {
               display={{ base: "none", lg: "block" }}
               maxWidth="100%"
               marginBottom="8px"
+              borderRadius="md"
+              boxShadow="0 0 20px rgba(99, 102, 241, 0.4)"
+              transition="transform 0.3s"
+              _hover={{ transform: "scale(1.01)", boxShadow: "0 0 30px rgba(99, 102, 241, 0.6)" }}
             >
               <Image
                 onClick={() => window.open('https://www.sparkl.me/register', '_blank')}
@@ -349,7 +354,16 @@ const Home: NextPage = () => {
             </Box>
 
             {/* Filters */}
-            <Stack spacing={3} p={2} bg="white" borderRadius="md">
+            <Stack
+              spacing={3}
+              p={3}
+              bg="rgba(255, 255, 255, 0.8)"
+              backdropFilter="blur(12px)"
+              borderRadius="xl"
+              border="1px solid"
+              borderColor="whiteAlpha.300"
+              shadow="sm"
+            >
               <Flex align="center" wrap="wrap" gap={2}>
                 <Text fontSize="xs" fontWeight="700" color="gray.500" textTransform="uppercase" mr={2}>MYP Grade:</Text>
                 {['1', '2', '3', '4', '5'].map((grade) => (
@@ -426,7 +440,15 @@ const Home: NextPage = () => {
         <Stack spacing={5}>
           <Recommendations />
           {/* Content Library */}
-          <Box p={4} bg="white" borderRadius="md" border="1px solid" borderColor="gray.200" shadow="sm">
+          <Box
+            p={4}
+            bg="rgba(255, 255, 255, 0.8)"
+            backdropFilter="blur(12px)"
+            borderRadius="xl"
+            border="1px solid"
+            borderColor="whiteAlpha.300"
+            shadow="lg"
+          >
             <Flex align="center" justify="space-between" mb={2}>
               <Text fontSize="md" fontWeight="700" color="gray.700">Content Library</Text>
               <Button size="xs" variant="ghost" colorScheme="brand">View All</Button>

@@ -214,13 +214,14 @@ const PostItem: React.FC<PostItemProps> = ({
         <Flex
             direction='column'
             border="1px solid"
-            borderColor={singlePostPage ? "gray.200" : "gray.200"}
+            borderColor={singlePostPage ? "whiteAlpha.300" : "whiteAlpha.300"}
             borderRadius={singlePostPage ? "4px 4px 0px 0px" : "xl"}
-            bg="white"
+            bg="rgba(255, 255, 255, 0.8)"
+            backdropFilter="blur(12px)"
             shadow={singlePostPage ? "none" : "sm"}
             _hover=
-            {{ borderColor: singlePostPage ? "none" : "brand.500", shadow: singlePostPage ? "none" : "lg", transform: singlePostPage ? "none" : "translateY(-2px)" }}
-            transition="all 0.2s"
+            {{ borderColor: singlePostPage ? "none" : "brand.500", shadow: singlePostPage ? "none" : "xl", transform: singlePostPage ? "none" : "translateY(-4px)" }}
+            transition="all 0.3s"
         >
             {deletePostMessage ? <Text style={{ textAlign: "center", padding: "10px", color: "green" }}>{deletePostMessage}</Text> : ''}
             {/* <Flex 

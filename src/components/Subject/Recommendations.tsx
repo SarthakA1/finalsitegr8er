@@ -49,18 +49,19 @@ const Recommendations: React.FC = () => {
   return (
     <Flex
       direction="column"
-      bg="white"
-      borderRadius={4}
+      bg="rgba(255, 255, 255, 0.8)"
+      backdropFilter="blur(12px)"
+      borderRadius="xl"
       border="1px solid"
-      borderColor="gray.300"
-      shadow="sm"
+      borderColor="whiteAlpha.300"
+      shadow="lg"
+      overflow="hidden"
     >
       <Flex
         align="flex-end"
         color="white"
         p="6px 10px"
         height="70px"
-        borderRadius="4px 4px 0px 0px"
         bgGradient="linear(to-r, brand.500, brand.600)"
         fontWeight={700}
         backgroundSize="cover"

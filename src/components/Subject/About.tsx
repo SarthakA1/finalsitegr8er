@@ -103,12 +103,13 @@ const About: React.FC<AboutProps> = ({
     <Box pt={pt} position="sticky" top="14px">
       <Flex
         direction="column"
-        bg="white"
+        bg="rgba(255, 255, 255, 0.8)"
+        backdropFilter="blur(12px)"
         borderRadius="xl"
         border="1px solid"
-        borderColor="gray.200"
+        borderColor="whiteAlpha.300"
         overflow="hidden"
-        shadow="sm"
+        shadow="lg"
       >
         <Flex
           justify="space-between"
