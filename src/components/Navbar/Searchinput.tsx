@@ -1,5 +1,5 @@
 import { SearchIcon } from '@chakra-ui/icons';
-import { Flex, Input, InputGroup, InputRightElement, Image, Link, Box, Text, Stack } from '@chakra-ui/react';
+import { Flex, Input, InputGroup, InputRightElement, Image, Link, Box, Text, Stack, Spinner } from '@chakra-ui/react';
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { auth, firestore } from '@/firebase/clientApp';
 import { User } from 'firebase/auth';
@@ -36,29 +36,39 @@ const Searchinput: React.FC<SearchinputProps> = ({ user }) => {
     const [questionPostData, setQuestionPostData] = useState<Post[]>([]);
     const [users] = useAuthState(auth);
 
+    const [loading, setLoading] = useState(false);
+
     const handleChange = async (e: any) => {
         const value = e.target.value;
+        setSearchInputValue(value);
+
+        if (value === '') {
+            setResourcePostData([]);
+            setQuestionPostData([]);
+            return;
+        }
+
+        setLoading(true);
         try {
-            setSearchInputValue(value);
             const postsQuery = query(
                 collection(firestore, 'posts'),
-                where('title', '>=', e.target.value),
-                where('title', '<=', e.target.value + '\uf8ff'),
+                where('title', '>=', value),
+                where('title', '<=', value + '\uf8ff'),
                 orderBy('title')
             );
             const postDocs = await getDocs(postsQuery);
             const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             const newPosts = posts as Post[];
 
-            if (newPosts.length > 0) {
-                const filterResourcePosts = newPosts.filter(post => post.typeOfQuestions.value === 'Resource');
-                const filterQuestionsPosts = newPosts.filter(post => post.typeOfQuestions.value === 'Academic Question' || post.typeOfQuestions.value === 'General Question');
-                setResourcePostData(filterResourcePosts as Post[]);
-                setQuestionPostData(filterQuestionsPosts as Post[]);
-            }
+            const filterResourcePosts = newPosts.filter(post => post.typeOfQuestions.value === 'Resource');
+            const filterQuestionsPosts = newPosts.filter(post => post.typeOfQuestions.value === 'Academic Question' || post.typeOfQuestions.value === 'General Question');
+
+            setResourcePostData(filterResourcePosts as Post[]);
+            setQuestionPostData(filterQuestionsPosts as Post[]);
         } catch (error: any) {
             console.log('getPosts error', error.message);
         }
+        setLoading(false);
     };
 
     const [isOpen, setIsOpen] = useState(false);
@@ -116,39 +126,47 @@ const Searchinput: React.FC<SearchinputProps> = ({ user }) => {
                     maxHeight="400px"
                     overflowY="auto"
                 >
-                    <Box p={3}>
-                        <Text fontSize="xs" fontWeight="700" color="gray.500" mb={2} textTransform="uppercase">Resources</Text>
-                        <Stack spacing={1}>
-                            {resourcePostData.length > 0 ? (
-                                resourcePostData.map((resourcePost: any, index: any) => (
-                                    <Link key={index} href={`/subject/${resourcePost.subjectId}/answers/${resourcePost.id}`} _hover={{ textDecoration: 'none' }}>
-                                        <Box p={2} _hover={{ bg: "brand.50" }} borderRadius="md" cursor="pointer" transition="all 0.2s">
-                                            <Text fontSize="sm" fontWeight="500" color="gray.700">{resourcePost.title}</Text>
-                                        </Box>
-                                    </Link>
-                                ))
-                            ) : (
-                                <Text fontSize="sm" color="gray.400" p={2}>No Resources Found</Text>
-                            )}
-                        </Stack>
-                    </Box>
-                    <Box height="1px" bg="gray.100" mx={3} />
-                    <Box p={3}>
-                        <Text fontSize="xs" fontWeight="700" color="gray.500" mb={2} textTransform="uppercase">Academic Questions & Doubts</Text>
-                        <Stack spacing={1}>
-                            {questionPostData.length > 0 ? (
-                                questionPostData.map((questionPost: any, index: any) => (
-                                    <Link key={index} href={`/subject/${questionPost.subjectId}/answers/${questionPost.id}`} _hover={{ textDecoration: 'none' }}>
-                                        <Box p={2} _hover={{ bg: "brand.50" }} borderRadius="md" cursor="pointer" transition="all 0.2s">
-                                            <Text fontSize="sm" fontWeight="500" color="gray.700">{questionPost.title}</Text>
-                                        </Box>
-                                    </Link>
-                                ))
-                            ) : (
-                                <Text fontSize="sm" color="gray.400" p={2}>No Questions Found</Text>
-                            )}
-                        </Stack>
-                    </Box>
+                    {loading ? (
+                        <Flex justify="center" align="center" p={4}>
+                            <Spinner size="sm" color="brand.500" />
+                        </Flex>
+                    ) : (
+                        <>
+                            <Box p={3}>
+                                <Text fontSize="xs" fontWeight="700" color="gray.500" mb={2} textTransform="uppercase">Resources</Text>
+                                <Stack spacing={1}>
+                                    {resourcePostData.length > 0 ? (
+                                        resourcePostData.map((resourcePost: any, index: any) => (
+                                            <Link key={index} href={`/subject/${resourcePost.subjectId}/answers/${resourcePost.id}`} _hover={{ textDecoration: 'none' }}>
+                                                <Box p={2} _hover={{ bg: "brand.50" }} borderRadius="md" cursor="pointer" transition="all 0.2s">
+                                                    <Text fontSize="sm" fontWeight="500" color="gray.700">{resourcePost.title}</Text>
+                                                </Box>
+                                            </Link>
+                                        ))
+                                    ) : (
+                                        <Text fontSize="sm" color="gray.400" p={2}>No Resources Found</Text>
+                                    )}
+                                </Stack>
+                            </Box>
+                            <Box height="1px" bg="gray.100" mx={3} />
+                            <Box p={3}>
+                                <Text fontSize="xs" fontWeight="700" color="gray.500" mb={2} textTransform="uppercase">Academic Questions & Doubts</Text>
+                                <Stack spacing={1}>
+                                    {questionPostData.length > 0 ? (
+                                        questionPostData.map((questionPost: any, index: any) => (
+                                            <Link key={index} href={`/subject/${questionPost.subjectId}/answers/${questionPost.id}`} _hover={{ textDecoration: 'none' }}>
+                                                <Box p={2} _hover={{ bg: "brand.50" }} borderRadius="md" cursor="pointer" transition="all 0.2s">
+                                                    <Text fontSize="sm" fontWeight="500" color="gray.700">{questionPost.title}</Text>
+                                                </Box>
+                                            </Link>
+                                        ))
+                                    ) : (
+                                        <Text fontSize="sm" color="gray.400" p={2}>No Questions Found</Text>
+                                    )}
+                                </Stack>
+                            </Box>
+                        </>
+                    )}
                 </Box>
             )}
             <Flex alignItems="center" cursor="pointer" justifyContent="right">

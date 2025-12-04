@@ -1,5 +1,5 @@
 
-import { Stack, Select, Text, Flex, Box, Button, Wrap, Skeleton } from "@chakra-ui/react";
+import { Stack, Select, Text, Flex, Box, Button, Wrap, Skeleton, Icon } from "@chakra-ui/react";
 import useContentLibrary from "@/hooks/useContentLibrary";
 import {
   collection,
@@ -47,6 +47,26 @@ const Home: NextPage = () => {
   });
   const { subjectStateValue } = useSubjectData();
   const { contentItems, loading: contentLoading } = useContentLibrary();
+  const [showTopBtn, setShowTopBtn] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 400) {
+        setShowTopBtn(true);
+      } else {
+        setShowTopBtn(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const goToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
 
   const isBrowser = () => typeof window !== 'undefined'; //The approach recommended by Next.js
 
@@ -295,98 +315,37 @@ const Home: NextPage = () => {
     };
   }, [user, postStateValue.posts]);
   return (
-
-
-
-
     <PageContent>
-
-
-
-      <Stack spacing={5}>
-        <Recommendations />
-      </Stack>
       <>
-        <button
-          className={`back_to_top`}
-          onClick={scrollToTop}
-        >
-          BACK TO TOP
-
-        </button>
         <CreatePostLink />
         <Analytics />
-
-
-        <div>
+        <Box>
           <Head>
             <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6442166008118008"
               crossOrigin="anonymous"></script>
             <title>GR8ER</title>
-
           </Head>
-
-        </div>
+        </Box>
         {loading ? (
           <PostLoader />
         ) : (
-
           <Stack spacing={4}>
             <Box
-              display={{ base: "none", lg: "block" }} // Visible only on large screens and above
-              maxWidth="100%" // Same width as the PostItem's parent container
-              marginBottom="8px" // Space between the image and the PostItem
+              display={{ base: "none", lg: "block" }}
+              maxWidth="100%"
+              marginBottom="8px"
             >
               <Image
                 onClick={() => window.open('https://www.sparkl.me/register', '_blank')}
-                onMouseEnter={() => setIsHovered(true)} // Handle hover start
-                onMouseLeave={() => setIsHovered(false)} // Handle hover end
-                src="/images/finalsparkl.png" // Replace with the actual image URL
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                src="/images/finalsparkl.png"
                 width="100%"
-                borderRadius="md" // Optional: Adds rounded corners
+                borderRadius="md"
                 style={{
-                  cursor: 'pointer', // Change cursor to pointer on hover
+                  cursor: 'pointer',
                 }}
               />
-            </Box>
-
-            {/* Content Library */}
-            <Box p={4} bg="white" borderRadius="md" border="1px solid" borderColor="gray.200" shadow="sm">
-              <Flex align="center" justify="space-between" mb={2}>
-                <Text fontSize="md" fontWeight="700" color="gray.700">Content Library</Text>
-                <Button size="xs" variant="ghost" colorScheme="brand">View All</Button>
-              </Flex>
-              <Stack spacing={3}>
-                {contentLoading ? (
-                  <Stack>
-                    <Skeleton height="20px" />
-                    <Skeleton height="20px" />
-                    <Skeleton height="20px" />
-                  </Stack>
-                ) : (
-                  <>
-                    {contentItems.length > 0 ? (
-                      contentItems.map((item, index) => (
-                        <Flex
-                          key={item.id}
-                          align="center"
-                          p={2}
-                          _hover={{ bg: "gray.50" }}
-                          borderRadius="md"
-                          cursor="pointer"
-                          transition="all 0.2s"
-                          onClick={() => window.open(item.url, '_blank')}
-                        >
-                          <Image src="/images/pdf.png" height="24px" width="24px" mr={3} alt="PDF" />
-                          <Text fontSize="sm" fontWeight="500" color="gray.600" noOfLines={1}>{item.title}</Text>
-                        </Flex>
-                      ))
-                    ) : (
-                      <Text fontSize="sm" color="gray.500">No content available.</Text>
-                    )}
-                  </>
-                )}
-              </Stack>
             </Box>
 
             {/* Filters */}
@@ -444,18 +403,7 @@ const Home: NextPage = () => {
               </Flex>
             </Stack>
 
-            {/* <Select placeholder='Sort By Tags' onChange={handleChangeFilter}>
-                <option value='Criteria A'>Criteria A</option>
-                <option value='Criteria B'>Criteria B</option>
-                <option value='Criteria C'>Criteria C</option>
-                <option value='Criteria D'>Criteria D</option>
-                <option value='Academic Question'>Academic Question</option>
-                <option value='General Question'>General Question</option>
-            </Select> */}
             {postStateValue.posts.slice(0, 100).map((post) => (
-
-
-
               <PostItem
                 key={post.id}
                 post={post}
@@ -470,15 +418,76 @@ const Home: NextPage = () => {
                 userIsCreator={user?.uid === post.creatorId}
                 homePage
               />
-
             ))}
-
           </Stack>
         )}
       </>
+      <>
+        <Stack spacing={5}>
+          <Recommendations />
+          {/* Content Library */}
+          <Box p={4} bg="white" borderRadius="md" border="1px solid" borderColor="gray.200" shadow="sm">
+            <Flex align="center" justify="space-between" mb={2}>
+              <Text fontSize="md" fontWeight="700" color="gray.700">Content Library</Text>
+              <Button size="xs" variant="ghost" colorScheme="brand">View All</Button>
+            </Flex>
+            <Stack spacing={3}>
+              {contentLoading ? (
+                <Stack>
+                  <Skeleton height="20px" />
+                  <Skeleton height="20px" />
+                  <Skeleton height="20px" />
+                </Stack>
+              ) : (
+                <>
+                  {contentItems.length > 0 ? (
+                    contentItems.map((item, index) => (
+                      <Flex
+                        key={item.id}
+                        align="center"
+                        p={2}
+                        _hover={{ bg: "gray.50" }}
+                        borderRadius="md"
+                        cursor="pointer"
+                        transition="all 0.2s"
+                        onClick={() => window.open(item.url, '_blank')}
+                      >
+                        <Image src="/images/pdf.png" height="24px" width="24px" mr={3} alt="PDF" />
+                        <Text fontSize="sm" fontWeight="500" color="gray.600" noOfLines={1}>{item.title}</Text>
+                      </Flex>
+                    ))
+                  ) : (
+                    <Text fontSize="sm" color="gray.500">No content available.</Text>
+                  )}
+                </>
+              )}
+            </Stack>
+          </Box>
+        </Stack>
+        {showTopBtn && (
+          <Box
+            onClick={goToTop}
+            position="fixed"
+            bottom="40px"
+            right="40px"
+            zIndex={999}
+            bg="brand.500"
+            width="50px"
+            height="50px"
+            borderRadius="full"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            cursor="pointer"
+            boxShadow="lg"
+            transition="all 0.3s"
+            _hover={{ transform: "translateY(-4px)", bg: "brand.600", boxShadow: "xl" }}
+          >
+            <Icon as={IoArrowUpCircleOutline} color="white" fontSize="30px" />
+          </Box>
+        )}
+      </>
     </PageContent>
-
-
   );
 };
 
