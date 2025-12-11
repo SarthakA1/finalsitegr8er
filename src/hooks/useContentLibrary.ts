@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { firestore } from "@/firebase/clientApp";
 
 export type ContentItem = {
     id: string;
@@ -43,22 +45,20 @@ const useContentLibrary = () => {
     const getContentItems = async () => {
         setLoading(true);
         try {
-            // Simulate API call - For now, always return Mock Data
-            // In future, this will fetch from Firestore
-
-            // Remove delay to ensuring instant loading
-            setContentItems(MOCK_CONTENT);
-
-            // Keep Firestore logic commented out for future integration
-            /*
             const contentQuery = query(
-              collection(firestore, "content_library"),
-              orderBy("createdAt", "desc")
+                collection(firestore, "content_library"),
+                orderBy("createdAt", "desc")
             );
             const contentDocs = await getDocs(contentQuery);
             const items = contentDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-            setContentItems(items as ContentItem[]);
-            */
+
+            // Format timestamps or other data if necessary
+            const formattedItems = items.map((item: any) => ({
+                ...item,
+                createdAt: item.createdAt?.toDate ? item.createdAt.toDate() : new Date(), // Handle Firestore Timestamp
+            })) as ContentItem[];
+
+            setContentItems(formattedItems);
         } catch (error: any) {
             console.error("getContentItems error", error);
             setError(error.message);

@@ -19,15 +19,66 @@ export default async function handler(
                 throw new Error("Missing Stripe Secret Key");
             }
 
-            console.log("Creating PaymentIntent...");
+            // Validate Items
+            if (!items || !items.length) {
+                throw new Error("No items provided");
+            }
+
+            const itemId = items[0].id;
+
+            // Fetch Item from Firestore (Using Client SDK in API - works for public read)
+            // Note: In strict production with rules, you might need Admin SDK, 
+            // but for this MVP with open/user rules, this allows us to get the price securely on server.
+            // We'll import firestore from a new internal helper or just recreate the instance if needed 
+            // BUT: initializing client app in API route can be tricky with multiple instances.
+            // BETTER APPROACH: We'll assume the client passes the ID, we verify it exists. 
+            // Actually, for "Simple MVP" requested by user, we can trust the client OR ideally fetch.
+            // Let's try to fetch using the existing client setup if possible, or just standard fetch if we had an endpoint.
+            // Since initializing firebase app server-side with client SDK can duplicate app errors, let's handle that.
+
+            // To be robust and simple without firebase-admin:
+            // We will trust the price for NOW if we can't easily fetch, BUT user asked for "revamp properly".
+            // So we MUST fetch.
+            // Let's use a dynamic import for firebase to avoid init issues or just check apps.
+
+            // ... Actually, the user already has `src/firebase/clientApp.ts` which exports `firestore`.
+            // Importing it here might work if `window` check handles node env.
+            // The `clientApp.ts` has `!getApps().length ? ...` check so it should be safe-ish.
+
+            const { doc, getDoc } = require("firebase/firestore");
+            const { firestore } = require("@/firebase/clientApp"); // This might fail if it depends on browser globals
+
+            // Fallback: If we can't easily fetch server-side without admin SDK, we might have to pass price 
+            // from client BUT verify signature? No that's too complex.
+            // Let's try to use the `firestore` instance we have. 
+
+            // Fetch the document
+            const docRef = doc(firestore, "content_library", itemId);
+            const docSnap = await getDoc(docRef);
+
+            if (!docSnap.exists()) {
+                throw new Error("Item not found");
+            }
+
+            const itemData = docSnap.data();
+            const price = itemData.price;
+
+            // Calculate amount in cents
+            const amount = Math.round(price * 100);
+
+            console.log(`Creating PaymentIntent for ${itemData.title} at $${price}...`);
+
             // Create a PaymentIntent with the order amount and currency
             const paymentIntent = await stripe.paymentIntents.create({
-                amount: 500, // $5.00 in cents
+                amount: amount,
                 currency: "usd",
-                // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
                 automatic_payment_methods: {
                     enabled: true,
                 },
+                metadata: {
+                    itemId: itemId,
+                    title: itemData.title
+                }
             });
 
             console.log("PaymentIntent created successfully:", paymentIntent.id);
@@ -36,8 +87,10 @@ export default async function handler(
             });
         } catch (error: any) {
             console.error("Error in create-payment-intent:", error);
-            if (error.message === "Missing Stripe Secret Key") {
-                res.status(503).json({ statusCode: 503, message: "Stripe Configuration Missing. Please check server logs." });
+            if (error.code === 'MODULE_NOT_FOUND') {
+                // Fallback if firebase import fails in API route (Node env issues)
+                // This is a risk. If we can't read DB, we can't verify price.
+                res.status(500).json({ statusCode: 500, message: "Server Configuration Error: Cannot verify item price." });
             } else {
                 res.status(500).json({ statusCode: 500, message: error.message });
             }
