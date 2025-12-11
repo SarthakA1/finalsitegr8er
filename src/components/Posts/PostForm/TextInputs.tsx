@@ -23,6 +23,9 @@ import {
 } from "chakra-react-select";
 import "react-quill/dist/quill.snow.css";
 import { Editor } from "../../common/Editor";
+import { useRecoilValue } from "recoil";
+import { curriculumState } from "@/atoms/curriculumAtom";
+import { levelOptions, paperOptions } from "@/lib/curriculumData";
 
 type TextInputsProps = {
   textInputs: {
@@ -31,6 +34,8 @@ type TextInputsProps = {
     grade: { value: string; label: string };
     criteria: { value: string; label: string };
     typeOfQuestions: { value: string; label: string };
+    level: { value: string; label: string };
+    paper: { value: string; label: string };
   };
   onChange: (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -45,6 +50,8 @@ const TextInputs: React.FC<TextInputsProps> = ({
   handleCreatePost,
   loading,
 }) => {
+  const curriculum = useRecoilValue(curriculumState);
+
   function setData(value: string): void {
     throw new Error("Function not implemented.");
   }
@@ -146,6 +153,17 @@ const TextInputs: React.FC<TextInputsProps> = ({
       </chakraComponents.Option>
     ),
   };
+
+  const customLevelComponents = {
+    Option: ({ children, ...props }: any) => (
+      <chakraComponents.Option {...props}>{children}</chakraComponents.Option>
+    ),
+  };
+  const customPaperComponents = {
+    Option: ({ children, ...props }: any) => (
+      <chakraComponents.Option {...props}>{children}</chakraComponents.Option>
+    ),
+  };
   const customGradeComponents = {
     Option: ({ children, ...props }: any) => (
       <chakraComponents.Option {...props}>{children}</chakraComponents.Option>
@@ -154,31 +172,62 @@ const TextInputs: React.FC<TextInputsProps> = ({
   return (
     <Stack spacing={3} width="100%">
       <SimpleGrid columns={2} spacing={10}>
-        <Flex direction="row" style={{ display: "block" }}>
-          <Select
-            name="grade"
-            placeholder="MYP"
-            components={customGradeComponents}
-            value={textInputs.grade.value && textInputs.grade} // Set the value prop for controlled component
-            onChange={(selectedGradeOptions: any) =>
-              handleInputChange("grade", selectedGradeOptions)
-            }
-            options={gradeOptions}
-          />
-        </Flex>
-        <Flex style={{ display: "block" }}>
-          <Select
-            isMulti
-            name="criteria[]"
-            options={criteriaOptions}
-            placeholder="Criteria"
-            components={customCriteriaComponents}
-            value={textInputs.criteria.value !=='' && (textInputs.criteria)} // Set the value prop for controlled component
-            onChange={(selectedOptions: any) =>
-              handleInputChange("criteria", selectedOptions)
-            }
-          />
-        </Flex>
+        {curriculum.curriculumId === 'ib-myp' ? (
+          <>
+            <Flex direction="row" style={{ display: "block" }}>
+              <Select
+                name="grade"
+                placeholder="MYP Grade"
+                components={customGradeComponents}
+                value={textInputs.grade.value && textInputs.grade} // Set the value prop for controlled component
+                onChange={(selectedGradeOptions: any) =>
+                  handleInputChange("grade", selectedGradeOptions)
+                }
+                options={gradeOptions}
+              />
+            </Flex>
+            <Flex style={{ display: "block" }}>
+              <Select
+                isMulti
+                name="criteria[]"
+                options={criteriaOptions}
+                placeholder="Criteria"
+                components={customCriteriaComponents}
+                value={textInputs.criteria.value !== '' && (textInputs.criteria)} // Set the value prop for controlled component
+                onChange={(selectedOptions: any) =>
+                  handleInputChange("criteria", selectedOptions)
+                }
+              />
+            </Flex>
+          </>
+        ) : (
+          <>
+            <Flex direction="row" style={{ display: "block" }}>
+              <Select
+                name="level"
+                placeholder="Level (HL/SL)"
+                components={customLevelComponents}
+                value={textInputs.level.value && textInputs.level}
+                onChange={(selectedOption: any) =>
+                  handleInputChange("level", selectedOption)
+                }
+                options={levelOptions}
+              />
+            </Flex>
+            <Flex style={{ display: "block" }}>
+              <Select
+                name="paper"
+                placeholder="Paper"
+                components={customPaperComponents}
+                value={textInputs.paper.value && textInputs.paper}
+                onChange={(selectedOption: any) =>
+                  handleInputChange("paper", selectedOption)
+                }
+                options={paperOptions}
+              />
+            </Flex>
+          </>
+        )}
       </SimpleGrid>
       <SimpleGrid columns={2} spacing={10}>
         <Flex style={{ display: "block" }}>
@@ -235,9 +284,16 @@ const TextInputs: React.FC<TextInputsProps> = ({
           onClick={() => {
             const missingFields = [];
             if (!textInputs.title) missingFields.push("Title");
-            if (!textInputs.grade.value) missingFields.push("MYP");
+
+            if (curriculum.curriculumId === 'ib-myp') {
+              if (!textInputs.grade.value) missingFields.push("MYP Grade");
+            } else {
+              if (!textInputs.level.value) missingFields.push("Level");
+              if (!textInputs.paper.value) missingFields.push("Paper");
+            }
+
             if (!textInputs.typeOfQuestions.value) missingFields.push("Type Of Questions");
-            
+
             if (missingFields.length > 0) {
               // Display alert if any required field is missing
               setMissingFieldsAlert(`Please fill in the following fields: ${missingFields.join(", ")}`);

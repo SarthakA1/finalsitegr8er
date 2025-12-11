@@ -8,34 +8,66 @@ import {
   SkeletonCircle,
   Stack,
   Text,
+  Badge,
 } from "@chakra-ui/react";
-import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+import { collection, getDocs, limit, orderBy, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { FaReddit } from "react-icons/fa";
 import { RiGroup2Fill } from "react-icons/ri";
 import { Subject } from "../../atoms/subjectsAtom";
 import { firestore } from "../../firebase/clientApp";
 import useSubjectData from "../../hooks/useSubjectData";
+import { useRecoilValue } from 'recoil';
+import { curriculumState } from '@/atoms/curriculumAtom';
 
 const Recommendations: React.FC = () => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [loading, setLoading] = useState(false);
   const { subjectStateValue, onJoinOrLeaveSubject } = useSubjectData();
+  const curriculum = useRecoilValue(curriculumState);
 
   const getSubjectRecommendations = async () => {
     setLoading(true);
     try {
-      const subjectQuery = query(
-        collection(firestore, "subjects"),
-        orderBy("numberOfMembers", "desc"),
-        limit(40)
-      );
+      let subjectQuery;
+      if (curriculum.curriculumId === 'ib-dp') {
+        // Explicitly fetch only IB DP subjects
+        subjectQuery = query(
+          collection(firestore, "subjects"),
+          where("curriculumId", "==", "ib-dp"),
+          limit(20)
+        );
+      } else {
+        // For MYP, fetch mostly everything
+        subjectQuery = query(
+          collection(firestore, "subjects"),
+          limit(50)
+        );
+      }
+
       const subjectDocs = await getDocs(subjectQuery);
       const subjects = subjectDocs.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      }));
-      setSubjects(subjects as Subject[]);
+      })) as Subject[];
+
+      const filteredSubjects = subjects.filter(sub => {
+        // DEFENSIVE: Remove any subject that might be the "Duplicate Content Library"
+        if (sub.id.toLowerCase().includes('library') || (sub.subjectInfo && sub.subjectInfo.toLowerCase().includes('library'))) {
+          return false;
+        }
+
+        if (curriculum.curriculumId === 'ib-dp') {
+          return sub.curriculumId === 'ib-dp';
+        } else {
+          // MYP Mode: Show if MYP or undefined/null (legacy), but NEVER DP
+          return sub.curriculumId !== 'ib-dp';
+        }
+      });
+
+      // Sort client-side
+      filteredSubjects.sort((a, b) => b.numberOfMembers - a.numberOfMembers);
+
+      setSubjects(filteredSubjects);
     } catch (error) {
       console.log("getSubjectsRecommendations error", error);
     }
@@ -44,7 +76,7 @@ const Recommendations: React.FC = () => {
 
   useEffect(() => {
     getSubjectRecommendations();
-  }, []);
+  }, [curriculum.curriculumId]);
 
   return (
     <Flex
@@ -66,7 +98,7 @@ const Recommendations: React.FC = () => {
         fontWeight={700}
         backgroundSize="cover"
       >
-        Top Subject Groups
+        {curriculum.curriculumId === 'ib-dp' ? 'IB DP Subjects' : 'IB MYP Subjects'}
       </Flex>
       <Flex direction="column">
         {loading ? (

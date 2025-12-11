@@ -7,14 +7,16 @@ export interface Subject {
     creatorId: string;
     numberOfMembers: number;
     createdAt: Timestamp;
-    imageURL?: string; 
+    imageURL?: string;
     subjectInfo: string;
+    curriculumId?: string;
 }
 
 export interface SubjectSnippet {
     subjectId: string;
     isModerator?: boolean;
     imageURL: string;
+    curriculumId?: string;
 
 }
 
@@ -29,7 +31,7 @@ const defaultSubjectState: SubjectState = {
     snippetsFetched: false,
 }
 
-export const subjectState = atom<SubjectState> ({
+export const subjectState = atom<SubjectState>({
     key: 'subjectsState',
     default: defaultSubjectState,
 

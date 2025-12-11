@@ -12,6 +12,8 @@ import usePosts from '@/hooks/usePosts';
 import { auth, firestore } from '@/firebase/clientApp';
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { useRecoilValue } from 'recoil';
+import { curriculumState } from '@/atoms/curriculumAtom';
 
 type NotificationsProps = {
     post?: Post[];
@@ -42,6 +44,8 @@ const Notification: React.FC<NotificationsProps> = () => {
     //const { postStateValue, setPostStateValue, onVote, onDeletePost, onSelectPost } = usePosts(subjectData!);
     //const [notificationsValue, setNotificationsValue] = useState([]);
     const [notificationsValue, setNotificationsValue] = useState<NotificationType[]>([]);
+    const curriculum = useRecoilValue(curriculumState);
+
     const getPosts = async () => {
         try {
             //get posts for the subject
@@ -53,8 +57,15 @@ const Notification: React.FC<NotificationsProps> = () => {
             const postDocs = await getDocs(postsQuery);
 
             //store in post state
-            const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setPostStateValue(posts as Post[]);
+            const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Post[];
+
+            // Filter by curriculum
+            const filteredPosts = posts.filter(post => {
+                if (curriculum.curriculumId === 'ib-dp') return post.curriculumId === 'ib-dp';
+                return post.curriculumId === 'ib-myp' || !post.curriculumId;
+            });
+
+            setPostStateValue(filteredPosts);
             // setPostStateValue(prev  => ({
             //     ...prev,
             //     posts: posts as Post[],
@@ -90,7 +101,7 @@ const Notification: React.FC<NotificationsProps> = () => {
     useEffect(() => {
         getPosts();
         getNotifications();
-    }, [])
+    }, [users, curriculum.curriculumId])
     return (
         <Menu>
             <MenuButton

@@ -15,7 +15,7 @@ const useSubjectData = () => {
     const [user] = useAuthState(auth);
     const router = useRouter();
 
-    const [subjectStateValue, setSubjectStateValue] = useRecoilState(subjectState) 
+    const [subjectStateValue, setSubjectStateValue] = useRecoilState(subjectState)
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -25,14 +25,14 @@ const useSubjectData = () => {
 
 
         if (isJoined) {
-           leaveSubject(subject.id);
-           return;
+            leaveSubject(subject.id);
+            return;
         }
         joinSubject(subject);
-    
+
     }
 
-    
+
     const getMySnippets = async () => {
         setLoading(true);
         try {
@@ -45,7 +45,7 @@ const useSubjectData = () => {
                 mySnippets: snippets as SubjectSnippet[],
                 snippetsFetched: true
             })
-                )
+            )
 
         } catch (error: any) {
             console.log("getMySnippetsError", error)
@@ -54,17 +54,18 @@ const useSubjectData = () => {
     }
 
     const joinSubject = async (subject: Subject) => {
-        
+
         try {
             const batch = writeBatch(firestore);
             const newSnippet: SubjectSnippet = {
                 subjectId: subject.id,
                 imageURL: subject.imageURL || "",
+                curriculumId: subject.curriculumId || "ib-myp", // Default to MYP if undefined
             }
 
             //creating a new subject snippet for user when joined
             batch.set(doc(firestore, `users/${user?.uid}/subjectSnippets`, subject.id), newSnippet)
-            
+
             //updating the number of members on each subject group (+1)
             batch.update(doc(firestore, 'subjects', subject.id), {
                 numberOfMembers: increment(1)
@@ -80,19 +81,19 @@ const useSubjectData = () => {
         } catch (error: any) {
             console.log("joinSubject error", error);
             setError(error.message);
-         }
-         setLoading(false);
+        }
+        setLoading(false);
 
     }
 
-    
+
     const leaveSubject = async (subjectId: string) => {
 
-         try {
+        try {
             //deleting community snippet from users
             const batch = writeBatch(firestore);
             batch.delete(doc(firestore, `users/${user?.uid}/subjectSnippets`, subjectId))
-            
+
             //updating the number of members on each subject group (-1)
             batch.update(doc(firestore, 'subjects', subjectId), {
                 numberOfMembers: increment(-1)
@@ -106,18 +107,18 @@ const useSubjectData = () => {
                 mySnippets: prev.mySnippets.filter((item) => item.subjectId !== subjectId)
             }))
 
-         } catch (error: any) {
+        } catch (error: any) {
             console.log("leaveSubject error", error);
             setError(error.message);
-         }
-         setLoading(false);
+        }
+        setLoading(false);
     }
 
     const getSubjectData = async (subjectId: string) => {
         try {
             const subjectDocRef = doc(firestore, 'subjects', subjectId)
             const subjectDoc = await getDoc(subjectDocRef);
-            
+
             setSubjectStateValue(prev => ({
                 ...prev,
                 currentSubject: { id: subjectDoc.id, ...subjectDoc.data() } as Subject
@@ -125,10 +126,10 @@ const useSubjectData = () => {
 
         } catch (error) {
             console.log('getSubjectData', error)
-            
+
         }
     }
-    
+
     useEffect(() => {
         if (!user) {
             setSubjectStateValue((prev) => ({
@@ -139,10 +140,10 @@ const useSubjectData = () => {
             return;
         }
         getMySnippets()
-        }, [user])
+    }, [user])
 
     useEffect(() => {
-        const { subjectId }= router.query;
+        const { subjectId } = router.query;
 
         if (subjectId && !subjectStateValue.currentSubject) {
             getSubjectData(subjectId as string);
@@ -155,6 +156,6 @@ const useSubjectData = () => {
         loading,
     }
 
-   
+
 }
 export default useSubjectData;

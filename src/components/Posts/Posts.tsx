@@ -17,11 +17,13 @@ type PostsProps = {
 const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
     const [user] = useAuthState(auth);
     const [loading, setLoading] = useState(false);
-    const [activeFilters, setActiveFilters] = useState({
+    const [activeFilters, setActiveFilters] = useState<any>({
         grade: null,
         typeofquestion: null,
         criteria: null,
         difficulty: null,
+        level: null,
+        paper: null,
     });
     const { postStateValue, setPostStateValue, onVote, onDeletePost, onSelectPost } = usePosts(subjectData!);
 
@@ -88,7 +90,7 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
     }
 
     const handleChangeTopFilter = (label: string, value: string) => {
-        setActiveFilters((prevFilters) => {
+        setActiveFilters((prevFilters: any) => {
             const updatedFilters: any = { ...prevFilters };
             if (updatedFilters[label] && updatedFilters[label].includes(value)) {
                 updatedFilters[label] = updatedFilters[label].filter((val: string) => val !== value);
@@ -102,9 +104,9 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const gradeFilters = activeFilters.grade || [];
-                const typeofquestionFilters = activeFilters.typeofquestion || [];
-                const criteriaFilters = activeFilters.criteria || [];
+                // const gradeFilters = activeFilters.grade || [];
+                // const typeofquestionFilters = activeFilters.typeofquestion || [];
+                // const criteriaFilters = activeFilters.criteria || [];
                 const difficultyFilters = activeFilters.difficulty || [];
                 if (difficultyFilters.length > 0) {
                     getPostsByMaxVoting(difficultyFilters)
@@ -114,9 +116,11 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
                                 const postsQuery = query(
                                     collection(firestore, 'posts'),
                                     where('subjectId', '==', subjectData.id),
-                                    ...(gradeFilters.length > 0 ? [where('grade.value', 'in', gradeFilters)] : []),
-                                    ...(typeofquestionFilters.length > 0 ? [where('typeOfQuestions.label', 'in', typeofquestionFilters)] : []),
-                                    ...(criteriaFilters.length > 0 ? [where('criteria', 'array-contains-any', criteriaFilters.map((val: any) => ({ label: val, value: val })))] : []),
+                                    ...(activeFilters.grade && activeFilters.grade.length > 0 ? [where('grade.value', 'in', activeFilters.grade)] : []),
+                                    ...(activeFilters.typeofquestion && activeFilters.typeofquestion.length > 0 ? [where('typeOfQuestions.label', 'in', activeFilters.typeofquestion)] : []),
+                                    ...(activeFilters.criteria && activeFilters.criteria.length > 0 ? [where('criteria', 'array-contains-any', activeFilters.criteria.map((val: any) => ({ label: val, value: val })))] : []),
+                                    ...(activeFilters.level && activeFilters.level.length > 0 ? [where('level.value', 'in', activeFilters.level)] : []),
+                                    ...(activeFilters.paper && activeFilters.paper.length > 0 ? [where('paper.value', 'in', activeFilters.paper)] : []),
                                     where('title', 'in', postTitles),
                                     orderBy('pinPost', 'desc'),
                                     orderBy('createdAt', 'desc')
@@ -147,9 +151,11 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
                     const postsQuery = query(
                         collection(firestore, 'posts'),
                         where('subjectId', '==', subjectData.id),
-                        ...(gradeFilters.length > 0 ? [where('grade.value', 'in', gradeFilters)] : []),
-                        ...(typeofquestionFilters.length > 0 ? [where('typeOfQuestions.label', 'in', typeofquestionFilters)] : []),
-                        ...(criteriaFilters.length > 0 ? [where('criteria', 'array-contains-any', criteriaFilters.map((val: any) => ({ label: val, value: val })))] : []),
+                        ...(activeFilters.grade && activeFilters.grade.length > 0 ? [where('grade.value', 'in', activeFilters.grade)] : []),
+                        ...(activeFilters.typeofquestion && activeFilters.typeofquestion.length > 0 ? [where('typeOfQuestions.label', 'in', activeFilters.typeofquestion)] : []),
+                        ...(activeFilters.criteria && activeFilters.criteria.length > 0 ? [where('criteria', 'array-contains-any', activeFilters.criteria.map((val: any) => ({ label: val, value: val })))] : []),
+                        ...(activeFilters.level && activeFilters.level.length > 0 ? [where('level.value', 'in', activeFilters.level)] : []),
+                        ...(activeFilters.paper && activeFilters.paper.length > 0 ? [where('paper.value', 'in', activeFilters.paper)] : []),
                         orderBy('pinPost', 'desc'),
                         orderBy('createdAt', 'desc')
                     );
@@ -178,6 +184,7 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
             ) : (
                 <Stack spacing={5}>
                     {/* Filters */}
+
                     <Stack
                         spacing={3}
                         p={3}
@@ -188,56 +195,93 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId }) => {
                         borderColor="whiteAlpha.300"
                         shadow="sm"
                     >
-                        <Flex align="center" wrap="wrap" gap={2}>
-                            <Text fontSize="xs" fontWeight="700" color="gray.500" textTransform="uppercase" mr={2}>MYP Grade:</Text>
-                            {['1', '2', '3', '4', '5'].map((grade) => (
-                                <Button
-                                    key={grade}
-                                    size="xs"
-                                    variant={activeFilters.grade && (activeFilters.grade as string[]).includes(grade) ? "solid" : "outline"}
-                                    colorScheme="brand"
-                                    onClick={() => handleChangeTopFilter('grade', grade)}
-                                    borderRadius="full"
-                                >
-                                    MYP {grade}
-                                </Button>
-                            ))}
-                        </Flex>
+                        {subjectData.curriculumId === 'ib-dp' ? (
+                            <>
+                                <Flex align="center" wrap="wrap" gap={2}>
+                                    <Text fontSize="xs" fontWeight="700" color="gray.500" textTransform="uppercase" mr={2}>Level:</Text>
+                                    {['HL', 'SL'].map((level) => (
+                                        <Button
+                                            key={level}
+                                            size="xs"
+                                            variant={activeFilters.level && (activeFilters.level as string[]).includes(level) ? "solid" : "outline"}
+                                            colorScheme="brand"
+                                            onClick={() => handleChangeTopFilter('level', level)}
+                                            borderRadius="full"
+                                        >
+                                            {level}
+                                        </Button>
+                                    ))}
+                                </Flex>
+
+                                <Flex align="center" wrap="wrap" gap={2}>
+                                    <Text fontSize="xs" fontWeight="700" color="gray.500" textTransform="uppercase" mr={2}>Paper:</Text>
+                                    {['1', '2', '3'].map((paper) => (
+                                        <Button
+                                            key={paper}
+                                            size="xs"
+                                            variant={activeFilters.paper && (activeFilters.paper as string[]).includes(paper) ? "solid" : "outline"}
+                                            colorScheme="brand"
+                                            onClick={() => handleChangeTopFilter('paper', paper)}
+                                            borderRadius="full"
+                                        >
+                                            Paper {paper}
+                                        </Button>
+                                    ))}
+                                </Flex>
+                            </>
+                        ) : (
+                            <>
+                                <Flex align="center" wrap="wrap" gap={2}>
+                                    <Text fontSize="xs" fontWeight="700" color="gray.500" textTransform="uppercase" mr={2}>MYP Grade:</Text>
+                                    {['1', '2', '3', '4', '5'].map((grade) => (
+                                        <Button
+                                            key={grade}
+                                            size="xs"
+                                            variant={activeFilters.grade && (activeFilters.grade as string[]).includes(grade) ? "solid" : "outline"}
+                                            colorScheme="brand"
+                                            onClick={() => handleChangeTopFilter('grade', grade)}
+                                            borderRadius="full"
+                                        >
+                                            MYP {grade}
+                                        </Button>
+                                    ))}
+                                </Flex>
+                                <Flex align="center" wrap="wrap" gap={2}>
+                                    <Text fontSize="xs" fontWeight="700" color="gray.500" textTransform="uppercase" mr={2}>Criteria:</Text>
+                                    {['Criteria A', 'Criteria B', 'Criteria C', 'Criteria D'].map((criteria) => (
+                                        <Button
+                                            key={criteria}
+                                            size="xs"
+                                            variant={activeFilters.criteria && (activeFilters.criteria as string[]).includes(criteria) ? "solid" : "outline"}
+                                            colorScheme="gray"
+                                            onClick={() => handleChangeTopFilter('criteria', criteria)}
+                                            borderRadius="full"
+                                        >
+                                            {criteria}
+                                        </Button>
+                                    ))}
+                                </Flex>
+                            </>
+                        )}
+
 
                         <Flex align="center" wrap="wrap" gap={2}>
                             <Text fontSize="xs" fontWeight="700" color="gray.500" textTransform="uppercase" mr={2}>Type:</Text>
-                            {[
-                                { label: 'Academic Questions', value: 'Academic Question' },
-                                { label: 'General Doubts', value: 'General Doubt' },
-                                { label: 'Resources', value: 'Resource' }
-                            ].map((type) => (
-                                <Button
-                                    key={type.value}
-                                    size="xs"
-                                    variant={activeFilters.typeofquestion && (activeFilters.typeofquestion as string[]).includes(type.value) ? "solid" : "outline"}
-                                    colorScheme={type.value === 'Resource' ? "green" : type.value === 'General Doubt' ? "orange" : "blue"}
-                                    onClick={() => handleChangeTopFilter('typeofquestion', type.value)}
-                                    borderRadius="full"
-                                >
-                                    {type.label}
-                                </Button>
-                            ))}
-                        </Flex>
-
-                        <Flex align="center" wrap="wrap" gap={2}>
-                            <Text fontSize="xs" fontWeight="700" color="gray.500" textTransform="uppercase" mr={2}>Criteria:</Text>
-                            {['Criteria A', 'Criteria B', 'Criteria C', 'Criteria D'].map((criteria) => (
-                                <Button
-                                    key={criteria}
-                                    size="xs"
-                                    variant={activeFilters.criteria && (activeFilters.criteria as string[]).includes(criteria) ? "solid" : "outline"}
-                                    colorScheme="gray"
-                                    onClick={() => handleChangeTopFilter('criteria', criteria)}
-                                    borderRadius="full"
-                                >
-                                    {criteria}
-                                </Button>
-                            ))}
+                            {['Academic Question', 'General Doubt', 'Resource'].map((typeLabel, idx) => {
+                                const typeValue = ['Academic Question', 'General Doubt', 'Resource'][idx];
+                                return (
+                                    <Button
+                                        key={typeValue}
+                                        size="xs"
+                                        variant={activeFilters.typeofquestion && (activeFilters.typeofquestion as string[]).includes(typeValue) ? "solid" : "outline"}
+                                        colorScheme={typeValue === 'Resource' ? "green" : typeValue === 'General Doubt' ? "orange" : "blue"}
+                                        onClick={() => handleChangeTopFilter('typeofquestion', typeValue)}
+                                        borderRadius="full"
+                                    >
+                                        {typeLabel}
+                                    </Button>
+                                );
+                            })}
                         </Flex>
                     </Stack>
 

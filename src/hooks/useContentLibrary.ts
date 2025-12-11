@@ -1,35 +1,70 @@
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
-import { firestore } from '../firebase/clientApp';
+import { useState, useEffect } from "react";
 
 export type ContentItem = {
     id: string;
     title: string;
-    url: string;
-    type: string;
+    description: string;
+    url: string; // The "preview" image or actual file URL
+    thumbnail: string;
+    price: number;
+    type: "pdf" | "video" | "image";
     createdAt: any;
 };
+
+// MOCK DATA
+const MOCK_CONTENT: ContentItem[] = [
+    {
+        id: "item_1",
+        title: "Complete Algebra II Study Guide",
+        description: "A comprehensive guide to mastering Algebra II, including practice problems and clear explanations.",
+        url: "/assets/content/content-item-1.png", // Using the uploaded image as the file/preview for now
+        thumbnail: "/assets/content/content-item-1.png",
+        price: 5.00,
+        type: "image",
+        createdAt: new Date(),
+    },
+    {
+        id: "item_2",
+        title: "Physics Mechanics Cheat Sheet",
+        description: "The ultimate cheat sheet for Physics Mechanics. All formulas and concepts on one page.",
+        url: "/assets/content/content-item-2.jpg",
+        thumbnail: "/assets/content/content-item-2.jpg",
+        price: 5.00,
+        type: "image",
+        createdAt: new Date(),
+    },
+];
 
 const useContentLibrary = () => {
     const [contentItems, setContentItems] = useState<ContentItem[]>([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState("");
 
     const getContentItems = async () => {
         setLoading(true);
         try {
+            // Simulate API call - For now, always return Mock Data
+            // In future, this will fetch from Firestore
+
+            // Remove delay to ensuring instant loading
+            setContentItems(MOCK_CONTENT);
+
+            // Keep Firestore logic commented out for future integration
+            /*
             const contentQuery = query(
-                collection(firestore, 'content_library'),
-                orderBy('createdAt', 'desc')
+              collection(firestore, "content_library"),
+              orderBy("createdAt", "desc")
             );
             const contentDocs = await getDocs(contentQuery);
-            const items = contentDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const items = contentDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
             setContentItems(items as ContentItem[]);
+            */
         } catch (error: any) {
-            console.error('getContentItems error', error);
+            console.error("getContentItems error", error);
             setError(error.message);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     useEffect(() => {

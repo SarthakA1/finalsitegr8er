@@ -9,13 +9,23 @@ import useDirectory from '@/hooks/useDirectory';
 import { defaultMenuItem } from '@/atoms/directoryMenuAtom';
 import router from 'next/router';
 
-const redirectToCodeofHonor = () => {
-    router.push('/');
-};
+import { curriculumState } from '@/atoms/curriculumAtom';
+import { useRecoilValue } from 'recoil';
 
 const navbar: React.FC = () => {
     const [user, loading, error] = useAuthState(auth);
     const { onSelectMenuItem } = useDirectory();
+    const curriculum = useRecoilValue(curriculumState);
+
+    const redirectToHome = () => {
+        // Force reload to ensure subjects update correctly as requested
+        const targetPath = `/${curriculum.curriculumId}`;
+        if (window.location.pathname === targetPath) {
+            window.location.reload();
+        } else {
+            window.location.href = targetPath;
+        }
+    };
 
 
 
@@ -36,10 +46,10 @@ const navbar: React.FC = () => {
             align="center"
         >
             <Flex align="center" cursor="pointer" onClick={() => onSelectMenuItem(defaultMenuItem)} mr={4}>
-                <a onClick={redirectToCodeofHonor}>
+                <Box onClick={redirectToHome}>
                     <Image src="/images/gr8er.png" ml={.3} height="45px" display={{ base: 'unset', md: 'none' }} />
                     <Image src="/images/gr8er logo.png" ml={2} mt={2} height="37px" mb="1px" display={{ base: 'none', md: 'unset' }} />
-                </a>
+                </Box>
             </Flex>
 
 
