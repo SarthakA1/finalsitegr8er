@@ -54,26 +54,42 @@ const Searchinput: React.FC<SearchinputProps> = ({ user }) => {
 
         setLoading(true);
         try {
+            // Fetch posts to search client-side
+            // We fetch a batch of recent posts to search through their titles AND bodies.
+            // Note: For a production app with thousands of posts, use a dedicated search service (Algolia/Typesense).
+            // For this scale, client-side filtering allows checking 'body' content which Firestore queries can't do easily.
             const postsQuery = query(
                 collection(firestore, 'posts'),
-                where('title', '>=', value),
-                where('title', '<=', value + '\uf8ff'),
-                orderBy('title')
+                orderBy('createdAt', 'desc')
+                // Removed limit for now to ensure we find deep results, or cap at 100 for performance
+                // limit(100) 
             );
+
             const postDocs = await getDocs(postsQuery);
             const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             const newPosts = posts as Post[];
 
-            // Filter by curriculum
-            // Check if post.curriculumId matches current curriculum.
-            // If post.curriculumId is undefined, we might check if we can infer it or just exclude it if strict.
-            // User asked for strict separation.
-            const curriculumPosts = newPosts.filter(post =>
-                post.curriculumId === curriculum.curriculumId
+            // 1. Filter by Curriculum (Strict)
+            // If the post has no curriculumId, we exclude it to be safe, or include if we want loose matching.
+            // User requested: "if were in ib myp it should only search for ib myp posts"
+            const currentCurriculumId = curriculum.curriculumId;
+
+            const curriculumPosts = newPosts.filter(post => {
+                // Check if post belongs to this curriculum
+                // Validating 'curriculumId' field. 
+                // If old posts don't have it, they won't show. This matches the request for strictness.
+                return post.curriculumId === currentCurriculumId;
+            });
+
+            // 2. Filter by Search Term (Title OR Body)
+            const lowerValue = value.toLowerCase();
+            const searchResults = curriculumPosts.filter(post =>
+                (post.title && post.title.toLowerCase().includes(lowerValue)) ||
+                (post.body && post.body.toLowerCase().includes(lowerValue))
             );
 
-            const filterResourcePosts = curriculumPosts.filter(post => post.typeOfQuestions.value === 'Resource');
-            const filterQuestionsPosts = curriculumPosts.filter(post => post.typeOfQuestions.value === 'Academic Question' || post.typeOfQuestions.value === 'General Question');
+            const filterResourcePosts = searchResults.filter(post => post.typeOfQuestions.value === 'Resource');
+            const filterQuestionsPosts = searchResults.filter(post => post.typeOfQuestions.value === 'Academic Question' || post.typeOfQuestions.value === 'General Question');
 
             setResourcePostData(filterResourcePosts as Post[]);
             setQuestionPostData(filterQuestionsPosts as Post[]);

@@ -10,7 +10,7 @@ import {
   Container,
   Icon,
 } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
+import { motion, useSpring, useMotionValue, useMotionTemplate } from 'framer-motion';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useSetRecoilState } from 'recoil';
@@ -28,15 +28,26 @@ const customCursorStyle = {
 const LandingPage: NextPage = () => {
   const router = useRouter();
   const setCurriculum = useSetRecoilState(curriculumState);
-  const [mousePos, setMousePos] = React.useState({ x: 0, y: 0 });
+
+  // Smooth Mouse Motion for Spotlight
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  // Spring physics for smooth lag
+  const springX = useSpring(mouseX, { stiffness: 100, damping: 20 });
+  const springY = useSpring(mouseY, { stiffness: 100, damping: 20 });
+
+  // Transform for background gradient position
+  const bgGradient = useMotionTemplate`radial-gradient(600px circle at ${springX}px ${springY}px, rgba(255,255,255,0.8), transparent 40%)`;
 
   React.useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
     };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [mouseX, mouseY]);
 
   const selectCurriculum = (id: 'ib-myp' | 'ib-dp') => {
     setCurriculum({ curriculumId: id });
@@ -56,8 +67,8 @@ const LandingPage: NextPage = () => {
         ...customCursorStyle
       }}
     >
-      {/* Interactive Spotlight Background */}
-      <Box
+      {/* Interactive Spotlight Background - Now smoother and stronger */}
+      <MotionBox
         position="absolute"
         top={0}
         left={0}
@@ -65,7 +76,7 @@ const LandingPage: NextPage = () => {
         bottom={0}
         pointerEvents="none"
         style={{
-          background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(255,255,255,0.4), transparent 40%)`,
+          background: bgGradient,
         }}
         zIndex={0}
       />
