@@ -70,14 +70,22 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
 
             <MenuList>
                 <MenuItem
-                    fontSize="10pt"
-                    fontWeight={700}
-                    _hover={{ bg: "blue.500", color: "white" }}
+                    bg="brand.50"
+                    _hover={{ bg: "brand.100" }}
                     onClick={toggleCurriculum}
+                    mb={2}
+                    mt={1}
+                    border="1px solid"
+                    borderColor="brand.200"
+                    borderRadius="md"
+                    mx={2}
+                    width="auto"
                 >
-                    <Flex align="center">
-                        <Icon fontSize={20} mr={2} as={FaStar} />
-                        Switch to {curriculum.curriculumId === 'ib-myp' ? 'IB DP' : 'IB MYP'}
+                    <Flex align="center" justify="center" w="100%" py={1}>
+                        <Icon fontSize={16} mr={2} as={FaStar} color="brand.500" />
+                        <Text fontWeight={800} color="brand.600">
+                            Switch to {curriculum.curriculumId === 'ib-myp' ? 'IB DP' : 'IB MYP'}
+                        </Text>
                     </Flex>
                 </MenuItem>
 

@@ -3,6 +3,7 @@ import { Stack, Select, Text, Flex, Box, Button, Wrap, Skeleton, Icon } from "@c
 import { IoArrowUpCircleOutline } from "react-icons/io5";
 import useContentLibrary from "@/hooks/useContentLibrary";
 import ContentLibraryBanner from "@/components/ContentLibrary/ContentLibraryBanner";
+import ConstructionModal from "@/components/Modal/ConstructionModal";
 import {
     collection,
     getDocs,
@@ -68,23 +69,22 @@ const CurriculumFeed: NextPage = () => {
     const { contentItems, loading: contentLoading } = useContentLibrary();
     const [showTopBtn, setShowTopBtn] = useState(false);
 
+    // Construction Modal State for IB DP
+    const [isConstructionModalOpen, setConstructionModalOpen] = useState(false);
+
     // Sync URL to Global State
     useEffect(() => {
         if (curriculumId && (curriculumId === 'ib-myp' || curriculumId === 'ib-dp')) {
             if (curriculum.curriculumId !== curriculumId) {
                 setCurriculum({ curriculumId: curriculumId as 'ib-myp' | 'ib-dp' });
             }
+            // Trigger construction modal if IB DP
+            if (curriculumId === 'ib-dp') {
+                // Check if we already showed it this session? For now, always show on mount effectively.
+                setConstructionModalOpen(true);
+            }
         }
     }, [curriculumId, curriculum.curriculumId, setCurriculum]);
-
-
-    // Clear posts immediately when curriculum changes (from URL change)
-    useEffect(() => {
-        setPostStateValue((prev) => ({
-            ...prev,
-            posts: [],
-        }));
-    }, [curriculumId]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -365,6 +365,7 @@ const CurriculumFeed: NextPage = () => {
         <PageContent>
             <>
                 <CreatePostLink />
+                <ConstructionModal isOpen={isConstructionModalOpen} onClose={() => setConstructionModalOpen(false)} />
                 <Analytics />
                 <Box>
                     <Head>
