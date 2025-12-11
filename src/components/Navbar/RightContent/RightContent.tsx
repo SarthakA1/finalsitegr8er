@@ -11,21 +11,21 @@ type RightContentProps = {
     user?: User | null;
 };
 
-const RightContent:React.FC<RightContentProps> = ({ user }) => {
+const RightContent: React.FC<RightContentProps> = ({ user }) => {
     return (
         <>
-        <AuthModal/>
-        <Flex justify='center' align='center'>
-            {user ? (
-                <UserMenu user={user} />
-            ) : (
-                <Flex   >
-                <AuthButtons />
-                </Flex>
-                
-            )}
-            
-        </Flex>
+            <AuthModal />
+            <Flex justify='center' align='center'>
+                {user ? (
+                    <UserMenu user={user} />
+                ) : (
+                    <Flex   >
+                        <AuthButtons />
+                    </Flex>
+
+                )}
+
+            </Flex>
         </>
     );
 };

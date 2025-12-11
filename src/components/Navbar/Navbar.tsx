@@ -44,6 +44,7 @@ const navbar: React.FC = () => {
             borderColor="whiteAlpha.300"
             shadow="sm"
             align="center"
+            justify="space-between"
         >
             <Flex align="center" cursor="pointer" onClick={() => onSelectMenuItem(defaultMenuItem)} mr={4}>
                 <Box onClick={redirectToHome}>

@@ -84,7 +84,7 @@ const LandingPage: NextPage = () => {
       <Container maxW="container.xl" h="100%" position="relative" zIndex={1} display="flex" flexDirection="column" justifyContent="center" pt={0}>
 
         {/* Hero Section - Tightened */}
-        <Flex direction="column" align="center" textAlign="center" mb={4}>
+        <Flex direction="column" align="center" textAlign="center" mb={{ base: 6, md: 4 }}>
           <MotionBox
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -92,17 +92,18 @@ const LandingPage: NextPage = () => {
           >
             <Heading
               as="h1"
-              size="2xl"
+              size={{ base: "xl", md: "2xl" }}
               fontWeight="900"
               color="gray.800"
               letterSpacing="tight"
               lineHeight="1.1"
               mb={2}
+              px={2}
             >
               Master the IB with GR8ER
             </Heading>
           </MotionBox>
-          <Text fontSize="md" color="gray.600" maxW="2xl" mx="auto" fontWeight="500" mt={1} lineHeight="short">
+          <Text fontSize={{ base: "sm", md: "md" }} color="gray.600" maxW="2xl" mx="auto" fontWeight="500" mt={1} lineHeight="short" px={4}>
             The all-in-one resource hub trusted by top achievers worldwide.
             Select your programme to unlock your potential.
           </Text>

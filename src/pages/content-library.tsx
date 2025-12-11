@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     Flex,
@@ -7,74 +7,42 @@ import {
     Image,
     Button,
     Badge,
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    ModalCloseButton,
-    useDisclosure,
     useToast,
     Spinner,
-    Icon
 } from '@chakra-ui/react';
-import { FaLock, FaDownload, FaCheckCircle, FaCreditCard } from 'react-icons/fa';
+import { FaLock } from 'react-icons/fa';
 import useContentLibrary, { ContentItem } from '@/hooks/useContentLibrary';
 import Head from 'next/head';
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import CheckoutForm from "@/components/ContentLibrary/CheckoutForm";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string);
+// Razorpay Type Definition
+declare global {
+    interface Window {
+        Razorpay: any;
+    }
+}
 
 const ContentLibraryPage: React.FC = () => {
     const { contentItems, loading } = useContentLibrary();
-    const { isOpen, onOpen, onClose } = useDisclosure();
     const [selectedItem, setSelectedItem] = useState<ContentItem | null>(null);
-    const [clientSecret, setClientSecret] = useState("");
+    const [isPaymentLoading, setIsPaymentLoading] = useState(false);
     const toast = useToast();
 
-    const handleBuyClick = async (item: ContentItem) => {
-        setSelectedItem(item);
+    // Load Razorpay SDK
+    useEffect(() => {
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.async = true;
+        document.body.appendChild(script);
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, []);
 
-        // Create PaymentIntent as soon as the purchase modal opens
-        try {
-            const res = await fetch("/api/create-payment-intent", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ items: [{ id: item.id }] }),
-            });
-
-            if (!res.ok) {
-                throw new Error(`Server returned ${res.status} ${res.statusText}`);
-            }
-
-            const data = await res.json();
-
-            if (!data.clientSecret) {
-                throw new Error("No client secret returned from server");
-            }
-
-            setClientSecret(data.clientSecret);
-            onOpen();
-        } catch (error: any) {
-            console.error("Error creating payment intent", error);
-            toast({
-                title: "Payment Error",
-                description: "Could not initialize payment. Please try again. " + error.message,
-                status: "error",
-                duration: 5000,
-                isClosable: true,
-            });
-        }
-    };
-
-    const handlePaymentSuccess = () => {
-        onClose();
+    const handlePaymentSuccess = (response: any) => {
+        console.log("Razorpay Success:", response);
         toast({
             title: "Purchase Successful!",
-            description: `You have successfully purchased ${selectedItem?.title}. Downloading now...`,
+            description: `Payment ID: ${response.razorpay_payment_id}. Downloading...`,
             status: "success",
             duration: 5000,
             isClosable: true,
@@ -89,9 +57,82 @@ const ContentLibraryPage: React.FC = () => {
             link.click();
             document.body.removeChild(link);
         }
-
         setSelectedItem(null);
-        setClientSecret("");
+    };
+
+    const handleBuyClick = async (item: ContentItem) => {
+        setSelectedItem(item);
+        setIsPaymentLoading(true);
+
+        try {
+            if (!window.Razorpay) {
+                throw new Error("Razorpay SDK not loaded. Please check your internet.");
+            }
+
+            console.log("Creating Razorpay Order for:", item.title);
+
+            // 1. Create Order on Server
+            const res = await fetch("/api/create-razorpay-order", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ items: [{ id: item.id }] }),
+            });
+
+            const data = await res.json();
+            console.log("Order Created:", data);
+
+            if (!res.ok) {
+                throw new Error(data.message || "Failed to create order");
+            }
+
+            // 2. Open Razorpay Checktout
+            const options = {
+                key: data.key_id, // Key ID from server
+                amount: data.amount,
+                currency: data.currency,
+                name: "Gr8er IB",
+                description: `Purchase ${item.title}`,
+                image: "/images/gr8er logo.png", // Ensure this exists or use a URL
+                order_id: data.id,
+                handler: function (response: any) {
+                    handlePaymentSuccess(response);
+                },
+                prefill: {
+                    name: "Student Name",
+                    email: "student@example.com",
+                    contact: "9999999999"
+                },
+                theme: {
+                    color: "#805ad5" // Purple-500
+                }
+            };
+
+            const rzp1 = new window.Razorpay(options);
+            rzp1.on('payment.failed', function (response: any) {
+                console.error("Payment Failed", response.error);
+                toast({
+                    title: "Payment Failed",
+                    description: response.error.description || "Transaction declined",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+            });
+
+            rzp1.open();
+
+        } catch (error: any) {
+            console.error("Payment Error:", error);
+            toast({
+                title: "Payment Error",
+                description: error.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
+        } finally {
+            setIsPaymentLoading(false);
+        }
     };
 
     return (
@@ -175,6 +216,7 @@ const ContentLibraryPage: React.FC = () => {
                                             colorScheme="purple"
                                             size="md"
                                             onClick={() => handleBuyClick(item)}
+                                            isLoading={isPaymentLoading && selectedItem?.id === item.id}
                                             boxShadow="md"
                                         >
                                             Unlock Now
@@ -186,48 +228,6 @@ const ContentLibraryPage: React.FC = () => {
                     </SimpleGrid>
                 )}
             </Flex>
-
-            {/* Simulated Purchase Modal */}
-            <Modal isOpen={isOpen} onClose={onClose} size="md" isCentered>
-                <ModalOverlay backdropFilter="blur(5px)" bg="blackAlpha.300" />
-                <ModalContent borderRadius="xl" boxShadow="2xl">
-                    <ModalHeader borderBottom="1px solid" borderColor="gray.100" pb={4}>
-                        <Flex align="center" gap={3}>
-                            <Icon as={FaCreditCard} color="purple.500" />
-                            <Text fontSize="lg">Complete Purchase</Text>
-                        </Flex>
-                    </ModalHeader>
-                    <ModalCloseButton />
-
-                    <ModalBody py={6}>
-                        {selectedItem && clientSecret && (
-                            <Elements options={{ clientSecret, appearance: { theme: 'stripe' } }} stripe={stripePromise}>
-                                <Flex direction="column" gap={4} mb={6}>
-                                    <Flex align="start" gap={4} p={3} bg="gray.50" borderRadius="lg">
-                                        <Image
-                                            src={selectedItem.thumbnail}
-                                            boxSize="60px"
-                                            objectFit="cover"
-                                            borderRadius="md"
-                                        />
-                                        <Box>
-                                            <Text fontWeight="bold" fontSize="md">{selectedItem.title}</Text>
-                                            <Text color="purple.600" fontWeight="800">$5.00 USD</Text>
-                                        </Box>
-                                    </Flex>
-                                </Flex>
-                                <CheckoutForm onSuccess={handlePaymentSuccess} />
-                            </Elements>
-                        )}
-                        {!clientSecret && (
-                            <Flex justify="center" align="center" py={10}>
-                                <Spinner color="purple.500" />
-                            </Flex>
-                        )}
-                    </ModalBody>
-                    {/* Footer removed as CheckoutForm handles submission */}
-                </ModalContent>
-            </Modal>
         </Box>
     );
 };

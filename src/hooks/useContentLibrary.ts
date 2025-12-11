@@ -50,7 +50,27 @@ const useContentLibrary = () => {
                 orderBy("createdAt", "desc")
             );
             const contentDocs = await getDocs(contentQuery);
-            const items = contentDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+            let items = contentDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+            // AUTO-SEEDING LOGIC
+            // If database is empty, seed it with MOCK_CONTENT
+            if (items.length === 0) {
+                console.log("No content found. Seeding database with mock content...");
+                const { writeBatch, doc } = await import("firebase/firestore");
+                const batch = writeBatch(firestore);
+
+                const seededItems: any[] = [];
+
+                MOCK_CONTENT.forEach((item) => {
+                    const docRef = doc(firestore, "content_library", item.id);
+                    batch.set(docRef, item);
+                    seededItems.push(item);
+                });
+
+                await batch.commit();
+                console.log("Database seeded!");
+                items = seededItems;
+            }
 
             // Format timestamps or other data if necessary
             const formattedItems = items.map((item: any) => ({

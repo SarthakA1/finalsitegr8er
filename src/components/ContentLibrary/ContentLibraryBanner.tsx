@@ -8,11 +8,11 @@ const ContentLibraryBanner: React.FC = () => {
 
     return (
         <Flex
-            direction="column"
+            direction={{ base: "column", md: "row" }} // Column on mobile, row on desktop
             bg="linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
             borderRadius="xl"
             mb={4}
-            p={6}
+            p={{ base: 4, md: 6 }} // Less padding on mobile
             cursor="pointer"
             onClick={() => window.open('/content-library', '_blank')}
             transition="all 0.3s"
@@ -22,6 +22,9 @@ const ContentLibraryBanner: React.FC = () => {
             }}
             position="relative"
             overflow="hidden"
+            align={{ base: "stretch", md: "center" }} // Stretch on mobile for button
+            justify="space-between"
+            gap={{ base: 4, md: 0 }} // Gap on mobile
         >
             {/* Background Pattern */}
             <Box
@@ -47,43 +50,44 @@ const ContentLibraryBanner: React.FC = () => {
                 filter="blur(40px)"
             />
 
-            <Flex align="center" justify="space-between" zIndex={1}>
-                <Flex align="center" gap={4}>
-                    <Flex
-                        align="center"
-                        justify="center"
-                        bg="whiteAlpha.300"
-                        borderRadius="lg"
-                        p={3}
-                        backdropFilter="blur(10px)"
-                    >
-                        <Icon as={FaGem} fontSize="24px" color="yellow.300" />
-                    </Flex>
-                    <Flex direction="column">
-                        <Text fontSize="xl" fontWeight="800" color="white" letterSpacing="wide">
-                            Content Library
-                        </Text>
-                        <Text fontSize="sm" color="whiteAlpha.900" fontWeight="500">
-                            Premium study guides, cheat sheets, and more.
-                        </Text>
-                    </Flex>
-                </Flex>
-
-                <Button
-                    variant="solid"
-                    bg="white"
-                    color="purple.600"
-                    size="sm"
-                    fontWeight="bold"
-                    _hover={{ bg: "gray.100" }}
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        window.open('/content-library', '_blank');
-                    }}
+            <Flex align="center" gap={4} zIndex={1} direction={{ base: "column", md: "row" }} textAlign={{ base: "center", md: "left" }}>
+                <Flex
+                    align="center"
+                    justify="center"
+                    bg="whiteAlpha.300"
+                    borderRadius="lg"
+                    p={3}
+                    backdropFilter="blur(10px)"
+                    alignSelf={{ base: "center", md: "unset" }}
                 >
-                    Browse Library
-                </Button>
+                    <Icon as={FaGem} fontSize="24px" color="yellow.300" />
+                </Flex>
+                <Flex direction="column">
+                    <Text fontSize={{ base: "lg", md: "xl" }} fontWeight="800" color="white" letterSpacing="wide">
+                        Content Library
+                    </Text>
+                    <Text fontSize="sm" color="whiteAlpha.900" fontWeight="500">
+                        Premium study guides, cheat sheets, and more.
+                    </Text>
+                </Flex>
             </Flex>
+
+            <Button
+                variant="solid"
+                bg="white"
+                color="purple.600"
+                size="sm"
+                fontWeight="bold"
+                _hover={{ bg: "gray.100" }}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    window.open('/content-library', '_blank');
+                }}
+                zIndex={1}
+                width={{ base: "100%", md: "auto" }} // Full width on mobile
+            >
+                Browse Library
+            </Button>
         </Flex>
     );
 };

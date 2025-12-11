@@ -111,8 +111,8 @@ const Searchinput: React.FC<SearchinputProps> = ({ user }) => {
     };
 
     return (
-        <Flex flexGrow={1} maxWidth={user ? "auto" : "auto"} mr={3} ml={1} direction="row" justifyContent="right">
-            <InputGroup>
+        <Flex flexGrow={1} maxWidth={{ base: "100%", md: user ? "auto" : "600px" }} mr={{ base: 0, md: 3 }} ml={{ base: 2, md: 1 }} direction="row" align="center">
+            <InputGroup size="sm" width="100%">
                 <Input placeholder='Search GR8ER'
                     fontSize='10pt'
                     _placeholder={{ color: "gray.400" }}
@@ -128,14 +128,14 @@ const Searchinput: React.FC<SearchinputProps> = ({ user }) => {
                     }}
                     value={searchInputValue}
                     onChange={handleChange}
-                    height="36px"
+                    height="34px"
                     bg="gray.50"
                     borderRadius="full"
                     border="1px solid"
                     borderColor="gray.200"
                 />
-                <InputRightElement pointerEvents='none'>
-                    <SearchIcon color='gray.300' mb="5px" />
+                <InputRightElement pointerEvents='none' height="34px">
+                    <SearchIcon color='gray.300' mb="0px" />
                 </InputRightElement>
             </InputGroup>
             {searchInputValue && (
