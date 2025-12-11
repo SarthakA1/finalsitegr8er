@@ -323,17 +323,16 @@ const CurriculumFeed: NextPage = () => {
                     posts = posts.filter(p => p.typeOfQuestions && typeofquestionFilters.includes(p.typeOfQuestions.label));
                 }
                 if (criteriaFilters.length) {
-                    // criteria is array of objects {label, value} or strings?
-                    // Original: where('criteria', 'array-contains-any', criteriaFilters...)
-                    // In memory: check intersection
-                    posts = posts.filter(p => p.criteria && p.criteria.some((c: any) => criteriaFilters.includes(c.label || c)));
+                    // criteria in Post type is { value: string, label: string } according to atom.
+                    // If it was an array in some versions, we might need a distinct check, but strictly following the type:
+                    posts = posts.filter(p => p.criteria && criteriaFilters.includes(p.criteria.value));
                 }
                 // DP Filters
                 if (levelFilters.length) {
-                    posts = posts.filter(p => p.level && levelFilters.includes(p.level)); // Assuming 'level' stored simply
+                    posts = posts.filter(p => p.level && levelFilters.includes(p.level.value));
                 }
                 if (paperFilters.length) {
-                    posts = posts.filter(p => p.paper && paperFilters.includes(p.paper)); // Assuming 'paper' stored simply
+                    posts = posts.filter(p => p.paper && paperFilters.includes(p.paper.value));
                 }
 
                 setPostStateValue(prev => ({ ...prev, posts }));
