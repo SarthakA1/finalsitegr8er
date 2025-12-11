@@ -30,7 +30,8 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
     const toggleCurriculum = () => {
         const newId = curriculum.curriculumId === 'ib-myp' ? 'ib-dp' : 'ib-myp';
         setCurriculum({ curriculumId: newId });
-        router.push(`/${newId}`);
+        // Force reload to ensure subjects update correctly as requested
+        window.location.href = `/${newId}`;
     };
 
     const logoutt = async () => {

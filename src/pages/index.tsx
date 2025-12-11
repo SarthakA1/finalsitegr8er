@@ -9,7 +9,6 @@ import {
   SimpleGrid,
   Container,
   Icon,
-  Image,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import type { NextPage } from 'next';
@@ -17,9 +16,19 @@ import { useRouter } from 'next/router';
 import { useSetRecoilState } from 'recoil';
 import { curriculumState } from '@/atoms/curriculumAtom';
 import { RiBookMarkFill, RiGlobalLine } from 'react-icons/ri';
+import React from 'react';
 
 const MotionBox = motion(Box);
-const MotionText = motion(Text);
+
+// Custom Blue Cursor SVG Data URI
+const blueCursor = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:24px;'><path d='M8.985,2.449c-0.655-1.464-2.715-1.464-3.37,0L0.266,14.28c-0.781,1.743,0.923,3.535,2.56,2.695 l2.883-1.481l1.579,7.668 c0.218,1.058,1.691,1.058,1.909,0l1.579-7.668l2.883,1.481c1.637,0.84,3.341-0.952,2.56-2.695L10.985,2.449z' fill='%23667eea' stroke='white' stroke-width='1.5' /></svg>") 16 0, auto`;
+// Note: SVG cursors can be tricky. Using a simpler arrow shape for better compat.
+// Actually, let's just use a standard style for the container that overrides cursor. 
+// Standard CSS cursor with color isn't a thing, so SVG is the way.
+// Let's use a simpler clean arrow.
+const customCursorStyle = {
+  cursor: `url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.77334 26.6508L4.35246 3.12053L25.9922 17.5855L14.71 18.2585L9.77334 26.6508Z' fill='%233182CE' stroke='white' stroke-width='2'/%3E%3C/svg%3E") 2 2, auto`
+};
 
 const LandingPage: NextPage = () => {
   const router = useRouter();
@@ -39,37 +48,19 @@ const LandingPage: NextPage = () => {
       overflow="hidden"
       sx={{
         backgroundImage: `radial-gradient(#e5e7eb 1px, transparent 1px)`,
-        backgroundSize: '20px 20px', // Dot grid pattern
+        backgroundSize: '20px 20px',
+        ...customCursorStyle // Apply custom cursor to the whole page
       }}
     >
-      {/* Decorative Doodles (Absolute Positioned) */}
-      <Box position="absolute" top="10%" left="5%" opacity={0.6} transform="rotate(-15deg)" display={{ base: 'none', md: 'block' }}>
-        <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M10 10 Q 50 10 90 50 T 90 90" stroke="#FF6B6B" strokeWidth="3" fill="none" opacity="0.5" strokeDasharray="5,5" />
-        </svg>
-      </Box>
-      <Box position="absolute" bottom="20%" right="10%" opacity={0.6} transform="rotate(15deg)" display={{ base: 'none', md: 'block' }}>
-        <svg width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="40" stroke="#4FD1C5" strokeWidth="2" strokeDasharray="10 5" />
-        </svg>
-      </Box>
-
       <Container maxW="container.xl" pt={{ base: 4, md: 8 }} pb={4} position="relative" zIndex={1} h="100vh" display="flex" flexDirection="column" justifyContent="center">
-        {/* Load Google Font for Annotations */}
-        <style dangerouslySetInnerHTML={{
-          __html: `
-          @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap');
-        `}} />
 
-        {/* Hero Section - Super Compact */}
-        <Flex direction="column" align="center" textAlign="center" mb={6}>
+        {/* Hero Section */}
+        <Flex direction="column" align="center" textAlign="center" mb={10}>
           <MotionBox
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
-            position="relative"
           >
-            {/* Replaced yellow box shape with purely text-based highlight if desired, or just clean text */}
             <Heading
               as="h1"
               size="2xl"
@@ -77,34 +68,25 @@ const LandingPage: NextPage = () => {
               color="gray.800"
               letterSpacing="tight"
               lineHeight="1.2"
-              mb={1}
+              mb={3}
             >
               Master the IB with GR8ER
             </Heading>
-            {/* Text Annotation instead of shape */}
-            <Box position="absolute" top="-20px" right="-40px" transform="rotate(15deg)">
-              <Text fontFamily="'Caveat', cursive" color="red.400" fontSize="2xl" fontWeight="700">Premium!</Text>
-            </Box>
           </MotionBox>
-          <Text fontSize="md" color="gray.500" maxW="lg" mx="auto" fontWeight="500" mt={2}>
-            The premium resource hub. <span style={{ color: '#805AD5', fontWeight: 'bold' }}>Choose your path:</span>
+          <Text fontSize="lg" color="gray.600" maxW="2xl" mx="auto" fontWeight="500" mt={2} lineHeight="tall">
+            The all-in-one resource hub trusted by top achievers worldwide. <br />
+            Select your programme to unlock your potential.
           </Text>
         </Flex>
 
-        {/* Curriculum Cards - Very Compact */}
+        {/* Curriculum Cards */}
         <Flex
           justify="center"
           gap={{ base: 4, md: 8 }}
           wrap="wrap"
-          mb={8}
+          mb={10}
           alignItems="stretch"
         >
-          {/* Annotation Text Only - No drawn arrow shape, just text pointing */}
-          <Box position="absolute" top="20%" left={{ base: '0%', md: '25%' }} transform="rotate(-10deg)" display={{ base: 'none', md: 'block' }} zIndex={2}>
-            <Text fontFamily="'Caveat', cursive" color="gray.500" fontSize="2xl" fontWeight="700">Start your journey &rarr;</Text>
-          </Box>
-
-
           {/* MYP Card */}
           <MotionBox
             whileHover={{ y: -5, boxShadow: "20px 20px 40px #c8c6c2, -20px -20px 40px #ffffff" }}
@@ -113,38 +95,40 @@ const LandingPage: NextPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             onClick={() => selectCurriculum('ib-myp')}
-            cursor="pointer"
+            cursor="pointer" // Fallback
+            sx={customCursorStyle} // Ensure cursor persists on hover
           >
             <Flex
               direction="column"
               align="center"
               justify="center"
-              w={{ base: "280px", md: "280px" }}
-              h={{ base: "260px", md: "280px" }}
+              w={{ base: "280px", md: "300px" }}
+              h={{ base: "300px", md: "320px" }}
               bg="white"
               borderRadius="xl"
-              p={4}
+              p={6}
               position="relative"
               border="2px solid"
               borderColor="gray.100"
               boxShadow="10px 10px 20px #d1d1d1, -10px -10px 20px #ffffff"
             >
-              <Box bg="purple.50" p={2} borderRadius="full" mb={2}>
-                <Icon as={RiBookMarkFill} w={6} h={6} color="purple.500" />
+              <Box bg="purple.50" p={2} borderRadius="full" mb={4}>
+                <Icon as={RiBookMarkFill} w={8} h={8} color="purple.500" />
               </Box>
-              <Heading size="md" color="gray.800" mb={0} fontWeight="800">IB MYP</Heading>
-              <Text color="gray.400" fontSize="xs" textAlign="center" mb={2} fontWeight="700" letterSpacing="wide">
+              <Heading size="md" color="gray.800" mb={1} fontWeight="800">IB MYP</Heading>
+              <Text color="gray.400" fontSize="xs" textAlign="center" mb={3} fontWeight="700" letterSpacing="wide">
                 GRADES 6-10
               </Text>
-              <Text fontSize="xs" color="gray.500" mb={4} textAlign="center" lineHeight="shorter">
-                Resources & guides for the Middle Years.
+              <Text fontSize="sm" color="gray.500" mb={6} textAlign="center" lineHeight="shorter" px={2}>
+                Comprehensive guides, community discussions, and resources tailored for success in the Middle Years.
               </Text>
               <Button
-                size="sm"
+                size="md"
                 rounded="full"
                 colorScheme="purple"
                 fontWeight="bold"
-                px={6}
+                px={8}
+                sx={customCursorStyle}
               >
                 Access MYP
               </Button>
@@ -159,38 +143,40 @@ const LandingPage: NextPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             onClick={() => selectCurriculum('ib-dp')}
-            cursor="pointer"
+            cursor="pointer" // Fallback
+            sx={customCursorStyle} // Ensure cursor persists on hover
           >
             <Flex
               direction="column"
               align="center"
               justify="center"
-              w={{ base: "280px", md: "280px" }}
-              h={{ base: "260px", md: "280px" }}
+              w={{ base: "280px", md: "300px" }}
+              h={{ base: "300px", md: "320px" }}
               bg="white"
               borderRadius="xl"
-              p={4}
+              p={6}
               position="relative"
               border="2px solid"
               borderColor="gray.100"
               boxShadow="10px 10px 20px #d1d1d1, -10px -10px 20px #ffffff"
             >
-              <Box bg="blue.50" p={2} borderRadius="full" mb={2}>
-                <Icon as={RiGlobalLine} w={6} h={6} color="blue.500" />
+              <Box bg="blue.50" p={2} borderRadius="full" mb={4}>
+                <Icon as={RiGlobalLine} w={8} h={8} color="blue.500" />
               </Box>
-              <Heading size="md" color="gray.800" mb={0} fontWeight="800">IB DP</Heading>
-              <Text color="gray.400" fontSize="xs" textAlign="center" mb={2} fontWeight="700" letterSpacing="wide">
+              <Heading size="md" color="gray.800" mb={1} fontWeight="800">IB DP</Heading>
+              <Text color="gray.400" fontSize="xs" textAlign="center" mb={3} fontWeight="700" letterSpacing="wide">
                 GRADES 11-12
               </Text>
-              <Text fontSize="xs" color="gray.500" mb={4} textAlign="center" lineHeight="shorter">
-                Past papers & help for Diploma.
+              <Text fontSize="sm" color="gray.500" mb={6} textAlign="center" lineHeight="shorter" px={2}>
+                Extensive past paper archives, detailed revision notes, and expert support for the Diploma Programme.
               </Text>
               <Button
-                size="sm"
+                size="md"
                 rounded="full"
                 colorScheme="blue"
                 fontWeight="bold"
-                px={6}
+                px={8}
+                sx={customCursorStyle}
               >
                 Access DP
               </Button>
@@ -198,8 +184,8 @@ const LandingPage: NextPage = () => {
           </MotionBox>
         </Flex>
 
-        {/* Trusted By Section - Tucked in close */}
-        <Stack spacing={2} align="center" mt={0}>
+        {/* Trusted By Section */}
+        <Stack spacing={3} align="center" mt={0}>
           <Text
             color="gray.400"
             fontSize="xs"
