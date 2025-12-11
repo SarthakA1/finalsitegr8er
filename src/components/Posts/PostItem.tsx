@@ -23,6 +23,7 @@ import StaticEquationText from '../common/StaticEquationText';
 import { useRouter } from 'next/router';
 import { useSetRecoilState } from 'recoil';
 import { AuthModalState } from '@/atoms/authModalAtom';
+import { getSketchAvatarUrl } from '@/utils/avatar';
 
 type PostItemProps = {
     post: Post;
@@ -247,14 +248,23 @@ const PostItem: React.FC<PostItemProps> = ({
                                         {post.subjectId}
                                     </Text>
                                 </Link>
-                                <Icon as={BsDot} color="gray.400" />
                             </>
                         )}
-                        <Text fontSize="xs" color="gray.600">
-                            {post.typeOfQuestions && post.typeOfQuestions.value === 'Resource' ? 'Shared by ' : 'Asked by '}
-                            <Text as="span" color="brand.600" fontWeight="600">{post.creatorDisplayName}</Text>
-                            {' • '}{moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
-                        </Text>
+                        <Flex align="center">
+                            <Image
+                                src={getSketchAvatarUrl(post.creatorId || post.creatorDisplayName)}
+                                boxSize="20px"
+                                borderRadius="full"
+                                mr={2}
+                                border="1px solid"
+                                borderColor="gray.200"
+                            />
+                            <Text fontSize="xs" color="gray.600">
+                                {post.typeOfQuestions && post.typeOfQuestions.value === 'Resource' ? 'Shared by ' : 'Asked by '}
+                                <Text as="span" color="brand.600" fontWeight="600">{post.creatorDisplayName}</Text>
+                                {' • '}{moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
+                            </Text>
+                        </Flex>
                     </Flex>
                     <Flex gap={1.5} wrap="wrap">
                         {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion: any, index: any) => (

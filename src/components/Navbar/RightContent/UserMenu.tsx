@@ -16,6 +16,7 @@ import { AuthModalState } from '@/atoms/authModalAtom';
 import { curriculumState } from '@/atoms/curriculumAtom';
 import { useRecoilState } from 'recoil';
 import router from 'next/router';
+import { getSketchAvatarUrl } from '@/utils/avatar';
 
 
 type UserMenuProps = {
@@ -55,10 +56,18 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
             <MenuButton cursor="pointer" padding="0px 6px" borderRadius={4} _hover={{ outline: "1px solid", outlineColor: "gray.200" }}>
                 <Flex align="center">
                     {user?.photoURL ? (
-                        <Image src={user.photoURL} height="28px" borderRadius={50}></Image>
+                        <Image src={user.photoURL} height="28px" borderRadius={50} mr={1} />
                     ) : (
-                        <Icon fontSize={24} as={FaUserCircle} mr={1} color="brand.100" />
-
+                        <Image
+                            src={getSketchAvatarUrl(user?.uid || 'user')}
+                            height="28px"
+                            width="28px"
+                            borderRadius={50}
+                            mr={1}
+                            border="1px solid"
+                            borderColor="gray.200"
+                            bg="gray.100"
+                        />
                     )}
 
                     <Text mr={2} ml={1} display={{ base: 'none', md: 'unset' }}>
