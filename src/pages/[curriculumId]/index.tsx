@@ -48,7 +48,14 @@ const CurriculumFeed: NextPage = () => {
         onVote,
     } = usePosts();
 
-    const [activeFilters, setActiveFilters] = useState({
+    const [activeFilters, setActiveFilters] = useState<{
+        grade: string[] | null;
+        typeofquestion: string[] | null;
+        criteria: string[] | null;
+        difficulty: string[] | null;
+        level: string[] | null;
+        paper: string[] | null;
+    }>({
         grade: null,
         typeofquestion: null,
         criteria: null,
