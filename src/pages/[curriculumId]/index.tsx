@@ -365,7 +365,14 @@ const CurriculumFeed: NextPage = () => {
         <PageContent>
             <>
                 <CreatePostLink />
-                <ConstructionModal isOpen={isConstructionModalOpen} onClose={() => setConstructionModalOpen(false)} />
+                <ConstructionModal
+                    isOpen={isConstructionModalOpen}
+                    onClose={() => {
+                        setConstructionModalOpen(false);
+                        setCurriculum({ curriculumId: 'ib-myp' });
+                        window.location.href = '/ib-myp';
+                    }}
+                />
                 <Analytics />
                 <Box>
                     <Head>
