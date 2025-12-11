@@ -6,6 +6,8 @@ import { User } from 'firebase/auth';
 import React, { useState } from 'react';
 import Notification from './Notifications/Notification';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { useRecoilValue } from 'recoil';
+import { curriculumState } from '@/atoms/curriculumAtom';
 
 type SearchinputProps = {
     user?: User | null;
@@ -37,6 +39,7 @@ const Searchinput: React.FC<SearchinputProps> = ({ user }) => {
     const [users] = useAuthState(auth);
 
     const [loading, setLoading] = useState(false);
+    const curriculum = useRecoilValue(curriculumState);
 
     const handleChange = async (e: any) => {
         const value = e.target.value;
@@ -60,8 +63,16 @@ const Searchinput: React.FC<SearchinputProps> = ({ user }) => {
             const posts = postDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             const newPosts = posts as Post[];
 
-            const filterResourcePosts = newPosts.filter(post => post.typeOfQuestions.value === 'Resource');
-            const filterQuestionsPosts = newPosts.filter(post => post.typeOfQuestions.value === 'Academic Question' || post.typeOfQuestions.value === 'General Question');
+            // Filter by curriculum
+            // Check if post.curriculumId matches current curriculum.
+            // If post.curriculumId is undefined, we might check if we can infer it or just exclude it if strict.
+            // User asked for strict separation.
+            const curriculumPosts = newPosts.filter(post =>
+                post.curriculumId === curriculum.curriculumId
+            );
+
+            const filterResourcePosts = curriculumPosts.filter(post => post.typeOfQuestions.value === 'Resource');
+            const filterQuestionsPosts = curriculumPosts.filter(post => post.typeOfQuestions.value === 'Academic Question' || post.typeOfQuestions.value === 'General Question');
 
             setResourcePostData(filterResourcePosts as Post[]);
             setQuestionPostData(filterQuestionsPosts as Post[]);

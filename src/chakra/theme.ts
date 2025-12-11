@@ -32,6 +32,10 @@ export const theme = extendTheme({
         // Overriding the dark gradient above with a light one for the current light theme
         bgGradient: "linear(to-br, gray.50, brand.50, accent.100)",
         color: "gray.800",
+        cursor: `url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.77334 26.6508L4.35246 3.12053L25.9922 17.5855L14.71 18.2585L9.77334 26.6508Z' fill='%233182CE' stroke='white' stroke-width='2'/%3E%3C/svg%3E") 2 2, auto`,
+      },
+      "button, a, [role='button']": {
+        cursor: `url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.77334 26.6508L4.35246 3.12053L25.9922 17.5855L14.71 18.2585L9.77334 26.6508Z' fill='%233182CE' stroke='white' stroke-width='2'/%3E%3C/svg%3E") 2 2, auto`
       }
     })
   },
