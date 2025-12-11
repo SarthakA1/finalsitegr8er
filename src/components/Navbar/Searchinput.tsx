@@ -29,7 +29,8 @@ type Post = {
         label: string;
         value: string;
     };
-    criteria: string,
+    criteria: string;
+    curriculumId?: string; // Added for filtering
 }
 
 const Searchinput: React.FC<SearchinputProps> = ({ user }) => {
