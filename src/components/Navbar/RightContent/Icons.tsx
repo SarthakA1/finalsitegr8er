@@ -1,6 +1,6 @@
 import React from "react";
-import { Flex, Image, Icon } from "@chakra-ui/react";
-import { BsBell } from "react-icons/bs";
+import { Flex, Icon } from "@chakra-ui/react";
+import { BsBell, BsInstagram, BsYoutube } from "react-icons/bs";
 
 const Icons: React.FC = () => {
     return (
@@ -27,7 +27,7 @@ const Icons: React.FC = () => {
                     borderRadius={4}
                     _hover={{ bg: "gray.200" }}
                 >
-                    <Image src="/images/instagram.png" height="20px" />
+                    <Icon as={BsInstagram} fontSize={20} />
                 </Flex>
                 <Flex
                     mx={1.5}
@@ -36,7 +36,7 @@ const Icons: React.FC = () => {
                     borderRadius={4}
                     _hover={{ bg: "gray.200" }}
                 >
-                    <Image src="/images/youtube.png" height="22px" />
+                    <Icon as={BsYoutube} fontSize={22} />
                 </Flex>
             </Flex>
         </Flex>

@@ -32,7 +32,7 @@ const AdminUploadPage = () => {
     // Form State
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [price, setPrice] = useState(5.00);
+    const [price, setPrice] = useState('5.00');
 
     // File State
     const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
@@ -92,7 +92,7 @@ const AdminUploadPage = () => {
             await addDoc(collection(firestore, 'content_library'), {
                 title,
                 description,
-                price: parseFloat(price.toString()), // Ensure number
+                price: parseFloat(price), // Parse string to number
                 thumbnail: thumbnailUrl,
                 url: contentUrl,
                 type: contentFile.type.includes('image') ? 'image' : 'pdf', // Simple type check
@@ -111,7 +111,7 @@ const AdminUploadPage = () => {
             // Reset Form (Optional)
             setTitle('');
             setDescription('');
-            setPrice(5.00);
+            setPrice('5.00');
             setThumbnailFile(null);
             setThumbnailPreview('');
             setContentFile(null);
@@ -148,8 +148,9 @@ const AdminUploadPage = () => {
                     <FormLabel>Price (USD)</FormLabel>
                     <NumberInput
                         value={price}
-                        onChange={(valueString) => setPrice(parseFloat(valueString))}
+                        onChange={(valueString) => setPrice(valueString)}
                         precision={2}
+                        step={0.01}
                         min={0}
                     >
                         <NumberInputField />

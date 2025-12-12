@@ -9,10 +9,22 @@ import {
     Badge,
     useToast,
     Spinner,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalCloseButton,
+    ModalBody,
+    useDisclosure
 } from '@chakra-ui/react';
-import { FaLock } from 'react-icons/fa';
+import { FaLock, FaEye } from 'react-icons/fa';
 import useContentLibrary, { ContentItem } from '@/hooks/useContentLibrary';
 import Head from 'next/head';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth, firestore } from '@/firebase/clientApp';
+import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { useSetRecoilState } from 'recoil';
+import { AuthModalState } from '@/atoms/authModalAtom';
 
 // Razorpay Type Definition
 declare global {
@@ -27,6 +39,15 @@ const ContentLibraryPage: React.FC = () => {
     const [isPaymentLoading, setIsPaymentLoading] = useState(false);
     const toast = useToast();
 
+    const [user] = useAuthState(auth);
+    const setAuthModalState = useSetRecoilState(AuthModalState);
+
+    // Viewer State
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [viewUrl, setViewUrl] = useState('');
+    const [viewType, setViewType] = useState<'image' | 'pdf'>('pdf');
+    const [viewTitle, setViewTitle] = useState('');
+
     // Load Razorpay SDK
     useEffect(() => {
         const script = document.createElement("script");
@@ -38,29 +59,59 @@ const ContentLibraryPage: React.FC = () => {
         };
     }, []);
 
-    const handlePaymentSuccess = (response: any) => {
+    const handlePaymentSuccess = async (response: any) => {
         console.log("Razorpay Success:", response);
-        toast({
-            title: "Purchase Successful!",
-            description: `Payment ID: ${response.razorpay_payment_id}. Downloading...`,
-            status: "success",
-            duration: 5000,
-            isClosable: true,
-        });
 
-        // Simulate download
-        if (selectedItem) {
-            const link = document.createElement('a');
-            link.href = selectedItem.url;
-            link.download = selectedItem.title;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+        if (!user || !selectedItem) return;
+
+        try {
+            // Save purchase to Firestore
+            await setDoc(doc(firestore, `users/${user.uid}/purchases`, selectedItem.id), {
+                itemId: selectedItem.id,
+                title: selectedItem.title,
+                url: selectedItem.url,
+                purchaseDate: serverTimestamp(),
+                paymentId: response.razorpay_payment_id
+            });
+
+            toast({
+                title: "Purchase Successful!",
+                description: "You can now view this content.",
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+            });
+
+            // Open Viewer
+            setViewTitle(selectedItem.title);
+            setViewUrl(selectedItem.url);
+            setViewType(selectedItem.type === 'image' ? 'image' : 'pdf'); // Assume type exists or infer
+            onOpen();
+
+        } catch (error) {
+            console.error("Error saving purchase", error);
+            toast({
+                title: "Purchase Recorded",
+                description: "Payment successful but failed to save record. Contact support.",
+                status: "warning",
+                duration: 5000,
+            });
+            // Still allow view if immediate
+            setViewTitle(selectedItem.title);
+            setViewUrl(selectedItem.url);
+            setViewType(selectedItem.type === 'image' ? 'image' : 'pdf');
+            onOpen();
         }
+
         setSelectedItem(null);
     };
 
     const handleBuyClick = async (item: ContentItem) => {
+        if (!user) {
+            setAuthModalState({ open: true, view: 'login' });
+            return;
+        }
+
         setSelectedItem(item);
         setIsPaymentLoading(true);
 
@@ -92,18 +143,18 @@ const ContentLibraryPage: React.FC = () => {
                 currency: data.currency,
                 name: "Gr8er IB",
                 description: `Purchase ${item.title}`,
-                image: "/images/gr8er logo.png", // Ensure this exists or use a URL
+                image: "/images/gr8er logo.png",
                 order_id: data.id,
                 handler: function (response: any) {
                     handlePaymentSuccess(response);
                 },
                 prefill: {
-                    name: "Student Name",
-                    email: "student@example.com",
-                    contact: "9999999999"
+                    name: "",
+                    email: "",
+                    contact: ""
                 },
                 theme: {
-                    color: "#805ad5" // Purple-500
+                    color: "#805ad5"
                 }
             };
 
@@ -209,7 +260,7 @@ const ContentLibraryPage: React.FC = () => {
 
                                     <Flex align="center" justify="space-between" mt="auto" pt={4} borderTop="1px solid" borderColor="gray.100">
                                         <Text fontSize="2xl" fontWeight="800" color="purple.600">
-                                            $5.00
+                                            ${item.price.toFixed(2)}
                                         </Text>
                                         <Button
                                             leftIcon={<FaLock />}
@@ -228,8 +279,31 @@ const ContentLibraryPage: React.FC = () => {
                     </SimpleGrid>
                 )}
             </Flex>
+
+            {/* Content Viewer Modal */}
+            <Modal isOpen={isOpen} onClose={onClose} size="full">
+                <ModalOverlay />
+                <ModalContent bg="gray.900">
+                    <ModalHeader color="white">{viewTitle}</ModalHeader>
+                    <ModalCloseButton color="white" />
+                    <ModalBody p={0} height="calc(100vh - 60px)">
+                        {viewType === 'image' ? (
+                            <Flex justify="center" align="center" height="100%" bg="gray.900">
+                                <Image src={viewUrl} maxH="100%" objectFit="contain" />
+                            </Flex>
+                        ) : (
+                            <iframe
+                                src={`${viewUrl}#toolbar=0`}
+                                width="100%"
+                                height="100%"
+                                style={{ border: 'none' }}
+                                title={viewTitle}
+                            />
+                        )}
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
         </Box>
     );
 };
-
 export default ContentLibraryPage;

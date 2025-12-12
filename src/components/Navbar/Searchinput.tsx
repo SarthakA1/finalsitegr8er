@@ -4,7 +4,6 @@ import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { auth, firestore } from '@/firebase/clientApp';
 import { User } from 'firebase/auth';
 import React, { useState } from 'react';
-import Notification from './Notifications/Notification';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRecoilValue } from 'recoil';
 import { curriculumState } from '@/atoms/curriculumAtom';
@@ -197,19 +196,6 @@ const Searchinput: React.FC<SearchinputProps> = ({ user }) => {
                     )}
                 </Box>
             )}
-            <Flex alignItems="center" cursor="pointer" justifyContent="right">
-                <Link href="https://www.youtube.com/@GR8ERIB/channels" rel="noopener noreferrer" target="_blank" display={{ base: 'none', md: 'block' }}>
-                    <a>
-                        <Image src="/images/youtubeblack.png" width='25px' mb="1px" />
-                    </a>
-                </Link>
-                <Link href="https://www.instagram.com/gr8er_" rel="noopener noreferrer" target="_blank" ml={1} display={{ base: 'none', md: 'block' }}>
-                    <a>
-                        <Image src="/images/instagramblack.png" width='25px' mb="1px" />
-                    </a>
-                </Link>
-                {users ? <Notification /> : ''}
-            </Flex>
         </Flex>
     );
 }

@@ -6,6 +6,7 @@ import { signOut, User } from 'firebase/auth';
 import { auth } from '@/firebase/clientApp';
 import UserMenu from './UserMenu';
 import Icons from './Icons';
+import Notification from '../Notifications/Notification';
 
 type RightContentProps = {
     user?: User | null;
@@ -17,7 +18,10 @@ const RightContent: React.FC<RightContentProps> = ({ user }) => {
             <AuthModal />
             <Flex justify='center' align='center'>
                 {user ? (
-                    <UserMenu user={user} />
+                    <Flex align="center">
+                        <Notification />
+                        <UserMenu user={user} />
+                    </Flex>
                 ) : (
                     <Flex   >
                         <AuthButtons />

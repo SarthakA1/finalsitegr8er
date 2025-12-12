@@ -1,19 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import Razorpay from "razorpay";
-
-// MOCK DATA for Server-Side Validation
-const MOCK_CONTENT_API = [
-    {
-        id: "item_1",
-        title: "Complete Algebra II Study Guide",
-        price: 5.00,
-    },
-    {
-        id: "item_2",
-        title: "Physics Mechanics Cheat Sheet",
-        price: 5.00,
-    },
-];
+import { doc, getDoc } from "firebase/firestore";
+import { firestore } from "@/firebase/clientApp";
 
 export default async function handler(
     req: NextApiRequest,
@@ -25,7 +13,7 @@ export default async function handler(
     }
 
     try {
-        const key_id = process.env.RAZORPAY_KEY_ID;
+        const key_id = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
         const key_secret = process.env.RAZORPAY_KEY_SECRET;
 
         if (!key_id || !key_secret) {
@@ -44,21 +32,26 @@ export default async function handler(
         }
 
         const itemId = items[0].id;
-        let itemData = MOCK_CONTENT_API.find(i => i.id === itemId);
 
-        if (!itemData) {
-            console.warn(`Item ${itemId} not found. Using fallback.`);
-            itemData = {
-                id: itemId,
-                title: "Premium Content",
-                price: 5.00
-            };
+        // Fetch item from Firestore to get real price
+        const itemRef = doc(firestore, 'content_library', itemId);
+        const itemSnap = await getDoc(itemRef);
+
+        if (!itemSnap.exists()) {
+            throw new Error("Item not found");
+        }
+
+        const itemData = itemSnap.data();
+        const price = itemData.price;
+
+        if (!price) {
+            throw new Error("Item price not found");
         }
 
         // Razorpay expects amount in smallest currency unit (paise for INR)
-        // Note: Razorpay officially supports international currencies like USD.
+        // Back to USD as requested.
         // 1 USD = 100 cents.
-        const amount = Math.round(Number(itemData.price) * 100);
+        const amount = Math.round(Number(price) * 100);
 
         const options = {
             amount: amount,
