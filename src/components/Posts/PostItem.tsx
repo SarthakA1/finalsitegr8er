@@ -330,7 +330,7 @@ const PostItem: React.FC<PostItemProps> = ({
                 </Flex>
             )} */}
                 {post.imageURLs && ( // Always render the icon
-                    <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', margin: '0 auto' }}>
+                    <ul style={{ listStyle: 'none', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', width: '100%', margin: '0 auto', gap: '10px' }}>
                         {post.imageURLs.map((imageURL: any, index: number) => { // Added index parameter
                             const parts = imageURL.split('.');
                             const extension = parts[parts.length - 1];
