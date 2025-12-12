@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     Box,
     Flex,
@@ -36,6 +36,7 @@ declare global {
 const ContentLibraryPage: React.FC = () => {
     const { contentItems, loading } = useContentLibrary();
     const [selectedItem, setSelectedItem] = useState<ContentItem | null>(null);
+    const selectedItemRef = useRef<ContentItem | null>(null); // Ref to hold current item for callbacks
     const [isPaymentLoading, setIsPaymentLoading] = useState(false);
     const [purchasedIds, setPurchasedIds] = useState<Set<string>>(new Set());
     const toast = useToast();
@@ -91,14 +92,18 @@ const ContentLibraryPage: React.FC = () => {
     const handlePaymentSuccess = async (response: any) => {
         console.log("Razorpay Success:", response);
 
-        if (!user || !selectedItem) return;
+        const item = selectedItemRef.current; // Access via ref
+        if (!user || !item) {
+            console.error("Missing user or item in callback", { user, item });
+            return;
+        }
 
         try {
             // Save purchase to Firestore
-            await setDoc(doc(firestore, `users/${user.uid}/purchases`, selectedItem.id), {
-                itemId: selectedItem.id,
-                title: selectedItem.title,
-                url: selectedItem.url,
+            await setDoc(doc(firestore, `users/${user.uid}/purchases`, item.id), {
+                itemId: item.id,
+                title: item.title,
+                url: item.url,
                 purchaseDate: serverTimestamp(),
                 paymentId: response.razorpay_payment_id
             });
@@ -112,10 +117,10 @@ const ContentLibraryPage: React.FC = () => {
             });
 
             // Update local state immediately
-            setPurchasedIds(prev => new Set(prev).add(selectedItem.id));
+            setPurchasedIds(prev => new Set(prev).add(item.id));
 
             // Open Viewer
-            openViewer(selectedItem);
+            openViewer(item);
 
         } catch (error) {
             console.error("Error saving purchase", error);
@@ -125,10 +130,11 @@ const ContentLibraryPage: React.FC = () => {
                 status: "warning",
                 duration: 5000,
             });
-            openViewer(selectedItem);
+            openViewer(item);
         }
 
         setSelectedItem(null);
+        selectedItemRef.current = null;
     };
 
     const handleBuyClick = async (item: ContentItem) => {
@@ -144,6 +150,7 @@ const ContentLibraryPage: React.FC = () => {
         }
 
         setSelectedItem(item);
+        selectedItemRef.current = item; // Update ref
         setIsPaymentLoading(true);
 
         try {
