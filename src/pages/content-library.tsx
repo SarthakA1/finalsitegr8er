@@ -574,6 +574,11 @@ const ContentLibraryPage: React.FC = () => {
                                                         Score: {item.score}
                                                     </Badge>
                                                 )}
+                                                {item.subject && (
+                                                    <Badge bg="white" color="teal.600" borderRadius="md" px={2} py={0.5} boxShadow="sm" fontSize="xs">
+                                                        {item.subject}
+                                                    </Badge>
+                                                )}
                                                 {item.session && (
                                                     <Badge bg="white" color="gray.600" borderRadius="md" px={2} py={0.5} boxShadow="sm" fontSize="xs">
                                                         {item.session}
