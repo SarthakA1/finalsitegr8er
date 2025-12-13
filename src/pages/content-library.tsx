@@ -236,7 +236,7 @@ const ContentLibraryPage: React.FC = () => {
     };
 
     return (
-        <Box minH="100vh" bgGradient="linear(to-br, gray.900, purple.900, blue.900)" py={10} px={{ base: 4, md: 10 }}>
+        <Box minH="100vh" bg="white" py={10} px={{ base: 4, md: 10 }}>
             <Head>
                 <title>Library | Gr8er IB</title>
             </Head>
@@ -247,65 +247,67 @@ const ContentLibraryPage: React.FC = () => {
                     <Text
                         fontSize={{ base: "3xl", md: "5xl" }}
                         fontWeight="900"
-                        bgGradient="linear(to-r, cyan.400, purple.400, pink.400)"
+                        bgGradient="linear(to-r, blue.600, purple.600)"
                         bgClip="text"
                         mb={3}
                         letterSpacing="tight"
                     >
                         Premium Content Library
                     </Text>
-                    <Text fontSize="lg" color="gray.300" maxW="600px" mx="auto">
+                    <Text fontSize="lg" color="gray.600" maxW="600px" mx="auto">
                         Unlock top-tier IB resources to skyrocket your grades.
                     </Text>
                 </Box>
 
                 {/* Filters */}
                 <Box mb={12}>
-                    <Flex gap={4} justify="center" wrap="wrap">
-                        <Select
-                            placeholder="All Sessions"
-                            w="auto"
-                            bg="whiteAlpha.100"
-                            borderColor="whiteAlpha.300"
-                            color="white"
-                            _hover={{ bg: "whiteAlpha.200" }}
-                            _focus={{ borderColor: "purple.400", boxShadow: "0 0 0 1px purple.400" }}
-                            onChange={(e) => setFilterSession(e.target.value)}
-                            sx={{ option: { color: "black" } }} // Fix dropdown text color
-                        >
-                            <option value="May 2025">May 2025</option>
-                            <option value="Nov 2024">Nov 2024</option>
-                            <option value="May 2024">May 2024</option>
-                            <option value="Nov 2023">Nov 2023</option>
-                        </Select>
-                        <Select
-                            placeholder="All Scores"
-                            w="auto"
-                            bg="whiteAlpha.100"
-                            borderColor="whiteAlpha.300"
-                            color="white"
-                            _hover={{ bg: "whiteAlpha.200" }}
-                            _focus={{ borderColor: "purple.400", boxShadow: "0 0 0 1px purple.400" }}
-                            onChange={(e) => setFilterScore(e.target.value)}
-                            sx={{ option: { color: "black" } }}
-                        >
-                            <option value="7">Score 7</option>
-                            <option value="6">Score 6</option>
-                            <option value="5">Score 5</option>
-                        </Select>
+                    <Flex direction="column" gap={6} align="center">
+                        {/* Session Filters */}
+                        <Flex gap={3} wrap="wrap" justify="center">
+                            <Text fontWeight="bold" color="gray.700" mr={2} alignSelf="center">Session:</Text>
+                            {SESSIONS.map(session => (
+                                <Button
+                                    key={session}
+                                    size="sm"
+                                    variant={selectedSessions.includes(session) ? "solid" : "outline"}
+                                    colorScheme="blue"
+                                    onClick={() => toggleFilter(session, selectedSessions, setSelectedSessions)}
+                                    borderRadius="full"
+                                >
+                                    {session}
+                                </Button>
+                            ))}
+                        </Flex>
+
+                        {/* Score Filters */}
+                        <Flex gap={3} wrap="wrap" justify="center">
+                            <Text fontWeight="bold" color="gray.700" mr={2} alignSelf="center">Score:</Text>
+                            {SCORES.map(score => (
+                                <Button
+                                    key={score}
+                                    size="sm"
+                                    variant={selectedScores.includes(score) ? "solid" : "outline"}
+                                    colorScheme="purple"
+                                    onClick={() => toggleFilter(score, selectedScores, setSelectedScores)}
+                                    borderRadius="full"
+                                >
+                                    Score {score}
+                                </Button>
+                            ))}
+                        </Flex>
                     </Flex>
                 </Box>
 
                 {loading ? (
                     <Flex justify="center" align="center" minH="300px">
-                        <Spinner size="xl" color="cyan.400" speed="0.8s" thickness="4px" />
+                        <Spinner size="xl" color="purple.500" thickness="4px" />
                     </Flex>
                 ) : (
                     <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={10}>
                         {contentItems
                             .filter(item => {
-                                if (filterSession && item.session !== filterSession) return false;
-                                if (filterScore && item.score?.toString() !== filterScore) return false;
+                                if (selectedSessions.length > 0 && item.session && !selectedSessions.includes(item.session)) return false;
+                                if (selectedScores.length > 0 && item.score && !selectedScores.includes(item.score.toString())) return false;
                                 return true;
                             })
                             .map((item) => {
@@ -314,32 +316,27 @@ const ContentLibraryPage: React.FC = () => {
                                     <Flex
                                         key={item.id}
                                         direction="column"
-                                        bg="whiteAlpha.50"
-                                        backdropFilter="blur(16px)"
+                                        bg="white"
                                         borderRadius="2xl"
                                         overflow="hidden"
                                         border="1px solid"
-                                        borderColor="whiteAlpha.100"
+                                        borderColor="gray.100"
                                         boxShadow="lg"
-                                        transition="all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)"
+                                        transition="all 0.3s ease"
                                         _hover={{
-                                            transform: 'translateY(-8px)',
-                                            boxShadow: '2xl',
-                                            bg: "whiteAlpha.100",
-                                            borderColor: "purple.400"
+                                            transform: 'translateY(-5px)',
+                                            boxShadow: 'xl',
+                                            borderColor: "purple.200"
                                         }}
                                     >
-                                        <Box position="relative" height="220px">
+                                        <Box position="relative" height="220px" bg="gray.50">
                                             <Image
                                                 src={item.thumbnail}
                                                 alt={item.title}
                                                 objectFit="cover"
                                                 width="100%"
                                                 height="100%"
-                                                transition="transform 0.4s"
-                                                _hover={{ transform: 'scale(1.05)' }}
                                             />
-                                            <Box position="absolute" inset="0" bgGradient="linear(to-t, blackAlpha.800, transparent)" pointerEvents="none" />
 
                                             <Badge
                                                 position="absolute"
@@ -351,9 +348,7 @@ const ContentLibraryPage: React.FC = () => {
                                                 borderRadius="full"
                                                 px={3}
                                                 py={1}
-                                                boxShadow="lg"
-                                                textTransform="uppercase"
-                                                letterSpacing="wider"
+                                                boxShadow="md"
                                             >
                                                 {isPurchased ? "OWNED" : "PREMIUM"}
                                             </Badge>
@@ -361,20 +356,20 @@ const ContentLibraryPage: React.FC = () => {
                                             {/* Metadata Tags */}
                                             <Flex position="absolute" bottom={4} left={4} gap={2}>
                                                 {item.score && (
-                                                    <Badge bg="purple.600" color="white" borderRadius="md" px={2} py={0.5} boxShadow="md">Score: {item.score}</Badge>
+                                                    <Badge colorScheme="purple" borderRadius="md" px={2} py={0.5} boxShadow="sm">Score: {item.score}</Badge>
                                                 )}
                                                 {item.session && (
-                                                    <Badge bg="cyan.600" color="white" borderRadius="md" px={2} py={0.5} boxShadow="md">{item.session}</Badge>
+                                                    <Badge colorScheme="blue" borderRadius="md" px={2} py={0.5} boxShadow="sm">{item.session}</Badge>
                                                 )}
                                             </Flex>
                                         </Box>
 
                                         <Flex direction="column" p={6} flex={1} justify="space-between">
                                             <Box>
-                                                <Text fontSize="xl" fontWeight="700" mb={3} color="white" lineHeight="short">
+                                                <Text fontSize="xl" fontWeight="700" mb={3} color="gray.800" lineHeight="short">
                                                     {item.title}
                                                 </Text>
-                                                <Text fontSize="sm" color="gray.300" mb={6} noOfLines={3}>
+                                                <Text fontSize="sm" color="gray.500" mb={6} noOfLines={3}>
                                                     {item.description}
                                                 </Text>
                                             </Box>

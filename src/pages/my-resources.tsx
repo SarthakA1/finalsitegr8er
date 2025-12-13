@@ -81,7 +81,7 @@ const MyResourcesPage: React.FC = () => {
     const myResources = contentItems.filter(item => purchasedIds.has(item.id));
 
     return (
-        <Box minH="100vh" bgGradient="linear(to-br, gray.900, purple.900, blue.900)" py={10} px={{ base: 4, md: 10 }}>
+        <Box minH="100vh" bg="white" py={10} px={{ base: 4, md: 10 }}>
             <Head>
                 <title>My Resources | Gr8er IB</title>
             </Head>
@@ -91,14 +91,14 @@ const MyResourcesPage: React.FC = () => {
                     <Text
                         fontSize={{ base: "3xl", md: "5xl" }}
                         fontWeight="900"
-                        bgGradient="linear(to-r, green.400, teal.400)"
+                        bgGradient="linear(to-r, green.500, teal.500)"
                         bgClip="text"
                         mb={3}
                         letterSpacing="tight"
                     >
                         My Learning Resources
                     </Text>
-                    <Text fontSize="lg" color="gray.300">
+                    <Text fontSize="lg" color="gray.600">
                         Access all your unlocked study materials here.
                     </Text>
                 </Box>
@@ -113,14 +113,13 @@ const MyResourcesPage: React.FC = () => {
                         justify="center"
                         align="center"
                         minH="300px"
-                        bg="whiteAlpha.100"
-                        backdropFilter="blur(10px)"
-                        border="1px solid"
-                        borderColor="whiteAlpha.100"
+                        bg="gray.50"
+                        border="1px dashed"
+                        borderColor="gray.200"
                         p={10}
                         borderRadius="xl"
                     >
-                        <Text fontSize="xl" color="gray.300" mb={4}>You haven't purchased any resources yet.</Text>
+                        <Text fontSize="xl" color="gray.500" mb={4}>You haven't purchased any resources yet.</Text>
                         <Button colorScheme="purple" onClick={() => router.push('/content-library')}>
                             Browse Library
                         </Button>
@@ -131,32 +130,27 @@ const MyResourcesPage: React.FC = () => {
                             <Flex
                                 key={item.id}
                                 direction="column"
-                                bg="whiteAlpha.50"
-                                backdropFilter="blur(16px)"
+                                bg="white"
                                 borderRadius="2xl"
                                 overflow="hidden"
                                 border="1px solid"
-                                borderColor="whiteAlpha.100"
+                                borderColor="gray.100"
                                 boxShadow="lg"
-                                transition="all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)"
+                                transition="all 0.3s ease"
                                 _hover={{
-                                    transform: 'translateY(-8px)',
-                                    boxShadow: '2xl',
-                                    bg: "whiteAlpha.100",
-                                    borderColor: "teal.400"
+                                    transform: 'translateY(-5px)',
+                                    boxShadow: 'xl',
+                                    borderColor: "green.200"
                                 }}
                             >
-                                <Box position="relative" height="220px">
+                                <Box position="relative" height="220px" bg="gray.100">
                                     <Image
                                         src={item.thumbnail}
                                         alt={item.title}
                                         objectFit="cover"
                                         width="100%"
                                         height="100%"
-                                        transition="transform 0.4s"
-                                        _hover={{ transform: 'scale(1.05)' }}
                                     />
-                                    <Box position="absolute" inset="0" bgGradient="linear(to-t, blackAlpha.800, transparent)" pointerEvents="none" />
 
                                     <Badge
                                         position="absolute"
@@ -168,7 +162,7 @@ const MyResourcesPage: React.FC = () => {
                                         borderRadius="full"
                                         px={3}
                                         py={1}
-                                        boxShadow="lg"
+                                        boxShadow="md"
                                         textTransform="uppercase"
                                         letterSpacing="wider"
                                     >
@@ -177,20 +171,20 @@ const MyResourcesPage: React.FC = () => {
                                     {/* Metadata Tags */}
                                     <Flex position="absolute" bottom={4} left={4} gap={2}>
                                         {item.score && (
-                                            <Badge bg="purple.600" color="white" borderRadius="md" px={2} py={0.5} boxShadow="md">Score: {item.score}</Badge>
+                                            <Badge colorScheme="purple" borderRadius="md" px={2} py={0.5} boxShadow="sm">Score: {item.score}</Badge>
                                         )}
                                         {item.session && (
-                                            <Badge bg="cyan.600" color="white" borderRadius="md" px={2} py={0.5} boxShadow="md">{item.session}</Badge>
+                                            <Badge colorScheme="blue" borderRadius="md" px={2} py={0.5} boxShadow="sm">{item.session}</Badge>
                                         )}
                                     </Flex>
                                 </Box>
 
                                 <Flex direction="column" p={6} flex={1} justify="space-between">
                                     <Box>
-                                        <Text fontSize="xl" fontWeight="700" mb={3} color="white" lineHeight="short">
+                                        <Text fontSize="xl" fontWeight="700" mb={3} color="gray.800" lineHeight="short">
                                             {item.title}
                                         </Text>
-                                        <Text fontSize="sm" color="gray.300" mb={6} noOfLines={3}>
+                                        <Text fontSize="sm" color="gray.500" mb={6} noOfLines={3}>
                                             {item.description}
                                         </Text>
                                     </Box>
