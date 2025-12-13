@@ -12,7 +12,7 @@ export type ContentItem = {
     type: "pdf" | "video" | "image";
     createdAt: any;
     // New fields
-    score?: string | number; // e.g. 7, 6, 5, or "A", "B"
+    score?: string; // e.g. "7", "6", "5" or "A", "B"
     session?: string; // e.g. "May 2025"
     subject?: string; // e.g. "Math AA HL"
     program?: "DP" | "MYP";
@@ -30,7 +30,7 @@ const MOCK_CONTENT: ContentItem[] = [
         price: 5.00,
         type: "image",
         createdAt: new Date(),
-        score: 7,
+        score: "7",
         session: "May 2024",
         subject: "Math AA HL",
         program: "DP",
@@ -45,7 +45,7 @@ const MOCK_CONTENT: ContentItem[] = [
         price: 8.00,
         type: "pdf",
         createdAt: new Date(),
-        score: 7,
+        score: "7",
         session: "Nov 2023",
         subject: "Economics HL",
         program: "DP",
@@ -60,7 +60,7 @@ const MOCK_CONTENT: ContentItem[] = [
         price: 4.50,
         type: "pdf",
         createdAt: new Date(),
-        score: 6,
+        score: "6",
         session: "May 2024",
         subject: "Personal Project",
         program: "MYP",
@@ -75,7 +75,7 @@ const MOCK_CONTENT: ContentItem[] = [
         price: 6.00,
         type: "pdf",
         createdAt: new Date(),
-        score: 7,
+        score: "7",
         session: "Nov 2023",
         subject: "Design",
         program: "MYP",

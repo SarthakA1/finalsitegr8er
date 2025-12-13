@@ -37,7 +37,7 @@ const AdminUploadPage = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('5.00');
-    const [score, setScore] = useState<string | number>('7');
+    const [score, setScore] = useState("7");
     const [session, setSession] = useState('May 2025');
     const [subject, setSubject] = useState('Math AA HL');
     const [program, setProgram] = useState('DP');
@@ -208,33 +208,28 @@ const AdminUploadPage = () => {
                         </NumberInput>
                     </FormControl>
 
-                    {/* Conditional Score Input */}
-                    {(['IA', 'EE', 'TOK'].includes(resourceType)) && (
-                        <FormControl>
-                            <FormLabel>Score</FormLabel>
-                            <Select
-                                value={score}
-                                onChange={(e) => setScore(e.target.value)}
-                            >
-                                {resourceType === 'IA' ? (
-                                    <>
-                                        <option value="7">7</option>
-                                        <option value="6">6</option>
-                                        <option value="5">5</option>
-                                    </>
-                                ) : (
-                                    <>
-                                        {/* EE or TOK */}
-                                        <option value="A">A</option>
-                                        <option value="B">B</option>
-                                        <option value="C">C</option>
-                                        <option value="D">D</option>
-                                        <option value="E">E</option>
-                                    </>
-                                )}
+                    <FormControl>
+                        <FormLabel>Score</FormLabel>
+                        {(resourceType === 'EE' || resourceType === 'TOK') ? (
+                            <Select value={score} onChange={(e) => setScore(e.target.value)}>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                                <option value="E">E</option>
                             </Select>
-                        </FormControl>
-                    )}
+                        ) : (
+                            <Select value={score} onChange={(e) => setScore(e.target.value)}>
+                                <option value="7">7</option>
+                                <option value="6">6</option>
+                                <option value="5">5</option>
+                                <option value="4">4</option>
+                                <option value="3">3</option>
+                                <option value="2">2</option>
+                                <option value="1">1</option>
+                            </Select>
+                        )}
+                    </FormControl>
                 </Flex>
 
                 <Flex gap={4}>
