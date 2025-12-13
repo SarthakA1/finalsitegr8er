@@ -53,71 +53,33 @@ const AdminUploadPage = () => {
 
     const toast = useToast();
     const contentRef = useRef<HTMLInputElement>(null);
+    const thumbnailRef = useRef<HTMLInputElement>(null);
 
-    // Initialize PDF.js worker
-    useEffect(() => {
-        const loadPdfWorker = async () => {
-            const pdfjs = await import('pdfjs-dist/build/pdf');
-            pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-        };
-        loadPdfWorker();
-    }, []);
-
-    const generateThumbnailFromPdf = async (file: File) => {
-        try {
-            const pdfjs = await import('pdfjs-dist/build/pdf');
-            const arrayBuffer = await file.arrayBuffer();
-            const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
-
-            // Get first page
-            const page = await pdf.getPage(1);
-
-            // Calculate scale to fit max width of 600px
-            const unscaledViewport = page.getViewport({ scale: 1 });
-            const maxWidth = 600;
-            const scale = unscaledViewport.width > maxWidth ? maxWidth / unscaledViewport.width : 1;
-
-            const viewport = page.getViewport({ scale });
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-
-            if (context) {
-                await page.render({ canvasContext: context, viewport: viewport }).promise;
-
-                canvas.toBlob((blob) => {
-                    if (blob) {
-                        const thumbFile = new File([blob], "thumbnail.jpg", { type: "image/jpeg" });
-                        setThumbnailFile(thumbFile);
-                        setThumbnailPreview(URL.createObjectURL(thumbFile));
-                    }
-                }, 'image/jpeg', 0.7); // 70% quality for smaller size
-            }
-        } catch (error) {
-            console.error("Error generating thumbnail:", error);
-            // Non-blocking error, user can still upload
+    const onSelectContent = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files?.[0]) {
+            setContentFile(event.target.files[0]);
         }
     };
 
-    const onSelectContent = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onSelectThumbnail = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files?.[0]) {
             const file = event.target.files[0];
-            setContentFile(file);
-            setThumbnailFile(null);
-            setThumbnailPreview('');
-
-            if (file.type === 'application/pdf') {
-                await generateThumbnailFromPdf(file);
-            }
+            setThumbnailFile(file);
+            const reader = new FileReader();
+            reader.onload = (readerEvent) => {
+                if (readerEvent.target?.result) {
+                    setThumbnailPreview(readerEvent.target.result as string);
+                }
+            };
+            reader.readAsDataURL(file);
         }
     };
 
     const handleUpload = async () => {
-        if (!title || !description || !contentFile) {
+        if (!title || !description || !contentFile || !thumbnailFile) {
             toast({
                 title: 'Missing Fields',
-                description: 'Please fill all fields and select a file.',
+                description: 'Please fill all fields and select both content and thumbnail files.',
                 status: 'error',
                 duration: 3000,
                 isClosable: true,
@@ -146,13 +108,10 @@ const AdminUploadPage = () => {
             await uploadTask;
             const contentUrl = await getDownloadURL(contentStorageRef);
 
-            // 2. Upload Thumbnail (if generated)
-            let thumbnailUrl = null;
-            if (thumbnailFile) {
-                const thumbnailStorageRef = ref(storage, `content_thumbnails/${Date.now()}_auto_thumb.jpg`);
-                await uploadBytesResumable(thumbnailStorageRef, thumbnailFile);
-                thumbnailUrl = await getDownloadURL(thumbnailStorageRef);
-            }
+            // 2. Upload Thumbnail
+            const thumbnailStorageRef = ref(storage, `content_thumbnails/${Date.now()}_${thumbnailFile.name}`);
+            await uploadBytesResumable(thumbnailStorageRef, thumbnailFile);
+            const thumbnailUrl = await getDownloadURL(thumbnailStorageRef);
 
             // 3. Save to Firestore
             await addDoc(collection(firestore, 'content_library'), {
@@ -164,7 +123,7 @@ const AdminUploadPage = () => {
                 subject,
                 program,
                 resourceType,
-                thumbnail: thumbnailUrl, // Now storing auto-generated thumb
+                thumbnail: thumbnailUrl,
                 url: contentUrl,
                 type: contentFile.type.includes('image') ? 'image' : 'pdf',
                 createdAt: serverTimestamp(),
@@ -179,7 +138,7 @@ const AdminUploadPage = () => {
                 isClosable: true,
             });
 
-            // Reset Form (maintain session/program for faster batch upload)
+            // Reset Form
             setTitle('');
             setDescription('');
             setContentFile(null);
@@ -275,26 +234,39 @@ const AdminUploadPage = () => {
 
                 {/* Content File Upload */}
                 <FormControl>
-                    <FormLabel>Content File (PDF)</FormLabel>
+                    <FormLabel>Content File (PDF/Image)</FormLabel>
+                    <Flex align="center" gap={4} p={3} bg="gray.50" borderRadius="md" border="1px solid" borderColor="gray.200">
+                        <Button leftIcon={<Icon as={FiUploadCloud} />} onClick={() => contentRef.current?.click()} size="sm">
+                            Select Content File
+                        </Button>
+                        <Box flex={1}>
+                            <Text fontSize="sm" color="gray.600" noOfLines={1} fontWeight={500}>
+                                {contentFile ? contentFile.name : 'No file selected'}
+                            </Text>
+                        </Box>
+                        <Input type="file" ref={contentRef} hidden onChange={onSelectContent} accept="application/pdf, image/*" />
+                    </Flex>
+                </FormControl>
+
+                {/* Thumbnail Upload */}
+                <FormControl isRequired>
+                    <FormLabel>Thumbnail Image</FormLabel>
                     <VStack align="stretch" spacing={3}>
                         <Flex align="center" gap={4} p={3} bg="gray.50" borderRadius="md" border="1px solid" borderColor="gray.200">
-                            <Button leftIcon={<Icon as={FiUploadCloud} />} onClick={() => contentRef.current?.click()} size="sm">
-                                Select File
+                            <Button leftIcon={<Icon as={FiUploadCloud} />} onClick={() => thumbnailRef.current?.click()} size="sm">
+                                Select Thumbnail
                             </Button>
                             <Box flex={1}>
                                 <Text fontSize="sm" color="gray.600" noOfLines={1} fontWeight={500}>
-                                    {contentFile ? contentFile.name : 'No file selected'}
+                                    {thumbnailFile ? thumbnailFile.name : 'No file selected'}
                                 </Text>
                             </Box>
-                            <Input type="file" ref={contentRef} hidden onChange={onSelectContent} accept="application/pdf, image/*" />
+                            <Input type="file" ref={thumbnailRef} hidden onChange={onSelectThumbnail} accept="image/*" />
                         </Flex>
 
-                        {/* Generated Thumbnail Preview */}
                         {thumbnailPreview && (
-                            <Flex align="center" gap={3} p={2} bg="green.50" borderRadius="md" border="1px solid" borderColor="green.200">
-                                <Image src={thumbnailPreview} boxSize="40px" objectFit="cover" borderRadius="sm" />
-                                <Text fontSize="xs" color="green.700">Preview generated successfully</Text>
-                                <Icon as={FiCheckCircle} color="green.500" ml="auto" />
+                            <Flex justify="center" p={2} bg="gray.50" borderRadius="md" border="1px dashed" borderColor="gray.300">
+                                <Image src={thumbnailPreview} alt="Thumbnail Preview" maxH="200px" objectFit="contain" />
                             </Flex>
                         )}
                     </VStack>
@@ -314,7 +286,7 @@ const AdminUploadPage = () => {
                     isLoading={loading}
                     loadingText="Uploading..."
                     leftIcon={<Icon as={FiUploadCloud} />}
-                    isDisabled={!contentFile}
+                    isDisabled={!contentFile || !thumbnailFile}
                 >
                     Upload Content
                 </Button>
