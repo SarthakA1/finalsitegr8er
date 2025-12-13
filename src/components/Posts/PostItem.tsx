@@ -373,12 +373,15 @@ const PostItem: React.FC<PostItemProps> = ({
                                     overflow="hidden"
                                     border="1px solid"
                                     borderColor="gray.200"
-                                    cursor="pointer"
+                                    cursor={isImage ? "pointer" : "default"}
                                     transition="all 0.2s"
                                     _hover={{ transform: "translateY(-2px)", shadow: "md" }}
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        window.open(imageURL, '_blank');
+                                        // Only allow opening images, block documents to prevent download
+                                        if (isImage) {
+                                            window.open(imageURL, '_blank');
+                                        }
                                     }}
                                     h="140px"
                                     position="relative"
@@ -393,15 +396,22 @@ const PostItem: React.FC<PostItemProps> = ({
                                             objectFit="cover"
                                         />
                                     ) : (
-                                        <Box w="100%" h="100%" position="relative">
-                                            {/* Visual Preview Iframe (Click-through blocked by overlay) */}
+                                        <Box w="100%" h="100%" position="relative" overflow="hidden">
+                                            {/* Visual Preview Iframe - Shifted up to hide Google Docs Toolbar */}
                                             <iframe
                                                 src={`https://docs.google.com/gview?url=${encodeURIComponent(imageURL)}&embedded=true`}
-                                                style={{ width: '100%', height: '100%', border: 'none', overflow: 'hidden', transform: 'scale(1.0)', transformOrigin: 'top left', pointerEvents: 'none' }}
+                                                style={{
+                                                    width: '100%',
+                                                    height: '180%', // Increased height to compensate for shift
+                                                    marginTop: '-55px', // Shift up to hide header
+                                                    border: 'none',
+                                                    overflow: 'hidden',
+                                                    pointerEvents: 'none'
+                                                }}
                                                 title="Preview"
                                                 scrolling="no"
                                             />
-                                            {/* Transparent Overlay for Click Action */}
+                                            {/* Transparent Overlay to ensure no interaction */}
                                             <Box
                                                 position="absolute"
                                                 top="0"
@@ -409,8 +419,6 @@ const PostItem: React.FC<PostItemProps> = ({
                                                 w="100%"
                                                 h="100%"
                                                 bg="transparent"
-                                                role="button"
-                                                aria-label="Open document"
                                             />
                                             {/* File Type Badge */}
                                             <Badge
@@ -419,6 +427,7 @@ const PostItem: React.FC<PostItemProps> = ({
                                                 right="4px"
                                                 colorScheme={isPdf ? "red" : "blue"}
                                                 fontSize="xs"
+                                                boxShadow="sm"
                                             >
                                                 {extension.toUpperCase()}
                                             </Badge>
