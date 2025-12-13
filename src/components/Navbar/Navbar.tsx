@@ -17,9 +17,13 @@ const navbar: React.FC = () => {
     const { onSelectMenuItem } = useDirectory();
     const curriculum = useRecoilValue(curriculumState);
 
-    const redirectToHome = () => {
-        // Force reload to ensure subjects update correctly as requested
-        const targetPath = `/${curriculum.curriculumId}`;
+    const redirectToHome = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        // Redirect to the home page of the current curriculum
+        // Default to 'ib-myp' if not set, to avoid landing page
+        const currentCurriculum = (curriculum && curriculum.curriculumId) ? curriculum.curriculumId : 'ib-myp';
+        const targetPath = `/${currentCurriculum}`;
+
         if (window.location.pathname === targetPath) {
             window.location.reload();
         } else {

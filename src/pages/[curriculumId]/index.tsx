@@ -11,6 +11,7 @@ import {
     orderBy,
     query,
     where,
+    Timestamp
 } from "firebase/firestore";
 import type { NextPage } from "next";
 import { useEffect, useState } from "react";
@@ -29,12 +30,12 @@ import { Image } from "@chakra-ui/react";
 import { useRecoilState } from 'recoil';
 import { curriculumState } from '@/atoms/curriculumAtom';
 import { useRouter } from 'next/router';
+import { GetServerSideProps } from 'next';
 
 import { Analytics } from '@vercel/analytics/react';
 
-const CurriculumFeed: NextPage = () => {
+const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> = ({ initialPosts, curriculumId }) => {
     const router = useRouter();
-    const { curriculumId } = router.query;
     // Use RecoilState to update it if URL changes
     const [curriculum, setCurriculum] = useRecoilState(curriculumState);
 
@@ -107,100 +108,136 @@ const CurriculumFeed: NextPage = () => {
 
     const isBrowser = () => typeof window !== 'undefined';
 
+    const hydratePosts = (posts: any[]): Post[] => {
+        if (!posts) return [];
+        return posts.map(p => ({
+            ...p,
+            createdAt: typeof p.createdAt?.toDate === 'function'
+                ? p.createdAt
+                : new Timestamp(p.createdAt?.seconds || 0, p.createdAt?.nanoseconds || 0)
+        }));
+    }
 
-    const buildUserHomeFeed = async () => {
-        setLoading(true);
-        try {
-            const currentCurriculumId = (curriculumId as string) || 'ib-myp';
+    const [allFetchedPosts, setAllFetchedPosts] = useState<Post[]>(hydratePosts(initialPosts) || []);
 
-            // Filter snippets
-            const relevantSnippets = subjectStateValue.mySnippets.filter(snippet => {
-                const snippetCurriculum = snippet.curriculumId || 'ib-myp';
-                return snippetCurriculum === currentCurriculumId;
-            });
-
-            if (relevantSnippets.length) {
-                const mySubjectIds = relevantSnippets.map((snippet) => snippet.subjectId);
-                // Limit to 10 for 'in' query constraint
-                const slicedSubjectIds = mySubjectIds.slice(0, 10);
-
-                const postQuery = query(
-                    collection(firestore, "posts"),
-                    where("subjectId", "in", slicedSubjectIds),
-                    limit(50),
-                    orderBy('createdAt', 'desc')
-                );
-
-                const postDocs = await getDocs(postQuery);
-                const posts = postDocs.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                })) as Post[];
-
-                const filteredPosts = posts.filter(post => {
-                    const postCurriculum = post.curriculumId || 'ib-myp';
-                    return postCurriculum === currentCurriculumId;
-                });
-
-                setPostStateValue((prev) => ({
-                    ...prev,
-                    posts: filteredPosts,
-                }));
-            } else {
-                buildNoUserHomeFeed();
-            }
-        } catch (error) {
-            console.log("buildUserHomeFeed error", error);
-        }
-        setLoading(false);
-    };
-
-    const buildNoUserHomeFeed = async () => {
-        setLoading(true);
-        try {
-            const currentCurriculumId = (curriculumId as string) || 'ib-myp';
-            let postQuery;
-
-            if (currentCurriculumId === 'ib-dp') {
-                postQuery = query(
-                    collection(firestore, "posts"),
-                    where('curriculumId', '==', 'ib-dp'),
-                    orderBy("createdAt", "desc"),
-                    limit(50)
-                );
-            } else {
-                postQuery = query(
-                    collection(firestore, "posts"),
-                    orderBy("createdAt", "desc"),
-                    limit(50)
-                );
-            }
-
-            const postDocs = await getDocs(postQuery);
-            const posts = postDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Post[];
-
-            const filteredPosts = posts.filter(post => {
-                if (currentCurriculumId === 'ib-dp') {
-                    return post.curriculumId === 'ib-dp';
-                } else {
-                    return (post.curriculumId === 'ib-myp' || !post.curriculumId);
-                }
-            });
-
+    // Initial setState for posts (Hydration)
+    useEffect(() => {
+        if (initialPosts && initialPosts.length > 0) {
+            const hydrated = hydratePosts(initialPosts);
             setPostStateValue((prev) => ({
                 ...prev,
-                posts: filteredPosts,
+                posts: hydrated,
             }));
-
-        } catch (error) {
-            console.log("buildNoUserHomeFeed error", error);
+            // Also ensure local state is hydrated if it wasn't caught by useState (e.g. if prop updates later)
+            setAllFetchedPosts(hydrated);
         }
-        setLoading(false);
+    }, [initialPosts, setPostStateValue]);
+
+
+    // Background Fetch Function - Only fetches larger set for filtering
+    const fetchBackgroundPosts = async () => {
+        try {
+            // We do NOT set loading true here to avoid blocking UI or showing spinner on top of content
+            // Stage 2: Background Load (100 posts)
+            // Fetch significantly more posts to handle client-side filtering effectively
+            const fullQuery = query(
+                collection(firestore, "posts"),
+                orderBy("createdAt", "desc"),
+                limit(100)
+            );
+            const fullDocs = await getDocs(fullQuery);
+            let fullPosts = fullDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Post));
+
+            // Client-Side Filter for Full Batch
+            if (curriculumId) {
+                fullPosts = fullPosts.filter(p => (p.curriculumId || 'ib-myp') === curriculumId);
+            }
+
+            // Apply User Feed Logic
+            if (user && subjectStateValue.mySnippets.length > 0) {
+                const currentCurriculumId = (curriculumId as string) || 'ib-myp';
+                const snippetSubjectIds = subjectStateValue.mySnippets
+                    .filter(s => (s.curriculumId || 'ib-myp') === currentCurriculumId)
+                    .map(s => s.subjectId);
+
+                if (snippetSubjectIds.length > 0) {
+                    const myPosts = fullPosts.filter(p => snippetSubjectIds.includes(p.subjectId));
+                    if (myPosts.length > 0) {
+                        fullPosts = myPosts;
+                    }
+                }
+            }
+
+            setAllFetchedPosts(fullPosts);
+
+            // Get votes for these posts
+            if (user && fullPosts.length > 0) {
+                getUserPostVotes(fullPosts);
+            }
+
+        } catch (error: any) {
+            console.log("fetchBackgroundPosts error", error);
+        }
     };
 
-    const getUserPostVotes = async () => {
+    // Background Fetch Effect
+    useEffect(() => {
+        if (!curriculumId) return;
+        // Trigger background fetch after mount
+        fetchBackgroundPosts();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [curriculumId, user]);
+
+    // Instant Client-Side Filtering Effect
+    useEffect(() => {
+        // If we have no active filters, we show everything we have (initial or full)
+        // But we must apply the activeFilters logic if present
+        let filteredPosts = [...allFetchedPosts];
+
+        const gradeFilters = activeFilters.grade || [];
+        const levelFilters = activeFilters.level || [];
+        const paperFilters = activeFilters.paper || [];
+        const criteriaFilters = activeFilters.criteria || [];
+        const typeFilters = activeFilters.typeofquestion || [];
+
+        if (gradeFilters.length) {
+            filteredPosts = filteredPosts.filter(p => p.grade && gradeFilters.includes(p.grade.value));
+        }
+        if (levelFilters.length) {
+            filteredPosts = filteredPosts.filter(p => p.level && levelFilters.includes(p.level.value));
+        }
+        if (paperFilters.length) {
+            filteredPosts = filteredPosts.filter(p => p.paper && paperFilters.includes(p.paper.value));
+        }
+        if (criteriaFilters.length) {
+            filteredPosts = filteredPosts.filter(p => {
+                if (!p.criteria) return false;
+                const val = Array.isArray(p.criteria) ? p.criteria[0]?.value : p.criteria.value;
+                return criteriaFilters.includes(val);
+            });
+        }
+        if (typeFilters.length) {
+            filteredPosts = filteredPosts.filter(p => p.typeOfQuestions && typeFilters.includes(p.typeOfQuestions.label));
+        }
+
+        setPostStateValue((prev) => ({
+            ...prev,
+            posts: filteredPosts,
+        }));
+
+    }, [allFetchedPosts, activeFilters, setPostStateValue]);
+
+
+    useEffect(() => {
+        if (!user && !loadingUser) {
+            // buildNoUserHomeFeed(); // Replaced by fetchPosts
+        }
+    }, [user, loadingUser]);
+
+    const getUserPostVotes = async (currentPosts: Post[]) => {
+        if (!user || !currentPosts.length) return;
         try {
-            const postIds = postStateValue.posts.map((post) => post.id);
+            const postIds = currentPosts.map((post) => post.id);
             let postVotes: any = []
             const limit = 10
             while (postIds.length) {
@@ -237,129 +274,7 @@ const CurriculumFeed: NextPage = () => {
         });
     };
 
-    useEffect(() => {
-        // This effect handles client-side filtering based on selected chips
-        // It currently re-fetches from Firestore. Optimized implementation would filter locally if data is loaded,
-        // but structure suggests re-querying.
-        const fetchData = async () => {
-            // ... existing filter logic ported ...
-            // Since the logic in original index.tsx was complex regarding filtering (voting etc), 
-            // I'll simplify to just basic filtering for now to ensure routing works, then refine.
-
-            // Actually I should try to preserve it.
-            try {
-                const gradeFilters = activeFilters.grade || [];
-                const typeofquestionFilters = activeFilters.typeofquestion || [];
-                const criteriaFilters = activeFilters.criteria || [];
-                // DP Filters
-                const levelFilters = activeFilters.level || [];
-                const paperFilters = activeFilters.paper || [];
-
-                // Construct Query
-                // Note: Firestore limitation on multiple 'in' clauses.
-                // We can only use one 'in' clause per query usually or carefully designed composite indexes.
-
-                // Base Query
-                let postsQuery = query(
-                    collection(firestore, 'posts'),
-                    orderBy('createdAt', 'desc')
-                );
-
-                // Since we have multiple potential filters, let's keep it simple: 
-                // Fetch recent posts (already filtered by User/NoUser feed logic) and then filter locally 
-                // OR re-run the User/NoUser logic with added constraints if possible.
-
-                // Ideally we should call buildUserHomeFeed/buildNoUserHomeFeed again but with filter args?
-                // Or just let the feed load primarily, and these filters act on the loaded posts? 
-                // The original code was querying firestore.
-
-                // Let's rely on the build functions for initial load, and this effect for updates.
-                // But 'build' functions set state. This effect sets state too.
-
-                // I will replicate the single query logic from before but careful with 'in' limits.
-                // For DP filters, we can just fetch and filter client side if volume is low, 
-                // or add simple where clauses.
-
-                // ... (Omitting complex voting logic for brevity to focus on routing, but keeping structure)
-
-                // NOTE: The previous code had a bug where it fetched based on filters ignoring User Feed logic?
-                // It seemed to fetch from global 'posts' collection based on filters.
-                // Let's stick to that pattern for Consistency if user filters are active.
-
-                // If filters are empty, we just fall back to standard feed build
-                const hasFilters = gradeFilters.length || typeofquestionFilters.length || criteriaFilters.length || levelFilters.length || paperFilters.length;
-
-                if (!hasFilters) {
-                    if (subjectStateValue.snippetsFetched && user) {
-                        buildUserHomeFeed();
-                    } else {
-                        buildNoUserHomeFeed();
-                    }
-                    return;
-                }
-
-                // If filters active, querying global posts (as per original design implication)
-                // But we must respect curriculum
-                const currentCurriculum = (curriculumId as string) || 'ib-myp';
-
-                // We can't do multiple 'in' or 'array-contains-any'. 
-                // Let's fetch strict curriculum posts and filter in memory for complex combinations.
-
-                let q = query(
-                    collection(firestore, 'posts'),
-                    where('curriculumId', '==', currentCurriculum),
-                    orderBy('createdAt', 'desc'),
-                    limit(100)
-                );
-
-                const snapshot = await getDocs(q);
-                let posts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Post[];
-
-                // Client side filter
-                if (gradeFilters.length) {
-                    posts = posts.filter(p => p.grade && gradeFilters.includes(p.grade.value));
-                }
-                if (typeofquestionFilters.length) {
-                    posts = posts.filter(p => p.typeOfQuestions && typeofquestionFilters.includes(p.typeOfQuestions.label));
-                }
-                if (criteriaFilters.length) {
-                    // criteria in Post type is { value: string, label: string } according to atom.
-                    // If it was an array in some versions, we might need a distinct check, but strictly following the type:
-                    posts = posts.filter(p => p.criteria && criteriaFilters.includes(p.criteria.value));
-                }
-                // DP Filters
-                if (levelFilters.length) {
-                    posts = posts.filter(p => p.level && levelFilters.includes(p.level.value));
-                }
-                if (paperFilters.length) {
-                    posts = posts.filter(p => p.paper && paperFilters.includes(p.paper.value));
-                }
-
-                setPostStateValue(prev => ({ ...prev, posts }));
-
-            } catch (error) {
-                console.error("Filter error", error);
-            }
-
-        };
-        if (curriculumId) fetchData();
-    }, [activeFilters, curriculumId]);
-
-
-    useEffect(() => {
-        if (!curriculumId) return;
-        if (subjectStateValue.snippetsFetched) buildUserHomeFeed();
-    }, [subjectStateValue.snippetsFetched, curriculumId]); // Reload when snippets or route changes
-
-    useEffect(() => {
-        if (!curriculumId) return;
-        if (!user && !loadingUser) buildNoUserHomeFeed();
-    }, [user, loadingUser, curriculumId]);
-
-    useEffect(() => {
-        if (user && postStateValue.posts.length) getUserPostVotes();
-    }, [user, postStateValue.posts]);
-
+    // Removed the Effect that called fetchPosts, replaced by background fetch effect
 
     return (
         <PageContent>
@@ -389,109 +304,162 @@ const CurriculumFeed: NextPage = () => {
                         <ContentLibraryBanner />
 
                         {/* Filters */}
-                        <Stack
-                            spacing={3}
-                            p={3}
-                            bg="rgba(255, 255, 255, 0.8)"
-                            backdropFilter="blur(12px)"
-                            borderRadius="xl"
-                            border="1px solid"
-                            borderColor="whiteAlpha.300"
-                            shadow="sm"
-                        >
-                            {curriculumId === 'ib-dp' ? (
-                                <>
-                                    {/* DP Filters */}
-                                    <Flex align="center" wrap="wrap" gap={2}>
-                                        <Text fontSize="xs" fontWeight="700" color="gray.500" textTransform="uppercase" mr={2}>Level:</Text>
-                                        {['HL', 'SL'].map((level) => (
-                                            <Button
-                                                key={level}
-                                                size="xs"
-                                                variant={activeFilters.level && (activeFilters.level as string[]).includes(level) ? "solid" : "outline"}
-                                                colorScheme="purple"
-                                                onClick={() => handleChangeTopFilter('level', level)}
-                                                borderRadius="full"
-                                            >
-                                                {level}
-                                            </Button>
-                                        ))}
-                                    </Flex>
+                        <Box mb={4}>
+                            <Stack spacing={2} align="center">
+                                {curriculumId === 'ib-dp' ? (
+                                    <>
+                                        {/* DP Filters - Level & Paper Combined */}
+                                        <Flex gap={2} wrap="wrap" justify="center" align="center">
+                                            {/* Level */}
+                                            <Flex gap={1} align="center">
+                                                <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1}>Level:</Text>
+                                                {['HL', 'SL'].map((level) => {
+                                                    const isActive = activeFilters.level?.includes(level);
+                                                    return (
+                                                        <Button
+                                                            key={level}
+                                                            size="xs"
+                                                            onClick={() => handleChangeTopFilter('level', level)}
+                                                            variant={isActive ? "solid" : "outline"}
+                                                            colorScheme={isActive ? "purple" : "gray"}
+                                                            bg={isActive ? "purple.600" : "white"}
+                                                            color={isActive ? "white" : "gray.600"}
+                                                            borderColor="gray.300"
+                                                            _hover={{ bg: isActive ? "purple.500" : "gray.100" }}
+                                                            borderRadius="full"
+                                                            px={3}
+                                                            fontSize="sm"
+                                                            fontWeight="medium"
+                                                        >
+                                                            {level}
+                                                        </Button>
+                                                    )
+                                                })}
+                                            </Flex>
 
-                                    <Flex align="center" wrap="wrap" gap={2}>
-                                        <Text fontSize="xs" fontWeight="700" color="gray.500" textTransform="uppercase" mr={2}>Paper:</Text>
-                                        {['1', '2', '3'].map((paper) => (
-                                            <Button
-                                                key={paper}
-                                                size="xs"
-                                                variant={activeFilters.paper && (activeFilters.paper as string[]).includes(paper) ? "solid" : "outline"}
-                                                colorScheme="pink"
-                                                onClick={() => handleChangeTopFilter('paper', paper)}
-                                                borderRadius="full"
-                                            >
-                                                Paper {paper}
-                                            </Button>
-                                        ))}
-                                    </Flex>
-                                </>
-                            ) : (
-                                <>
-                                    {/* MYP Filters */}
-                                    <Flex align="center" wrap="wrap" gap={2}>
-                                        <Text fontSize="xs" fontWeight="700" color="gray.500" textTransform="uppercase" mr={2}>MYP Grade:</Text>
-                                        {['1', '2', '3', '4', '5'].map((grade) => (
-                                            <Button
-                                                key={grade}
-                                                size="xs"
-                                                variant={activeFilters.grade && (activeFilters.grade as string[]).includes(grade) ? "solid" : "outline"}
-                                                colorScheme="brand"
-                                                onClick={() => handleChangeTopFilter('grade', grade)}
-                                                borderRadius="full"
-                                            >
-                                                MYP {grade}
-                                            </Button>
-                                        ))}
-                                    </Flex>
-                                    <Flex align="center" wrap="wrap" gap={2}>
-                                        <Text fontSize="xs" fontWeight="700" color="gray.500" textTransform="uppercase" mr={2}>Criteria:</Text>
-                                        {['Criteria A', 'Criteria B', 'Criteria C', 'Criteria D'].map((criteria) => (
-                                            <Button
-                                                key={criteria}
-                                                size="xs"
-                                                variant={activeFilters.criteria && (activeFilters.criteria as string[]).includes(criteria) ? "solid" : "outline"}
-                                                colorScheme="gray"
-                                                onClick={() => handleChangeTopFilter('criteria', criteria)}
-                                                borderRadius="full"
-                                            >
-                                                {criteria}
-                                            </Button>
-                                        ))}
-                                    </Flex>
-                                </>
-                            )}
+                                            <Box width="1px" height="15px" bg="gray.300" mx={1} />
 
-                            {/* Common Filters */}
-                            <Flex align="center" wrap="wrap" gap={2}>
-                                <Text fontSize="xs" fontWeight="700" color="gray.500" textTransform="uppercase" mr={2}>Type:</Text>
-                                {[
-                                    { label: 'Academic Questions', value: 'Academic Question' },
-                                    { label: 'General Doubts', value: 'General Doubt' },
-                                    { label: 'Resources', value: 'Resource' }
-                                ].map((type) => (
-                                    <Button
-                                        key={type.value}
-                                        size="xs"
-                                        variant={activeFilters.typeofquestion && (activeFilters.typeofquestion as string[]).includes(type.value) ? "solid" : "outline"}
-                                        colorScheme={type.value === 'Resource' ? "green" : type.value === 'General Doubt' ? "orange" : "blue"}
-                                        onClick={() => handleChangeTopFilter('typeofquestion', type.value)}
-                                        borderRadius="full"
-                                    >
-                                        {type.label}
-                                    </Button>
-                                ))}
-                            </Flex>
+                                            {/* Paper */}
+                                            <Flex gap={1} align="center">
+                                                <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1}>Paper:</Text>
+                                                {['1', '2', '3'].map((paper) => {
+                                                    const isActive = activeFilters.paper?.includes(paper);
+                                                    return (
+                                                        <Button
+                                                            key={paper}
+                                                            size="xs"
+                                                            onClick={() => handleChangeTopFilter('paper', paper)}
+                                                            variant={isActive ? "solid" : "outline"}
+                                                            colorScheme={isActive ? "pink" : "gray"}
+                                                            bg={isActive ? "pink.600" : "white"}
+                                                            color={isActive ? "white" : "gray.600"}
+                                                            borderColor="gray.300"
+                                                            _hover={{ bg: isActive ? "pink.500" : "gray.100" }}
+                                                            borderRadius="full"
+                                                            px={3}
+                                                            fontSize="sm"
+                                                            fontWeight="medium"
+                                                        >
+                                                            P{paper}
+                                                        </Button>
+                                                    )
+                                                })}
+                                            </Flex>
+                                        </Flex>
+                                    </>
+                                ) : (
+                                    <>
+                                        {/* MYP Filters - Grade & Criteria Combined */}
+                                        <Flex gap={2} wrap="wrap" justify="center" align="center">
+                                            {/* Grade */}
+                                            <Flex gap={1} align="center">
+                                                <Text fontSize="10px" fontWeight="700" color="gray.400" textTransform="uppercase" mr={1}>Grade:</Text>
+                                                {['1', '2', '3', '4', '5'].map((grade) => {
+                                                    const isActive = activeFilters.grade?.includes(grade);
+                                                    return (
+                                                        <Button
+                                                            key={grade}
+                                                            size="xs"
+                                                            onClick={() => handleChangeTopFilter('grade', grade)}
+                                                            variant={isActive ? "solid" : "outline"}
+                                                            colorScheme={isActive ? "blackAlpha" : "gray"}
+                                                            bg={isActive ? "gray.800" : "transparent"}
+                                                            color={isActive ? "white" : "gray.600"}
+                                                            borderColor="gray.300"
+                                                            _hover={{ bg: isActive ? "gray.700" : "gray.100" }}
+                                                            borderRadius="full"
+                                                            px={3}
+                                                            fontSize="xs"
+                                                        >
+                                                            MYP {grade}
+                                                        </Button>
+                                                    )
+                                                })}
+                                            </Flex>
 
-                        </Stack>
+                                            <Box width="1px" height="15px" bg="gray.300" mx={1} />
+
+                                            {/* Criteria */}
+                                            <Flex gap={1} align="center">
+                                                <Text fontSize="10px" fontWeight="700" color="gray.400" textTransform="uppercase" mr={1}>Criteria:</Text>
+                                                {['Criteria A', 'Criteria B', 'Criteria C', 'Criteria D'].map((criteria) => {
+                                                    const isActive = activeFilters.criteria?.includes(criteria);
+                                                    return (
+                                                        <Button
+                                                            key={criteria}
+                                                            size="xs"
+                                                            onClick={() => handleChangeTopFilter('criteria', criteria)}
+                                                            variant={isActive ? "solid" : "outline"}
+                                                            colorScheme={isActive ? "teal" : "gray"}
+                                                            bg={isActive ? "teal.600" : "transparent"}
+                                                            color={isActive ? "white" : "gray.600"}
+                                                            borderColor="gray.300"
+                                                            _hover={{ bg: isActive ? "teal.500" : "gray.100" }}
+                                                            borderRadius="full"
+                                                            px={3}
+                                                            fontSize="xs"
+                                                        >
+                                                            {criteria.replace('Criteria ', '')}
+                                                        </Button>
+                                                    )
+                                                })}
+                                            </Flex>
+                                        </Flex>
+                                    </>
+                                )}
+
+                                {/* Common Filters - Type */}
+                                <Flex gap={2} wrap="wrap" justify="center" align="center">
+                                    <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1}>Type:</Text>
+                                    {[
+                                        { label: 'Academic Question', value: 'Academic Question' },
+                                        { label: 'General Doubt', value: 'General Doubt' },
+                                        { label: 'Resource', value: 'Resource' }
+                                    ].map((type) => {
+                                        const isActive = activeFilters.typeofquestion?.includes(type.value);
+                                        return (
+                                            <Button
+                                                key={type.value}
+                                                size="xs"
+                                                onClick={() => handleChangeTopFilter('typeofquestion', type.value)}
+                                                variant={isActive ? "solid" : "outline"}
+                                                colorScheme={isActive ? "blue" : "gray"}
+                                                bg={isActive ? "blue.600" : "white"}
+                                                color={isActive ? "white" : "gray.600"}
+                                                borderColor="gray.300"
+                                                _hover={{ bg: isActive ? "blue.500" : "gray.100" }}
+                                                borderRadius="full"
+                                                px={3}
+                                                fontSize="sm"
+                                                fontWeight="medium"
+                                            >
+                                                {type.label}
+                                            </Button>
+                                        )
+                                    })}
+                                </Flex>
+                            </Stack>
+                        </Box>
 
                         {postStateValue.posts.slice(0, 100).map((post) => (
                             <PostItem
@@ -548,5 +516,54 @@ const CurriculumFeed: NextPage = () => {
         </PageContent>
     );
 };
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    try {
+        const { curriculumId } = context.params as { curriculumId: string };
+        // Fetch slightly more to account for client-side filtering mismatches if necessary
+        // But here we can filter!
+        // Constraint: legacy posts may not have curriculumId.
+
+        const postsQuery = query(
+            collection(firestore, "posts"),
+            orderBy("createdAt", "desc"),
+            limit(50) // Fetch 50 most recent
+        );
+        const postDocs = await getDocs(postsQuery);
+        let posts = postDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Post));
+
+        // Filter: Match curriculumId OR (if MYP, allow legacy undefined)
+        // If curriculumId is 'ib-dp', strict match.
+        // If 'ib-myp', match 'ib-myp' or undefined.
+
+        if (curriculumId === 'ib-dp') {
+            posts = posts.filter(p => p.curriculumId === 'ib-dp');
+        } else {
+            // MYP
+            posts = posts.filter(p => !p.curriculumId || p.curriculumId === 'ib-myp');
+        }
+
+        // Take top 15
+        const initialPosts = posts.slice(0, 15).map(post => ({
+            ...post,
+            createdAt: JSON.parse(JSON.stringify(post.createdAt || null)), // Serialize timestamp
+        }));
+
+        return {
+            props: {
+                initialPosts,
+                curriculumId
+            }
+        }
+    } catch (error) {
+        console.log('getServerSideProps error', error);
+        return {
+            props: {
+                initialPosts: [],
+                curriculumId: (context.params?.curriculumId as string) || 'ib-myp' // Ensure curriculumId is always passed
+            }
+        }
+    }
+}
 
 export default CurriculumFeed;

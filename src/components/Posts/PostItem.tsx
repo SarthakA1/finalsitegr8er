@@ -1,5 +1,5 @@
 import { Post } from '@/atoms/postsAtom';
-import { Flex, Icon, Stack, Text, Image, Link, textDecoration, SimpleGrid, Button, Badge } from '@chakra-ui/react';
+import { Flex, Icon, Stack, Text, Image, Link, textDecoration, SimpleGrid, Button, Badge, Box } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineDelete, AiFillTags } from "react-icons/ai";
 import { TfiCommentAlt } from "react-icons/tfi";
@@ -7,6 +7,7 @@ import { collection, Timestamp, writeBatch, doc, serverTimestamp, getDocs, order
 import { auth, firestore } from '@/firebase/clientApp';
 import { MdOutlineComment } from "react-icons/md";
 import { AiFillLike, AiOutlineLike, AiFillDislike, AiOutlineDislike } from "react-icons/ai";
+import { FaFilePdf, FaFileWord, FaFilePowerpoint } from "react-icons/fa";
 import {
     IoCloseCircleOutline,
     IoCloseCircleSharp,
@@ -55,6 +56,16 @@ const PostItem: React.FC<PostItemProps> = ({
     homePage
 }: any) => {
     const [showFullBody, setShowFullBody] = useState(false);
+    const [isLongContent, setIsLongContent] = useState(false);
+    const contentRef = React.useRef<HTMLDivElement>(null);
+
+    // Check content height to determine if "Read More" is needed
+    useEffect(() => {
+        if (contentRef.current) {
+            // If scrollHeight > 400 (our max height), showing the button is necessary
+            setIsLongContent(contentRef.current.scrollHeight > 400);
+        }
+    }, [post.body]);
 
     const toggleBodyDisplay = () => {
 
@@ -191,21 +202,6 @@ const PostItem: React.FC<PostItemProps> = ({
             setHighestPercentageName(highestPercentageOption);
         }
     }
-    const getFileExtension = (url: any) => {
-        return fetch(url)
-            .then((response: any) => response.json())
-            .then((data: any) => {
-                if (data['contentType']) {
-                    return data['contentType'];
-                } else {
-                    return 'unknown';
-                }
-            })
-            .catch((error: any) => {
-                console.error('Error fetching data:', error);
-                return 'unknown'; // Handle error and return a default value
-            });
-    }
     useEffect(() => {
         if (post.id) {
             fetchVotingData();
@@ -297,96 +293,120 @@ const PostItem: React.FC<PostItemProps> = ({
                     <Text fontSize='lg' fontWeight={700} color="gray.900" lineHeight="1.4"> {post.title} </Text>
                     <Badge colorScheme="gray" px={2} py={1} borderRadius="md" fontSize="10px" fontWeight={600}>MYP {post.grade?.value}</Badge>
                 </Flex>
-                {/* <StaticEquationText bodyValue={post.body}/> */}
-                {/*           <div style={{ maxWidth: '100%', overflow: 'auto' }}> */}
-                {/*   <div 
-    dangerouslySetInnerHTML={{ __html: post.body }} 
-      overflowWrap: 'break-word', // Enable word wrapping
-    }} 
-  />
-</div> */}
 
-                {post.body.length > 450 ? (
-                    <div style={{ maxHeight: showFullBody ? 'none' : '400px', overflowY: 'hidden' }}>
-                        <div dangerouslySetInnerHTML={{ __html: post.body }} />
-                    </div>
-                ) : (
+                {/* Content Body with Height Ref */}
+                <div
+                    ref={contentRef}
+                    style={{
+                        maxHeight: showFullBody ? 'none' : '400px',
+                        overflowY: 'hidden',
+                        position: 'relative'
+                    }}
+                >
                     <div dangerouslySetInnerHTML={{ __html: post.body }} />
-                )}
+                    {/* Gradient Overlay for collapsed state */}
+                    {!showFullBody && isLongContent && (
+                        <Box
+                            position="absolute"
+                            bottom="0"
+                            left="0"
+                            w="100%"
+                            h="80px"
+                            bgGradient="linear(to-t, white 0%, transparent 100%)"
+                        />
+                    )}
+                </div>
 
-                {/* Render See More button if body exceeds 400 characters */}
-                {post.body.length > 450 && (
-                    <Button onClick={(e) => { e.stopPropagation(); toggleBodyDisplay(); }} colorScheme="blue" mt={2}>
-                        {showFullBody ? "See Less" : "See More"}
+                {/* Intelligent Read More Button */}
+                {(isLongContent) && (
+                    <Button
+                        onClick={(e) => { e.stopPropagation(); toggleBodyDisplay(); }}
+                        variant="ghost"
+                        size="sm"
+                        colorScheme="brand"
+                        mt={2}
+                    >
+                        {showFullBody ? "Show Less" : "Read More"}
                     </Button>
                 )}
 
-
-                {/* <Text fontSize='11pt'> {post.body} </Text> */}
-                {/* {post.imageURL && (
-                <Flex mt={4} justify="center" align="center">  
-                <Image src={post.imageURL} maxHeight='350px' alt="post image"/>
-                
-                </Flex>
-            )} */}
-                {post.imageURLs && ( // Always render the icon
-                    <ul style={{ listStyle: 'none', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', width: '100%', margin: '0 auto', gap: '10px' }}>
-                        {post.imageURLs.map((imageURL: any, index: number) => { // Added index parameter
+                {post.imageURLs && (
+                    <SimpleGrid columns={{ base: 2, sm: 3, md: 4 }} spacing={3} mt={6} w="100%">
+                        {post.imageURLs.map((imageURL: string, index: number) => {
                             const parts = imageURL.split('.');
-                            const extension = parts[parts.length - 1];
-                            const orgExtension = extension.split('?');
+                            const extension = parts[parts.length - 1].split('?')[0].toLowerCase();
+
+                            const isImage = ['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(extension);
+                            const isPdf = extension === 'pdf';
+                            const isWord = ['doc', 'docx'].includes(extension);
+
+                            // For non-images, we also try to show a visual using Google Docs Viewer
+                            // But for PPT/Word sometimes it's shaky. For PDF it works well.
+
                             return (
-                                <li style={{ listStyle: 'none', margin: '0 5px', textAlign: 'center' }} key={index}> {/* Adjusted styles */}
-                                    {orgExtension[0] === 'png' || orgExtension[0] === 'jpg' || orgExtension[0] === 'jpeg' ? (
-                                        router.pathname == '/' ? (
-                                            <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', height: 'auto', verticalAlign: 'middle' }} />
-                                        ) : (
-                                            <a href={imageURL} target='_blank'>
-                                                <Image src={imageURL} className="post-image" alt="post image" style={{ maxWidth: '100%', height: 'auto', verticalAlign: 'middle' }} />
-                                            </a>
-                                        )
-                                    ) : orgExtension[0] === 'pdf' ? (
-                                        user ? ( // Check if user is signed in
-                                            <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}> {/* Added onClick handler */}
-                                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
-                                            </a>
-                                        ) : (
-                                            <a href="#" style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => { e.stopPropagation(); e.preventDefault(); setAuthModalState({ open: true, view: "login" }) }}> {/* Added onClick handler */}
-                                                <Image src="/images/pdf.png" className="post-image attachment-icon" alt="PDF attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
-                                            </a>
-                                        )
-                                    ) : orgExtension[0] === 'doc' || orgExtension[0] === 'docx' ? (
-                                        user ? ( // Check if user is signed in
-                                            <a href={imageURL} target='_blank' style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}> {/* Added onClick handler */}
-                                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
-                                            </a>
-                                        ) : (
-                                            <a href="#" style={{ display: 'inline-block', textAlign: 'center' }} onClick={(e) => { e.stopPropagation(); e.preventDefault(); setAuthModalState({ open: true, view: "login" }) }}> {/* Added onClick handler */}
-                                                <Image src="/images/docs.png" className="post-image attachment-icon" alt="Word document attachment" style={{ width: '140px', height: 'auto' }} /> {/* Adjusted styles */}
-                                            </a>
-                                        )
+                                <Flex
+                                    key={index}
+                                    direction="column"
+                                    borderRadius="lg"
+                                    overflow="hidden"
+                                    border="1px solid"
+                                    borderColor="gray.200"
+                                    cursor="pointer"
+                                    transition="all 0.2s"
+                                    _hover={{ transform: "translateY(-2px)", shadow: "md" }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        window.open(imageURL, '_blank');
+                                    }}
+                                    h="140px"
+                                    position="relative"
+                                    bg="gray.50"
+                                >
+                                    {isImage ? (
+                                        <Image
+                                            src={imageURL}
+                                            alt="attachment"
+                                            h="100%"
+                                            w="100%"
+                                            objectFit="cover"
+                                        />
                                     ) : (
-                                        <span>Unsupported file format</span> // Handle unsupported file format
+                                        <Box w="100%" h="100%" position="relative">
+                                            {/* Visual Preview Iframe (Click-through blocked by overlay) */}
+                                            <iframe
+                                                src={`https://docs.google.com/gview?url=${encodeURIComponent(imageURL)}&embedded=true`}
+                                                style={{ width: '100%', height: '100%', border: 'none', overflow: 'hidden', transform: 'scale(1.0)', transformOrigin: 'top left' }}
+                                                title="Preview"
+                                                scrolling="no"
+                                            />
+                                            {/* Transparent Overlay for Click Action */}
+                                            <Box
+                                                position="absolute"
+                                                top="0"
+                                                left="0"
+                                                w="100%"
+                                                h="100%"
+                                                bg="transparent"
+                                                role="button"
+                                                aria-label="Open document"
+                                            />
+                                            {/* File Type Badge */}
+                                            <Badge
+                                                position="absolute"
+                                                bottom="4px"
+                                                right="4px"
+                                                colorScheme={isPdf ? "red" : "blue"}
+                                                fontSize="xs"
+                                            >
+                                                {extension.toUpperCase()}
+                                            </Badge>
+                                        </Box>
                                     )}
-                                </li>
+                                </Flex>
                             );
                         })}
-                    </ul>
+                    </SimpleGrid>
                 )}
-
-
-
-
-
-
-
-
-
-
-
-                {/* <Icon as={AiFillTags} mt={5} fontSize={20}/> */}
-
-
             </Flex>
 
 

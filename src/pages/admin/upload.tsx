@@ -39,6 +39,11 @@ const AdminUploadPage = () => {
     const [score, setScore] = useState(7);
     const [session, setSession] = useState('May 2025');
     const [subject, setSubject] = useState('Math AA HL');
+    const [program, setProgram] = useState('DP');
+    const [resourceType, setResourceType] = useState('IA');
+
+    const RESOURCE_TYPES_DP = ["IA", "EE", "TOK"];
+    const RESOURCE_TYPES_MYP = ["Personal Project", "Portfolio - Design", "Portfolio - Drama", "Portfolio - Music", "Portfolio - Visual Arts"];
 
     // File State
     const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);

@@ -48,6 +48,7 @@ const ContentLibraryPage: React.FC = () => {
     const [selectedSessions, setSelectedSessions] = useState<string[]>([]);
     const [selectedScores, setSelectedScores] = useState<string[]>([]);
     const [selectedResourceTypes, setSelectedResourceTypes] = useState<string[]>([]);
+    const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
 
     // Filter Options
     const SESSIONS = ["May 2025", "Nov 2024", "May 2024", "Nov 2023"];
@@ -57,11 +58,20 @@ const ContentLibraryPage: React.FC = () => {
     const RESOURCE_TYPES_DP = ["IA", "EE", "TOK"];
     const RESOURCE_TYPES_MYP = ["Personal Project", "Portfolio - Design", "Portfolio - Drama", "Portfolio - Music", "Portfolio - Visual Arts"];
 
+    // Basic Subjects to always show
+    const COMMON_SUBJECTS = [
+        "Math AA", "Math AI",
+        "Physics", "Chemistry", "Biology",
+        "Economics", "Business Management",
+        "English A", "History", "Psychology"
+    ];
+
     // Reset filters when program changes
     useEffect(() => {
         setSelectedResourceTypes([]);
         setSelectedSessions([]);
         setSelectedScores([]);
+        setSelectedSubjects([]);
     }, [selectedProgram]);
 
     const toggleSession = (session: string) => {
@@ -85,6 +95,14 @@ const ContentLibraryPage: React.FC = () => {
             prev.includes(type)
                 ? prev.filter(t => t !== type)
                 : [...prev, type]
+        );
+    };
+
+    const toggleSubject = (subj: string) => {
+        setSelectedSubjects(prev =>
+            prev.includes(subj)
+                ? prev.filter(s => s !== subj)
+                : [...prev, subj]
         );
     };
 
@@ -354,6 +372,35 @@ const ContentLibraryPage: React.FC = () => {
                             ))}
                         </Flex>
 
+                        {/* CONDITIONAL SUBJECT FILTER (Only for IA or EE) */}
+                        {(selectedResourceTypes.includes("IA") || selectedResourceTypes.includes("EE")) && (
+                            <Flex gap={3} wrap="wrap" justify="center">
+                                <Text fontSize="sm" fontWeight="600" color="gray.500" alignSelf="center" mr={2}>Subject:</Text>
+                                {[...Array.from(new Set([
+                                    ...COMMON_SUBJECTS, // Always show these
+                                    ...contentItems
+                                        .filter(item => item.program === selectedProgram && item.subject) // Plus any others found in DB
+                                        .map(item => item.subject!)
+                                ]))].sort().map(subj => (
+                                    <Button
+                                        key={subj}
+                                        size="xs"
+                                        onClick={() => toggleSubject(subj)}
+                                        variant={selectedSubjects.includes(subj) ? "solid" : "outline"}
+                                        colorScheme={selectedSubjects.includes(subj) ? "teal" : "gray"}
+                                        bg={selectedSubjects.includes(subj) ? "teal.600" : "transparent"}
+                                        color={selectedSubjects.includes(subj) ? "white" : "gray.600"}
+                                        borderColor="gray.300"
+                                        _hover={{ bg: selectedSubjects.includes(subj) ? "teal.500" : "gray.100" }}
+                                        borderRadius="md"
+                                        px={4}
+                                    >
+                                        {subj}
+                                    </Button>
+                                ))}
+                            </Flex>
+                        )}
+
                         {/* Session Filters */}
                         <Flex gap={3} wrap="wrap" justify="center">
                             {SESSIONS.map(session => (
@@ -421,6 +468,9 @@ const ContentLibraryPage: React.FC = () => {
 
                                 // 4. Filter by Score
                                 if (selectedScores.length > 0 && !selectedScores.includes(item.score?.toString() || '')) return false;
+
+                                // 5. Filter by Subject (if active)
+                                if (selectedSubjects.length > 0 && !selectedSubjects.includes(item.subject || '')) return false;
 
                                 return true;
                             })
@@ -542,10 +592,10 @@ const ContentLibraryPage: React.FC = () => {
                             })}
                     </SimpleGrid>
                 )}
-            </Flex>
+            </Flex >
 
             {/* Content Viewer Modal */}
-            <Modal isOpen={isOpen} onClose={onClose} size="full">
+            < Modal isOpen={isOpen} onClose={onClose} size="full" >
                 <ModalOverlay bg="rgba(0,0,0,0.8)" />
                 <ModalContent bg="white">
                     <ModalHeader borderBottom="1px solid" borderColor="gray.100" py={4}>
@@ -572,8 +622,8 @@ const ContentLibraryPage: React.FC = () => {
                         )}
                     </ModalBody>
                 </ModalContent>
-            </Modal>
-        </Box>
+            </Modal >
+        </Box >
     );
 };
 export default ContentLibraryPage;

@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from '@chakra-ui/icons';
-import { Menu, MenuButton, Button, MenuList, MenuItem, Icon, Flex, Image, Box } from '@chakra-ui/react';
+import { Menu, MenuButton, Button, MenuList, MenuItem, Icon, Flex, Image, Box, useColorMode, Switch } from '@chakra-ui/react';
 import { signOut, User } from 'firebase/auth';
 import React from 'react';
 import { FaUserCircle } from "react-icons/fa";
@@ -7,7 +7,7 @@ import { FaPersonBooth } from "react-icons/fa";
 import { BsChevronDown } from "react-icons/bs";
 import { VscAccount } from "react-icons/vsc";
 import { TbLogout } from "react-icons/tb";
-import { FaStar } from "react-icons/fa";
+import { FaStar, FaMoon, FaSun } from "react-icons/fa";
 import { auth } from '@/firebase/clientApp';
 import { Text } from "@chakra-ui/react";
 import { useResetRecoilState, useSetRecoilState } from 'recoil';
@@ -24,6 +24,7 @@ type UserMenuProps = {
 };
 
 const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
+    const { colorMode, toggleColorMode } = useColorMode();
     const resetSubjectState = useResetRecoilState(subjectState)
     const setAuthModalState = useSetRecoilState(AuthModalState);
     const [curriculum, setCurriculum] = useRecoilState(curriculumState);
@@ -127,6 +128,24 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
                     <Flex align="center">
                         <Icon fontSize={20} mr={2} as={FaStar} />
                         Code of Honor
+                    </Flex>
+                </MenuItem>
+
+                <Box height="1px" bg="gray.100" my={1} mx={2} />
+
+                <MenuItem
+                    fontSize="10pt"
+                    fontWeight={700}
+                    _hover={{ bg: "blue.500", color: "white" }}
+                    onClick={toggleColorMode}
+                    closeOnSelect={false}
+                >
+                    <Flex align="center" justify="space-between" width="100%">
+                        <Flex align="center">
+                            <Icon fontSize={20} mr={2} as={colorMode === 'light' ? FaMoon : FaSun} />
+                            Dark Mode
+                        </Flex>
+                        <Switch isChecked={colorMode === 'dark'} size="sm" ml={2} />
                     </Flex>
                 </MenuItem>
 

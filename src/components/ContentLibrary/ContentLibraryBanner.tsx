@@ -8,85 +8,95 @@ const ContentLibraryBanner: React.FC = () => {
 
     return (
         <Flex
-            direction={{ base: "column", md: "row" }} // Column on mobile, row on desktop
-            bg="linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+            direction={{ base: "column", md: "row" }}
+            bg="white"
+            border="1px solid"
+            borderColor="gray.200"
             borderRadius="xl"
             mb={4}
-            p={{ base: 4, md: 6 }} // Less padding on mobile
+            p={{ base: 5, md: 8 }}
             cursor="pointer"
             onClick={() => window.open('/content-library', '_blank')}
             transition="all 0.3s"
             _hover={{
                 transform: 'translateY(-2px)',
-                boxShadow: '0 10px 20px rgba(0,0,0,0.2)'
+                boxShadow: 'lg',
+                borderColor: 'purple.200'
             }}
             position="relative"
             overflow="hidden"
-            align={{ base: "stretch", md: "center" }} // Stretch on mobile for button
+            align={{ base: "flex-start", md: "center" }}
             justify="space-between"
-            gap={{ base: 4, md: 0 }} // Gap on mobile
+            gap={{ base: 6, md: 0 }}
+            boxShadow="sm"
         >
-            {/* Background Pattern */}
-            <Box
-                position="absolute"
-                top="-50%"
-                right="-10%"
-                width="300px"
-                height="300px"
-                bg="white"
-                opacity="0.1"
-                borderRadius="full"
-                filter="blur(50px)"
-            />
-            <Box
-                position="absolute"
-                bottom="-20%"
-                left="-10%"
-                width="200px"
-                height="200px"
-                bg="pink.400"
-                opacity="0.2"
-                borderRadius="full"
-                filter="blur(40px)"
-            />
+            <Flex align="center" gap={6} zIndex={1} direction="row">
+                {/* File Stack Graphic */}
+                <Box position="relative" w="50px" h="50px" mr={2}>
+                    <Box
+                        position="absolute"
+                        top="-8px"
+                        left="8px"
+                        bg="purple.100"
+                        w="40px"
+                        h="50px"
+                        borderRadius="md"
+                        border="1px solid"
+                        borderColor="purple.200"
+                        transform="rotate(10deg)"
+                    />
+                    <Box
+                        position="absolute"
+                        top="-4px"
+                        left="4px"
+                        bg="purple.200"
+                        w="40px"
+                        h="50px"
+                        borderRadius="md"
+                        border="1px solid"
+                        borderColor="purple.300"
+                        transform="rotate(5deg)"
+                    />
+                    <Flex
+                        position="absolute"
+                        top="0"
+                        left="0"
+                        bg="purple.500"
+                        w="40px"
+                        h="50px"
+                        borderRadius="md"
+                        align="center"
+                        justify="center"
+                        shadow="md"
+                    >
+                        <Icon as={FaGem} color="white" fontSize="18px" />
+                    </Flex>
+                </Box>
 
-            <Flex align="center" gap={4} zIndex={1} direction={{ base: "column", md: "row" }} textAlign={{ base: "center", md: "left" }}>
-                <Flex
-                    align="center"
-                    justify="center"
-                    bg="whiteAlpha.300"
-                    borderRadius="lg"
-                    p={3}
-                    backdropFilter="blur(10px)"
-                    alignSelf={{ base: "center", md: "unset" }}
-                >
-                    <Icon as={FaGem} fontSize="24px" color="yellow.300" />
-                </Flex>
                 <Flex direction="column">
-                    <Text fontSize={{ base: "lg", md: "xl" }} fontWeight="800" color="white" letterSpacing="wide">
+                    <Text fontSize={{ base: "lg", md: "2xl" }} fontWeight="800" color="gray.800" letterSpacing="tight" lineHeight="1.2">
                         Content Library
                     </Text>
-                    <Text fontSize="sm" color="whiteAlpha.900" fontWeight="500">
-                        Premium study guides, cheat sheets, and more.
+                    <Text fontSize="sm" color="gray.500" fontWeight="500" mt={1}>
+                        Premium IAs, EEs, and portfolios to ace your exams.
                     </Text>
                 </Flex>
             </Flex>
 
             <Button
-                variant="solid"
-                bg="white"
-                color="purple.600"
-                size="sm"
+                variant="outline"
+                colorScheme="purple"
+                size="md"
                 fontWeight="bold"
-                _hover={{ bg: "gray.100" }}
                 onClick={(e) => {
                     e.stopPropagation();
                     window.open('/content-library', '_blank');
                 }}
                 zIndex={1}
-                width={{ base: "100%", md: "auto" }} // Full width on mobile
+                width={{ base: "100%", md: "auto" }}
+                rightIcon={<Icon as={FaGem} />}
             >
-                Browse Library
+                Browse All
             </Button>
         </Flex>
     );

@@ -6,7 +6,8 @@ import CreatePostLink from '@/components/Subject/CreatePostLink';
 import Header from '@/components/Subject/Header';
 import NotFound from '@/components/Subject/NotFound';
 import { firestore } from '@/firebase/clientApp';
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, limit, orderBy, query, where } from 'firebase/firestore';
+import { Post } from '@/atoms/postsAtom';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import { stringify } from 'querystring';
@@ -16,6 +17,7 @@ import safeJsonStringify from 'safe-json-stringify';
 
 type SubjectPageProps = {
   subjectData: Subject;
+  initialPosts: Post[];
 };
 
 const isBrowser = () => typeof window !== 'undefined'; //The approach recommended by Next.js
@@ -25,7 +27,7 @@ function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-const SubjectPage: React.FC<SubjectPageProps> = ({ subjectData }) => {
+const SubjectPage: React.FC<SubjectPageProps> = ({ subjectData, initialPosts }) => {
   const [subjectStateValue, setSubjectStateValue] = useRecoilState(subjectState);
 
   if (!subjectData) {
@@ -55,7 +57,7 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subjectData }) => {
               <title>{subjectData.id}</title>
             </Head>
           </div>
-          <Posts subjectData={subjectData} />
+          <Posts subjectData={subjectData} initialPosts={initialPosts} />
         </>
 
         {/* Sidebar (25%) */}
@@ -91,6 +93,23 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     );
     const subjectDoc = await getDoc(subjectDocRef);
 
+    // Fetch initial posts for SSR performance
+    let initialPosts: Post[] = [];
+    if (subjectDoc.exists()) {
+      try {
+        const postsQuery = query(
+          collection(firestore, "posts"),
+          where("subjectId", "==", subjectDoc.id),
+          orderBy("createdAt", "desc"),
+          limit(15)
+        );
+        const postDocs = await getDocs(postsQuery);
+        initialPosts = postDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Post));
+      } catch (postError) {
+        console.log("Error fetching SSR posts:", postError);
+      }
+    }
+
     return {
       props: {
         subjectData: subjectDoc.exists()
@@ -98,6 +117,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             safeJsonStringify({ id: subjectDoc.id, ...subjectDoc.data() })
           )
           : "",
+        initialPosts: JSON.parse(safeJsonStringify(initialPosts)),
       },
     };
   } catch (error) {
