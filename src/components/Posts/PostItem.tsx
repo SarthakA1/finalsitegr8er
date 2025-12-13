@@ -373,14 +373,16 @@ const PostItem: React.FC<PostItemProps> = ({
                                     overflow="hidden"
                                     border="1px solid"
                                     borderColor="gray.200"
-                                    cursor={isImage ? "pointer" : "default"}
+                                    cursor="pointer"
                                     transition="all 0.2s"
                                     _hover={{ transform: "translateY(-2px)", shadow: "md" }}
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        // Only allow opening images, block documents to prevent download
                                         if (isImage) {
                                             window.open(imageURL, '_blank');
+                                        } else {
+                                            // Open documents in Google Docs Viewer (embedded mode) to hide download button
+                                            window.open(`https://docs.google.com/gview?url=${encodeURIComponent(imageURL)}&embedded=true`, '_blank');
                                         }
                                     }}
                                     h="140px"
