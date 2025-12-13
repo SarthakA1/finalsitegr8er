@@ -302,7 +302,7 @@ const ContentLibraryPage: React.FC = () => {
     return (
         <Box minH="100vh" bg="gray.50" py={10} px={{ base: 4, md: 10 }}>
             <Head>
-                <title>Library | Gr8er IB</title>
+                <title>Library | GR8ER IB</title>
             </Head>
 
             <Flex direction="column" maxWidth="1200px" mx="auto">
@@ -535,13 +535,13 @@ const ContentLibraryPage: React.FC = () => {
                                                     <iframe
                                                         src={`https://docs.google.com/gview?url=${encodeURIComponent(item.url)}&embedded=true`}
                                                         style={{
-                                                            width: '200%',
-                                                            height: '200%',
-                                                            marginTop: '-60px', // Hide toolbar
-                                                            marginLeft: '-50%', // Center horizontally
+                                                            width: '120%',
+                                                            height: '180%',
+                                                            marginTop: '-70px',
+                                                            marginLeft: '-10%',
                                                             border: 'none',
                                                             overflow: 'hidden',
-                                                            transform: 'scale(0.8)', // Zoom out to fit more page context
+                                                            transform: 'scale(1.1)',
                                                             transformOrigin: 'top center',
                                                             pointerEvents: 'none'
                                                         }}

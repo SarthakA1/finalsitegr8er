@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import PostItem from './PostItem';
 import PostLoader from './PostLoader';
+import GoogleAd from '../Ads/GoogleAd';
 
 type PostsProps = {
     subjectData: Subject;
@@ -338,17 +339,24 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId, initialPosts }) => {
                     </Box>
 
 
-                    {postStateValue.posts.map((item: any, index: any) =>
-                        <PostItem
-                            post={item}
-                            userIsCreator={user?.uid === item.creatorId}
-                            userVoteValue={postStateValue.postVotes.find((vote: { postId: any; }) => vote.postId === item.id)?.voteValue}
-                            onVote={onVote}
-                            onSelectPost={onSelectPost}
-                            onDeletePost={onDeletePost}
-                            key={index}
-                        />
-                    )}
+                    {postStateValue.posts.map((item: any, index: any) => (
+                        <React.Fragment key={index}>
+                            <PostItem
+                                post={item}
+                                userIsCreator={user?.uid === item.creatorId}
+                                userVoteValue={postStateValue.postVotes.find((vote: { postId: any; }) => vote.postId === item.id)?.voteValue}
+                                onVote={onVote}
+                                onSelectPost={onSelectPost}
+                                onDeletePost={onDeletePost}
+                            />
+                            {/* Insert Ad every 5 posts */}
+                            {(index + 1) % 5 === 0 && (
+                                <Box my={4} borderRadius="md" overflow="hidden" boxShadow="sm" border="1px solid" borderColor="gray.100">
+                                    <GoogleAd slot="feed-ad-placeholder" format="auto" />
+                                </Box>
+                            )}
+                        </React.Fragment>
+                    ))}
                 </Stack>
             )}
 

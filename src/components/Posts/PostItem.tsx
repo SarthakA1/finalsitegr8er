@@ -407,13 +407,13 @@ const PostItem: React.FC<PostItemProps> = ({
                                             <iframe
                                                 src={`https://docs.google.com/gview?url=${encodeURIComponent(imageURL)}&embedded=true`}
                                                 style={{
-                                                    width: '200%',
-                                                    height: '200%',
-                                                    marginTop: '-60px',
-                                                    marginLeft: '-50%',
+                                                    width: '120%',
+                                                    height: '180%',
+                                                    marginTop: '-70px',
+                                                    marginLeft: '-10%',
                                                     border: 'none',
                                                     overflow: 'hidden',
-                                                    transform: 'scale(0.8)',
+                                                    transform: 'scale(1.1)',
                                                     transformOrigin: 'top center',
                                                     pointerEvents: 'none'
                                                 }}

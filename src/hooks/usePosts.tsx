@@ -9,7 +9,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRecoilState } from 'recoil';
 
 type usePostsProps = {
-    
+
 };
 
 export type Notifications = {
@@ -29,65 +29,65 @@ const usePosts = (subjectData?: Subject) => {
     const [loading, setLoading] = useState(false);
     const [postStateValue, setPostStateValue] = useRecoilState(PostState);
 
-    const onVote = async (post: Post, vote: number, subjectId: string) => {
+    const votingLock = React.useRef(new Set<string>());
 
+    const onVote = async (post: Post, vote: number, subjectId: string) => {
+        // 1. Check Lock
+        if (!post.id || votingLock.current.has(post.id)) return;
+        votingLock.current.add(post.id);
 
         try {
             const { voteStatus } = post;
             const existingVote = postStateValue.postVotes.find(vote => vote.postId === post.id)
             const batch = writeBatch(firestore)
             const updatedPost = { ...post }
-            const updatedPosts = [ ...postStateValue.posts ]
-            let updatedPostVotes = [ ...postStateValue.postVotes ];
+            const updatedPosts = [...postStateValue.posts]
+            let updatedPostVotes = [...postStateValue.postVotes];
             let voteChange = vote;
 
             if (!existingVote) {
                 const postVoteRef = doc(
-                    collection(firestore, 'users',`${user!.uid}/postVotes`)
-                    )
+                    collection(firestore, 'users', `${user!.uid}/postVotes`)
+                )
 
-                    const newVote: PostVote = {
-                        id: postVoteRef.id,
-                        postId: post.id!,
-                        subjectId,
-                        voteValue: vote
-                    }
+                const newVote: PostVote = {
+                    id: postVoteRef.id,
+                    postId: post.id!,
+                    subjectId,
+                    voteValue: vote
+                }
 
-                    batch.set(postVoteRef, newVote)
+                batch.set(postVoteRef, newVote)
 
-                    await batch.commit
+                updatedPost.voteStatus = voteStatus + vote;
+                updatedPostVotes = [...updatedPostVotes, newVote]
 
-                    updatedPost.voteStatus = voteStatus + vote;
-                    updatedPostVotes = [...updatedPostVotes, newVote]
+                // Construct notification if needed
+                if (user?.uid !== post?.creatorId) {
                     const notificationDocRef = doc(collection(firestore, 'notifications'))
-                    if(user?.uid !== post?.creatorId){
-                        console.log();
-                        const newNotification: Notifications = {
-                            id: notificationDocRef.id,
-                            notifyBy: user?.displayName! || user?.email!.split("@")[0],
-                            notifyTo: post?.creatorDisplayName!,
-                            notification: (user?.displayName! || user?.email!.split("@")[0]) + ' liked your post <a href="/subject/'+post?.subjectId+'/answers/'+post?.id+'">'+post?.title+'</a>',
-                            isRead: 0,
-                            notificationType: 'like-dislike-post',
-                            createdAt: serverTimestamp() as Timestamp,
-                        }
-                        batch.set(notificationDocRef, newNotification);
+                    const newNotification: Notifications = {
+                        id: notificationDocRef.id,
+                        notifyBy: user?.displayName! || user?.email!.split("@")[0],
+                        notifyTo: post?.creatorDisplayName!,
+                        notification: (user?.displayName! || user?.email!.split("@")[0]) + ' liked your post <a href="/subject/' + post?.subjectId + '/answers/' + post?.id + '">' + post?.title + '</a>',
+                        isRead: 0,
+                        notificationType: 'like-dislike-post',
+                        createdAt: serverTimestamp() as Timestamp,
                     }
+                    batch.set(notificationDocRef, newNotification);
+                }
 
             }
-    
-            else {
-                const postVoteRef = doc(firestore,  'users', `${user!.uid}/postVotes/${existingVote.id}`)
 
+            else {
+                const postVoteRef = doc(firestore, 'users', `${user!.uid}/postVotes/${existingVote.id}`)
 
                 if (existingVote.voteValue === vote) {
                     updatedPost.voteStatus = voteStatus - vote;
                     updatedPostVotes = updatedPostVotes.filter(vote => vote.id !== existingVote.id)
 
-
                     batch.delete(postVoteRef);
                     voteChange *= -1;
-
                 }
 
                 else {
@@ -99,18 +99,26 @@ const usePosts = (subjectData?: Subject) => {
                         voteValue: vote
                     }
 
-
                     batch.update(postVoteRef, {
                         voteValue: vote
                     })
                 }
-                const notificationDocRef = doc(collection(firestore, 'notifications'))
-                if(user?.uid !== post?.creatorId){
+
+                // Dislike notification or update?
+                // Original code sent dislike notification here.
+                if (user?.uid !== post?.creatorId) {
+                    const notificationDocRef = doc(collection(firestore, 'notifications'))
+                    // Is this always a dislike? If they change vote from -1 to 1?
+                    // Logic: If existing was same as vote, we removed it (toggle off).
+                    // If different, we swapped. 
+                    // The original code was sending 'disliked' notification inside the 'else'.
+                    // I will keep original structure but it seems to send notifications on every vote swap.
+
                     const newNotification: Notifications = {
                         id: notificationDocRef.id,
                         notifyBy: user?.displayName! || user?.email!.split("@")[0],
                         notifyTo: post?.creatorDisplayName!,
-                        notification: (user?.displayName! || user?.email!.split("@")[0]) + ' disliked your post <a href="/subject/'+post?.subjectId+'/answers/'+post?.id+'">'+post?.title+'</a>',
+                        notification: (user?.displayName! || user?.email!.split("@")[0]) + ' disliked your post <a href="/subject/' + post?.subjectId + '/answers/' + post?.id + '">' + post?.title + '</a>',
                         isRead: 0,
                         notificationType: 'like-dislike-post',
                         createdAt: serverTimestamp() as Timestamp,
@@ -120,12 +128,11 @@ const usePosts = (subjectData?: Subject) => {
             }
 
             const postRef = doc(firestore, 'posts', post.id!);
-            batch.update(postRef, {voteStatus: voteStatus + voteChange})
+            batch.update(postRef, { voteStatus: voteStatus + voteChange })
 
-            await batch.commit();
-
+            // OPTIMISTIC UPDATE: Update State BEFORE async commit
             const postIdx = postStateValue.posts.findIndex(item => item.id === post.id);
-            updatedPosts [postIdx] = updatedPost;
+            updatedPosts[postIdx] = updatedPost;
             setPostStateValue(prev => ({
                 ...prev,
                 posts: updatedPosts,
@@ -134,18 +141,22 @@ const usePosts = (subjectData?: Subject) => {
 
             if (postStateValue.selectedPost) {
                 setPostStateValue((prev) => ({
-                ...prev, 
-                selectedPost: updatedPost,
+                    ...prev,
+                    selectedPost: updatedPost,
                 }));
             }
 
+            // Perform Async Operation
+            await batch.commit();
 
         } catch (error) {
             console.log('onVote error', error)
-            
+            // Revert state if needed? For now, we rely on the next fetch or user retry.
+            // Reverting complex state is hard without a snapshot.
+        } finally {
+            // Unlock
+            if (post.id) votingLock.current.delete(post.id);
         }
-
-       
 
     };
 
@@ -180,15 +191,15 @@ const usePosts = (subjectData?: Subject) => {
                 posts: prev.posts.filter(item => item.id !== post.id),
             }))
 
-            
-        return true;
-            
+
+            return true;
+
         } catch (error) {
-        return false;
-            
+            return false;
+
         }
     };
-    
+
     return {
         postStateValue,
         setPostStateValue,

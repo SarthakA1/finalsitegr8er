@@ -31,7 +31,7 @@ const ConstructionModal: React.FC<ConstructionModalProps> = ({ isOpen, onClose }
                     <Flex direction="column" align="center" justify="center" textAlign="center">
                         <Box position="relative" mb={6}>
                             {/* Improved Construction Graphic Placeholder */}
-                            <Image src="/images/gr8er_logo.png" h="60px" mb={4} opacity={0.5} filter="grayscale(100%)" />
+                            <Image src="/images/gr8er.png" h="60px" mb={4} opacity={0.5} filter="grayscale(100%)" />
                         </Box>
 
                         <Text fontSize="lg" fontWeight="600" mb={2} color="gray.700">

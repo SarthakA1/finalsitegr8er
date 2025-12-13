@@ -310,18 +310,22 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
                                     <>
                                         {/* DP Filters - Level & Paper Combined */}
                                         <Flex
-                                            gap={2}
-                                            wrap={{ base: "nowrap", md: "wrap" }}
+                                            direction={{ base: "column", md: "row" }}
+                                            gap={{ base: 3, md: 2 }}
+                                            align={{ base: "flex-start", md: "center" }}
                                             justify={{ base: "flex-start", md: "center" }}
-                                            align="center"
                                             w="100%"
-                                            overflowX={{ base: "auto", md: "visible" }}
-                                            pb={{ base: 2, md: 0 }}
-                                            css={{ "&::-webkit-scrollbar": { display: "none" } }}
                                         >
                                             {/* Level */}
-                                            <Flex gap={1} align="center" flexShrink={0}>
-                                                <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1}>Level:</Text>
+                                            <Flex
+                                                gap={1}
+                                                align="center"
+                                                w={{ base: "100%", md: "auto" }}
+                                                overflowX={{ base: "auto", md: "visible" }}
+                                                css={{ "&::-webkit-scrollbar": { display: "none" } }}
+                                                justify={{ base: "flex-start", md: "center" }}
+                                            >
+                                                <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1} flexShrink={0}>Level:</Text>
                                                 {['HL', 'SL'].map((level) => {
                                                     const isActive = activeFilters.level?.includes(level);
                                                     return (
@@ -350,8 +354,15 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
                                             <Box width="1px" height="15px" bg="gray.300" mx={1} display={{ base: "none", md: "block" }} flexShrink={0} />
 
                                             {/* Paper */}
-                                            <Flex gap={1} align="center" flexShrink={0}>
-                                                <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1}>Paper:</Text>
+                                            <Flex
+                                                gap={1}
+                                                align="center"
+                                                w={{ base: "100%", md: "auto" }}
+                                                overflowX={{ base: "auto", md: "visible" }}
+                                                css={{ "&::-webkit-scrollbar": { display: "none" } }}
+                                                justify={{ base: "flex-start", md: "center" }}
+                                            >
+                                                <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1} flexShrink={0}>Paper:</Text>
                                                 {['1', '2', '3'].map((paper) => {
                                                     const isActive = activeFilters.paper?.includes(paper);
                                                     return (
@@ -382,18 +393,22 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
                                     <>
                                         {/* MYP Filters - Grade & Criteria Combined */}
                                         <Flex
-                                            gap={2}
-                                            wrap={{ base: "nowrap", md: "wrap" }}
+                                            direction={{ base: "column", md: "row" }}
+                                            gap={{ base: 3, md: 2 }}
+                                            align={{ base: "flex-start", md: "center" }}
                                             justify={{ base: "flex-start", md: "center" }}
-                                            align="center"
                                             w="100%"
-                                            overflowX={{ base: "auto", md: "visible" }}
-                                            pb={{ base: 2, md: 0 }}
-                                            css={{ "&::-webkit-scrollbar": { display: "none" } }}
                                         >
                                             {/* Grade */}
-                                            <Flex gap={1} align="center" flexShrink={0}>
-                                                <Text fontSize="10px" fontWeight="700" color="gray.400" textTransform="uppercase" mr={1}>Grade:</Text>
+                                            <Flex
+                                                gap={1}
+                                                align="center"
+                                                w={{ base: "100%", md: "auto" }}
+                                                overflowX={{ base: "auto", md: "visible" }}
+                                                css={{ "&::-webkit-scrollbar": { display: "none" } }}
+                                                justify={{ base: "flex-start", md: "center" }}
+                                            >
+                                                <Text fontSize="10px" fontWeight="700" color="gray.400" textTransform="uppercase" mr={1} flexShrink={0}>Grade:</Text>
                                                 {['1', '2', '3', '4', '5'].map((grade) => {
                                                     const isActive = activeFilters.grade?.includes(grade);
                                                     return (
@@ -421,8 +436,15 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
                                             <Box width="1px" height="15px" bg="gray.300" mx={1} display={{ base: "none", md: "block" }} flexShrink={0} />
 
                                             {/* Criteria */}
-                                            <Flex gap={1} align="center" flexShrink={0}>
-                                                <Text fontSize="10px" fontWeight="700" color="gray.400" textTransform="uppercase" mr={1}>Criteria:</Text>
+                                            <Flex
+                                                gap={1}
+                                                align="center"
+                                                w={{ base: "100%", md: "auto" }}
+                                                overflowX={{ base: "auto", md: "visible" }}
+                                                css={{ "&::-webkit-scrollbar": { display: "none" } }}
+                                                justify={{ base: "flex-start", md: "center" }}
+                                            >
+                                                <Text fontSize="10px" fontWeight="700" color="gray.400" textTransform="uppercase" mr={1} flexShrink={0}>Criteria:</Text>
                                                 {['Criteria A', 'Criteria B', 'Criteria C', 'Criteria D'].map((criteria) => {
                                                     const isActive = activeFilters.criteria?.includes(criteria);
                                                     return (
