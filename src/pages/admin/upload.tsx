@@ -58,8 +58,7 @@ const AdminUploadPage = () => {
     useEffect(() => {
         const loadPdfWorker = async () => {
             const pdfjs = await import('pdfjs-dist/build/pdf');
-            const pdfjsWorker = await import('pdfjs-dist/build/pdf.worker.entry');
-            pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker.default;
+            pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
         };
         loadPdfWorker();
     }, []);
