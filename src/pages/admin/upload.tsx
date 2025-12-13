@@ -12,7 +12,10 @@ import {
     Textarea,
     NumberInput,
     NumberInputField,
+    Radio,
+    RadioGroup,
     Stack,
+    Select,
     Text,
     useToast,
     VStack,
@@ -68,7 +71,7 @@ const AdminUploadPage = () => {
     };
 
     const handleUpload = async () => {
-        if (!title || !price || !thumbnailFile || !contentFile) {
+        if (!title || !description || !thumbnailFile || !contentFile) {
             toast({
                 title: 'Missing Fields',
                 description: 'Please fill all fields and select files.',
@@ -99,6 +102,8 @@ const AdminUploadPage = () => {
                 score: Number(score),
                 session,
                 subject,
+                program,
+                resourceType,
                 thumbnail: thumbnailUrl,
                 url: contentUrl,
                 type: contentFile.type.includes('image') ? 'image' : 'pdf', // Simple type check
@@ -123,6 +128,8 @@ const AdminUploadPage = () => {
             setThumbnailFile(null);
             setThumbnailPreview('');
             setContentFile(null);
+            setProgram('DP');
+            setResourceType('IA');
 
         } catch (error: any) {
             console.error('Upload error', error);
@@ -151,6 +158,26 @@ const AdminUploadPage = () => {
                     <FormLabel>Description</FormLabel>
                     <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Short description of the resource..." />
                 </FormControl>
+
+                <Flex gap={4}>
+                    <FormControl>
+                        <FormLabel>Program</FormLabel>
+                        <RadioGroup onChange={setProgram} value={program}>
+                            <Stack direction='row'>
+                                <Radio value='DP'>IB DP</Radio>
+                                <Radio value='MYP'>IB MYP</Radio>
+                            </Stack>
+                        </RadioGroup>
+                    </FormControl>
+                    <FormControl>
+                        <FormLabel>Resource Type</FormLabel>
+                        <Select value={resourceType} onChange={(e) => setResourceType(e.target.value)}>
+                            {(program === 'DP' ? RESOURCE_TYPES_DP : RESOURCE_TYPES_MYP).map(type => (
+                                <option key={type} value={type}>{type}</option>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Flex>
 
                 <Flex gap={4}>
                     <FormControl>

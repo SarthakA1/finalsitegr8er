@@ -15,13 +15,15 @@ export type ContentItem = {
     score?: number; // e.g. 7, 6, 5
     session?: string; // e.g. "May 2025"
     subject?: string; // e.g. "Math AA HL"
+    program?: "DP" | "MYP";
+    resourceType?: string; // e.g. "IA", "EE", "Personal Project"
 };
 
 // MOCK DATA
 const MOCK_CONTENT: ContentItem[] = [
     {
         id: "item_1",
-        title: "Complete Algebra II Study Guide",
+        title: "Math AA HL IA: Modelling Coffee Cooling",
         description: "A comprehensive guide to mastering Algebra II, including practice problems and clear explanations.",
         url: "/assets/content/content-item-1.png",
         thumbnail: "/assets/content/content-item-1.png",
@@ -30,21 +32,55 @@ const MOCK_CONTENT: ContentItem[] = [
         createdAt: new Date(),
         score: 7,
         session: "May 2024",
-        subject: "Math AA HL"
+        subject: "Math AA HL",
+        program: "DP",
+        resourceType: "IA"
     },
     {
         id: "item_2",
-        title: "Physics Mechanics Cheat Sheet",
-        description: "The ultimate cheat sheet for Physics Mechanics. All formulas and concepts on one page.",
-        url: "/assets/content/content-item-2.jpg",
-        thumbnail: "/assets/content/content-item-2.jpg",
-        price: 5.00,
-        type: "image",
+        title: "IB Economics HL Essay",
+        description: "Detailed breakdown of the 2024 Economics HL Paper key concepts.",
+        url: "/assets/content/content-item-2.png",
+        thumbnail: "/assets/content/content-item-2.png",
+        price: 8.00,
+        type: "pdf",
+        createdAt: new Date(),
+        score: 7,
+        session: "Nov 2023",
+        subject: "Economics HL",
+        program: "DP",
+        resourceType: "EE"
+    },
+    {
+        id: "item_3",
+        title: "MYP Personal Project: Sustainable Fashion",
+        description: "Example Personal Project report achieving top bands.",
+        url: "/assets/content/content-item-1.png",
+        thumbnail: "/assets/content/content-item-1.png",
+        price: 4.50,
+        type: "pdf",
         createdAt: new Date(),
         score: 6,
-        session: "Nov 2024",
-        subject: "Physics HL"
+        session: "May 2024",
+        subject: "Personal Project",
+        program: "MYP",
+        resourceType: "Personal Project"
     },
+    {
+        id: "item_4",
+        title: "MYP Design Portfolio: Smart Lamp",
+        description: "Complete design cycle portfolio for Year 5 Design.",
+        url: "/assets/content/content-item-2.png",
+        thumbnail: "/assets/content/content-item-2.png",
+        price: 6.00,
+        type: "pdf",
+        createdAt: new Date(),
+        score: 7,
+        session: "Nov 2023",
+        subject: "Design",
+        program: "MYP",
+        resourceType: "Portfolio - Design"
+    }
 ];
 
 const useContentLibrary = () => {

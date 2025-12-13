@@ -44,8 +44,49 @@ const ContentLibraryPage: React.FC = () => {
     const [purchasedIds, setPurchasedIds] = useState<Set<string>>(new Set());
 
     // Filters
-    const [filterSession, setFilterSession] = useState("");
-    const [filterScore, setFilterScore] = useState("");
+    const [selectedProgram, setSelectedProgram] = useState<"DP" | "MYP">("DP");
+    const [selectedSessions, setSelectedSessions] = useState<string[]>([]);
+    const [selectedScores, setSelectedScores] = useState<string[]>([]);
+    const [selectedResourceTypes, setSelectedResourceTypes] = useState<string[]>([]);
+
+    // Filter Options
+    const SESSIONS = ["May 2025", "Nov 2024", "May 2024", "Nov 2023"];
+    const SCORES = ["7", "6", "5"];
+
+    // Resource Types
+    const RESOURCE_TYPES_DP = ["IA", "EE", "TOK"];
+    const RESOURCE_TYPES_MYP = ["Personal Project", "Portfolio - Design", "Portfolio - Drama", "Portfolio - Music", "Portfolio - Visual Arts"];
+
+    // Reset filters when program changes
+    useEffect(() => {
+        setSelectedResourceTypes([]);
+        setSelectedSessions([]);
+        setSelectedScores([]);
+    }, [selectedProgram]);
+
+    const toggleSession = (session: string) => {
+        setSelectedSessions(prev =>
+            prev.includes(session)
+                ? prev.filter(s => s !== session)
+                : [...prev, session]
+        );
+    };
+
+    const toggleScore = (score: string) => {
+        setSelectedScores(prev =>
+            prev.includes(score)
+                ? prev.filter(s => s !== score)
+                : [...prev, score]
+        );
+    };
+
+    const toggleResourceType = (type: string) => {
+        setSelectedResourceTypes(prev =>
+            prev.includes(type)
+                ? prev.filter(t => t !== type)
+                : [...prev, type]
+        );
+    };
 
     const toast = useToast();
 
@@ -243,7 +284,7 @@ const ContentLibraryPage: React.FC = () => {
 
             <Flex direction="column" maxWidth="1200px" mx="auto">
                 {/* Header */}
-                <Box mb={10} textAlign="center">
+                <Box mb={8} textAlign="center">
                     <Text
                         fontSize={{ base: "3xl", md: "4xl" }}
                         fontWeight="800"
@@ -258,9 +299,61 @@ const ContentLibraryPage: React.FC = () => {
                     </Text>
                 </Box>
 
+                {/* PROGRAM SWITCHER */}
+                <Flex justify="center" mb={10}>
+                    <Flex bg="gray.200" p={1} borderRadius="full" gap={1}>
+                        <Button
+                            borderRadius="full"
+                            px={8}
+                            variant={selectedProgram === "DP" ? "solid" : "ghost"}
+                            bg={selectedProgram === "DP" ? "white" : "transparent"}
+                            color={selectedProgram === "DP" ? "black" : "gray.600"}
+                            boxShadow={selectedProgram === "DP" ? "sm" : "none"}
+                            _hover={{ bg: selectedProgram === "DP" ? "white" : "gray.300" }}
+                            onClick={() => setSelectedProgram("DP")}
+                        >
+                            IB DP
+                        </Button>
+                        <Button
+                            borderRadius="full"
+                            px={8}
+                            variant={selectedProgram === "MYP" ? "solid" : "ghost"}
+                            bg={selectedProgram === "MYP" ? "white" : "transparent"}
+                            color={selectedProgram === "MYP" ? "black" : "gray.600"}
+                            boxShadow={selectedProgram === "MYP" ? "sm" : "none"}
+                            _hover={{ bg: selectedProgram === "MYP" ? "white" : "gray.300" }}
+                            onClick={() => setSelectedProgram("MYP")}
+                        >
+                            IB MYP
+                        </Button>
+                    </Flex>
+                </Flex>
+
                 {/* Filters */}
                 <Box mb={12}>
                     <Flex direction="column" gap={6} align="center">
+
+                        {/* Resource Type Filters (Dynamic) */}
+                        <Flex gap={3} wrap="wrap" justify="center">
+                            {(selectedProgram === "DP" ? RESOURCE_TYPES_DP : RESOURCE_TYPES_MYP).map(type => (
+                                <Button
+                                    key={type}
+                                    size="sm"
+                                    onClick={() => toggleResourceType(type)}
+                                    variant={selectedResourceTypes.includes(type) ? "solid" : "outline"}
+                                    colorScheme={selectedResourceTypes.includes(type) ? "blue" : "gray"}
+                                    bg={selectedResourceTypes.includes(type) ? "blue.600" : "transparent"}
+                                    color={selectedResourceTypes.includes(type) ? "white" : "gray.600"}
+                                    borderColor="gray.300"
+                                    _hover={{ bg: selectedResourceTypes.includes(type) ? "blue.500" : "gray.100" }}
+                                    borderRadius="full"
+                                    px={6}
+                                >
+                                    {type}
+                                </Button>
+                            ))}
+                        </Flex>
+
                         {/* Session Filters */}
                         <Flex gap={3} wrap="wrap" justify="center">
                             {SESSIONS.map(session => (
@@ -314,8 +407,21 @@ const ContentLibraryPage: React.FC = () => {
                     <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8}>
                         {contentItems
                             .filter(item => {
+                                // 1. Filter by Program (Default to DP if generic item without program for now, or hide?)
+                                // Better: if item has no program, maybe show it? For now, stricly filter if program exists. 
+                                // To make sure mock data shows up:
+                                const itemProgram = item.program || "DP"; // Default to DP for legacy items
+                                if (itemProgram !== selectedProgram) return false;
+
+                                // 2. Filter by Resource Type
+                                if (selectedResourceTypes.length > 0 && !selectedResourceTypes.includes(item.resourceType || '')) return false;
+
+                                // 3. Filter by Sessions
                                 if (selectedSessions.length > 0 && !selectedSessions.includes(item.session || '')) return false;
+
+                                // 4. Filter by Score
                                 if (selectedScores.length > 0 && !selectedScores.includes(item.score?.toString() || '')) return false;
+
                                 return true;
                             })
                             .map((item) => {
@@ -357,6 +463,26 @@ const ContentLibraryPage: React.FC = () => {
                                                     px={2}
                                                 >
                                                     OWNED
+                                                </Badge>
+                                            )}
+
+                                            {/* Dynamic Resource Type Badge */}
+                                            {item.resourceType && (
+                                                <Badge
+                                                    position="absolute"
+                                                    top={3}
+                                                    left={3}
+                                                    bg="white"
+                                                    color="blue.600"
+                                                    boxShadow="md"
+                                                    borderRadius="md"
+                                                    px={2}
+                                                    py={0.5}
+                                                    fontSize="xs"
+                                                    textTransform="none"
+                                                    fontWeight="700"
+                                                >
+                                                    {item.resourceType}
                                                 </Badge>
                                             )}
 
