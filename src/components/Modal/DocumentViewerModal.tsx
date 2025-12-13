@@ -24,72 +24,59 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                     _hover={{ bg: "whiteAlpha.400" }}
                 />
                 <ModalBody p={0} h="100vh" w="100vw" overflow="hidden" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-                    {/* Header/Title Overlay */}
-                    {title && (
-                        <Flex
-                            position="fixed"
-                            top="20px"
-                            left="50%"
-                            transform="translateX(-50%)"
-                            bg="blackAlpha.600"
-                            px={6}
-                            py={2}
-                            borderRadius="full"
-                            zIndex={998}
-                        >
-                            <Text color="white" fontWeight="600">{title}</Text>
-                        </Flex>
-                    )}
+
 
                     {/* Document Container - Cropped to hide toolbar */}
                     <Box
                         w={{ base: "100%", md: "80%" }}
                         h={{ base: "100%", md: "90%" }}
-                        bg="white"
+                        bg="gray.100"
                         borderRadius={{ base: 0, md: "xl" }}
                         overflow="hidden"
                         position="relative"
+                        boxShadow="2xl"
+                        border="1px solid"
+                        borderColor="whiteAlpha.300"
                     >
-                        <iframe
-                            src={`https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`}
-                            style={{
-                                width: '100%',
-                                height: '100%',
-                                border: 'none',
-                            }}
-                            title="Document Preview"
-                        />
-
-                        {/* 
-                           Overlays to mask the Google Docs Toolbar.
-                           Google Docs Viewer places a toolbar at the top ~50px and a pop-out button at the top-right.
-                        */}
-
-                        {/* Top Toolbar Mask */}
-                        <Box
+                        {/* Header Bar inside container */}
+                        <Flex
                             position="absolute"
                             top="0"
                             left="0"
                             right="0"
-                            height="55px"
+                            height="50px"
                             bg="white"
-                            zIndex={10}
-                        />
-                        {/* Right Side Mask (Pop-out button) */}
-                        <Box
-                            position="absolute"
-                            top="0"
-                            right="0"
-                            width="60px"
-                            height="60px"
-                            bg="white"
-                            zIndex={11}
-                        />
+                            borderBottom="1px solid"
+                            borderColor="gray.200"
+                            zIndex={20}
+                            align="center"
+                            px={4}
+                            justify="center"
+                        >
+                            <Text fontWeight="600" fontSize="sm" color="gray.700" isTruncated maxW="90%">
+                                {title || 'Document Viewer'}
+                            </Text>
+                        </Flex>
+
+                        <Box w="100%" h="100%" pt="50px" overflow="hidden">
+                            <iframe
+                                src={`https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`}
+                                style={{
+                                    width: '100%',
+                                    height: 'calc(100% + 60px)', // Increase height
+                                    marginTop: '-58px', // Shift up to hide Google Docs header
+                                    border: 'none',
+                                }}
+                                title="Document Preview"
+                            />
+                        </Box>
 
                     </Box>
-                </ModalBody>
-            </ModalContent>
-        </Modal>
+
+                </Box>
+            </ModalBody>
+        </ModalContent>
+        </Modal >
     );
 };
 
