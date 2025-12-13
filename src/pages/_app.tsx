@@ -7,7 +7,7 @@ import { RecoilRoot } from 'recoil';
 import '../lib/css/customstyle.css';
 import { Outfit, Inter } from '@next/font/google'
 
-import Script from 'next/script';
+
 
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' })
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -22,14 +22,7 @@ function App({ Component, pageProps }: AppProps) {
         }
       `}</style>
 
-      {/* Google AdSense Script */}
-      <Script
-        id="adsbygoogle-init"
-        strategy="afterInteractive"
-        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6442166008118008`}
-        crossOrigin="anonymous"
-        onError={(e) => { console.error('Script failed to load', e) }}
-      />
+
 
       <ChakraProvider theme={theme}>
         <Layout>
