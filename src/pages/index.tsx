@@ -56,11 +56,12 @@ const LandingPage: NextPage = () => {
 
   return (
     <Box
+      h="100vh" // Strict height for no scroll on desktop
       minH="100vh"
       w="100%"
       bg="#fdfbf7"
       position="relative"
-      overflowY={{ base: "auto", md: "hidden" }} // Allow scroll on mobile
+      overflowY="auto" // Allow scroll if screen is tiny, but aim to fit
       sx={{
         backgroundImage: `radial-gradient(#e5e7eb 1px, transparent 1px)`,
         backgroundSize: '20px 20px',
@@ -81,10 +82,10 @@ const LandingPage: NextPage = () => {
         zIndex={0}
       />
 
-      <Container maxW="container.xl" h={{ base: "auto", md: "100%" }} minH={{ base: "100vh", md: "unset" }} position="relative" zIndex={1} display="flex" flexDirection="column" justifyContent="center" pt={{ base: 20, md: 0 }} pb={{ base: 10, md: 0 }}>
+      <Container maxW="container.xl" h="100%" position="relative" zIndex={1} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
 
         {/* Hero Section - Tightened */}
-        <Flex direction="column" align="center" textAlign="center" mb={{ base: 6, md: 4 }}>
+        <Flex direction="column" align="center" textAlign="center" mb={{ base: 4, md: 6 }}>
           <MotionBox
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -112,9 +113,9 @@ const LandingPage: NextPage = () => {
         {/* Curriculum Cards - Adjusted gap/margins */}
         <Flex
           justify="center"
-          gap={{ base: 4, md: 8 }}
+          gap={{ base: 4, md: 6 }}
           wrap="wrap"
-          mb={6}
+          mb={{ base: 6, md: 8 }}
           alignItems="stretch"
         >
           {/* MYP Card */}
@@ -132,8 +133,8 @@ const LandingPage: NextPage = () => {
               direction="column"
               align="center"
               justify="center"
-              w={{ base: "260px", md: "280px" }}
-              h={{ base: "280px", md: "300px" }}
+              w={{ base: "260px", md: "260px" }}
+              h={{ base: "260px", md: "280px" }}
               bg="white"
               borderRadius="xl"
               p={5}
@@ -180,8 +181,8 @@ const LandingPage: NextPage = () => {
               direction="column"
               align="center"
               justify="center"
-              w={{ base: "260px", md: "280px" }}
-              h={{ base: "280px", md: "300px" }}
+              w={{ base: "260px", md: "260px" }}
+              h={{ base: "260px", md: "280px" }}
               bg="white"
               borderRadius="xl"
               p={5}
