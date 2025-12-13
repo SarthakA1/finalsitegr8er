@@ -83,42 +83,47 @@ const MOCK_CONTENT: ContentItem[] = [
     }
 ];
 
-const initialized = useRef(false);
+const useContentLibrary = () => {
+    const [contentItems, setContentItems] = useState<ContentItem[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
-const getContentItems = async () => {
-    setLoading(true);
-    try {
-        const contentQuery = query(
-            collection(firestore, "content_library"),
-            orderBy("createdAt", "desc")
-        );
-        const contentDocs = await getDocs(contentQuery);
-        const items = contentDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const initialized = useRef(false);
 
-        // Format timestamps or other data if necessary
-        const formattedItems = items.map((item: any) => ({
-            ...item,
-            createdAt: item.createdAt?.toDate ? item.createdAt.toDate() : new Date(), // Handle Firestore Timestamp
-        })) as ContentItem[];
+    const getContentItems = async () => {
+        setLoading(true);
+        try {
+            const contentQuery = query(
+                collection(firestore, "content_library"),
+                orderBy("createdAt", "desc")
+            );
+            const contentDocs = await getDocs(contentQuery);
+            const items = contentDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
-        setContentItems(formattedItems);
-    } catch (error: any) {
-        console.error("getContentItems error", error);
-        setError(error.message);
-    } finally {
-        setLoading(false);
-    }
-};
+            // Format timestamps or other data if necessary
+            const formattedItems = items.map((item: any) => ({
+                ...item,
+                createdAt: item.createdAt?.toDate ? item.createdAt.toDate() : new Date(), // Handle Firestore Timestamp
+            })) as ContentItem[];
 
-useEffect(() => {
-    if (initialized.current) return;
-    initialized.current = true;
+            setContentItems(formattedItems);
+        } catch (error: any) {
+            console.error("getContentItems error", error);
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    console.log("useContentLibrary mounting, fetching items...");
-    getContentItems();
-}, []);
+    useEffect(() => {
+        if (initialized.current) return;
+        initialized.current = true;
 
-return { contentItems, loading, error, refreshContent: getContentItems };
+        console.log("useContentLibrary mounting, fetching items...");
+        getContentItems();
+    }, []);
+
+    return { contentItems, loading, error, refreshContent: getContentItems };
 };
 
 export default useContentLibrary;
