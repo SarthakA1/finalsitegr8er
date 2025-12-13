@@ -73,9 +73,9 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
 
                     </Box>
 
-                </Box>
-            </ModalBody>
-        </ModalContent>
+
+                </ModalBody>
+            </ModalContent>
         </Modal >
     );
 };
