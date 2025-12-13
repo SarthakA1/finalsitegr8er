@@ -397,15 +397,17 @@ const PostItem: React.FC<PostItemProps> = ({
                                         />
                                     ) : (
                                         <Box w="100%" h="100%" position="relative" overflow="hidden">
-                                            {/* Visual Preview Iframe - Shifted up to hide Google Docs Toolbar */}
                                             <iframe
                                                 src={`https://docs.google.com/gview?url=${encodeURIComponent(imageURL)}&embedded=true`}
                                                 style={{
-                                                    width: '100%',
-                                                    height: '180%', // Increased height to compensate for shift
-                                                    marginTop: '-55px', // Shift up to hide header
+                                                    width: '150%', // Make wider to push scrollbars out
+                                                    height: '150%', // Make taller
+                                                    marginTop: '-60px', // Hide top toolbar
+                                                    marginLeft: '-25%', // Center horizontally
                                                     border: 'none',
                                                     overflow: 'hidden',
+                                                    transform: 'scale(1.1)', // Slight zoom
+                                                    transformOrigin: 'top center',
                                                     pointerEvents: 'none'
                                                 }}
                                                 title="Preview"
@@ -516,7 +518,7 @@ const PostItem: React.FC<PostItemProps> = ({
                     )}
                 </Flex>
             </Flex>
-        </Flex>
+        </Flex >
 
     )
 }
