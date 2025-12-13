@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { firestore } from "@/firebase/clientApp";
 
@@ -83,61 +83,42 @@ const MOCK_CONTENT: ContentItem[] = [
     }
 ];
 
-const useContentLibrary = () => {
-    const [contentItems, setContentItems] = useState<ContentItem[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+const initialized = useRef(false);
 
-    const getContentItems = async () => {
-        setLoading(true);
-        try {
-            const contentQuery = query(
-                collection(firestore, "content_library"),
-                orderBy("createdAt", "desc")
-            );
-            const contentDocs = await getDocs(contentQuery);
-            let items = contentDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+const getContentItems = async () => {
+    setLoading(true);
+    try {
+        const contentQuery = query(
+            collection(firestore, "content_library"),
+            orderBy("createdAt", "desc")
+        );
+        const contentDocs = await getDocs(contentQuery);
+        const items = contentDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
-            // AUTO-SEEDING LOGIC
-            // If database is empty, seed it with MOCK_CONTENT
-            if (items.length === 0) {
-                console.log("No content found. Seeding database with mock content...");
-                const { writeBatch, doc } = await import("firebase/firestore");
-                const batch = writeBatch(firestore);
+        // Format timestamps or other data if necessary
+        const formattedItems = items.map((item: any) => ({
+            ...item,
+            createdAt: item.createdAt?.toDate ? item.createdAt.toDate() : new Date(), // Handle Firestore Timestamp
+        })) as ContentItem[];
 
-                const seededItems: any[] = [];
+        setContentItems(formattedItems);
+    } catch (error: any) {
+        console.error("getContentItems error", error);
+        setError(error.message);
+    } finally {
+        setLoading(false);
+    }
+};
 
-                MOCK_CONTENT.forEach((item) => {
-                    const docRef = doc(firestore, "content_library", item.id);
-                    batch.set(docRef, item);
-                    seededItems.push(item);
-                });
+useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
 
-                await batch.commit();
-                console.log("Database seeded!");
-                items = seededItems;
-            }
+    console.log("useContentLibrary mounting, fetching items...");
+    getContentItems();
+}, []);
 
-            // Format timestamps or other data if necessary
-            const formattedItems = items.map((item: any) => ({
-                ...item,
-                createdAt: item.createdAt?.toDate ? item.createdAt.toDate() : new Date(), // Handle Firestore Timestamp
-            })) as ContentItem[];
-
-            setContentItems(formattedItems);
-        } catch (error: any) {
-            console.error("getContentItems error", error);
-            setError(error.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        getContentItems();
-    }, []);
-
-    return { contentItems, loading, error, refreshContent: getContentItems };
+return { contentItems, loading, error, refreshContent: getContentItems };
 };
 
 export default useContentLibrary;

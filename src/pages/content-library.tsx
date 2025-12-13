@@ -38,6 +38,7 @@ declare global {
 }
 
 const ContentLibraryPage: React.FC = () => {
+    console.log("ContentLibraryPage rendering...");
     const { contentItems, loading } = useContentLibrary();
     const [selectedItem, setSelectedItem] = useState<ContentItem | null>(null);
     const selectedItemRef = useRef<ContentItem | null>(null); // Ref to hold current item for callbacks
