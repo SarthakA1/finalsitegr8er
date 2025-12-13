@@ -285,7 +285,7 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
                     onClose={() => {
                         setConstructionModalOpen(false);
                         setCurriculum({ curriculumId: 'ib-myp' });
-                        window.location.href = '/ib-myp';
+                        router.push('/ib-myp');
                     }}
                 />
                 <Analytics />

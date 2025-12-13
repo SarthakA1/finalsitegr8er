@@ -24,10 +24,10 @@ const navbar: React.FC = () => {
         const currentCurriculum = (curriculum && curriculum.curriculumId) ? curriculum.curriculumId : 'ib-myp';
         const targetPath = `/${currentCurriculum}`;
 
-        if (window.location.pathname === targetPath) {
-            window.location.reload();
+        if (router.asPath === targetPath) {
+            router.reload();
         } else {
-            window.location.href = targetPath;
+            router.push(targetPath);
         }
     };
 
