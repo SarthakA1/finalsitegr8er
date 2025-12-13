@@ -72,7 +72,12 @@ const AdminUploadPage = () => {
             // Get first page
             const page = await pdf.getPage(1);
 
-            const viewport = page.getViewport({ scale: 1 });
+            // Calculate scale to fit max width of 600px
+            const unscaledViewport = page.getViewport({ scale: 1 });
+            const maxWidth = 600;
+            const scale = unscaledViewport.width > maxWidth ? maxWidth / unscaledViewport.width : 1;
+
+            const viewport = page.getViewport({ scale });
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
             canvas.height = viewport.height;
@@ -87,7 +92,7 @@ const AdminUploadPage = () => {
                         setThumbnailFile(thumbFile);
                         setThumbnailPreview(URL.createObjectURL(thumbFile));
                     }
-                }, 'image/jpeg', 0.8);
+                }, 'image/jpeg', 0.7); // 70% quality for smaller size
             }
         } catch (error) {
             console.error("Error generating thumbnail:", error);
