@@ -145,15 +145,7 @@ const MyResourcesPage: React.FC = () => {
                                 }}
                             >
                                 <Box position="relative" height="200px" bg="gray.100">
-                                    {item.thumbnail ? (
-                                        <Image
-                                            src={item.thumbnail}
-                                            alt={item.title}
-                                            objectFit="cover"
-                                            width="100%"
-                                            height="100%"
-                                        />
-                                    ) : (
+                                    {item.type !== 'image' ? (
                                         <Box w="100%" h="100%" overflow="hidden" position="relative" bg="white">
                                             <iframe
                                                 src={`https://docs.google.com/gview?url=${encodeURIComponent(item.url)}&embedded=true`}
@@ -181,6 +173,14 @@ const MyResourcesPage: React.FC = () => {
                                                 bg="transparent"
                                             />
                                         </Box>
+                                    ) : (
+                                        <Image
+                                            src={item.thumbnail || item.url}
+                                            alt={item.title}
+                                            objectFit="cover"
+                                            width="100%"
+                                            height="100%"
+                                        />
                                     )}
 
                                     <Badge

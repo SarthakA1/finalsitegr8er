@@ -46,28 +46,13 @@ const AdminUploadPage = () => {
     const RESOURCE_TYPES_MYP = ["Personal Project", "Portfolio - Design", "Portfolio - Drama", "Portfolio - Music", "Portfolio - Visual Arts"];
 
     // File State
-    const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
-    const [thumbnailPreview, setThumbnailPreview] = useState<string>('');
     const [contentFile, setContentFile] = useState<File | null>(null);
 
     const toast = useToast();
-    const thumbnailRef = useRef<HTMLInputElement>(null);
     const contentRef = useRef<HTMLInputElement>(null);
 
     // Helpers
-    const onSelectThumbnail = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files?.[0]) {
-            const file = event.target.files[0];
-            setThumbnailFile(file);
-            const reader = new FileReader();
-            reader.onload = (readerEvent) => {
-                if (readerEvent.target?.result) {
-                    setThumbnailPreview(readerEvent.target.result as string);
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+
 
     const onSelectContent = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files?.[0]) {
@@ -76,7 +61,7 @@ const AdminUploadPage = () => {
     };
 
     const handleUpload = async () => {
-        if (!title || !description || !thumbnailFile || !contentFile) {
+        if (!title || !description || !contentFile) {
             toast({
                 title: 'Missing Fields',
                 description: 'Please fill all fields and select files.',
@@ -89,12 +74,7 @@ const AdminUploadPage = () => {
 
         setLoading(true);
         try {
-            // 1. Upload Thumbnail
-            const thumbnailStorageRef = ref(storage, `content_thumbnails/${Date.now()}_${thumbnailFile.name}`);
-            await uploadBytes(thumbnailStorageRef, thumbnailFile);
-            const thumbnailUrl = await getDownloadURL(thumbnailStorageRef);
-
-            // 2. Upload Content
+            // 1. Upload Content
             const contentStorageRef = ref(storage, `content_files/${Date.now()}_${contentFile.name}`);
             await uploadBytes(contentStorageRef, contentFile);
             const contentUrl = await getDownloadURL(contentStorageRef);
@@ -109,7 +89,7 @@ const AdminUploadPage = () => {
                 subject,
                 program,
                 resourceType,
-                thumbnail: thumbnailUrl,
+                thumbnail: null,
                 url: contentUrl,
                 type: contentFile.type.includes('image') ? 'image' : 'pdf', // Simple type check
                 createdAt: serverTimestamp(),
@@ -130,8 +110,7 @@ const AdminUploadPage = () => {
             setPrice('5.00');
             setScore(7);
             setSession('May 2025');
-            setThumbnailFile(null);
-            setThumbnailPreview('');
+            setSession('May 2025');
             setContentFile(null);
             setProgram('DP');
             setResourceType('IA');
@@ -222,21 +201,7 @@ const AdminUploadPage = () => {
                     </FormControl>
                 </Flex>
 
-                {/* Thumbnail Upload */}
-                <FormControl>
-                    <FormLabel>Thumbnail Image</FormLabel>
-                    <Flex direction="column" align="center" justify="center" p={4} border="2px dashed" borderColor="gray.300" borderRadius="md" cursor="pointer" onClick={() => thumbnailRef.current?.click()}>
-                        {thumbnailPreview ? (
-                            <Image src={thumbnailPreview} alt="Thumbnail Preview" maxH="200px" objectFit="cover" borderRadius="md" />
-                        ) : (
-                            <VStack color="gray.500">
-                                <Icon as={FiImage} fontSize="3xl" />
-                                <Text>Click to upload thumbnail</Text>
-                            </VStack>
-                        )}
-                        <Input type="file" ref={thumbnailRef} hidden onChange={onSelectThumbnail} accept="image/*" />
-                    </Flex>
-                </FormControl>
+
 
                 {/* Content File Upload */}
                 <FormControl>
