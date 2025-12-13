@@ -267,16 +267,33 @@ const PostItem: React.FC<PostItemProps> = ({
                             </Text>
                         </Flex>
                     </Flex>
-                    <Flex gap={2} wrap="wrap" justify={{ base: "flex-start", md: "flex-end" }}>
+                    <Flex gap={1.5} wrap="wrap" justify={{ base: "flex-start", md: "flex-end" }} align="center">
                         {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion: any, index: any) => (
                             criterion.value !== '' && (
-                                <Badge key={index} colorScheme="gray" px={3} py={1} borderRadius="full" fontSize="xs" fontWeight={600}>
+                                <Badge
+                                    key={index}
+                                    colorScheme="gray"
+                                    px={{ base: 2, md: 3 }}
+                                    py={{ base: 0.5, md: 1 }}
+                                    borderRadius="full"
+                                    fontSize={{ base: "10px", md: "xs" }}
+                                    fontWeight={600}
+                                    whiteSpace="nowrap"
+                                >
                                     {criterion.value}
                                 </Badge>
                             )
                         ))}
                         {post.typeOfQuestions && post.typeOfQuestions !== '' && (
-                            <Badge colorScheme="blue" px={3} py={1} borderRadius="full" fontSize="xs" fontWeight={600}>
+                            <Badge
+                                colorScheme="blue"
+                                px={{ base: 2, md: 3 }}
+                                py={{ base: 0.5, md: 1 }}
+                                borderRadius="full"
+                                fontSize={{ base: "10px", md: "xs" }}
+                                fontWeight={600}
+                                whiteSpace="nowrap"
+                            >
                                 {post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value}
                             </Badge>
                         )}
