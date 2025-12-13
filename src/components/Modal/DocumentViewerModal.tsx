@@ -64,7 +64,7 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                 style={{
                                     width: '100%',
                                     height: 'calc(100% + 60px)', // Increase height
-                                    marginTop: '-58px', // Shift up to hide Google Docs header
+                                    marginTop: '-48px', // Shift up to hide Google Docs header (adjusted to show top of doc)
                                     border: 'none',
                                 }}
                                 title="Document Preview"
