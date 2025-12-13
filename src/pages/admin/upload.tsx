@@ -226,10 +226,12 @@ const AdminUploadPage = () => {
                         <FormLabel>Session</FormLabel>
                         <Input value={session} onChange={(e) => setSession(e.target.value)} placeholder="e.g. May 2025" />
                     </FormControl>
-                    <FormControl>
-                        <FormLabel>Subject</FormLabel>
-                        <Input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="e.g. Math AA HL" />
-                    </FormControl>
+                    {(resourceType === 'IA' || resourceType === 'EE') && (
+                        <FormControl>
+                            <FormLabel>Subject</FormLabel>
+                            <Input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="e.g. Math AA HL" />
+                        </FormControl>
+                    )}
                 </Flex>
 
                 {/* Content File Upload */}
