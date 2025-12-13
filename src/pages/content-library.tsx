@@ -428,12 +428,12 @@ const ContentLibraryPage: React.FC = () => {
                         </Flex>
 
                         {/* Score Filters (Conditional) */}
-                        {(selectedResourceTypes.includes("IA") || selectedResourceTypes.includes("EE") || selectedResourceTypes.includes("TOK")) && (
+                        {((selectedResourceTypes.includes("IA") || selectedResourceTypes.includes("EE") || selectedResourceTypes.includes("TOK")) || (selectedProgram === 'MYP' && selectedResourceTypes.length > 0)) && (
                             <Flex gap={3} wrap="wrap" justify="center">
                                 <Text fontSize="sm" fontWeight="600" color="gray.500" alignSelf="center" mr={2}>Score:</Text>
 
-                                {/* Numeric Scores for IA */}
-                                {selectedResourceTypes.includes("IA") && ["7", "6", "5"].map(score => (
+                                {/* Numeric Scores for IA or MYP */}
+                                {(selectedResourceTypes.includes("IA") || selectedProgram === 'MYP') && ["7", "6", "5"].map(score => (
                                     <Button
                                         key={score}
                                         size="xs"
