@@ -42,6 +42,7 @@ const AdminUploadPage = () => {
     const [subject, setSubject] = useState('Math AA HL');
     const [program, setProgram] = useState('DP');
     const [resourceType, setResourceType] = useState('IA');
+    const [tokType, setTokType] = useState('Essay');
 
     const RESOURCE_TYPES_DP = ["IA", "EE", "TOK"];
     const RESOURCE_TYPES_MYP = ["Personal Project", "Portfolio - Design", "Portfolio - Drama", "Portfolio - Music", "Portfolio - Visual Arts"];
@@ -120,7 +121,7 @@ const AdminUploadPage = () => {
                 price: parseFloat(price),
                 score: score,
                 session,
-                subject,
+                subject: (resourceType === 'TOK' ? tokType : subject),
                 program,
                 resourceType,
                 thumbnail: thumbnailUrl,
@@ -239,6 +240,15 @@ const AdminUploadPage = () => {
                         <FormControl>
                             <FormLabel>Subject</FormLabel>
                             <Input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="e.g. Math AA HL" />
+                        </FormControl>
+                    )}
+                    {resourceType === 'TOK' && (
+                        <FormControl>
+                            <FormLabel>TOK Type</FormLabel>
+                            <Select value={tokType} onChange={(e) => setTokType(e.target.value)}>
+                                <option value="Essay">Essay</option>
+                                <option value="Exhibition">Exhibition</option>
+                            </Select>
                         </FormControl>
                     )}
                 </Flex>

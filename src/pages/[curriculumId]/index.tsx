@@ -287,7 +287,8 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
                     onClose={() => {
                         setConstructionModalOpen(false);
                         setCurriculum({ curriculumId: 'ib-myp' });
-                        router.push('/ib-myp');
+                        // Hard reload to ensure state is cleared and new data is fetched properly
+                        window.location.href = '/ib-myp';
                     }}
                 />
                 <Analytics />
@@ -307,7 +308,7 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
 
                         {/* Filters */}
                         {/* Filters */}
-                        <Box mb={4} width="100%" mt={6} bg="white" border="1px solid" borderColor="gray.200" borderRadius="xl" p={5} boxShadow="sm">
+                        <Box mb={4} width="100%" mt={6} bg="white" border="1px solid" borderColor="gray.200" borderRadius="xl" p={{ base: 3, md: 5 }} boxShadow="sm">
                             <Flex
                                 wrap="wrap"
                                 align="center"
@@ -318,7 +319,7 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
                                 {curriculumId === 'ib-dp' ? (
                                     <>
                                         {/* Level */}
-                                        <Flex align="center" gap={1}>
+                                        <Flex align="center" gap={1} wrap="wrap">
                                             <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1} flexShrink={0}>Level:</Text>
                                             {['HL', 'SL'].map((level) => {
                                                 const isActive = activeFilters.level?.includes(level);
@@ -348,7 +349,7 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
                                         <Box width="1px" height="15px" bg="gray.300" mx={1} display={{ base: "none", md: "block" }} flexShrink={0} />
 
                                         {/* Paper */}
-                                        <Flex align="center" gap={1}>
+                                        <Flex align="center" gap={1} wrap="wrap">
                                             <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1} flexShrink={0}>Paper:</Text>
                                             {['1', '2', '3'].map((paper) => {
                                                 const isActive = activeFilters.paper?.includes(paper);
@@ -378,7 +379,7 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
                                 ) : (
                                     <>
                                         {/* Grade */}
-                                        <Flex align="center" gap={1}>
+                                        <Flex align="center" gap={1} wrap="wrap">
                                             <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1} flexShrink={0}>Grade:</Text>
                                             {['1', '2', '3', '4', '5'].map((grade) => {
                                                 const isActive = activeFilters.grade?.includes(grade);
@@ -408,7 +409,7 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
                                         <Box width="1px" height="15px" bg="gray.300" mx={1} display={{ base: "none", md: "block" }} flexShrink={0} />
 
                                         {/* Criteria */}
-                                        <Flex align="center" gap={1}>
+                                        <Flex align="center" gap={1} wrap="wrap">
                                             <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1} flexShrink={0}>Criteria:</Text>
                                             {['Criteria A', 'Criteria B', 'Criteria C', 'Criteria D'].map((criteria) => {
                                                 const isActive = activeFilters.criteria?.includes(criteria);
@@ -440,7 +441,7 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
                                 <Box width="1px" height="15px" bg="gray.300" mx={1} display={{ base: "none", md: "block" }} flexShrink={0} />
 
                                 {/* Type */}
-                                <Flex align="center" gap={1}>
+                                <Flex align="center" gap={1} wrap="wrap">
                                     <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1} flexShrink={0}>Type:</Text>
                                     {[
                                         { label: 'Academic Question', value: 'Academic Question' },

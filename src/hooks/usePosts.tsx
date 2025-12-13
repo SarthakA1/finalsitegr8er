@@ -98,6 +98,7 @@ const usePosts = (subjectData?: Subject) => {
                         ...existingVote,
                         voteValue: vote
                     }
+                    voteChange = 2 * vote;
 
                     batch.update(postVoteRef, {
                         voteValue: vote

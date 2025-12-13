@@ -215,160 +215,155 @@ const PostItem: React.FC<PostItemProps> = ({
     return (
         <Flex
             direction='column'
+            bg="white"
+            borderRadius="2xl"
             border="1px solid"
-            borderColor={singlePostPage ? "whiteAlpha.300" : "whiteAlpha.300"}
-            borderRadius={singlePostPage ? "4px 4px 0px 0px" : "xl"}
-            bg="rgba(255, 255, 255, 0.8)"
-            backdropFilter="blur(12px)"
-            shadow={singlePostPage ? "none" : "sm"}
-            _hover=
-            {{ borderColor: singlePostPage ? "none" : "brand.500", shadow: singlePostPage ? "none" : "xl", transform: singlePostPage ? "none" : "translateY(-4px)" }}
-            transition="all 0.3s"
+            borderColor="gray.100"
+            boxShadow="sm"
+            _hover={{
+                borderColor: "brand.300",
+                boxShadow: "lg",
+                transform: "translateY(-2px)"
+            }}
+            transition="all 0.3s ease"
+            overflow="hidden"
+            mb={4}
         >
-            {deletePostMessage ? <Text style={{ textAlign: "center", padding: "10px", color: "green" }}>{deletePostMessage}</Text> : ''}
-            {/* <Flex 
-                direction="row" 
-                align="center" 
-                bg="blue.100" 
-                p={2}
-            >  */}
-            <Flex direction="column" p={3} gap={2}>
-                <Flex
-                    justify="space-between"
-                    align={{ base: "flex-start", md: "center" }}
-                    direction={{ base: "column", md: "row" }}
-                    gap={2}
-                >
-                    <Flex align="center" gap={2} mb={{ base: 2, md: 0 }}>
-                        {homePage && (
-                            <>
-                                {post.subjectImageURL ? (
-                                    <Image src={post.subjectImageURL} borderRadius="full" boxSize="24px" />
-                                ) : (
-                                    <Icon as={RiGroup2Fill} fontSize="24px" color="brand.500" />
-                                )}
-                                <Link href={`subject/${post.subjectId}`}>
-                                    <Text fontWeight={700} fontSize="sm" color="brand.600" _hover={{ textDecoration: "underline" }}
-                                        onClick={(event) => event.stopPropagation()}
-                                    >
-                                        {post.subjectId}
-                                    </Text>
-                                </Link>
-                            </>
-                        )}
-                        <Flex align="center">
-                            <Image
-                                src={getSketchAvatarUrl(post.creatorId || post.creatorDisplayName)}
-                                boxSize="20px"
-                                borderRadius="full"
-                                mr={2}
-                                border="1px solid"
-                                borderColor="gray.200"
-                            />
-                            <Text fontSize="xs" color="gray.600">
-                                {post.typeOfQuestions && post.typeOfQuestions.value === 'Resource' ? 'Shared by ' : 'Asked by '}
-                                <Text as="span" color="brand.600" fontWeight="600">{post.creatorDisplayName}</Text>
-                                {' • '}{moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
+            {deletePostMessage && <Box bg="green.50" p={2}><Text textAlign="center" color="green.600" fontSize="sm">{deletePostMessage}</Text></Box>}
+
+            {/* HEADER SECTION */}
+            <Flex p={5} pb={2} justify="space-between" align="flex-start" gap={4}>
+                {/* Left: Avatar & Meta */}
+                <Flex align="center" gap={3}>
+                    <Image
+                        src={getSketchAvatarUrl(post.creatorId || post.creatorDisplayName)}
+                        boxSize="40px"
+                        borderRadius="full"
+                        border="1px solid"
+                        borderColor="gray.100"
+                        bg="gray.50"
+                    />
+                    <Flex direction="column">
+                        <Flex align="center" gap={1}>
+                            <Text fontSize="sm" fontWeight="700" color="gray.800">
+                                {post.creatorDisplayName}
                             </Text>
+                            {homePage && post.subjectId && (
+                                <>
+                                    <Text fontSize="xs" color="gray.400">•</Text>
+                                    <Link href={`subject/${post.subjectId}`} onClick={(e) => e.stopPropagation()}>
+                                        <Text fontSize="xs" fontWeight="600" color="brand.500" _hover={{ textDecoration: "underline" }}>
+                                            {post.subjectId}
+                                        </Text>
+                                    </Link>
+                                </>
+                            )}
                         </Flex>
+                        <Text fontSize="xs" color="gray.500">
+                            {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
+                        </Text>
                     </Flex>
-                    <Flex gap={1.5} wrap="wrap" justify={{ base: "flex-start", md: "flex-end" }} align="center">
-                        {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion: any, index: any) => (
-                            criterion.value !== '' && (
-                                <Badge
-                                    key={index}
-                                    colorScheme="gray"
-                                    px={{ base: 2, md: 3 }}
-                                    py={{ base: 0.5, md: 1 }}
-                                    borderRadius="full"
-                                    fontSize={{ base: "10px", md: "xs" }}
-                                    fontWeight={600}
-                                    whiteSpace="nowrap"
-                                >
-                                    {criterion.value}
-                                </Badge>
-                            )
-                        ))}
-                        {post.typeOfQuestions && post.typeOfQuestions !== '' && (
+                </Flex>
+
+                {/* Right: Tags */}
+                <Flex gap={2} wrap="wrap" justify="flex-end" maxW="40%">
+                    {post.typeOfQuestions && post.typeOfQuestions !== '' && (
+                        <Badge
+                            colorScheme="purple"
+                            variant="subtle"
+                            px={2.5}
+                            py={0.5}
+                            borderRadius="full"
+                            fontSize="xs"
+                            textTransform="capitalize"
+                        >
+                            {post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value}
+                        </Badge>
+                    )}
+                    {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion: any, index: any) => (
+                        criterion.value !== '' && (
                             <Badge
-                                colorScheme="blue"
-                                px={{ base: 2, md: 3 }}
-                                py={{ base: 0.5, md: 1 }}
+                                key={index}
+                                colorScheme="gray"
+                                variant="outline"
+                                px={2}
+                                py={0.5}
                                 borderRadius="full"
-                                fontSize={{ base: "10px", md: "xs" }}
-                                fontWeight={600}
-                                whiteSpace="nowrap"
+                                fontSize="xs"
+                                fontWeight={500}
+                                color="gray.500"
                             >
-                                {post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value}
+                                {criterion.value}
                             </Badge>
-                        )}
-                    </Flex>
+                        )
+                    ))}
+                    {post.grade && post.grade.value && (
+                        <Badge colorScheme="blue" variant="subtle" px={2} py={0.5} borderRadius="full" fontSize="xs">
+                            MYP {post.grade.value}
+                        </Badge>
+                    )}
                 </Flex>
             </Flex>
-            {/* </Flex> */}
 
+            {/* BODY SECTION */}
             <Flex
                 direction="column"
-                align="left"
-                p={2}
-                bg="white"
+                px={5}
+                py={2}
                 cursor={singlePostPage ? "unset" : "pointer"}
-                onClick={() => onSelectPost && onSelectPost(post)} >
+                onClick={() => onSelectPost && onSelectPost(post)}
+            >
+                <Text fontSize="xl" fontWeight="800" color="gray.800" mb={2} lineHeight="short">
+                    {post.title}
+                </Text>
 
-
-                <Flex direction="row" align="center" mb={3} gap={2}>
-                    <Text fontSize='lg' fontWeight={700} color="gray.900" lineHeight="1.4"> {post.title} </Text>
-                    <Badge colorScheme="gray" px={2} py={1} borderRadius="md" fontSize="10px" fontWeight={600}>MYP {post.grade?.value}</Badge>
-                </Flex>
-
-                {/* Content Body with Height Ref */}
-                <div
+                <Box
                     ref={contentRef}
-                    style={{
-                        maxHeight: showFullBody ? 'none' : '400px',
-                        overflowY: 'hidden',
-                        position: 'relative'
-                    }}
+                    fontSize="md"
+                    color="gray.600"
+                    lineHeight="1.6"
+                    maxH={showFullBody ? 'none' : '300px'}
+                    overflowY="hidden"
+                    position="relative"
+                    className="post-body"
                 >
                     <div dangerouslySetInnerHTML={{ __html: post.body }} />
-                    {/* Gradient Overlay for collapsed state */}
                     {!showFullBody && isLongContent && (
                         <Box
                             position="absolute"
                             bottom="0"
                             left="0"
                             w="100%"
-                            h="80px"
+                            h="100px"
                             bgGradient="linear(to-t, white 0%, transparent 100%)"
                         />
                     )}
-                </div>
+                </Box>
 
-                {/* Intelligent Read More Button */}
-                {(isLongContent) && (
+                {isLongContent && (
                     <Button
                         onClick={(e) => { e.stopPropagation(); toggleBodyDisplay(); }}
-                        variant="ghost"
+                        variant="link"
                         size="sm"
                         colorScheme="brand"
-                        mt={2}
+                        fontWeight="600"
+                        alignSelf="flex-start"
+                        mt={1}
+                        _hover={{ textDecoration: 'none', color: 'brand.600' }}
                     >
                         {showFullBody ? "Show Less" : "Read More"}
                     </Button>
                 )}
 
+                {/* ATTACHMENTS */}
                 {post.imageURLs && (
-                    <SimpleGrid columns={{ base: 2, sm: 3, md: 4 }} spacing={3} mt={6} w="100%">
+                    <SimpleGrid columns={{ base: 2, sm: 3, md: 4 }} spacing={3} mt={4} w="100%">
                         {post.imageURLs.map((imageURL: string, index: number) => {
                             const parts = imageURL.split('.');
                             const extension = parts[parts.length - 1].split('?')[0].toLowerCase();
 
                             const isImage = ['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(extension);
                             const isPdf = extension === 'pdf';
-                            const isWord = ['doc', 'docx'].includes(extension);
-
-                            // For non-images, we also try to show a visual using Google Docs Viewer
-                            // But for PPT/Word sometimes it's shaky. For PDF it works well.
 
                             return (
                                 <Flex
@@ -377,10 +372,10 @@ const PostItem: React.FC<PostItemProps> = ({
                                     borderRadius="lg"
                                     overflow="hidden"
                                     border="1px solid"
-                                    borderColor="gray.200"
+                                    borderColor="gray.100"
                                     cursor="pointer"
                                     transition="all 0.2s"
-                                    _hover={{ transform: "translateY(-2px)", shadow: "md" }}
+                                    _hover={{ transform: "translateY(-2px)", shadow: "md", borderColor: "gray.300" }}
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         if (isImage) {
@@ -390,7 +385,7 @@ const PostItem: React.FC<PostItemProps> = ({
                                             setIsViewerOpen(true);
                                         }
                                     }}
-                                    h="140px"
+                                    h="120px"
                                     position="relative"
                                     bg="gray.50"
                                 >
@@ -420,7 +415,7 @@ const PostItem: React.FC<PostItemProps> = ({
                                                 title="Preview"
                                                 scrolling="no"
                                             />
-                                            {/* Transparent Overlay to ensure no interaction */}
+                                            {/* Transparent Overlay */}
                                             <Box
                                                 position="absolute"
                                                 top="0"
@@ -429,7 +424,6 @@ const PostItem: React.FC<PostItemProps> = ({
                                                 h="100%"
                                                 bg="transparent"
                                             />
-                                            {/* File Type Badge */}
                                             <Badge
                                                 position="absolute"
                                                 bottom="4px"
@@ -449,92 +443,93 @@ const PostItem: React.FC<PostItemProps> = ({
                 )}
             </Flex>
 
-            {/* Secure Document Viewer Modal */}
+            {/* ACTION FOOTER */}
+            <Flex
+                align="center"
+                justify="space-between"
+                px={5}
+                py={3}
+                mt={2}
+                borderTop="1px solid"
+                borderColor="gray.50"
+                bg="gray.50"
+            >
+                {/* Voting */}
+                <Flex
+                    align="center"
+                    bg="white"
+                    borderRadius="full"
+                    border="1px solid"
+                    borderColor="gray.200"
+                    px={1}
+                    py={1}
+                >
+                    <Icon
+                        as={userVoteValue === 1 ? AiFillLike : AiOutlineLike}
+                        color={userVoteValue === 1 ? "brand.500" : "gray.400"}
+                        fontSize={20}
+                        p={1}
+                        boxSize="28px"
+                        borderRadius="full"
+                        _hover={{ bg: "gray.100", color: "brand.500" }}
+                        cursor="pointer"
+                        onClick={(e) => { e.stopPropagation(); user ? onVote(post, 1, post.subjectId) : setAuthModalState({ open: true, view: "login" }) }}
+                    />
+                    <Text fontSize="sm" fontWeight="600" mx={2} color={post.voteStatus > 0 ? "brand.500" : (post.voteStatus < 0 ? "red.500" : "gray.600")}>
+                        {post.voteStatus}
+                    </Text>
+                    <Icon
+                        as={userVoteValue === -1 ? AiFillDislike : AiOutlineDislike}
+                        color={userVoteValue === -1 ? "red.500" : "gray.400"}
+                        fontSize={20}
+                        p={1}
+                        boxSize="28px"
+                        borderRadius="full"
+                        _hover={{ bg: "gray.100", color: "red.500" }}
+                        cursor="pointer"
+                        onClick={(e) => { e.stopPropagation(); user ? onVote(post, -1, post.subjectId) : setAuthModalState({ open: true, view: "login" }) }}
+                    />
+                </Flex>
+
+                {/* Right Actions */}
+                <Flex align="center" gap={4}>
+                    <Flex
+                        align="center"
+                        gap={1.5}
+                        cursor="pointer"
+                        color="gray.500"
+                        _hover={{ color: "brand.500" }}
+                        onClick={(e) => { e.stopPropagation(); onSelectPost && onSelectPost(post) }}
+                    >
+                        <Icon as={MdOutlineComment} fontSize={20} />
+                        <Text fontSize="sm" fontWeight="500">{post.numberOfAnswers}</Text>
+                        <Text fontSize="xs" fontWeight="400" display={{ base: "none", sm: "block" }}>Comments</Text>
+                    </Flex>
+
+                    {userIsCreator && (
+                        <Flex
+                            align="center"
+                            gap={1}
+                            color="gray.400"
+                            _hover={{ color: "red.500" }}
+                            cursor="pointer"
+                            onClick={(e) => { e.stopPropagation(); handleDelete(); }}
+                        >
+                            <Icon as={AiOutlineDelete} fontSize={18} />
+                            <Text fontSize="xs" display={{ base: "none", sm: "block" }}>Delete</Text>
+                        </Flex>
+                    )}
+                </Flex>
+            </Flex>
+
+            {/* Modal */}
             <DocumentViewerModal
                 isOpen={isViewerOpen}
                 onClose={() => setIsViewerOpen(false)}
                 url={viewerUrl}
                 title={post.title}
             />
-
-
-            <Flex
-                direction="row"
-                bg="blue.100"
-                p={2}>
-
-                {user
-                    ?
-                    <Flex align='center' justify='center'>
-                        <Icon as={userVoteValue === 1 ? AiFillLike : AiOutlineLike}
-                            color={userVoteValue === 1 ? "#9FB751" : "gray.500"}
-                            fontSize={24}
-                            onClick={() => onVote(post, 1, post.subjectId)}
-                            cursor="pointer"
-                            mr={0.5} />
-                        <Text color="gray.500" fontSize='11pt'>{post.voteStatus}</Text>
-                        <Icon as={userVoteValue === -1 ? AiFillDislike : AiOutlineDislike}
-                            color={userVoteValue === -1 ? "#EB4E45" : "gray.500"}
-                            fontSize={22.5}
-                            onClick={() => onVote(post, -1, post.subjectId)}
-                            ml={0.5}
-                            cursor="pointer"
-                        />
-                    </Flex>
-                    :
-                    <Flex align='center' justify='center'>
-                        <Icon as={AiOutlineLike} color="gray.500" fontSize={24} cursor="pointer" mr={0.5} onClick={() => setAuthModalState({ open: true, view: "login" })} />
-                        <Text color="gray.500" fontSize='11pt'>{post.voteStatus}</Text>
-                        <Icon as={AiOutlineDislike}
-                            color="gray.500"
-                            fontSize={22.5}
-                            onClick={() => setAuthModalState({ open: true, view: "login" })}
-                            ml={0.5}
-                            cursor="pointer"
-                        />
-                    </Flex>
-                }
-                <Flex>
-                    {post.typeOfQuestions && (
-                        post.typeOfQuestions.value == 'Academic Question'
-                            ?
-                            <Flex ml={5} align='center' justify='right' cursor="pointer">
-
-
-                            </Flex>
-                            :
-                            ''
-                    )}
-
-                    <Flex ml={5} align='center' justify='right' cursor="pointer">
-                        <Icon
-                            as={MdOutlineComment}
-                            fontSize={22.5}
-                            color="gray.500"
-                            onClick={() => onSelectPost && onSelectPost(post)}
-                        />
-                        <Text color="gray.500" ml={1}> {post.numberOfAnswers}</Text>
-                    </Flex>
-
-                    {userIsCreator && (
-                        <Flex
-                            align='center'
-                            p="8px 10px"
-                            borderRadius={singlePostPage ? "0" : "10"}
-                            _hover={{ bg: "blue.200" }}
-                            cursor="pointer"
-                            ml={2}
-                            onClick={handleDelete}
-                            color="#ff0000"
-                        >
-                            <Icon as={AiOutlineDelete} />
-
-                        </Flex>
-                    )}
-                </Flex>
-            </Flex>
-        </Flex >
-
+        </Flex>
     )
 }
 export default PostItem;

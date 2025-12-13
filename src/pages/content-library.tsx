@@ -51,6 +51,7 @@ const ContentLibraryPage: React.FC = () => {
     const [selectedScores, setSelectedScores] = useState<string[]>([]);
     const [selectedResourceTypes, setSelectedResourceTypes] = useState<string[]>([]);
     const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
+    const [selectedTokTypes, setSelectedTokTypes] = useState<string[]>([]);
 
     // Filter Options
     const SESSIONS = ["May 2025", "Nov 2024", "May 2024", "Nov 2023"];
@@ -77,6 +78,7 @@ const ContentLibraryPage: React.FC = () => {
         setSelectedSessions([]);
         setSelectedScores([]);
         setSelectedSubjects([]);
+        setSelectedTokTypes([]);
     }, [selectedProgram]);
 
     const toggleSession = (session: string) => {
@@ -108,6 +110,14 @@ const ContentLibraryPage: React.FC = () => {
             prev.includes(subj)
                 ? prev.filter(s => s !== subj)
                 : [...prev, subj]
+        );
+    };
+
+    const toggleTokType = (type: string) => {
+        setSelectedTokTypes(prev =>
+            prev.includes(type)
+                ? prev.filter(t => t !== type)
+                : [...prev, type]
         );
     };
 
@@ -406,6 +416,30 @@ const ContentLibraryPage: React.FC = () => {
                             </Flex>
                         )}
 
+                        {/* CONDITIONAL TOK TYPE FILTER (Only if TOK is selected) */}
+                        {selectedResourceTypes.includes("TOK") && (
+                            <Flex gap={3} wrap="wrap" justify="center">
+                                <Text fontSize="sm" fontWeight="600" color="gray.500" alignSelf="center" mr={2}>Type:</Text>
+                                {["Exhibition", "Essay"].map(type => (
+                                    <Button
+                                        key={type}
+                                        size="xs"
+                                        onClick={() => toggleTokType(type)}
+                                        variant={selectedTokTypes.includes(type) ? "solid" : "outline"}
+                                        colorScheme={selectedTokTypes.includes(type) ? "green" : "gray"}
+                                        bg={selectedTokTypes.includes(type) ? "green.600" : "transparent"}
+                                        color={selectedTokTypes.includes(type) ? "white" : "gray.600"}
+                                        borderColor="gray.300"
+                                        _hover={{ bg: selectedTokTypes.includes(type) ? "green.500" : "gray.100" }}
+                                        borderRadius="md"
+                                        px={4}
+                                    >
+                                        {type}
+                                    </Button>
+                                ))}
+                            </Flex>
+                        )}
+
                         {/* Session Filters */}
                         <Flex gap={3} wrap="wrap" justify="center">
                             {SESSIONS.map(session => (
@@ -499,6 +533,15 @@ const ContentLibraryPage: React.FC = () => {
 
                                 // 5. Filter by Subject (if active)
                                 if (selectedSubjects.length > 0 && !selectedSubjects.includes(item.subject || '')) return false;
+
+                                // 6. Filter by TOK Type (if active)
+                                if (selectedTokTypes.length > 0) {
+                                    const match = selectedTokTypes.some(type =>
+                                        item.title.toLowerCase().includes(type.toLowerCase()) ||
+                                        item.subject?.toLowerCase() === type.toLowerCase()
+                                    );
+                                    if (!match) return false;
+                                }
 
                                 return true;
                             })
