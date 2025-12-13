@@ -15,9 +15,12 @@ import {
     ModalHeader,
     ModalCloseButton,
     ModalBody,
-    useDisclosure
+    useDisclosure,
+    Select,
+    Icon
 } from '@chakra-ui/react';
 import { FaLock, FaEye } from 'react-icons/fa';
+import { FiShoppingCart } from 'react-icons/fi';
 import useContentLibrary, { ContentItem } from '@/hooks/useContentLibrary';
 import Head from 'next/head';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -233,57 +236,72 @@ const ContentLibraryPage: React.FC = () => {
     };
 
     return (
-        <Box minH="100vh" bg="#f7fafc" py={10} px={{ base: 4, md: 10 }}>
+        <Box minH="100vh" bgGradient="linear(to-br, gray.900, purple.900, blue.900)" py={10} px={{ base: 4, md: 10 }}>
             <Head>
-                <title>Content Library | Premium Resources</title>
+                <title>Library | Gr8er IB</title>
             </Head>
 
             <Flex direction="column" maxWidth="1200px" mx="auto">
-                <Box mb={8} textAlign="center">
+                {/* Header */}
+                <Box mb={10} textAlign="center">
                     <Text
                         fontSize={{ base: "3xl", md: "5xl" }}
-                        fontWeight="800"
-                        bgGradient="linear(to-r, blue.400, purple.500)"
+                        fontWeight="900"
+                        bgGradient="linear(to-r, cyan.400, purple.400, pink.400)"
                         bgClip="text"
-                        mb={2}
+                        mb={3}
+                        letterSpacing="tight"
                     >
                         Premium Content Library
                     </Text>
-                    <Text fontSize="lg" color="gray.600">
-                        High-quality study materials to boost your grades.
+                    <Text fontSize="lg" color="gray.300" maxW="600px" mx="auto">
+                        Unlock top-tier IB resources to skyrocket your grades.
                     </Text>
                 </Box>
 
-                <Box mb={8}>
+                {/* Filters */}
+                <Box mb={12}>
                     <Flex gap={4} justify="center" wrap="wrap">
-                        <select
-                            style={{ padding: '10px', borderRadius: '8px', border: '1px solid #E2E8F0' }}
+                        <Select
+                            placeholder="All Sessions"
+                            w="auto"
+                            bg="whiteAlpha.100"
+                            borderColor="whiteAlpha.300"
+                            color="white"
+                            _hover={{ bg: "whiteAlpha.200" }}
+                            _focus={{ borderColor: "purple.400", boxShadow: "0 0 0 1px purple.400" }}
                             onChange={(e) => setFilterSession(e.target.value)}
+                            sx={{ option: { color: "black" } }} // Fix dropdown text color
                         >
-                            <option value="">All Sessions</option>
                             <option value="May 2025">May 2025</option>
                             <option value="Nov 2024">Nov 2024</option>
                             <option value="May 2024">May 2024</option>
                             <option value="Nov 2023">Nov 2023</option>
-                        </select>
-                        <select
-                            style={{ padding: '10px', borderRadius: '8px', border: '1px solid #E2E8F0' }}
+                        </Select>
+                        <Select
+                            placeholder="All Scores"
+                            w="auto"
+                            bg="whiteAlpha.100"
+                            borderColor="whiteAlpha.300"
+                            color="white"
+                            _hover={{ bg: "whiteAlpha.200" }}
+                            _focus={{ borderColor: "purple.400", boxShadow: "0 0 0 1px purple.400" }}
                             onChange={(e) => setFilterScore(e.target.value)}
+                            sx={{ option: { color: "black" } }}
                         >
-                            <option value="">All Scores</option>
                             <option value="7">Score 7</option>
                             <option value="6">Score 6</option>
                             <option value="5">Score 5</option>
-                        </select>
+                        </Select>
                     </Flex>
                 </Box>
 
                 {loading ? (
                     <Flex justify="center" align="center" minH="300px">
-                        <Spinner size="xl" color="purple.500" />
+                        <Spinner size="xl" color="cyan.400" speed="0.8s" thickness="4px" />
                     </Flex>
                 ) : (
-                    <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8}>
+                    <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={10}>
                         {contentItems
                             .filter(item => {
                                 if (filterSession && item.session !== filterSession) return false;
@@ -296,71 +314,98 @@ const ContentLibraryPage: React.FC = () => {
                                     <Flex
                                         key={item.id}
                                         direction="column"
-                                        bg="white"
+                                        bg="whiteAlpha.50"
+                                        backdropFilter="blur(16px)"
                                         borderRadius="2xl"
                                         overflow="hidden"
-                                        boxShadow="lg"
-                                        transition="all 0.3s"
-                                        _hover={{ transform: 'translateY(-5px)', boxShadow: 'xl' }}
                                         border="1px solid"
-                                        borderColor="gray.100"
+                                        borderColor="whiteAlpha.100"
+                                        boxShadow="lg"
+                                        transition="all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)"
+                                        _hover={{
+                                            transform: 'translateY(-8px)',
+                                            boxShadow: '2xl',
+                                            bg: "whiteAlpha.100",
+                                            borderColor: "purple.400"
+                                        }}
                                     >
-                                        <Box position="relative" height="200px" bg="gray.100">
+                                        <Box position="relative" height="220px">
                                             <Image
                                                 src={item.thumbnail}
                                                 alt={item.title}
                                                 objectFit="cover"
                                                 width="100%"
                                                 height="100%"
+                                                transition="transform 0.4s"
+                                                _hover={{ transform: 'scale(1.05)' }}
                                             />
+                                            <Box position="absolute" inset="0" bgGradient="linear(to-t, blackAlpha.800, transparent)" pointerEvents="none" />
+
                                             <Badge
                                                 position="absolute"
                                                 top={4}
                                                 right={4}
-                                                colorScheme={isPurchased ? "green" : "yellow"}
-                                                fontSize="0.9em"
+                                                colorScheme={isPurchased ? "green" : "purple"}
+                                                variant="solid"
+                                                fontSize="0.8em"
                                                 borderRadius="full"
                                                 px={3}
                                                 py={1}
-                                                boxShadow="md"
+                                                boxShadow="lg"
+                                                textTransform="uppercase"
+                                                letterSpacing="wider"
                                             >
                                                 {isPurchased ? "OWNED" : "PREMIUM"}
                                             </Badge>
 
                                             {/* Metadata Tags */}
-                                            <Flex position="absolute" bottom={2} left={2} gap={2}>
+                                            <Flex position="absolute" bottom={4} left={4} gap={2}>
                                                 {item.score && (
-                                                    <Badge colorScheme="purple" borderRadius="md" px={2}>Score: {item.score}</Badge>
+                                                    <Badge bg="purple.600" color="white" borderRadius="md" px={2} py={0.5} boxShadow="md">Score: {item.score}</Badge>
                                                 )}
                                                 {item.session && (
-                                                    <Badge colorScheme="blue" borderRadius="md" px={2}>{item.session}</Badge>
+                                                    <Badge bg="cyan.600" color="white" borderRadius="md" px={2} py={0.5} boxShadow="md">{item.session}</Badge>
                                                 )}
                                             </Flex>
                                         </Box>
 
-                                        <Flex direction="column" p={6} flex={1}>
-                                            <Text fontSize="xl" fontWeight="700" mb={2} color="gray.800" noOfLines={2}>
-                                                {item.title}
-                                            </Text>
-                                            <Text fontSize="sm" color="gray.500" mb={4} flex={1} noOfLines={3}>
-                                                {item.description}
-                                            </Text>
-
-                                            <Flex align="center" justify="space-between" mt="auto" pt={4} borderTop="1px solid" borderColor="gray.100">
-                                                <Text fontSize="2xl" fontWeight="800" color={isPurchased ? "green.600" : "purple.600"}>
-                                                    {isPurchased ? "Unlocked" : `$${item.price.toFixed(2)}`}
+                                        <Flex direction="column" p={6} flex={1} justify="space-between">
+                                            <Box>
+                                                <Text fontSize="xl" fontWeight="700" mb={3} color="white" lineHeight="short">
+                                                    {item.title}
                                                 </Text>
+                                                <Text fontSize="sm" color="gray.300" mb={6} noOfLines={3}>
+                                                    {item.description}
+                                                </Text>
+                                            </Box>
+
+                                            {isPurchased ? (
                                                 <Button
-                                                    leftIcon={isPurchased ? <FaEye /> : <FaLock />}
-                                                    colorScheme={isPurchased ? "green" : "purple"}
-                                                    size="md"
-                                                    onClick={() => isPurchased ? openViewer(item) : handleBuyClick(item)}
-                                                    isLoading={isPaymentLoading && selectedItem?.id === item.id}
-                                                    boxShadow="md"
+                                                    leftIcon={<FaEye />}
+                                                    colorScheme="green"
+                                                    variant="outline"
+                                                    size="lg"
+                                                    width="full"
+                                                    onClick={() => openViewer(item)}
+                                                    _hover={{ bg: "green.500", color: "white" }}
                                                 >
-                                                    {isPurchased ? "View Content" : "Unlock Now"}
+                                                    View Content
                                                 </Button>
-                                            </Flex>
+                                            ) : (
+                                                <Button
+                                                    leftIcon={<Icon as={FiShoppingCart} />}
+                                                    bgGradient="linear(to-r, purple.500, pink.500)"
+                                                    _hover={{ bgGradient: "linear(to-r, purple.400, pink.400)", shadow: "lg" }}
+                                                    color="white"
+                                                    size="lg"
+                                                    width="full"
+                                                    isLoading={isPaymentLoading && selectedItem?.id === item.id}
+                                                    onClick={() => handleBuyClick(item)}
+                                                    border="none"
+                                                >
+                                                    Unlock for ${item.price.toFixed(2)}
+                                                </Button>
+                                            )}
                                         </Flex>
                                     </Flex>
                                 );
@@ -371,9 +416,11 @@ const ContentLibraryPage: React.FC = () => {
 
             {/* Content Viewer Modal */}
             <Modal isOpen={isOpen} onClose={onClose} size="full">
-                <ModalOverlay />
+                <ModalOverlay backdropFilter="blur(5px)" bg="blackAlpha.800" />
                 <ModalContent bg="gray.900">
-                    <ModalHeader color="white">{viewTitle}</ModalHeader>
+                    <ModalHeader color="white" borderBottom="1px solid" borderColor="whiteAlpha.200">
+                        {viewTitle}
+                    </ModalHeader>
                     <ModalCloseButton color="white" />
                     <ModalBody p={0} height="calc(100vh - 60px)">
                         {viewType === 'image' ? (
@@ -392,8 +439,6 @@ const ContentLibraryPage: React.FC = () => {
                     </ModalBody>
                 </ModalContent>
             </Modal>
-
-
         </Box>
     );
 };
