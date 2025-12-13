@@ -23,6 +23,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '@/firebase/clientApp';
 import { collection, getDocs } from 'firebase/firestore';
 import { useRouter } from 'next/router';
+import DocumentViewerModal from '@/components/Modal/DocumentViewerModal';
 
 const MyResourcesPage: React.FC = () => {
     const { contentItems, loading: contentLoading } = useContentLibrary();
@@ -206,34 +207,24 @@ const MyResourcesPage: React.FC = () => {
                 )}
             </Flex>
 
-            {/* Content Viewer Modal */}
-            <Modal isOpen={isOpen} onClose={onClose} size="full">
-                <ModalOverlay bg="rgba(0,0,0,0.8)" />
-                <ModalContent bg="white">
-                    <ModalHeader borderBottom="1px solid" borderColor="gray.100" py={4}>
-                        <Flex justify="space-between" align="center">
-                            {viewTitle}
-                            <Box w={8} />
-                        </Flex>
-                    </ModalHeader>
-                    <ModalCloseButton mt={2} />
-                    <ModalBody p={0} height="calc(100vh - 70px)" bg="gray.100">
-                        {viewType === 'image' ? (
-                            <Flex justify="center" align="center" height="100%">
-                                <Image src={viewUrl} maxH="100%" objectFit="contain" />
-                            </Flex>
-                        ) : (
-                            <iframe
-                                src={`${viewUrl}#toolbar=0`}
-                                width="100%"
-                                height="100%"
-                                style={{ border: 'none' }}
-                                title={viewTitle}
-                            />
-                        )}
+            {/* Image Viewer Modal */}
+            <Modal isOpen={isOpen && viewType === 'image'} onClose={onClose} size="full">
+                <ModalOverlay bg="rgba(0,0,0,0.9)" />
+                <ModalContent bg="transparent" boxShadow="none">
+                    <ModalCloseButton color="white" position="fixed" top={4} right={4} zIndex={1000} />
+                    <ModalBody p={0} display="flex" justifyContent="center" alignItems="center" height="100vh" onClick={onClose}>
+                        <Image src={viewUrl} maxH="100%" maxWidth="100%" objectFit="contain" onClick={(e) => e.stopPropagation()} />
                     </ModalBody>
                 </ModalContent>
             </Modal>
+
+            {/* Secure Document Viewer Modal */}
+            <DocumentViewerModal
+                isOpen={isOpen && viewType !== 'image'}
+                onClose={onClose}
+                url={viewUrl}
+                title={viewTitle}
+            />
         </Box>
     );
 };

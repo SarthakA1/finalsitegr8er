@@ -25,6 +25,7 @@ import { useRouter } from 'next/router';
 import { useSetRecoilState } from 'recoil';
 import { AuthModalState } from '@/atoms/authModalAtom';
 import { getSketchAvatarUrl } from '@/utils/avatar';
+import DocumentViewerModal from '@/components/Modal/DocumentViewerModal';
 
 type PostItemProps = {
     post: Post;
@@ -84,6 +85,10 @@ const PostItem: React.FC<PostItemProps> = ({
 
     const [fileImageUrl, setFileImageUrl] = useState('');
     const setAuthModalState = useSetRecoilState(AuthModalState);
+
+    // Viewer State
+    const [isViewerOpen, setIsViewerOpen] = useState(false);
+    const [viewerUrl, setViewerUrl] = useState('');
 
     const handleDelete = async () => {
         try {
@@ -381,8 +386,8 @@ const PostItem: React.FC<PostItemProps> = ({
                                         if (isImage) {
                                             window.open(imageURL, '_blank');
                                         } else {
-                                            // Open documents in Google Docs Viewer (embedded mode) to hide download button
-                                            window.open(`https://docs.google.com/gview?url=${encodeURIComponent(imageURL)}&embedded=true`, '_blank');
+                                            setViewerUrl(imageURL);
+                                            setIsViewerOpen(true);
                                         }
                                     }}
                                     h="140px"
@@ -443,6 +448,14 @@ const PostItem: React.FC<PostItemProps> = ({
                     </SimpleGrid>
                 )}
             </Flex>
+
+            {/* Secure Document Viewer Modal */}
+            <DocumentViewerModal
+                isOpen={isViewerOpen}
+                onClose={() => setIsViewerOpen(false)}
+                url={viewerUrl}
+                title={post.title}
+            />
 
 
             <Flex
