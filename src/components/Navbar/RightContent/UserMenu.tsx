@@ -110,6 +110,18 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
                     fontSize="10pt"
                     fontWeight={700}
                     _hover={{ bg: "blue.500", color: "white" }}
+                    onClick={() => router.push('/my-resources')}
+                >
+                    <Flex align="center">
+                        <Icon fontSize={20} mr={2} as={FaStar} />
+                        My Resources
+                    </Flex>
+                </MenuItem>
+
+                <MenuItem
+                    fontSize="10pt"
+                    fontWeight={700}
+                    _hover={{ bg: "blue.500", color: "white" }}
                     onClick={redirectToCodeofHonor}
                 >
                     <Flex align="center">

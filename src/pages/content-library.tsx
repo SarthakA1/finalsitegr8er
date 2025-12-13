@@ -39,6 +39,11 @@ const ContentLibraryPage: React.FC = () => {
     const selectedItemRef = useRef<ContentItem | null>(null); // Ref to hold current item for callbacks
     const [isPaymentLoading, setIsPaymentLoading] = useState(false);
     const [purchasedIds, setPurchasedIds] = useState<Set<string>>(new Set());
+
+    // Filters
+    const [filterSession, setFilterSession] = useState("");
+    const [filterScore, setFilterScore] = useState("");
+
     const toast = useToast();
 
     const [user] = useAuthState(auth);
@@ -249,77 +254,117 @@ const ContentLibraryPage: React.FC = () => {
                     </Text>
                 </Box>
 
+                <Box mb={8}>
+                    <Flex gap={4} justify="center" wrap="wrap">
+                        <select
+                            style={{ padding: '10px', borderRadius: '8px', border: '1px solid #E2E8F0' }}
+                            onChange={(e) => setFilterSession(e.target.value)}
+                        >
+                            <option value="">All Sessions</option>
+                            <option value="May 2025">May 2025</option>
+                            <option value="Nov 2024">Nov 2024</option>
+                            <option value="May 2024">May 2024</option>
+                            <option value="Nov 2023">Nov 2023</option>
+                        </select>
+                        <select
+                            style={{ padding: '10px', borderRadius: '8px', border: '1px solid #E2E8F0' }}
+                            onChange={(e) => setFilterScore(e.target.value)}
+                        >
+                            <option value="">All Scores</option>
+                            <option value="7">Score 7</option>
+                            <option value="6">Score 6</option>
+                            <option value="5">Score 5</option>
+                        </select>
+                    </Flex>
+                </Box>
+
                 {loading ? (
                     <Flex justify="center" align="center" minH="300px">
                         <Spinner size="xl" color="purple.500" />
                     </Flex>
                 ) : (
                     <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8}>
-                        {contentItems.map((item) => {
-                            const isPurchased = purchasedIds.has(item.id);
-                            return (
-                                <Flex
-                                    key={item.id}
-                                    direction="column"
-                                    bg="white"
-                                    borderRadius="2xl"
-                                    overflow="hidden"
-                                    boxShadow="lg"
-                                    transition="all 0.3s"
-                                    _hover={{ transform: 'translateY(-5px)', boxShadow: 'xl' }}
-                                    border="1px solid"
-                                    borderColor="gray.100"
-                                >
-                                    <Box position="relative" height="200px" bg="gray.100">
-                                        <Image
-                                            src={item.thumbnail}
-                                            alt={item.title}
-                                            objectFit="cover"
-                                            width="100%"
-                                            height="100%"
-                                        />
-                                        <Badge
-                                            position="absolute"
-                                            top={4}
-                                            right={4}
-                                            colorScheme={isPurchased ? "green" : "yellow"}
-                                            fontSize="0.9em"
-                                            borderRadius="full"
-                                            px={3}
-                                            py={1}
-                                            boxShadow="md"
-                                        >
-                                            {isPurchased ? "OWNED" : "PREMIUM"}
-                                        </Badge>
-                                    </Box>
-
-                                    <Flex direction="column" p={6} flex={1}>
-                                        <Text fontSize="xl" fontWeight="700" mb={2} color="gray.800" noOfLines={2}>
-                                            {item.title}
-                                        </Text>
-                                        <Text fontSize="sm" color="gray.500" mb={4} flex={1} noOfLines={3}>
-                                            {item.description}
-                                        </Text>
-
-                                        <Flex align="center" justify="space-between" mt="auto" pt={4} borderTop="1px solid" borderColor="gray.100">
-                                            <Text fontSize="2xl" fontWeight="800" color={isPurchased ? "green.600" : "purple.600"}>
-                                                {isPurchased ? "Unlocked" : `$${item.price.toFixed(2)}`}
-                                            </Text>
-                                            <Button
-                                                leftIcon={isPurchased ? <FaEye /> : <FaLock />}
-                                                colorScheme={isPurchased ? "green" : "purple"}
-                                                size="md"
-                                                onClick={() => isPurchased ? openViewer(item) : handleBuyClick(item)}
-                                                isLoading={isPaymentLoading && selectedItem?.id === item.id}
+                        {contentItems
+                            .filter(item => {
+                                if (filterSession && item.session !== filterSession) return false;
+                                if (filterScore && item.score?.toString() !== filterScore) return false;
+                                return true;
+                            })
+                            .map((item) => {
+                                const isPurchased = purchasedIds.has(item.id);
+                                return (
+                                    <Flex
+                                        key={item.id}
+                                        direction="column"
+                                        bg="white"
+                                        borderRadius="2xl"
+                                        overflow="hidden"
+                                        boxShadow="lg"
+                                        transition="all 0.3s"
+                                        _hover={{ transform: 'translateY(-5px)', boxShadow: 'xl' }}
+                                        border="1px solid"
+                                        borderColor="gray.100"
+                                    >
+                                        <Box position="relative" height="200px" bg="gray.100">
+                                            <Image
+                                                src={item.thumbnail}
+                                                alt={item.title}
+                                                objectFit="cover"
+                                                width="100%"
+                                                height="100%"
+                                            />
+                                            <Badge
+                                                position="absolute"
+                                                top={4}
+                                                right={4}
+                                                colorScheme={isPurchased ? "green" : "yellow"}
+                                                fontSize="0.9em"
+                                                borderRadius="full"
+                                                px={3}
+                                                py={1}
                                                 boxShadow="md"
                                             >
-                                                {isPurchased ? "View Content" : "Unlock Now"}
-                                            </Button>
+                                                {isPurchased ? "OWNED" : "PREMIUM"}
+                                            </Badge>
+
+                                            {/* Metadata Tags */}
+                                            <Flex position="absolute" bottom={2} left={2} gap={2}>
+                                                {item.score && (
+                                                    <Badge colorScheme="purple" borderRadius="md" px={2}>Score: {item.score}</Badge>
+                                                )}
+                                                {item.session && (
+                                                    <Badge colorScheme="blue" borderRadius="md" px={2}>{item.session}</Badge>
+                                                )}
+                                            </Flex>
+                                        </Box>
+
+                                        <Flex direction="column" p={6} flex={1}>
+                                            <Text fontSize="xl" fontWeight="700" mb={2} color="gray.800" noOfLines={2}>
+                                                {item.title}
+                                            </Text>
+                                            <Text fontSize="sm" color="gray.500" mb={4} flex={1} noOfLines={3}>
+                                                {item.description}
+                                            </Text>
+
+                                            <Flex align="center" justify="space-between" mt="auto" pt={4} borderTop="1px solid" borderColor="gray.100">
+                                                <Text fontSize="2xl" fontWeight="800" color={isPurchased ? "green.600" : "purple.600"}>
+                                                    {isPurchased ? "Unlocked" : `$${item.price.toFixed(2)}`}
+                                                </Text>
+                                                <Button
+                                                    leftIcon={isPurchased ? <FaEye /> : <FaLock />}
+                                                    colorScheme={isPurchased ? "green" : "purple"}
+                                                    size="md"
+                                                    onClick={() => isPurchased ? openViewer(item) : handleBuyClick(item)}
+                                                    isLoading={isPaymentLoading && selectedItem?.id === item.id}
+                                                    boxShadow="md"
+                                                >
+                                                    {isPurchased ? "View Content" : "Unlock Now"}
+                                                </Button>
+                                            </Flex>
                                         </Flex>
                                     </Flex>
-                                </Flex>
-                            );
-                        })}
+                                );
+                            })}
                     </SimpleGrid>
                 )}
             </Flex>

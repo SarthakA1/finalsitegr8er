@@ -33,6 +33,9 @@ const AdminUploadPage = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('5.00');
+    const [score, setScore] = useState(7);
+    const [session, setSession] = useState('May 2025');
+    const [subject, setSubject] = useState('Math AA HL');
 
     // File State
     const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
@@ -93,6 +96,9 @@ const AdminUploadPage = () => {
                 title,
                 description,
                 price: parseFloat(price), // Parse string to number
+                score: Number(score),
+                session,
+                subject,
                 thumbnail: thumbnailUrl,
                 url: contentUrl,
                 type: contentFile.type.includes('image') ? 'image' : 'pdf', // Simple type check
@@ -112,6 +118,8 @@ const AdminUploadPage = () => {
             setTitle('');
             setDescription('');
             setPrice('5.00');
+            setScore(7);
+            setSession('May 2025');
             setThumbnailFile(null);
             setThumbnailPreview('');
             setContentFile(null);
@@ -144,18 +152,43 @@ const AdminUploadPage = () => {
                     <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Short description of the resource..." />
                 </FormControl>
 
-                <FormControl>
-                    <FormLabel>Price (USD)</FormLabel>
-                    <NumberInput
-                        value={price}
-                        onChange={(valueString) => setPrice(valueString)}
-                        precision={2}
-                        step={0.01}
-                        min={0}
-                    >
-                        <NumberInputField />
-                    </NumberInput>
-                </FormControl>
+                <Flex gap={4}>
+                    <FormControl>
+                        <FormLabel>Price (USD)</FormLabel>
+                        <NumberInput
+                            value={price}
+                            onChange={(valueString) => setPrice(valueString)}
+                            precision={2}
+                            step={0.01}
+                            min={0}
+                        >
+                            <NumberInputField />
+                        </NumberInput>
+                    </FormControl>
+
+                    <FormControl>
+                        <FormLabel>Score (1-7)</FormLabel>
+                        <NumberInput
+                            value={score}
+                            onChange={(_, val) => setScore(val)}
+                            min={1}
+                            max={7}
+                        >
+                            <NumberInputField />
+                        </NumberInput>
+                    </FormControl>
+                </Flex>
+
+                <Flex gap={4}>
+                    <FormControl>
+                        <FormLabel>Session</FormLabel>
+                        <Input value={session} onChange={(e) => setSession(e.target.value)} placeholder="e.g. May 2025" />
+                    </FormControl>
+                    <FormControl>
+                        <FormLabel>Subject</FormLabel>
+                        <Input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="e.g. Math AA HL" />
+                    </FormControl>
+                </Flex>
 
                 {/* Thumbnail Upload */}
                 <FormControl>

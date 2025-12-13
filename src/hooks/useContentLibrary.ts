@@ -11,6 +11,10 @@ export type ContentItem = {
     price: number;
     type: "pdf" | "video" | "image";
     createdAt: any;
+    // New fields
+    score?: number; // e.g. 7, 6, 5
+    session?: string; // e.g. "May 2025"
+    subject?: string; // e.g. "Math AA HL"
 };
 
 // MOCK DATA
@@ -19,11 +23,14 @@ const MOCK_CONTENT: ContentItem[] = [
         id: "item_1",
         title: "Complete Algebra II Study Guide",
         description: "A comprehensive guide to mastering Algebra II, including practice problems and clear explanations.",
-        url: "/assets/content/content-item-1.png", // Using the uploaded image as the file/preview for now
+        url: "/assets/content/content-item-1.png",
         thumbnail: "/assets/content/content-item-1.png",
         price: 5.00,
         type: "image",
         createdAt: new Date(),
+        score: 7,
+        session: "May 2024",
+        subject: "Math AA HL"
     },
     {
         id: "item_2",
@@ -34,6 +41,9 @@ const MOCK_CONTENT: ContentItem[] = [
         price: 5.00,
         type: "image",
         createdAt: new Date(),
+        score: 6,
+        session: "Nov 2024",
+        subject: "Physics HL"
     },
 ];
 
