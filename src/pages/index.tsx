@@ -56,11 +56,11 @@ const LandingPage: NextPage = () => {
 
   return (
     <Box
-      h="100vh" // Strict height
+      minH="100vh"
       w="100%"
       bg="#fdfbf7"
       position="relative"
-      overflow="hidden" // No scroll
+      overflowY={{ base: "auto", md: "hidden" }} // Allow scroll on mobile
       sx={{
         backgroundImage: `radial-gradient(#e5e7eb 1px, transparent 1px)`,
         backgroundSize: '20px 20px',
@@ -81,7 +81,7 @@ const LandingPage: NextPage = () => {
         zIndex={0}
       />
 
-      <Container maxW="container.xl" h="100%" position="relative" zIndex={1} display="flex" flexDirection="column" justifyContent="center" pt={0}>
+      <Container maxW="container.xl" h={{ base: "auto", md: "100%" }} minH={{ base: "100vh", md: "unset" }} position="relative" zIndex={1} display="flex" flexDirection="column" justifyContent="center" pt={{ base: 20, md: 0 }} pb={{ base: 10, md: 0 }}>
 
         {/* Hero Section - Tightened */}
         <Flex direction="column" align="center" textAlign="center" mb={{ base: 6, md: 4 }}>
