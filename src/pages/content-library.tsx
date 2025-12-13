@@ -236,7 +236,7 @@ const ContentLibraryPage: React.FC = () => {
     };
 
     return (
-        <Box minH="100vh" bg="white" py={10} px={{ base: 4, md: 10 }}>
+        <Box minH="100vh" bg="gray.50" py={10} px={{ base: 4, md: 10 }}>
             <Head>
                 <title>Library | Gr8er IB</title>
             </Head>
@@ -245,17 +245,16 @@ const ContentLibraryPage: React.FC = () => {
                 {/* Header */}
                 <Box mb={10} textAlign="center">
                     <Text
-                        fontSize={{ base: "3xl", md: "5xl" }}
-                        fontWeight="900"
-                        bgGradient="linear(to-r, blue.600, purple.600)"
-                        bgClip="text"
+                        fontSize={{ base: "3xl", md: "4xl" }}
+                        fontWeight="800"
+                        color="gray.800"
                         mb={3}
                         letterSpacing="tight"
                     >
-                        Premium Content Library
+                        Content Library
                     </Text>
-                    <Text fontSize="lg" color="gray.600" maxW="600px" mx="auto">
-                        Unlock top-tier IB resources to skyrocket your grades.
+                    <Text fontSize="lg" color="gray.500" maxW="600px" mx="auto">
+                        Premium resources to help you ace your exams.
                     </Text>
                 </Box>
 
@@ -264,15 +263,19 @@ const ContentLibraryPage: React.FC = () => {
                     <Flex direction="column" gap={6} align="center">
                         {/* Session Filters */}
                         <Flex gap={3} wrap="wrap" justify="center">
-                            <Text fontWeight="bold" color="gray.700" mr={2} alignSelf="center">Session:</Text>
                             {SESSIONS.map(session => (
                                 <Button
                                     key={session}
                                     size="sm"
+                                    onClick={() => toggleSession(session)}
                                     variant={selectedSessions.includes(session) ? "solid" : "outline"}
-                                    colorScheme="blue"
-                                    onClick={() => toggleFilter(session, selectedSessions, setSelectedSessions)}
+                                    colorScheme={selectedSessions.includes(session) ? "blackAlpha" : "gray"}
+                                    bg={selectedSessions.includes(session) ? "gray.800" : "transparent"}
+                                    color={selectedSessions.includes(session) ? "white" : "gray.600"}
+                                    borderColor="gray.300"
+                                    _hover={{ bg: selectedSessions.includes(session) ? "gray.700" : "gray.100" }}
                                     borderRadius="full"
+                                    px={6}
                                 >
                                     {session}
                                 </Button>
@@ -281,17 +284,22 @@ const ContentLibraryPage: React.FC = () => {
 
                         {/* Score Filters */}
                         <Flex gap={3} wrap="wrap" justify="center">
-                            <Text fontWeight="bold" color="gray.700" mr={2} alignSelf="center">Score:</Text>
+                            <Text fontSize="sm" fontWeight="600" color="gray.500" alignSelf="center" mr={2}>Score:</Text>
                             {SCORES.map(score => (
                                 <Button
                                     key={score}
-                                    size="sm"
+                                    size="xs"
+                                    onClick={() => toggleScore(score)}
                                     variant={selectedScores.includes(score) ? "solid" : "outline"}
-                                    colorScheme="purple"
-                                    onClick={() => toggleFilter(score, selectedScores, setSelectedScores)}
-                                    borderRadius="full"
+                                    colorScheme={selectedScores.includes(score) ? "purple" : "gray"}
+                                    bg={selectedScores.includes(score) ? "purple.600" : "transparent"}
+                                    color={selectedScores.includes(score) ? "white" : "gray.600"}
+                                    borderColor="gray.300"
+                                    _hover={{ bg: selectedScores.includes(score) ? "purple.500" : "gray.100" }}
+                                    borderRadius="md"
+                                    px={4}
                                 >
-                                    Score {score}
+                                    {score}
                                 </Button>
                             ))}
                         </Flex>
@@ -300,14 +308,14 @@ const ContentLibraryPage: React.FC = () => {
 
                 {loading ? (
                     <Flex justify="center" align="center" minH="300px">
-                        <Spinner size="xl" color="purple.500" thickness="4px" />
+                        <Spinner size="xl" color="gray.400" speed="0.8s" thickness="4px" />
                     </Flex>
                 ) : (
-                    <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={10}>
+                    <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8}>
                         {contentItems
                             .filter(item => {
-                                if (selectedSessions.length > 0 && item.session && !selectedSessions.includes(item.session)) return false;
-                                if (selectedScores.length > 0 && item.score && !selectedScores.includes(item.score.toString())) return false;
+                                if (selectedSessions.length > 0 && !selectedSessions.includes(item.session || '')) return false;
+                                if (selectedScores.length > 0 && !selectedScores.includes(item.score?.toString() || '')) return false;
                                 return true;
                             })
                             .map((item) => {
@@ -317,19 +325,19 @@ const ContentLibraryPage: React.FC = () => {
                                         key={item.id}
                                         direction="column"
                                         bg="white"
-                                        borderRadius="2xl"
+                                        borderRadius="xl"
                                         overflow="hidden"
                                         border="1px solid"
                                         borderColor="gray.100"
-                                        boxShadow="lg"
-                                        transition="all 0.3s ease"
+                                        boxShadow="sm"
+                                        transition="all 0.2s ease-in-out"
                                         _hover={{
-                                            transform: 'translateY(-5px)',
-                                            boxShadow: 'xl',
-                                            borderColor: "purple.200"
+                                            transform: 'translateY(-4px)',
+                                            boxShadow: 'md',
+                                            borderColor: 'gray.300'
                                         }}
                                     >
-                                        <Box position="relative" height="220px" bg="gray.50">
+                                        <Box position="relative" height="200px" bg="gray.100">
                                             <Image
                                                 src={item.thumbnail}
                                                 alt={item.title}
@@ -338,38 +346,41 @@ const ContentLibraryPage: React.FC = () => {
                                                 height="100%"
                                             />
 
-                                            <Badge
-                                                position="absolute"
-                                                top={4}
-                                                right={4}
-                                                colorScheme={isPurchased ? "green" : "purple"}
-                                                variant="solid"
-                                                fontSize="0.8em"
-                                                borderRadius="full"
-                                                px={3}
-                                                py={1}
-                                                boxShadow="md"
-                                            >
-                                                {isPurchased ? "OWNED" : "PREMIUM"}
-                                            </Badge>
+                                            {isPurchased && (
+                                                <Badge
+                                                    position="absolute"
+                                                    top={3}
+                                                    right={3}
+                                                    colorScheme="green"
+                                                    variant="subtle"
+                                                    borderRadius="full"
+                                                    px={2}
+                                                >
+                                                    OWNED
+                                                </Badge>
+                                            )}
 
                                             {/* Metadata Tags */}
-                                            <Flex position="absolute" bottom={4} left={4} gap={2}>
+                                            <Flex position="absolute" bottom={3} left={3} gap={2}>
                                                 {item.score && (
-                                                    <Badge colorScheme="purple" borderRadius="md" px={2} py={0.5} boxShadow="sm">Score: {item.score}</Badge>
+                                                    <Badge bg="white" color="purple.600" borderRadius="md" px={2} py={0.5} boxShadow="sm" fontSize="xs">
+                                                        Score: {item.score}
+                                                    </Badge>
                                                 )}
                                                 {item.session && (
-                                                    <Badge colorScheme="blue" borderRadius="md" px={2} py={0.5} boxShadow="sm">{item.session}</Badge>
+                                                    <Badge bg="white" color="gray.600" borderRadius="md" px={2} py={0.5} boxShadow="sm" fontSize="xs">
+                                                        {item.session}
+                                                    </Badge>
                                                 )}
                                             </Flex>
                                         </Box>
 
-                                        <Flex direction="column" p={6} flex={1} justify="space-between">
+                                        <Flex direction="column" p={5} flex={1} justify="space-between">
                                             <Box>
-                                                <Text fontSize="xl" fontWeight="700" mb={3} color="gray.800" lineHeight="short">
+                                                <Text fontSize="lg" fontWeight="700" mb={2} color="gray.800" lineHeight="short">
                                                     {item.title}
                                                 </Text>
-                                                <Text fontSize="sm" color="gray.500" mb={6} noOfLines={3}>
+                                                <Text fontSize="sm" color="gray.500" mb={6} noOfLines={2}>
                                                     {item.description}
                                                 </Text>
                                             </Box>
@@ -377,28 +388,26 @@ const ContentLibraryPage: React.FC = () => {
                                             {isPurchased ? (
                                                 <Button
                                                     leftIcon={<FaEye />}
-                                                    colorScheme="green"
-                                                    variant="outline"
-                                                    size="lg"
+                                                    size="md"
                                                     width="full"
+                                                    variant="outline"
+                                                    colorScheme="gray"
                                                     onClick={() => openViewer(item)}
-                                                    _hover={{ bg: "green.500", color: "white" }}
                                                 >
-                                                    View Content
+                                                    View
                                                 </Button>
                                             ) : (
                                                 <Button
                                                     leftIcon={<Icon as={FiShoppingCart} />}
-                                                    bgGradient="linear(to-r, purple.500, pink.500)"
-                                                    _hover={{ bgGradient: "linear(to-r, purple.400, pink.400)", shadow: "lg" }}
+                                                    bg="black"
                                                     color="white"
-                                                    size="lg"
+                                                    _hover={{ bg: "gray.800" }}
+                                                    size="md"
                                                     width="full"
                                                     isLoading={isPaymentLoading && selectedItem?.id === item.id}
                                                     onClick={() => handleBuyClick(item)}
-                                                    border="none"
                                                 >
-                                                    Unlock for ${item.price.toFixed(2)}
+                                                    Buy ${item.price.toFixed(2)}
                                                 </Button>
                                             )}
                                         </Flex>
@@ -411,15 +420,19 @@ const ContentLibraryPage: React.FC = () => {
 
             {/* Content Viewer Modal */}
             <Modal isOpen={isOpen} onClose={onClose} size="full">
-                <ModalOverlay backdropFilter="blur(5px)" bg="blackAlpha.800" />
-                <ModalContent bg="gray.900">
-                    <ModalHeader color="white" borderBottom="1px solid" borderColor="whiteAlpha.200">
-                        {viewTitle}
+                <ModalOverlay bg="rgba(0,0,0,0.8)" />
+                <ModalContent bg="white">
+                    <ModalHeader borderBottom="1px solid" borderColor="gray.100" py={4}>
+                        <Flex justify="space-between" align="center">
+                            {viewTitle}
+                            <Box w={8} /> {/* Spacer for close button alignment */}
+                        </Flex>
+
                     </ModalHeader>
-                    <ModalCloseButton color="white" />
-                    <ModalBody p={0} height="calc(100vh - 60px)">
+                    <ModalCloseButton mt={2} />
+                    <ModalBody p={0} height="calc(100vh - 70px)" bg="gray.100">
                         {viewType === 'image' ? (
-                            <Flex justify="center" align="center" height="100%" bg="gray.900">
+                            <Flex justify="center" align="center" height="100%">
                                 <Image src={viewUrl} maxH="100%" objectFit="contain" />
                             </Flex>
                         ) : (

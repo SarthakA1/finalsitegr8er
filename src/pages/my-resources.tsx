@@ -81,31 +81,30 @@ const MyResourcesPage: React.FC = () => {
     const myResources = contentItems.filter(item => purchasedIds.has(item.id));
 
     return (
-        <Box minH="100vh" bg="white" py={10} px={{ base: 4, md: 10 }}>
+        <Box minH="100vh" bg="gray.50" py={10} px={{ base: 4, md: 10 }}>
             <Head>
                 <title>My Resources | Gr8er IB</title>
             </Head>
 
             <Flex direction="column" maxWidth="1200px" mx="auto">
-                <Box mb={12} textAlign="center">
+                <Box mb={10} textAlign="center">
                     <Text
-                        fontSize={{ base: "3xl", md: "5xl" }}
-                        fontWeight="900"
-                        bgGradient="linear(to-r, green.500, teal.500)"
-                        bgClip="text"
+                        fontSize={{ base: "3xl", md: "4xl" }}
+                        fontWeight="800"
+                        color="gray.800"
                         mb={3}
                         letterSpacing="tight"
                     >
                         My Learning Resources
                     </Text>
-                    <Text fontSize="lg" color="gray.600">
+                    <Text fontSize="lg" color="gray.500">
                         Access all your unlocked study materials here.
                     </Text>
                 </Box>
 
                 {loading ? (
                     <Flex justify="center" align="center" minH="300px">
-                        <Spinner size="xl" color="teal.500" />
+                        <Spinner size="xl" color="gray.400" />
                     </Flex>
                 ) : myResources.length === 0 ? (
                     <Flex
@@ -113,37 +112,38 @@ const MyResourcesPage: React.FC = () => {
                         justify="center"
                         align="center"
                         minH="300px"
-                        bg="gray.50"
-                        border="1px dashed"
+                        bg="white"
+                        border="1px solid"
                         borderColor="gray.200"
                         p={10}
                         borderRadius="xl"
+                        boxShadow="sm"
                     >
                         <Text fontSize="xl" color="gray.500" mb={4}>You haven't purchased any resources yet.</Text>
-                        <Button colorScheme="purple" onClick={() => router.push('/content-library')}>
+                        <Button colorScheme="blackAlpha" bg="black" color="white" _hover={{ bg: "gray.800" }} onClick={() => router.push('/content-library')}>
                             Browse Library
                         </Button>
                     </Flex>
                 ) : (
-                    <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={10}>
+                    <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8}>
                         {myResources.map((item) => (
                             <Flex
                                 key={item.id}
                                 direction="column"
                                 bg="white"
-                                borderRadius="2xl"
+                                borderRadius="xl"
                                 overflow="hidden"
                                 border="1px solid"
                                 borderColor="gray.100"
-                                boxShadow="lg"
-                                transition="all 0.3s ease"
+                                boxShadow="sm"
+                                transition="all 0.2s ease-in-out"
                                 _hover={{
-                                    transform: 'translateY(-5px)',
-                                    boxShadow: 'xl',
-                                    borderColor: "green.200"
+                                    transform: 'translateY(-4px)',
+                                    boxShadow: 'md',
+                                    borderColor: 'gray.300'
                                 }}
                             >
-                                <Box position="relative" height="220px" bg="gray.100">
+                                <Box position="relative" height="200px" bg="gray.100">
                                     <Image
                                         src={item.thumbnail}
                                         alt={item.title}
@@ -154,37 +154,36 @@ const MyResourcesPage: React.FC = () => {
 
                                     <Badge
                                         position="absolute"
-                                        top={4}
-                                        right={4}
+                                        top={3}
+                                        right={3}
                                         colorScheme="green"
-                                        variant="solid"
-                                        fontSize="0.8em"
+                                        variant="subtle"
                                         borderRadius="full"
-                                        px={3}
-                                        py={1}
-                                        boxShadow="md"
-                                        textTransform="uppercase"
-                                        letterSpacing="wider"
+                                        px={2}
                                     >
                                         OWNED
                                     </Badge>
                                     {/* Metadata Tags */}
-                                    <Flex position="absolute" bottom={4} left={4} gap={2}>
+                                    <Flex position="absolute" bottom={3} left={3} gap={2}>
                                         {item.score && (
-                                            <Badge colorScheme="purple" borderRadius="md" px={2} py={0.5} boxShadow="sm">Score: {item.score}</Badge>
+                                            <Badge bg="white" color="purple.600" borderRadius="md" px={2} py={0.5} boxShadow="sm" fontSize="xs">
+                                                Score: {item.score}
+                                            </Badge>
                                         )}
                                         {item.session && (
-                                            <Badge colorScheme="blue" borderRadius="md" px={2} py={0.5} boxShadow="sm">{item.session}</Badge>
+                                            <Badge bg="white" color="gray.600" borderRadius="md" px={2} py={0.5} boxShadow="sm" fontSize="xs">
+                                                {item.session}
+                                            </Badge>
                                         )}
                                     </Flex>
                                 </Box>
 
-                                <Flex direction="column" p={6} flex={1} justify="space-between">
+                                <Flex direction="column" p={5} flex={1} justify="space-between">
                                     <Box>
-                                        <Text fontSize="xl" fontWeight="700" mb={3} color="gray.800" lineHeight="short">
+                                        <Text fontSize="lg" fontWeight="700" mb={2} color="gray.800" lineHeight="short">
                                             {item.title}
                                         </Text>
-                                        <Text fontSize="sm" color="gray.500" mb={6} noOfLines={3}>
+                                        <Text fontSize="sm" color="gray.500" mb={6} noOfLines={2}>
                                             {item.description}
                                         </Text>
                                     </Box>
@@ -192,12 +191,11 @@ const MyResourcesPage: React.FC = () => {
                                     <Button
                                         mt="auto"
                                         leftIcon={<FaEye />}
-                                        colorScheme="teal"
-                                        variant="outline"
-                                        size="lg"
+                                        size="md"
                                         width="full"
+                                        variant="outline"
+                                        colorScheme="gray"
                                         onClick={() => openViewer(item)}
-                                        _hover={{ bg: "teal.500", color: "white" }}
                                     >
                                         View Content
                                     </Button>
@@ -210,13 +208,18 @@ const MyResourcesPage: React.FC = () => {
 
             {/* Content Viewer Modal */}
             <Modal isOpen={isOpen} onClose={onClose} size="full">
-                <ModalOverlay backdropFilter="blur(5px)" bg="blackAlpha.800" />
-                <ModalContent bg="gray.900">
-                    <ModalHeader color="white" borderBottom="1px solid" borderColor="whiteAlpha.200">{viewTitle}</ModalHeader>
-                    <ModalCloseButton color="white" />
-                    <ModalBody p={0} height="calc(100vh - 60px)">
+                <ModalOverlay bg="rgba(0,0,0,0.8)" />
+                <ModalContent bg="white">
+                    <ModalHeader borderBottom="1px solid" borderColor="gray.100" py={4}>
+                        <Flex justify="space-between" align="center">
+                            {viewTitle}
+                            <Box w={8} />
+                        </Flex>
+                    </ModalHeader>
+                    <ModalCloseButton mt={2} />
+                    <ModalBody p={0} height="calc(100vh - 70px)" bg="gray.100">
                         {viewType === 'image' ? (
-                            <Flex justify="center" align="center" height="100%" bg="gray.900">
+                            <Flex justify="center" align="center" height="100%">
                                 <Image src={viewUrl} maxH="100%" objectFit="contain" />
                             </Flex>
                         ) : (
