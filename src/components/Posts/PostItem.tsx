@@ -228,8 +228,13 @@ const PostItem: React.FC<PostItemProps> = ({
                 p={2}
             >  */}
             <Flex direction="column" p={3} gap={2}>
-                <Flex justify="space-between" align="center" wrap="wrap" gap={2}>
-                    <Flex align="center" gap={2}>
+                <Flex
+                    justify="space-between"
+                    align={{ base: "flex-start", md: "center" }}
+                    direction={{ base: "column", md: "row" }}
+                    gap={2}
+                >
+                    <Flex align="center" gap={2} mb={{ base: 2, md: 0 }}>
                         {homePage && (
                             <>
                                 {post.subjectImageURL ? (
@@ -262,16 +267,16 @@ const PostItem: React.FC<PostItemProps> = ({
                             </Text>
                         </Flex>
                     </Flex>
-                    <Flex gap={1.5} wrap="wrap">
+                    <Flex gap={2} wrap="wrap" justify={{ base: "flex-start", md: "flex-end" }}>
                         {post.criteria && Array.isArray(post.criteria) && post.criteria.map((criterion: any, index: any) => (
                             criterion.value !== '' && (
-                                <Badge key={index} colorScheme="gray" px={3} py={1} borderRadius="full" fontSize="10px" fontWeight={600}>
+                                <Badge key={index} colorScheme="gray" px={3} py={1} borderRadius="full" fontSize="xs" fontWeight={600}>
                                     {criterion.value}
                                 </Badge>
                             )
                         ))}
                         {post.typeOfQuestions && post.typeOfQuestions !== '' && (
-                            <Badge colorScheme="blue" px={3} py={1} borderRadius="full" fontSize="10px" fontWeight={600}>
+                            <Badge colorScheme="blue" px={3} py={1} borderRadius="full" fontSize="xs" fontWeight={600}>
                                 {post.typeOfQuestions.value === 'General Question' ? 'General Doubt' : post.typeOfQuestions.value}
                             </Badge>
                         )}
@@ -375,7 +380,7 @@ const PostItem: React.FC<PostItemProps> = ({
                                             {/* Visual Preview Iframe (Click-through blocked by overlay) */}
                                             <iframe
                                                 src={`https://docs.google.com/gview?url=${encodeURIComponent(imageURL)}&embedded=true`}
-                                                style={{ width: '100%', height: '100%', border: 'none', overflow: 'hidden', transform: 'scale(1.0)', transformOrigin: 'top left' }}
+                                                style={{ width: '100%', height: '100%', border: 'none', overflow: 'hidden', transform: 'scale(1.0)', transformOrigin: 'top left', pointerEvents: 'none' }}
                                                 title="Preview"
                                                 scrolling="no"
                                             />

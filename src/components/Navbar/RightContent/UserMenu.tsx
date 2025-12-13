@@ -7,7 +7,7 @@ import { FaPersonBooth } from "react-icons/fa";
 import { BsChevronDown } from "react-icons/bs";
 import { VscAccount } from "react-icons/vsc";
 import { TbLogout } from "react-icons/tb";
-import { FaStar, FaMoon, FaSun } from "react-icons/fa";
+import { IoSwapHorizontal, IoLibrary, IoShieldCheckmark } from "react-icons/io5";
 import { auth } from '@/firebase/clientApp';
 import { Text } from "@chakra-ui/react";
 import { useResetRecoilState, useSetRecoilState } from 'recoil';
@@ -24,7 +24,7 @@ type UserMenuProps = {
 };
 
 const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
-    const { colorMode, toggleColorMode } = useColorMode();
+    // const { colorMode, toggleColorMode } = useColorMode(); // Dark mode removed
     const resetSubjectState = useResetRecoilState(subjectState)
     const setAuthModalState = useSetRecoilState(AuthModalState);
     const [curriculum, setCurriculum] = useRecoilState(curriculumState);
@@ -88,7 +88,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
                     pb={2}
                 >
                     <Flex align="center">
-                        <Icon fontSize={20} mr={2} as={FaStar} color="brand.500" />
+                        <Icon fontSize={20} mr={3} as={IoSwapHorizontal} color="brand.500" />
                         <Text fontWeight={800}>
                             Switch to {curriculum.curriculumId === 'ib-myp' ? 'IB DP' : 'IB MYP'}
                         </Text>
@@ -114,7 +114,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
                     onClick={() => router.push('/my-resources')}
                 >
                     <Flex align="center">
-                        <Icon fontSize={20} mr={2} as={FaStar} />
+                        <Icon fontSize={20} mr={3} as={IoLibrary} />
                         My Resources
                     </Flex>
                 </MenuItem>
@@ -126,7 +126,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
                     onClick={redirectToCodeofHonor}
                 >
                     <Flex align="center">
-                        <Icon fontSize={20} mr={2} as={FaStar} />
+                        <Icon fontSize={20} mr={3} as={IoShieldCheckmark} />
                         Code of Honor
                     </Flex>
                 </MenuItem>
@@ -137,28 +137,10 @@ const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
                     fontSize="10pt"
                     fontWeight={700}
                     _hover={{ bg: "blue.500", color: "white" }}
-                    onClick={toggleColorMode}
-                    closeOnSelect={false}
-                >
-                    <Flex align="center" justify="space-between" width="100%">
-                        <Flex align="center">
-                            <Icon fontSize={20} mr={2} as={colorMode === 'light' ? FaMoon : FaSun} />
-                            Dark Mode
-                        </Flex>
-                        <Switch isChecked={colorMode === 'dark'} size="sm" ml={2} />
-                    </Flex>
-                </MenuItem>
-
-
-
-                <MenuItem
-                    fontSize="10pt"
-                    fontWeight={700}
-                    _hover={{ bg: "blue.500", color: "white" }}
                     onClick={logoutt}
                 >
                     <Flex align="center">
-                        <Icon fontSize={20} mr={2} as={TbLogout} />
+                        <Icon fontSize={20} mr={3} as={TbLogout} />
                         Log Out
                     </Flex>
                 </MenuItem>

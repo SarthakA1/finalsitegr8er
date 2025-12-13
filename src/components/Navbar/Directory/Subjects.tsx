@@ -103,16 +103,7 @@ const Subjects: React.FC<subjectsProps> = () => {
                 </>
             )}
 
-            <Box mt={3} mb={3} >
-                <Text pl={3} mb={1} fontSize="10pt" fontWeight={500} color="gray.500"> GENERAL </Text>
-            </Box>
-            <MenuListItem
-                icon={RiGroup2Fill}
-                displayText="Code of Honor"
-                link="/codeofhonor"
-                iconColor="brand.500"
-                imageURL=""
-            />
+
         </>
     )
 }
