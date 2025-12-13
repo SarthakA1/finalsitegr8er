@@ -77,7 +77,7 @@ const ContentLibraryBanner: React.FC = () => {
                     <Text fontSize={{ base: "lg", md: "2xl" }} fontWeight="800" color="gray.800" letterSpacing="tight" lineHeight="1.2">
                         Content Library
                     </Text>
-                    <Text fontSize={{ base: "xs", md: "sm" }} color="gray.200" maxW="lg" lineHeight="short">
+                    <Text fontSize={{ base: "xs", md: "sm" }} color="gray.500" maxW="lg" lineHeight="short">
                         Premium IAs, EEs, Personal Projects, and Portfolios to ace your exams.
                     </Text>
                 </Flex>

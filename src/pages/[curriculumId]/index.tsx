@@ -306,185 +306,141 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
                         <ContentLibraryBanner />
 
                         {/* Filters */}
-                        <Box mb={4}>
-                            <Stack spacing={2} align="center">
+                        {/* Filters */}
+                        <Box mb={4} width="100%" mt={6} bg="white" border="1px solid" borderColor="gray.200" borderRadius="xl" p={5} boxShadow="sm">
+                            <Flex
+                                wrap="wrap"
+                                align="center"
+                                justify="flex-start"
+                                w="100%"
+                                gap={2}
+                            >
                                 {curriculumId === 'ib-dp' ? (
                                     <>
-                                        {/* DP Filters - Level & Paper Combined */}
-                                        <Flex
-                                            direction={{ base: "column", md: "row" }}
-                                            gap={{ base: 3, md: 2 }}
-                                            align={{ base: "flex-start", md: "center" }}
-                                            justify={{ base: "flex-start", md: "center" }}
-                                            w="100%"
-                                        >
-                                            {/* Level */}
-                                            <Flex
-                                                gap={1}
-                                                align="center"
-                                                w={{ base: "100%", md: "auto" }}
-                                                overflowX={{ base: "auto", md: "visible" }}
-                                                css={{ "&::-webkit-scrollbar": { display: "none" } }}
-                                                justify={{ base: "flex-start", md: "center" }}
-                                            >
-                                                <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1} flexShrink={0}>Level:</Text>
-                                                {['HL', 'SL'].map((level) => {
-                                                    const isActive = activeFilters.level?.includes(level);
-                                                    return (
-                                                        <Button
-                                                            key={level}
-                                                            size="xs"
-                                                            onClick={() => handleChangeTopFilter('level', level)}
-                                                            variant={isActive ? "solid" : "outline"}
-                                                            colorScheme={isActive ? "purple" : "gray"}
-                                                            bg={isActive ? "purple.600" : "white"}
-                                                            color={isActive ? "white" : "gray.600"}
-                                                            borderColor="gray.300"
-                                                            _hover={{ bg: isActive ? "purple.500" : "gray.100" }}
-                                                            borderRadius="full"
-                                                            px={3}
-                                                            fontSize="sm"
-                                                            fontWeight="medium"
-                                                            flexShrink={0}
-                                                        >
-                                                            {level}
-                                                        </Button>
-                                                    )
-                                                })}
-                                            </Flex>
+                                        {/* Level */}
+                                        <Flex align="center" gap={1}>
+                                            <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1} flexShrink={0}>Level:</Text>
+                                            {['HL', 'SL'].map((level) => {
+                                                const isActive = activeFilters.level?.includes(level);
+                                                return (
+                                                    <Button
+                                                        key={level}
+                                                        size="xs"
+                                                        onClick={() => handleChangeTopFilter('level', level)}
+                                                        variant={isActive ? "solid" : "subtle"}
+                                                        colorScheme="purple"
+                                                        bg={isActive ? "purple.600" : "purple.50"}
+                                                        color={isActive ? "white" : "purple.700"}
+                                                        _hover={{ bg: isActive ? "purple.500" : "purple.100" }}
+                                                        borderRadius="full"
+                                                        px={3}
+                                                        fontSize="xs"
+                                                        fontWeight="bold"
+                                                        flexShrink={0}
+                                                        boxShadow={isActive ? "sm" : "none"}
+                                                    >
+                                                        {level}
+                                                    </Button>
+                                                )
+                                            })}
+                                        </Flex>
 
-                                            <Box width="1px" height="15px" bg="gray.300" mx={1} display={{ base: "none", md: "block" }} flexShrink={0} />
+                                        <Box width="1px" height="15px" bg="gray.300" mx={1} display={{ base: "none", md: "block" }} flexShrink={0} />
 
-                                            {/* Paper */}
-                                            <Flex
-                                                gap={1}
-                                                align="center"
-                                                w={{ base: "100%", md: "auto" }}
-                                                overflowX={{ base: "auto", md: "visible" }}
-                                                css={{ "&::-webkit-scrollbar": { display: "none" } }}
-                                                justify={{ base: "flex-start", md: "center" }}
-                                            >
-                                                <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1} flexShrink={0}>Paper:</Text>
-                                                {['1', '2', '3'].map((paper) => {
-                                                    const isActive = activeFilters.paper?.includes(paper);
-                                                    return (
-                                                        <Button
-                                                            key={paper}
-                                                            size="xs"
-                                                            onClick={() => handleChangeTopFilter('paper', paper)}
-                                                            variant={isActive ? "solid" : "outline"}
-                                                            colorScheme={isActive ? "pink" : "gray"}
-                                                            bg={isActive ? "pink.600" : "white"}
-                                                            color={isActive ? "white" : "gray.600"}
-                                                            borderColor="gray.300"
-                                                            _hover={{ bg: isActive ? "pink.500" : "gray.100" }}
-                                                            borderRadius="full"
-                                                            px={3}
-                                                            fontSize="sm"
-                                                            fontWeight="medium"
-                                                            flexShrink={0}
-                                                        >
-                                                            P{paper}
-                                                        </Button>
-                                                    )
-                                                })}
-                                            </Flex>
+                                        {/* Paper */}
+                                        <Flex align="center" gap={1}>
+                                            <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1} flexShrink={0}>Paper:</Text>
+                                            {['1', '2', '3'].map((paper) => {
+                                                const isActive = activeFilters.paper?.includes(paper);
+                                                return (
+                                                    <Button
+                                                        key={paper}
+                                                        size="xs"
+                                                        onClick={() => handleChangeTopFilter('paper', paper)}
+                                                        variant={isActive ? "solid" : "subtle"}
+                                                        colorScheme="pink"
+                                                        bg={isActive ? "pink.500" : "pink.50"}
+                                                        color={isActive ? "white" : "pink.600"}
+                                                        _hover={{ bg: isActive ? "pink.400" : "pink.100" }}
+                                                        borderRadius="full"
+                                                        px={3}
+                                                        fontSize="xs"
+                                                        fontWeight="bold"
+                                                        flexShrink={0}
+                                                        boxShadow={isActive ? "sm" : "none"}
+                                                    >
+                                                        P{paper}
+                                                    </Button>
+                                                )
+                                            })}
                                         </Flex>
                                     </>
                                 ) : (
                                     <>
-                                        {/* MYP Filters - Grade & Criteria Combined */}
-                                        <Flex
-                                            direction={{ base: "column", md: "row" }}
-                                            gap={{ base: 3, md: 2 }}
-                                            align={{ base: "flex-start", md: "center" }}
-                                            justify={{ base: "flex-start", md: "center" }}
-                                            w="100%"
-                                        >
-                                            {/* Grade */}
-                                            <Flex
-                                                gap={1}
-                                                align="center"
-                                                w={{ base: "100%", md: "auto" }}
-                                                overflowX={{ base: "auto", md: "visible" }}
-                                                css={{ "&::-webkit-scrollbar": { display: "none" } }}
-                                                justify={{ base: "flex-start", md: "center" }}
-                                            >
-                                                <Text fontSize="10px" fontWeight="700" color="gray.400" textTransform="uppercase" mr={1} flexShrink={0}>Grade:</Text>
-                                                {['1', '2', '3', '4', '5'].map((grade) => {
-                                                    const isActive = activeFilters.grade?.includes(grade);
-                                                    return (
-                                                        <Button
-                                                            key={grade}
-                                                            size="xs"
-                                                            onClick={() => handleChangeTopFilter('grade', grade)}
-                                                            variant={isActive ? "solid" : "outline"}
-                                                            colorScheme={isActive ? "blackAlpha" : "gray"}
-                                                            bg={isActive ? "gray.800" : "transparent"}
-                                                            color={isActive ? "white" : "gray.600"}
-                                                            borderColor="gray.300"
-                                                            _hover={{ bg: isActive ? "gray.700" : "gray.100" }}
-                                                            borderRadius="full"
-                                                            px={3}
-                                                            fontSize="xs"
-                                                            flexShrink={0}
-                                                        >
-                                                            MYP {grade}
-                                                        </Button>
-                                                    )
-                                                })}
-                                            </Flex>
+                                        {/* Grade */}
+                                        <Flex align="center" gap={1}>
+                                            <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1} flexShrink={0}>Grade:</Text>
+                                            {['1', '2', '3', '4', '5'].map((grade) => {
+                                                const isActive = activeFilters.grade?.includes(grade);
+                                                return (
+                                                    <Button
+                                                        key={grade}
+                                                        size="xs"
+                                                        onClick={() => handleChangeTopFilter('grade', grade)}
+                                                        variant={isActive ? "solid" : "subtle"}
+                                                        colorScheme="cyan"
+                                                        bg={isActive ? "cyan.500" : "cyan.50"}
+                                                        color={isActive ? "white" : "cyan.700"}
+                                                        _hover={{ bg: isActive ? "cyan.600" : "cyan.100" }}
+                                                        borderRadius="full"
+                                                        px={3}
+                                                        fontSize="xs"
+                                                        fontWeight="bold"
+                                                        flexShrink={0}
+                                                        boxShadow={isActive ? "sm" : "none"}
+                                                    >
+                                                        MYP {grade}
+                                                    </Button>
+                                                )
+                                            })}
+                                        </Flex>
 
-                                            <Box width="1px" height="15px" bg="gray.300" mx={1} display={{ base: "none", md: "block" }} flexShrink={0} />
+                                        <Box width="1px" height="15px" bg="gray.300" mx={1} display={{ base: "none", md: "block" }} flexShrink={0} />
 
-                                            {/* Criteria */}
-                                            <Flex
-                                                gap={1}
-                                                align="center"
-                                                w={{ base: "100%", md: "auto" }}
-                                                overflowX={{ base: "auto", md: "visible" }}
-                                                css={{ "&::-webkit-scrollbar": { display: "none" } }}
-                                                justify={{ base: "flex-start", md: "center" }}
-                                            >
-                                                <Text fontSize="10px" fontWeight="700" color="gray.400" textTransform="uppercase" mr={1} flexShrink={0}>Criteria:</Text>
-                                                {['Criteria A', 'Criteria B', 'Criteria C', 'Criteria D'].map((criteria) => {
-                                                    const isActive = activeFilters.criteria?.includes(criteria);
-                                                    return (
-                                                        <Button
-                                                            key={criteria}
-                                                            size="xs"
-                                                            onClick={() => handleChangeTopFilter('criteria', criteria)}
-                                                            variant={isActive ? "solid" : "outline"}
-                                                            colorScheme={isActive ? "teal" : "gray"}
-                                                            bg={isActive ? "teal.600" : "transparent"}
-                                                            color={isActive ? "white" : "gray.600"}
-                                                            borderColor="gray.300"
-                                                            _hover={{ bg: isActive ? "teal.500" : "gray.100" }}
-                                                            borderRadius="full"
-                                                            px={3}
-                                                            fontSize="xs"
-                                                            flexShrink={0}
-                                                        >
-                                                            {criteria.replace('Criteria ', '')}
-                                                        </Button>
-                                                    )
-                                                })}
-                                            </Flex>
+                                        {/* Criteria */}
+                                        <Flex align="center" gap={1}>
+                                            <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1} flexShrink={0}>Criteria:</Text>
+                                            {['Criteria A', 'Criteria B', 'Criteria C', 'Criteria D'].map((criteria) => {
+                                                const isActive = activeFilters.criteria?.includes(criteria);
+                                                return (
+                                                    <Button
+                                                        key={criteria}
+                                                        size="xs"
+                                                        onClick={() => handleChangeTopFilter('criteria', criteria)}
+                                                        variant={isActive ? "solid" : "subtle"}
+                                                        colorScheme="orange"
+                                                        bg={isActive ? "orange.400" : "orange.50"}
+                                                        color={isActive ? "white" : "orange.700"}
+                                                        _hover={{ bg: isActive ? "orange.500" : "orange.100" }}
+                                                        borderRadius="full"
+                                                        px={3}
+                                                        fontSize="xs"
+                                                        fontWeight="bold"
+                                                        flexShrink={0}
+                                                        boxShadow={isActive ? "sm" : "none"}
+                                                    >
+                                                        {criteria.replace('Criteria ', '')}
+                                                    </Button>
+                                                )
+                                            })}
                                         </Flex>
                                     </>
                                 )}
 
-                                {/* Common Filters - Type */}
-                                <Flex
-                                    gap={2}
-                                    wrap={{ base: "nowrap", md: "wrap" }}
-                                    justify={{ base: "flex-start", md: "center" }}
-                                    align="center"
-                                    w="100%"
-                                    overflowX={{ base: "auto", md: "visible" }}
-                                    pb={{ base: 2, md: 0 }}
-                                    css={{ "&::-webkit-scrollbar": { display: "none" } }}
-                                >
+                                <Box width="1px" height="15px" bg="gray.300" mx={1} display={{ base: "none", md: "block" }} flexShrink={0} />
+
+                                {/* Type */}
+                                <Flex align="center" gap={1}>
                                     <Text fontSize="xs" fontWeight="700" color="black" textTransform="uppercase" mr={1} flexShrink={0}>Type:</Text>
                                     {[
                                         { label: 'Academic Question', value: 'Academic Question' },
@@ -497,24 +453,24 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
                                                 key={type.value}
                                                 size="xs"
                                                 onClick={() => handleChangeTopFilter('typeofquestion', type.value)}
-                                                variant={isActive ? "solid" : "outline"}
-                                                colorScheme={isActive ? "blue" : "gray"}
-                                                bg={isActive ? "blue.600" : "white"}
-                                                color={isActive ? "white" : "gray.600"}
-                                                borderColor="gray.300"
-                                                _hover={{ bg: isActive ? "blue.500" : "gray.100" }}
+                                                variant={isActive ? "solid" : "subtle"}
+                                                colorScheme="teal"
+                                                bg={isActive ? "teal.500" : "teal.50"}
+                                                color={isActive ? "white" : "teal.600"}
+                                                _hover={{ bg: isActive ? "teal.600" : "teal.100" }}
                                                 borderRadius="full"
                                                 px={3}
-                                                fontSize="sm"
-                                                fontWeight="medium"
+                                                fontSize="xs"
+                                                fontWeight="bold"
                                                 flexShrink={0}
+                                                boxShadow={isActive ? "sm" : "none"}
                                             >
                                                 {type.label}
                                             </Button>
                                         )
                                     })}
                                 </Flex>
-                            </Stack>
+                            </Flex>
                         </Box>
 
                         {postStateValue.posts.slice(0, 100).map((post, index) => (

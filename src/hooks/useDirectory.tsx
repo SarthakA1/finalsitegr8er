@@ -1,4 +1,4 @@
-import { DirectoryMenuItem, DirectoryMenuState } from '@/atoms/directoryMenuAtom';
+import { defaultMenuItem, DirectoryMenuItem, DirectoryMenuState } from '@/atoms/directoryMenuAtom';
 import { subjectState } from '@/atoms/subjectsAtom';
 import { MenuItem } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
@@ -34,19 +34,28 @@ const useDirectory = () => {
     useEffect(() => {
         const { currentSubject } = subjectStateValue;
 
-        if (currentSubject) {
+        // Only show subject in directory if we are NOT on the landing page or a curriculum home page
+        if (currentSubject && router.pathname !== '/' && router.pathname !== '/[curriculumId]') {
             setDirectoryState(prev => ({
                 ...prev,
-                selectedMenuItem: { displayText: `${currentSubject.id}`, link: `/submit/${currentSubject.id}`,
-            imageURL: currentSubject.imageURL,
-            icon: RiGroup2Fill,
-            iconColor: 'black'}
-            }))
+                selectedMenuItem: {
+                    displayText: `${currentSubject.id}`,
+                    link: `/submit/${currentSubject.id}`,
+                    imageURL: currentSubject.imageURL,
+                    icon: RiGroup2Fill,
+                    iconColor: 'black'
+                }
+            }));
+        } else {
+            setDirectoryState(prev => ({
+                ...prev,
+                selectedMenuItem: defaultMenuItem
+            }));
         }
 
-    }, [subjectStateValue.currentSubject])
+    }, [subjectStateValue.currentSubject, router.pathname])
 
-    
+
     return { directoryState, toggleMenuOpen, onSelectMenuItem }
 }
 export default useDirectory;
