@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
     Box,
     Flex,
@@ -59,13 +59,17 @@ const ContentLibraryPage: React.FC = () => {
     const RESOURCE_TYPES_DP = ["IA", "EE", "TOK"];
     const RESOURCE_TYPES_MYP = ["Personal Project", "Portfolio - Design", "Portfolio - Drama", "Portfolio - Music", "Portfolio - Visual Arts"];
 
-    // Basic Subjects to always show
-    const COMMON_SUBJECTS = [
-        "Math AA", "Math AI",
-        "Physics", "Chemistry", "Biology",
-        "Economics", "Business Management",
-        "English A", "History", "Psychology"
-    ];
+    // Dynamic Subjects from Content
+    const availableSubjects = useMemo(() => {
+        const subjects = new Set<string>();
+        contentItems.forEach(item => {
+            // Filter by program to show relevant subjects
+            if (item.program === selectedProgram && item.subject) {
+                subjects.add(item.subject);
+            }
+        });
+        return Array.from(subjects).sort();
+    }, [contentItems, selectedProgram]);
 
     // Reset filters when program changes
     useEffect(() => {
@@ -373,32 +377,32 @@ const ContentLibraryPage: React.FC = () => {
                             ))}
                         </Flex>
 
+
                         {/* CONDITIONAL SUBJECT FILTER (Only for IA or EE) */}
                         {(selectedResourceTypes.includes("IA") || selectedResourceTypes.includes("EE")) && (
                             <Flex gap={3} wrap="wrap" justify="center">
                                 <Text fontSize="sm" fontWeight="600" color="gray.500" alignSelf="center" mr={2}>Subject:</Text>
-                                {[...Array.from(new Set([
-                                    ...COMMON_SUBJECTS, // Always show these
-                                    ...contentItems
-                                        .filter(item => item.program === selectedProgram && item.subject) // Plus any others found in DB
-                                        .map(item => item.subject!)
-                                ]))].sort().map(subj => (
-                                    <Button
-                                        key={subj}
-                                        size="xs"
-                                        onClick={() => toggleSubject(subj)}
-                                        variant={selectedSubjects.includes(subj) ? "solid" : "outline"}
-                                        colorScheme={selectedSubjects.includes(subj) ? "teal" : "gray"}
-                                        bg={selectedSubjects.includes(subj) ? "teal.600" : "transparent"}
-                                        color={selectedSubjects.includes(subj) ? "white" : "gray.600"}
-                                        borderColor="gray.300"
-                                        _hover={{ bg: selectedSubjects.includes(subj) ? "teal.500" : "gray.100" }}
-                                        borderRadius="md"
-                                        px={4}
-                                    >
-                                        {subj}
-                                    </Button>
-                                ))}
+                                {availableSubjects.length > 0 ? (
+                                    availableSubjects.map(subj => (
+                                        <Button
+                                            key={subj}
+                                            size="xs"
+                                            onClick={() => toggleSubject(subj)}
+                                            variant={selectedSubjects.includes(subj) ? "solid" : "outline"}
+                                            colorScheme={selectedSubjects.includes(subj) ? "teal" : "gray"}
+                                            bg={selectedSubjects.includes(subj) ? "teal.600" : "transparent"}
+                                            color={selectedSubjects.includes(subj) ? "white" : "gray.600"}
+                                            borderColor="gray.300"
+                                            _hover={{ bg: selectedSubjects.includes(subj) ? "teal.500" : "gray.100" }}
+                                            borderRadius="md"
+                                            px={4}
+                                        >
+                                            {subj}
+                                        </Button>
+                                    ))
+                                ) : (
+                                    <Text fontSize="xs" color="gray.400" alignSelf="center">No subjects found for current selection.</Text>
+                                )}
                             </Flex>
                         )}
 
