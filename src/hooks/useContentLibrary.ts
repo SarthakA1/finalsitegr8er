@@ -12,7 +12,7 @@ export type ContentItem = {
     type: "pdf" | "video" | "image";
     createdAt: any;
     // New fields
-    score?: number; // e.g. 7, 6, 5
+    score?: string | number; // e.g. 7, 6, 5, or "A", "B"
     session?: string; // e.g. "May 2025"
     subject?: string; // e.g. "Math AA HL"
     program?: "DP" | "MYP";

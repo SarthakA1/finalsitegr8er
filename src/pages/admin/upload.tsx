@@ -37,7 +37,7 @@ const AdminUploadPage = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('5.00');
-    const [score, setScore] = useState(7);
+    const [score, setScore] = useState<string | number>('7');
     const [session, setSession] = useState('May 2025');
     const [subject, setSubject] = useState('Math AA HL');
     const [program, setProgram] = useState('DP');
@@ -118,7 +118,7 @@ const AdminUploadPage = () => {
                 title,
                 description,
                 price: parseFloat(price),
-                score: Number(score),
+                score: score,
                 session,
                 subject,
                 program,
@@ -208,17 +208,33 @@ const AdminUploadPage = () => {
                         </NumberInput>
                     </FormControl>
 
-                    <FormControl>
-                        <FormLabel>Score (1-7)</FormLabel>
-                        <NumberInput
-                            value={score}
-                            onChange={(_, val) => setScore(val)}
-                            min={1}
-                            max={7}
-                        >
-                            <NumberInputField />
-                        </NumberInput>
-                    </FormControl>
+                    {/* Conditional Score Input */}
+                    {(['IA', 'EE', 'TOK'].includes(resourceType)) && (
+                        <FormControl>
+                            <FormLabel>Score</FormLabel>
+                            <Select
+                                value={score}
+                                onChange={(e) => setScore(e.target.value)}
+                            >
+                                {resourceType === 'IA' ? (
+                                    <>
+                                        <option value="7">7</option>
+                                        <option value="6">6</option>
+                                        <option value="5">5</option>
+                                    </>
+                                ) : (
+                                    <>
+                                        {/* EE or TOK */}
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
+                                        <option value="C">C</option>
+                                        <option value="D">D</option>
+                                        <option value="E">E</option>
+                                    </>
+                                )}
+                            </Select>
+                        </FormControl>
+                    )}
                 </Flex>
 
                 <Flex gap={4}>
