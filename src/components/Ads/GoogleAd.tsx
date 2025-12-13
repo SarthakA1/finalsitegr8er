@@ -9,11 +9,12 @@ declare global {
 type GoogleAdProps = {
     slot: string;
     format?: 'auto' | 'fluid' | 'rectangle';
+    layoutKey?: string;
     responsive?: boolean;
     style?: React.CSSProperties;
 };
 
-const GoogleAd: React.FC<GoogleAdProps> = ({ slot, format = 'auto', responsive = true, style }) => {
+const GoogleAd: React.FC<GoogleAdProps> = ({ slot, format = 'auto', layoutKey, responsive = true, style }) => {
     useEffect(() => {
         try {
             (window.adsbygoogle = window.adsbygoogle || []).push({});
@@ -22,29 +23,14 @@ const GoogleAd: React.FC<GoogleAdProps> = ({ slot, format = 'auto', responsive =
         }
     }, []);
 
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_ADS_CLIENT_ID || 'ca-pub-XXXXXXXXXXXXXXXX'; // Fallback for dev
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_ADS_CLIENT_ID || 'ca-pub-6442166008118008';
 
-    // Show visual placeholder if ID is not configured (is the default dummy) OR doesn't look like a valid ID
-    if (clientId === 'ca-pub-XXXXXXXXXXXXXXXX' || !clientId.includes('ca-pub')) {
+    // Show visible placeholder ONLY if we are using the internal dev dummy
+    // Since user provided a real ID, this check effectively passes now
+    if (clientId.includes('XXXXXXXXXXXXXXXX')) {
         return (
-            <div style={{
-                padding: '40px',
-                background: '#f7fafc',
-                color: '#718096',
-                border: '2px dashed #cbd5e0',
-                borderRadius: '8px',
-                textAlign: 'center',
-                fontSize: '14px',
-                fontWeight: 600,
-                fontFamily: 'sans-serif',
-                margin: '16px 0'
-            }}>
-                📢 Gooogle Ads Placeholder <br />
-                <span style={{ fontWeight: 400, fontSize: '12px' }}>
-                    (Configure <code>NEXT_PUBLIC_GOOGLE_ADS_CLIENT_ID</code> in .env.local)
-                </span>
-            </div>
-        );
+            <div style={{ padding: '20px', textAlign: 'center' }}>Placeholder</div>
+        )
     }
 
     return (
@@ -54,6 +40,7 @@ const GoogleAd: React.FC<GoogleAdProps> = ({ slot, format = 'auto', responsive =
                 style={{ display: 'block' }}
                 data-ad-client={clientId}
                 data-ad-slot={slot}
+                data-ad-layout-key={layoutKey}
                 data-ad-format={format}
                 data-full-width-responsive={responsive}
             />

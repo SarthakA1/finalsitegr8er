@@ -15,6 +15,7 @@ import {
 } from "firebase/firestore";
 import type { NextPage } from "next";
 import { useEffect, useState } from "react";
+import React from 'react';
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Post, PostVote } from "../../atoms/postsAtom";
 import CreatePostLink from "../../components/Subject/CreatePostLink";
@@ -33,6 +34,7 @@ import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 
 import { Analytics } from '@vercel/analytics/react';
+import GoogleAd from "@/components/Ads/GoogleAd";
 
 const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> = ({ initialPosts, curriculumId }) => {
     const router = useRouter();
@@ -515,21 +517,32 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
                             </Stack>
                         </Box>
 
-                        {postStateValue.posts.slice(0, 100).map((post) => (
-                            <PostItem
-                                key={post.id}
-                                post={post}
-                                onSelectPost={onSelectPost}
-                                onDeletePost={onDeletePost}
-                                onVote={onVote}
-                                userVoteValue={
-                                    postStateValue.postVotes.find(
-                                        (item) => item.postId === post.id
-                                    )?.voteValue
-                                }
-                                userIsCreator={user?.uid === post.creatorId}
-                                homePage
-                            />
+                        {postStateValue.posts.slice(0, 100).map((post, index) => (
+                            <React.Fragment key={post.id}>
+                                <PostItem
+                                    post={post}
+                                    onSelectPost={onSelectPost}
+                                    onDeletePost={onDeletePost}
+                                    onVote={onVote}
+                                    userVoteValue={
+                                        postStateValue.postVotes.find(
+                                            (item) => item.postId === post.id
+                                        )?.voteValue
+                                    }
+                                    userIsCreator={user?.uid === post.creatorId}
+                                    homePage
+                                />
+                                {/* Insert Ad every 10 posts */}
+                                {(index + 1) % 10 === 0 && (
+                                    <Box my={4} borderRadius="md" overflow="hidden" boxShadow="sm" border="1px solid" borderColor="gray.100">
+                                        <GoogleAd
+                                            slot="3619019024"
+                                            format="fluid"
+                                            layoutKey="-gw-3+1f-3d+2z"
+                                        />
+                                    </Box>
+                                )}
+                            </React.Fragment>
                         ))}
 
                         {postStateValue.posts.length === 0 && !loading && (

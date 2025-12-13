@@ -26,7 +26,7 @@ function App({ Component, pageProps }: AppProps) {
       <Script
         id="adsbygoogle-init"
         strategy="afterInteractive"
-        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_GOOGLE_ADS_CLIENT_ID || 'ca-pub-XXXXXXXXXXXXXXXX'}`}
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6442166008118008`}
         crossOrigin="anonymous"
         onError={(e) => { console.error('Script failed to load', e) }}
       />
