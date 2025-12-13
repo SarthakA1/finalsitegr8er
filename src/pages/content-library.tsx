@@ -54,7 +54,6 @@ const ContentLibraryPage: React.FC = () => {
 
     // Filter Options
     const SESSIONS = ["May 2025", "Nov 2024", "May 2024", "Nov 2023"];
-    const SCORES = ["7", "6", "5"];
 
     // Resource Types
     const RESOURCE_TYPES_DP = ["IA", "EE", "TOK"];
@@ -428,27 +427,50 @@ const ContentLibraryPage: React.FC = () => {
                             ))}
                         </Flex>
 
-                        {/* Score Filters */}
-                        <Flex gap={3} wrap="wrap" justify="center">
-                            <Text fontSize="sm" fontWeight="600" color="gray.500" alignSelf="center" mr={2}>Score:</Text>
-                            {SCORES.map(score => (
-                                <Button
-                                    key={score}
-                                    size="xs"
-                                    onClick={() => toggleScore(score)}
-                                    variant={selectedScores.includes(score) ? "solid" : "outline"}
-                                    colorScheme={selectedScores.includes(score) ? "purple" : "gray"}
-                                    bg={selectedScores.includes(score) ? "purple.600" : "transparent"}
-                                    color={selectedScores.includes(score) ? "white" : "gray.600"}
-                                    borderColor="gray.300"
-                                    _hover={{ bg: selectedScores.includes(score) ? "purple.500" : "gray.100" }}
-                                    borderRadius="md"
-                                    px={4}
-                                >
-                                    {score}
-                                </Button>
-                            ))}
-                        </Flex>
+                        {/* Score Filters (Conditional) */}
+                        {(selectedResourceTypes.includes("IA") || selectedResourceTypes.includes("EE") || selectedResourceTypes.includes("TOK")) && (
+                            <Flex gap={3} wrap="wrap" justify="center">
+                                <Text fontSize="sm" fontWeight="600" color="gray.500" alignSelf="center" mr={2}>Score:</Text>
+
+                                {/* Numeric Scores for IA */}
+                                {selectedResourceTypes.includes("IA") && ["7", "6", "5"].map(score => (
+                                    <Button
+                                        key={score}
+                                        size="xs"
+                                        onClick={() => toggleScore(score)}
+                                        variant={selectedScores.includes(score) ? "solid" : "outline"}
+                                        colorScheme={selectedScores.includes(score) ? "purple" : "gray"}
+                                        bg={selectedScores.includes(score) ? "purple.600" : "transparent"}
+                                        color={selectedScores.includes(score) ? "white" : "gray.600"}
+                                        borderColor="gray.300"
+                                        _hover={{ bg: selectedScores.includes(score) ? "purple.500" : "gray.100" }}
+                                        borderRadius="md"
+                                        px={4}
+                                    >
+                                        {score}
+                                    </Button>
+                                ))}
+
+                                {/* Letter Grades for EE/TOK */}
+                                {(selectedResourceTypes.includes("EE") || selectedResourceTypes.includes("TOK")) && ["A", "B", "C"].map(score => (
+                                    <Button
+                                        key={score}
+                                        size="xs"
+                                        onClick={() => toggleScore(score)}
+                                        variant={selectedScores.includes(score) ? "solid" : "outline"}
+                                        colorScheme={selectedScores.includes(score) ? "pink" : "gray"}
+                                        bg={selectedScores.includes(score) ? "pink.600" : "transparent"}
+                                        color={selectedScores.includes(score) ? "white" : "gray.600"}
+                                        borderColor="gray.300"
+                                        _hover={{ bg: selectedScores.includes(score) ? "pink.500" : "gray.100" }}
+                                        borderRadius="md"
+                                        px={4}
+                                    >
+                                        {score}
+                                    </Button>
+                                ))}
+                            </Flex>
+                        )}
                     </Flex>
                 </Box>
 
