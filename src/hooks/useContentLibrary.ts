@@ -7,7 +7,7 @@ export type ContentItem = {
     title: string;
     description: string;
     url: string; // The "preview" image or actual file URL
-    thumbnail: string;
+    thumbnail?: string;
     price: number;
     type: "pdf" | "video" | "image";
     createdAt: any;

@@ -28,6 +28,7 @@ import { auth, firestore } from '@/firebase/clientApp';
 import { setDoc, doc, serverTimestamp, collection, getDocs } from 'firebase/firestore';
 import { useSetRecoilState } from 'recoil';
 import { AuthModalState } from '@/atoms/authModalAtom';
+import DocumentViewerModal from '@/components/Modal/DocumentViewerModal';
 
 // Razorpay Type Definition
 declare global {
@@ -494,13 +495,43 @@ const ContentLibraryPage: React.FC = () => {
                                         }}
                                     >
                                         <Box position="relative" height="200px" bg="gray.100">
-                                            <Image
-                                                src={item.thumbnail}
-                                                alt={item.title}
-                                                objectFit="cover"
-                                                width="100%"
-                                                height="100%"
-                                            />
+                                            {item.thumbnail ? (
+                                                <Image
+                                                    src={item.thumbnail}
+                                                    alt={item.title}
+                                                    objectFit="cover"
+                                                    width="100%"
+                                                    height="100%"
+                                                />
+                                            ) : (
+                                                <Box w="100%" h="100%" overflow="hidden" position="relative" bg="white">
+                                                    <iframe
+                                                        src={`https://docs.google.com/gview?url=${encodeURIComponent(item.url)}&embedded=true`}
+                                                        style={{
+                                                            width: '200%',
+                                                            height: '200%',
+                                                            marginTop: '-60px', // Hide toolbar
+                                                            marginLeft: '-50%', // Center horizontally
+                                                            border: 'none',
+                                                            overflow: 'hidden',
+                                                            transform: 'scale(0.8)', // Zoom out to fit more page context
+                                                            transformOrigin: 'top center',
+                                                            pointerEvents: 'none'
+                                                        }}
+                                                        title="Preview"
+                                                        scrolling="no"
+                                                    />
+                                                    {/* Transparent Overlay to ensure absolutely no interaction */}
+                                                    <Box
+                                                        position="absolute"
+                                                        top="0"
+                                                        left="0"
+                                                        w="100%"
+                                                        h="100%"
+                                                        bg="transparent"
+                                                    />
+                                                </Box>
+                                            )}
 
                                             {isPurchased && (
                                                 <Badge
@@ -595,34 +626,12 @@ const ContentLibraryPage: React.FC = () => {
             </Flex >
 
             {/* Content Viewer Modal */}
-            < Modal isOpen={isOpen} onClose={onClose} size="full" >
-                <ModalOverlay bg="rgba(0,0,0,0.8)" />
-                <ModalContent bg="white">
-                    <ModalHeader borderBottom="1px solid" borderColor="gray.100" py={4}>
-                        <Flex justify="space-between" align="center">
-                            {viewTitle}
-                            <Box w={8} /> {/* Spacer for close button alignment */}
-                        </Flex>
-
-                    </ModalHeader>
-                    <ModalCloseButton mt={2} />
-                    <ModalBody p={0} height="calc(100vh - 70px)" bg="gray.100">
-                        {viewType === 'image' ? (
-                            <Flex justify="center" align="center" height="100%">
-                                <Image src={viewUrl} maxH="100%" objectFit="contain" />
-                            </Flex>
-                        ) : (
-                            <iframe
-                                src={`${viewUrl}#toolbar=0`}
-                                width="100%"
-                                height="100%"
-                                style={{ border: 'none' }}
-                                title={viewTitle}
-                            />
-                        )}
-                    </ModalBody>
-                </ModalContent>
-            </Modal >
+            <DocumentViewerModal
+                isOpen={isOpen}
+                onClose={onClose}
+                url={viewUrl}
+                title={viewTitle}
+            />
         </Box >
     );
 };

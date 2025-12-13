@@ -145,13 +145,43 @@ const MyResourcesPage: React.FC = () => {
                                 }}
                             >
                                 <Box position="relative" height="200px" bg="gray.100">
-                                    <Image
-                                        src={item.thumbnail}
-                                        alt={item.title}
-                                        objectFit="cover"
-                                        width="100%"
-                                        height="100%"
-                                    />
+                                    {item.thumbnail ? (
+                                        <Image
+                                            src={item.thumbnail}
+                                            alt={item.title}
+                                            objectFit="cover"
+                                            width="100%"
+                                            height="100%"
+                                        />
+                                    ) : (
+                                        <Box w="100%" h="100%" overflow="hidden" position="relative" bg="white">
+                                            <iframe
+                                                src={`https://docs.google.com/gview?url=${encodeURIComponent(item.url)}&embedded=true`}
+                                                style={{
+                                                    width: '200%',
+                                                    height: '200%',
+                                                    marginTop: '-60px', // Hide toolbar
+                                                    marginLeft: '-50%', // Center horizontally
+                                                    border: 'none',
+                                                    overflow: 'hidden',
+                                                    transform: 'scale(0.8)', // Zoom out
+                                                    transformOrigin: 'top center',
+                                                    pointerEvents: 'none'
+                                                }}
+                                                title="Preview"
+                                                scrolling="no"
+                                            />
+                                            {/* Transparent Overlay */}
+                                            <Box
+                                                position="absolute"
+                                                top="0"
+                                                left="0"
+                                                w="100%"
+                                                h="100%"
+                                                bg="transparent"
+                                            />
+                                        </Box>
+                                    )}
 
                                     <Badge
                                         position="absolute"
