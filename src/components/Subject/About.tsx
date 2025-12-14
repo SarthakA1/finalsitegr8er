@@ -153,11 +153,18 @@ const About: React.FC<AboutProps> = ({
                 )}
 
                 {user && (
-                  <Link href={`/subject/${subjectData.id}/submit`}>
-                    <Button width="100%" size="md" colorScheme="brand" borderRadius="full">
-                      Ask or Share Anything!
-                    </Button>
-                  </Link>
+                  <Stack spacing={2} width="100%">
+                    <Link href={`/subject/${subjectData.id}/submit`}>
+                      <Button width="100%" size="md" colorScheme="brand" borderRadius="full">
+                        Ask Something
+                      </Button>
+                    </Link>
+                    <Link href={`/subject/${subjectData.id}/resource-submit`}>
+                      <Button width="100%" size="md" variant="outline" colorScheme="green" borderRadius="full" _hover={{ bg: "green.50" }}>
+                        Share a Resource
+                      </Button>
+                    </Link>
+                  </Stack>
                 )}
               </Stack>
             </>
