@@ -329,15 +329,7 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId, initialPosts }) => {
                                 onDeletePost={onDeletePost}
                             />
                             {/* Insert Ad every 10 posts */}
-                            {(index + 1) % 10 === 0 && (
-                                <Box my={4} borderRadius="md" overflow="hidden" boxShadow="sm" border="1px solid" borderColor="gray.100">
-                                    <GoogleAd
-                                        slot="3619019024"
-                                        format="fluid"
-                                        layoutKey="-gw-3+1f-3d+2z"
-                                    />
-                                </Box>
-                            )}
+
                         </React.Fragment>
                     ))}
                 </Stack>

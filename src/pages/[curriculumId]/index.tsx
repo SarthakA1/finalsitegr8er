@@ -488,15 +488,7 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
                                     userIsCreator={user?.uid === post.creatorId}
                                     homePage
                                 />
-                                {/* Insert Ad every 10 posts */}
-                                {(index + 1) % 10 === 0 && (
-                                    <Box my={4} borderRadius="md" overflow="hidden" boxShadow="sm" border="1px solid" borderColor="gray.100">
-                                        <GoogleAd
-                                            slot="3619019024"
-                                            style={{ display: 'block', width: '300px', height: '250px', margin: '0 auto' }}
-                                        />
-                                    </Box>
-                                )}
+
                             </React.Fragment>
                         ))}
 
