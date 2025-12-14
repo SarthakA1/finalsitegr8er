@@ -714,6 +714,7 @@ const ContentLibraryPage: React.FC = () => {
                 onClose={onClose}
                 url={viewUrl}
                 title={viewTitle}
+                userEmail={user?.email || user?.uid || "Unknown User"}
             />
         </Box >
     );

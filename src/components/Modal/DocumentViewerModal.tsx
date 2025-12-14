@@ -1,18 +1,39 @@
 import React from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Box, Flex, Text } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Box, Flex, Text, Spinner } from '@chakra-ui/react';
 
 type DocumentViewerModalProps = {
     isOpen: boolean;
     onClose: () => void;
     url: string;
     title?: string;
+    userEmail?: string;
 };
 
-const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClose, url, title }) => {
+const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClose, url, title, userEmail }) => {
+    const [isFileLoaded, setIsFileLoaded] = React.useState(false);
+
+    // Reset state when url changes or modal opens
+    React.useEffect(() => {
+        if (isOpen) setIsFileLoaded(false);
+    }, [isOpen, url]);
+
+    // Create watermark pattern
+    const watermarkText = userEmail || "GR8ER IB Protected Content";
+    const watermarks = Array(6).fill(watermarkText);
+
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="full" isCentered>
             <ModalOverlay bg="blackAlpha.800" backdropFilter="blur(5px)" />
             <ModalContent bg="transparent" boxShadow="none">
+                {/* Anti-Print Style */}
+                <style>
+                    {`
+                        @media print {
+                            body { display: none !important; }
+                        }
+                    `}
+                </style>
+
                 <ModalCloseButton
                     position="fixed"
                     top="20px"
@@ -23,7 +44,18 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                     borderRadius="full"
                     _hover={{ bg: "whiteAlpha.400" }}
                 />
-                <ModalBody p={0} h="100vh" w="100vw" overflow="hidden" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+                <ModalBody
+                    p={0}
+                    h="100vh"
+                    w="100vw"
+                    overflow="hidden"
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    onContextMenu={(e) => e.preventDefault()} // Disable Right Click
+                    userSelect="none" // Disable Text Selection
+                >
 
 
                     {/* Document Container - Cropped to hide toolbar */}
@@ -38,6 +70,55 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                         border="1px solid"
                         borderColor="whiteAlpha.300"
                     >
+                        {/* Loading Spinner */}
+                        {!isFileLoaded && (
+                            <Flex
+                                position="absolute"
+                                top={0}
+                                left={0}
+                                w="100%"
+                                h="100%"
+                                justify="center"
+                                align="center"
+                                zIndex={30}
+                                bg="gray.100"
+                            >
+                                <Spinner size="xl" color="blue.500" thickness="4px" />
+                            </Flex>
+                        )}
+
+                        {/* Watermark Overlay - Only show after file loads */}
+                        {isFileLoaded && (
+                            <Flex
+                                position="absolute"
+                                top={0}
+                                left={0}
+                                w="100%"
+                                h="100%"
+                                zIndex={10}
+                                pointerEvents="none" // Pass through clicks
+                                wrap="wrap"
+                                justify="center"
+                                align="center"
+                                overflow="hidden"
+                                opacity={0.12} // Subtle opacity
+                            >
+                                {watermarks.map((text, index) => (
+                                    <Text
+                                        key={index}
+                                        color="gray.900"
+                                        fontSize="3xl"
+                                        fontWeight="bold"
+                                        transform="rotate(-45deg)"
+                                        m={24}
+                                        whiteSpace="nowrap"
+                                    >
+                                        {text}
+                                    </Text>
+                                ))}
+                            </Flex>
+                        )}
+
                         {/* Header Bar inside container */}
                         <Flex
                             position="absolute"
@@ -68,6 +149,7 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                     border: 'none',
                                 }}
                                 title="Document Preview"
+                                onLoad={() => setIsFileLoaded(true)}
                             />
                         </Box>
 
