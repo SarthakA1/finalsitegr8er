@@ -60,100 +60,104 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                 >
 
 
-                    {/* Document Container - Cropped to hide toolbar */}
+                    {/* Document Container - Scrollable Parent, Static Iframe */}
                     <Box
                         w={{ base: "100%", md: "80%" }}
                         h={{ base: "100%", md: "90%" }}
                         bg="gray.100"
                         borderRadius={{ base: 0, md: "xl" }}
-                        overflow="hidden"
+                        overflow="hidden" // Keep outer hidden, inner scrollable
                         position="relative"
                         boxShadow="2xl"
                         border="1px solid"
                         borderColor="whiteAlpha.300"
                     >
-                        {/* Loading Spinner */}
-                        {!isFileLoaded && (
+                        {/* Scrollable Inner Box */}
+                        <Box w="100%" h="100%" overflowY="auto" onContextMenu={(e) => e.preventDefault()}>
+                            {/* Loading Spinner */}
+                            {!isFileLoaded && (
+                                <Flex
+                                    position="absolute"
+                                    top={0}
+                                    left={0}
+                                    w="100%"
+                                    h="100%"
+                                    justify="center"
+                                    align="center"
+                                    zIndex={30}
+                                    bg="gray.100"
+                                >
+                                    <Spinner size="xl" color="blue.500" thickness="4px" />
+                                </Flex>
+                            )}
+
+                            {/* Watermark Overlay - Only show after file loads */}
+                            {isFileLoaded && (
+                                <Flex
+                                    position="absolute"
+                                    top={0}
+                                    left={0}
+                                    w="100%"
+                                    h="2500px" // Match iframe height
+                                    zIndex={10}
+                                    pointerEvents="none" // Pass through clicks
+                                    wrap="wrap"
+                                    justify="space-between"  // Push to sides
+                                    alignContent="space-between" // Push to top/bottom
+                                    p={10} // Padding from edge
+                                    overflow="hidden"
+                                    opacity={0.12} // Subtle opacity
+                                >
+                                    {watermarks.map((text, index) => (
+                                        <Text
+                                            key={index}
+                                            color="gray.900"
+                                            fontSize="3xl"
+                                            fontWeight="bold"
+                                            transform="rotate(-45deg)"
+                                            whiteSpace="nowrap"
+                                        >
+                                            {text}
+                                        </Text>
+                                    ))}
+                                </Flex>
+                            )}
+
+                            {/* Header Bar inside container */}
                             <Flex
-                                position="absolute"
-                                top={0}
-                                left={0}
-                                w="100%"
-                                h="100%"
-                                justify="center"
+                                position="sticky"
+                                top="0"
+                                left="0"
+                                right="0"
+                                height="50px"
+                                bg="white"
+                                borderBottom="1px solid"
+                                borderColor="gray.200"
+                                zIndex={20}
                                 align="center"
-                                zIndex={30}
-                                bg="gray.100"
+                                px={4}
+                                justify="center"
                             >
-                                <Spinner size="xl" color="blue.500" thickness="4px" />
+                                <Text fontWeight="600" fontSize="sm" color="gray.700" isTruncated maxW="90%">
+                                    {title || 'Document Viewer'}
+                                </Text>
                             </Flex>
-                        )}
 
-                        {/* Watermark Overlay - Only show after file loads */}
-                        {isFileLoaded && (
-                            <Flex
-                                position="absolute"
-                                top={0}
-                                left={0}
-                                w="100%"
-                                h="100%"
-                                zIndex={10}
-                                pointerEvents="none" // Pass through clicks
-                                wrap="wrap"
-                                justify="space-between"  // Push to sides
-                                alignContent="space-between" // Push to top/bottom
-                                p={10} // Padding from edge
-                                overflow="hidden"
-                                opacity={0.12} // Subtle opacity
-                            >
-                                {watermarks.map((text, index) => (
-                                    <Text
-                                        key={index}
-                                        color="gray.900"
-                                        fontSize="3xl"
-                                        fontWeight="bold"
-                                        transform="rotate(-45deg)"
-                                        whiteSpace="nowrap"
-                                    >
-                                        {text}
-                                    </Text>
-                                ))}
-                            </Flex>
-                        )}
-
-                        {/* Header Bar inside container */}
-                        <Flex
-                            position="absolute"
-                            top="0"
-                            left="0"
-                            right="0"
-                            height="50px"
-                            bg="white"
-                            borderBottom="1px solid"
-                            borderColor="gray.200"
-                            zIndex={20}
-                            align="center"
-                            px={4}
-                            justify="center"
-                        >
-                            <Text fontWeight="600" fontSize="sm" color="gray.700" isTruncated maxW="90%">
-                                {title || 'Document Viewer'}
-                            </Text>
-                        </Flex>
-
-                        <Box w="100%" h="100%" pt="50px" overflow="hidden">
-                            <iframe
-                                src={`https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`}
-                                style={{
-                                    width: '100%',
-                                    height: 'calc(100% + 110px)', // Increase height to compensate for aggressive cropping
-                                    marginTop: '-100px', // Aggressively shift up to hide Google Docs toolbar/pop-out
-                                    border: 'none',
-                                }}
-                                title="Document Preview"
-                                onLoad={() => setIsFileLoaded(true)}
-                                sandbox="allow-scripts allow-same-origin"
-                            />
+                            <Box w="100%" h="2500px" overflow="hidden">
+                                <iframe
+                                    src={`https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`}
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        marginTop: '-60px', // Minor adjustment to hide header
+                                        border: 'none',
+                                        pointerEvents: 'none' // BLOCK INTERACTION
+                                    }}
+                                    title="Document Preview"
+                                    onLoad={() => setIsFileLoaded(true)}
+                                    sandbox="allow-scripts allow-same-origin"
+                                />
+                            </Box>
                         </Box>
 
                     </Box>
