@@ -152,6 +152,7 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                 }}
                                 title="Document Preview"
                                 onLoad={() => setIsFileLoaded(true)}
+                                sandbox="allow-scripts allow-same-origin"
                             />
                         </Box>
 
