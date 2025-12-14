@@ -18,7 +18,9 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
     }, [isOpen, url]);
 
     // Create watermark pattern
-    const watermarkText = userEmail || "GR8ER IB Protected Content";
+    // User requested to show UserID. The prop 'userEmail' currently carries email OR uid.
+    // We will trust the prop content.
+    const watermarkText = userEmail || "";
     const watermarks = Array(6).fill(watermarkText);
 
     return (
@@ -98,8 +100,9 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                 zIndex={10}
                                 pointerEvents="none" // Pass through clicks
                                 wrap="wrap"
-                                justify="center"
-                                align="center"
+                                justify="space-between"  // Push to sides
+                                alignContent="space-between" // Push to top/bottom
+                                p={10} // Padding from edge
                                 overflow="hidden"
                                 opacity={0.12} // Subtle opacity
                             >
@@ -110,7 +113,6 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                         fontSize="3xl"
                                         fontWeight="bold"
                                         transform="rotate(-45deg)"
-                                        m={24}
                                         whiteSpace="nowrap"
                                     >
                                         {text}

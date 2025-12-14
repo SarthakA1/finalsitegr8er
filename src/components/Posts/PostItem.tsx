@@ -26,6 +26,7 @@ import { useSetRecoilState } from 'recoil';
 import { AuthModalState } from '@/atoms/authModalAtom';
 import { getSketchAvatarUrl } from '@/utils/avatar';
 import DocumentViewerModal from '@/components/Modal/DocumentViewerModal';
+import { linkifyHtml } from '@/utils/linkifyHtml';
 
 type PostItemProps = {
     post: Post;
@@ -327,7 +328,7 @@ const PostItem: React.FC<PostItemProps> = ({
                     position="relative"
                     className="post-body"
                 >
-                    <div dangerouslySetInnerHTML={{ __html: post.body }} />
+                    <div dangerouslySetInnerHTML={{ __html: linkifyHtml(post.body) }} />
                     {!showFullBody && isLongContent && (
                         <Box
                             position="absolute"
@@ -503,7 +504,7 @@ const PostItem: React.FC<PostItemProps> = ({
                     >
                         <Icon as={MdOutlineComment} fontSize={20} />
                         <Text fontSize="sm" fontWeight="500">{post.numberOfAnswers}</Text>
-                        <Text fontSize="xs" fontWeight="400" display={{ base: "none", sm: "block" }}>Comments</Text>
+                        <Text fontSize="xs" fontWeight="400" display={{ base: "none", sm: "block" }}>{post.numberOfAnswers === 1 ? "Comment" : "Comments"}</Text>
                     </Flex>
 
                     {userIsCreator && (

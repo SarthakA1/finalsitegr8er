@@ -19,6 +19,7 @@ import useSubjectData from '@/hooks/useSubjectData';
 import { doc, getDoc, query, collection, where, orderBy, getDocs, } from 'firebase/firestore';
 import { Post } from '@/atoms/postsAtom';
 import useAnswersReply from '@/hooks/useAnswersReply';
+import { linkifyHtml } from '@/utils/linkifyHtml';
 
 // export type AnswerReply = {
 //     id: string;
@@ -135,9 +136,9 @@ const AnswerItem: React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVote
           </Text>
           {loadingDelete && <Spinner size="sm" />}
         </Stack>
-        <div dangerouslySetInnerHTML={{ __html: answer.text }} />
+        <div dangerouslySetInnerHTML={{ __html: linkifyHtml(answer.text) }} />
         <Stack direction="row" align="center" cursor="pointer" color="gray.500">
-          {userId === answer.creatorId && (
+          {(userId === answer.creatorId || userId === '28JzN8ZAqSZCoCCCK9iNjiDiNUP2') && (
             <>
               <Text
                 fontSize="9pt"

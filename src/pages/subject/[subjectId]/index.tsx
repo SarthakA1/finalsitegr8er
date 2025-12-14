@@ -52,8 +52,7 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subjectData, initialPosts }) 
           <div> <CreatePostLink /> </div>
           <div>
             <Head>
-              <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6442166008118008"
-                crossOrigin="anonymous"></script>
+
               <title>{subjectData.id}</title>
             </Head>
           </div>

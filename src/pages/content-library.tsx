@@ -66,7 +66,10 @@ const ContentLibraryPage: React.FC = () => {
         contentItems.forEach(item => {
             // Filter by program to show relevant subjects
             if (item.program === selectedProgram && item.subject) {
-                subjects.add(item.subject);
+                // Exclude TOK specific types from general subject list
+                if (item.subject !== 'Essay' && item.subject !== 'Exhibition') {
+                    subjects.add(item.subject);
+                }
             }
         });
         return Array.from(subjects).sort();
@@ -486,7 +489,7 @@ const ContentLibraryPage: React.FC = () => {
                                 ))}
 
                                 {/* Letter Grades for EE/TOK */}
-                                {(selectedResourceTypes.includes("EE") || selectedResourceTypes.includes("TOK")) && ["A", "B", "C", "D", "E"].map(score => (
+                                {(selectedResourceTypes.includes("EE") || selectedResourceTypes.includes("TOK")) && ["A", "B", "C"].map(score => (
                                     <Button
                                         key={score}
                                         size="xs"
@@ -714,7 +717,7 @@ const ContentLibraryPage: React.FC = () => {
                 onClose={onClose}
                 url={viewUrl}
                 title={viewTitle}
-                userEmail={user?.email || user?.uid || "Unknown User"}
+                userEmail={user?.email || user?.uid || ""}
             />
         </Box >
     );

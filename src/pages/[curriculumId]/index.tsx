@@ -294,8 +294,7 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
                 <Analytics />
                 <Box>
                     <Head>
-                        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6442166008118008"
-                            crossOrigin="anonymous"></script>
+
                         <title>GR8ER - {curriculumId === 'ib-dp' ? 'IB DP' : 'IB MYP'}</title>
                     </Head>
                 </Box>
