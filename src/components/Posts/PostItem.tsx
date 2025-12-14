@@ -27,6 +27,7 @@ import { AuthModalState } from '@/atoms/authModalAtom';
 import { getSketchAvatarUrl } from '@/utils/avatar';
 import DocumentViewerModal from '@/components/Modal/DocumentViewerModal';
 import { linkifyHtml } from '@/utils/linkifyHtml';
+import { dpSubjects } from '@/lib/curriculumData';
 
 type PostItemProps = {
     post: Post;
@@ -254,7 +255,9 @@ const PostItem: React.FC<PostItemProps> = ({
                                     <Text fontSize="xs" color="gray.400">•</Text>
                                     <Link href={`subject/${post.subjectId}`} onClick={(e) => e.stopPropagation()}>
                                         <Text fontSize="xs" fontWeight="600" color="brand.500" _hover={{ textDecoration: "underline" }}>
-                                            {post.subjectId}
+                                            {(post.subjectId.startsWith('ib-dp-') && dpSubjects)
+                                                ? dpSubjects.find(s => s.id === post.subjectId)?.name || post.subjectId
+                                                : post.subjectId}
                                         </Text>
                                     </Link>
                                 </>

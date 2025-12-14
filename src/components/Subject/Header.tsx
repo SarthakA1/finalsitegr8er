@@ -8,6 +8,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase/clientApp';
 import { AuthModalState } from '@/atoms/authModalAtom';
 import { useSetRecoilState } from 'recoil';
+import { resolveMypIcon } from '@/utils/subjectIcons';
 
 type HeaderProps = {
     subjectData: Subject;
@@ -25,28 +26,51 @@ const Header: React.FC<HeaderProps> = ({ subjectData }) => {
             <Box height='50%' bgGradient="linear(to-r, brand.500, brand.600)" ></Box>
             <Flex justify='center' bg="white" flexGrow={1}>
                 <Flex width="95%" maxWidth='1200px' align='center'>
-                    {subjectData?.imageURL ? (
-                        <Image
-                            borderRadius="full"
-                            boxSize="75px"
-                            src={subjectData?.imageURL}
-                            alt="Dan Abramov"
-                            align='center'
-                            mt={1}
-                            mb={1}
-
-                        />
-                    ) : (
-                        <Icon
-                            as={RiGroup2Fill}
-                            mt={1}
-
-                            fontSize={75}
-                            color="brand.100"
-                            mr={2}
-                            mb={2}
-                        />
-                    )}
+                    {(() => {
+                        const customIcon = resolveMypIcon(subjectData.id);
+                        if (customIcon.bgGradient) {
+                            return (
+                                <Flex
+                                    align="center"
+                                    justify="center"
+                                    boxSize="80px"
+                                    borderRadius="22px" // "Squirrel" shape
+                                    bgGradient={customIcon.bgGradient}
+                                    color={customIcon.color || "white"}
+                                    mr={4}
+                                    mt={-2}
+                                    mb={2}
+                                    shadow="md"
+                                >
+                                    <Icon as={customIcon.icon} fontSize="40px" />
+                                </Flex>
+                            );
+                        } else if (subjectData?.imageURL) {
+                            return (
+                                <Image
+                                    borderRadius="full"
+                                    boxSize="75px"
+                                    src={subjectData?.imageURL}
+                                    alt={subjectData.id}
+                                    align='center'
+                                    mt={1}
+                                    mb={1}
+                                    mr={4}
+                                />
+                            );
+                        } else {
+                            return (
+                                <Icon
+                                    as={RiGroup2Fill}
+                                    mt={1}
+                                    fontSize={75}
+                                    color="brand.100"
+                                    mr={2}
+                                    mb={2}
+                                />
+                            );
+                        }
+                    })()}
                     <Flex padding="10px 16px">
                         <Flex direction='column' mr={6} justifyContent='center'>
                             <Text fontWeight={800} fontSize="22px">
