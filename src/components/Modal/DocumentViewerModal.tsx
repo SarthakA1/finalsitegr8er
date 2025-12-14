@@ -177,7 +177,7 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                             >
                                 {url.split('?')[0].toLowerCase().endsWith('.pdf') ? (
                                     <iframe
-                                        src={url}
+                                        src={`${url}#toolbar=0&navpanes=0&scrollbar=0`}
                                         style={{
                                             width: '100%',
                                             height: '100%',
