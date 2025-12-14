@@ -73,14 +73,8 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                         border="1px solid"
                         borderColor="whiteAlpha.300"
                     >
-                        import PDFCanvasViewer from './PDFCanvasViewer';
-
-                        // ... (existing helper)
-
-                        // Inside DocumentViewerModal ...
-
-                        {/* Scrollable Inner Box */}
-                        <Box w="100%" h="100%" overflowY="auto" onContextMenu={(e) => e.preventDefault()}>
+                        {/* Wrapper for relative positioning */}
+                        <Box w="100%" h="100%" position="relative" onContextMenu={(e) => e.preventDefault()}>
                             {/* Loading Spinner */}
                             {!isFileLoaded && (
                                 <Flex
@@ -98,73 +92,103 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                 </Flex>
                             )}
 
-                            {/* Viewer Content */}
-                            <Box position="relative" w="100%" minH="100%">
-                                <PDFCanvasViewer
-                                    url={url}
-                                    onLoadComplete={() => setIsFileLoaded(true)}
-                                />
-
-                                {/* Watermark Overlay - Fixed position relative to viewer content */}
-                                {isFileLoaded && (
-                                    <Flex
-                                        position="absolute"
-                                        top={0}
-                                        left={0}
-                                        w="100%"
-                                        h="100%" // Matches content height
-                                        zIndex={20}
-                                        pointerEvents="none"
-                                        wrap="wrap"
-                                        justify="center"
-                                        alignContent="flex-start"
-                                        p={10}
-                                        overflow="hidden"
-                                    >
-                                        {/* Repeat watermarks based on content? 
-                                            Since we don't know height easily without callbacks, 
-                                            we can just render a fixed pattern or sticky overlay.
-                                            Actually, 'position: absolute' inside the scrollable relative Box 
-                                            will stretch to the full scroll height of the PDF content.
-                                        */}
+                            {/* Watermark Overlay - Only show after file loads */}
+                            {isFileLoaded && (
+                                <Flex
+                                    position="absolute"
+                                    top={0}
+                                    left={0}
+                                    w="100%"
+                                    h="100%"
+                                    zIndex={20}
+                                    pointerEvents="none"
+                                    justify="space-between" // Push to sides
+                                    align="stretch"
+                                    p={4}
+                                    overflow="hidden"
+                                    opacity={0.3} // Slightly clearer
+                                >
+                                    {/* Left Column */}
+                                    <Flex direction="column" justify="space-around" h="100%">
                                         {watermarks.map((text, index) => (
                                             <Text
-                                                key={index}
+                                                key={`left-${index}`}
                                                 color="gray.900"
-                                                fontSize="5xl"
+                                                fontSize="3xl"
                                                 fontWeight="bold"
                                                 transform="rotate(-45deg)"
                                                 whiteSpace="nowrap"
-                                                opacity={0.15}
-                                                m={20}
-                                                textAlign="center"
+                                                opacity={0.5}
                                             >
                                                 {text}
                                             </Text>
                                         ))}
                                     </Flex>
-                                )}
 
-                                {/* Interaction Blocker - Transparent Overlay */}
-                                <Box
-                                    position="absolute"
-                                    top="0"
-                                    left="0"
-                                    w="100%"
-                                    h="100%"
-                                    zIndex={25}
-                                    bg="transparent"
-                                    onContextMenu={(e) => e.preventDefault()}
+                                    {/* Right Column */}
+                                    <Flex direction="column" justify="space-around" h="100%">
+                                        {watermarks.map((text, index) => (
+                                            <Text
+                                                key={`right-${index}`}
+                                                color="gray.900"
+                                                fontSize="3xl"
+                                                fontWeight="bold"
+                                                transform="rotate(-45deg)"
+                                                whiteSpace="nowrap"
+                                                opacity={0.5}
+                                            >
+                                                {text}
+                                            </Text>
+                                        ))}
+                                    </Flex>
+                                </Flex>
+                            )}
+
+                            {/* Click Shield - Removed/Disabled to allow scrolling */}
+                            {/* We prioritize Viewability (scrolling) over blocking double-clicks for now */}
+
+                            {/* Header Bar inside container */}
+                            <Flex
+                                position="absolute"
+                                top="0"
+                                left="0"
+                                right="0"
+                                height="50px"
+                                bg="white"
+                                borderBottom="1px solid"
+                                borderColor="gray.200"
+                                zIndex={20}
+                                align="center"
+                                px={4}
+                                justify="center"
+                            >
+                                <Text fontWeight="600" fontSize="sm" color="gray.700" isTruncated maxW="90%">
+                                    {title || 'Document Viewer'}
+                                </Text>
+                            </Flex>
+
+                            <Box w="100%" h="100%" pt="50px" overflow="hidden">
+                                <iframe
+                                    src={`https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`}
+                                    style={{
+                                        width: '100%',
+                                        height: 'calc(100% + 110px)', // Maintain crop
+                                        marginTop: '-100px', // Maintain crop
+                                        border: 'none',
+                                        // pointerEvents: 'none' <--- REMOVED to allow scrolling
+                                    }}
+                                    title="Document Preview"
+                                    onLoad={() => setIsFileLoaded(true)}
+                                    sandbox="allow-scripts allow-same-origin"
                                 />
                             </Box>
                         </Box>
+
                     </Box>
 
-                </Box>
 
-
-            </ModalBody>
-        </ModalContent>
+                </ModalBody>
+            </ModalContent>
         </Modal >
     );
 };
