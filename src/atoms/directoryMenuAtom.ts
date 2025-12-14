@@ -8,7 +8,7 @@ export type DirectoryMenuItem = {
     displayText: string;
     link: string;
     icon: IconType;
-    iconColor: string;
+    iconColor?: string;
     imageURL?: string;
     bgGradient?: string;
     color?: string;
