@@ -25,7 +25,7 @@ import {
 } from '@chakra-ui/react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, storage, firestore } from '@/firebase/clientApp';
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { ref, getDownloadURL, uploadBytesResumable, uploadBytes } from 'firebase/storage';
 import { collection, addDoc, serverTimestamp, doc, getDoc, setDoc } from 'firebase/firestore';
 import { FiUploadCloud, FiFile, FiCheckCircle } from 'react-icons/fi';
 
@@ -80,6 +80,16 @@ const AdminUploadPage = () => {
                 }
             };
             reader.readAsDataURL(file);
+        }
+    };
+
+    const handleFreeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const checked = e.target.checked;
+        setIsFree(checked);
+        if (checked) {
+            setPrice('0.00');
+        } else {
+            setPrice('5.00'); // Reset to default if unchecked
         }
     };
 
@@ -151,30 +161,23 @@ const AdminUploadPage = () => {
         }
 
         setLoading(true);
-        setUploadProgress(0);
+        setUploadProgress(10); // Start fake progress
 
         try {
-            // 1. Upload Content (Resumable for progress)
+            // 1. Upload Content (Simple uploadBytes to avoid hanging)
             const contentStorageRef = ref(storage, `content_files/${Date.now()}_${contentFile.name}`);
-            const uploadTask = uploadBytesResumable(contentStorageRef, contentFile);
-
-            uploadTask.on('state_changed',
-                (snapshot) => {
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    setUploadProgress(progress);
-                },
-                (error) => {
-                    throw error;
-                }
-            );
-
-            await uploadTask;
+            setUploadProgress(30);
+            await uploadBytes(contentStorageRef, contentFile);
+            setUploadProgress(60);
             const contentUrl = await getDownloadURL(contentStorageRef);
 
             // 2. Upload Thumbnail
             const thumbnailStorageRef = ref(storage, `content_thumbnails/${Date.now()}_${thumbnailFile.name}`);
-            await uploadBytesResumable(thumbnailStorageRef, thumbnailFile);
+            setUploadProgress(80);
+            await uploadBytes(thumbnailStorageRef, thumbnailFile);
             const thumbnailUrl = await getDownloadURL(thumbnailStorageRef);
+
+            setUploadProgress(90);
 
             // 3. Save to Firestore
             await addDoc(collection(firestore, 'content_library'), {
@@ -269,15 +272,27 @@ const AdminUploadPage = () => {
                 <Flex gap={4}>
                     <FormControl>
                         <FormLabel>Price (USD)</FormLabel>
-                        <NumberInput
-                            value={price}
-                            onChange={(valueString) => setPrice(valueString)}
-                            precision={2}
-                            step={0.01}
-                            min={0}
-                        >
-                            <NumberInputField />
-                        </NumberInput>
+                        <Flex align="center" gap={3}>
+                            <NumberInput
+                                value={price}
+                                onChange={(valueString) => setPrice(valueString)}
+                                precision={2}
+                                step={0.01}
+                                min={0}
+                                isDisabled={isFree}
+                                w="150px"
+                            >
+                                <NumberInputField />
+                            </NumberInput>
+                            <Checkbox
+                                isChecked={isFree}
+                                onChange={handleFreeChange}
+                                colorScheme="purple"
+                                fontWeight="bold"
+                            >
+                                Free?
+                            </Checkbox>
+                        </Flex>
                     </FormControl>
 
                     <FormControl>
