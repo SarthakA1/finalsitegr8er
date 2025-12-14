@@ -65,6 +65,7 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                     <Box
                         w={{ base: "100%", md: "80%" }}
                         h={{ base: "100%", md: "90%" }}
+                        minH={{ base: "100%", md: "90vh" }} // Ensure tall height
                         bg="gray.100"
                         borderRadius={{ base: 0, md: "xl" }}
                         overflow="hidden" // Keep outer hidden, inner scrollable
@@ -144,9 +145,6 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                 </Flex>
                             )}
 
-                            {/* Click Shield - Removed/Disabled to allow scrolling */}
-                            {/* We prioritize Viewability (scrolling) over blocking double-clicks for now */}
-
                             {/* Header Bar inside container */}
                             <Flex
                                 position="absolute"
@@ -167,23 +165,44 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                 </Text>
                             </Flex>
 
-                            <Box w="100%" h="100%" pt="50px" overflow="hidden">
-                                <iframe
-                                    src={`https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`}
-                                    style={{
-                                        width: '100%',
-                                        height: 'calc(100% + 110px)', // Maintain crop
-                                        marginTop: '-100px', // Maintain crop
-                                        border: 'none',
-                                        // pointerEvents: 'none' <--- REMOVED to allow scrolling
-                                    }}
-                                    title="Document Preview"
-                                    onLoad={() => setIsFileLoaded(true)}
-                                    sandbox="allow-scripts allow-same-origin"
-                                />
+                            {/* Main Content Area - Absolute Positioned to fill remaining space */}
+                            <Box
+                                position="absolute"
+                                top="50px"
+                                bottom="0"
+                                left="0"
+                                right="0"
+                                overflow="hidden"
+                                bg="white"
+                            >
+                                {url.split('?')[0].toLowerCase().endsWith('.pdf') ? (
+                                    <iframe
+                                        src={url}
+                                        style={{
+                                            width: '100%',
+                                            height: '100%',
+                                            border: 'none',
+                                        }}
+                                        title="Document Preview"
+                                        onLoad={() => setIsFileLoaded(true)}
+                                    // sandbox="allow-scripts allow-same-origin" // Native PDF viewer often needs fewer restrictions or none to render well
+                                    />
+                                ) : (
+                                    <iframe
+                                        src={`https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`}
+                                        style={{
+                                            width: '100%',
+                                            height: 'calc(100% + 110px)', // Maintain crop for Google Viewer
+                                            marginTop: '-100px', // Maintain crop for Google Viewer
+                                            border: 'none',
+                                        }}
+                                        title="Document Preview"
+                                        onLoad={() => setIsFileLoaded(true)}
+                                        sandbox="allow-scripts allow-same-origin"
+                                    />
+                                )}
                             </Box>
                         </Box>
-
                     </Box>
 
 
