@@ -704,7 +704,7 @@ const ContentLibraryPage: React.FC = () => {
                                                         Score: {item.score}
                                                     </Badge>
                                                 )}
-                                                {item.subject && (
+                                                {item.subject && item.program !== 'MYP' && (
                                                     <Badge bg="teal.500" color="white" borderRadius="md" px={2} py={0.5} boxShadow="lg" fontSize="xs">
                                                         {item.subject}
                                                     </Badge>
