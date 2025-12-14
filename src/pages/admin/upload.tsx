@@ -25,12 +25,13 @@ import {
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, storage, firestore } from '@/firebase/clientApp';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, getDoc, setDoc } from 'firebase/firestore';
 import { FiUploadCloud, FiFile, FiCheckCircle } from 'react-icons/fi';
 
 const AdminUploadPage = () => {
     const [user] = useAuthState(auth);
     const [loading, setLoading] = useState(false);
+    const [grantLoading, setGrantLoading] = useState(false); // Valid state for new button
     const [uploadProgress, setUploadProgress] = useState(0);
 
     // Form State
@@ -43,6 +44,10 @@ const AdminUploadPage = () => {
     const [program, setProgram] = useState('DP');
     const [resourceType, setResourceType] = useState('IA');
     const [tokType, setTokType] = useState('Essay');
+
+    // Manual Unlock State
+    const [manualUid, setManualUid] = useState('');
+    const [manualRid, setManualRid] = useState('');
 
     const RESOURCE_TYPES_DP = ["IA", "EE", "TOK"];
     const RESOURCE_TYPES_MYP = ["Personal Project", "Portfolio - Design", "Portfolio - Drama", "Portfolio - Music", "Portfolio - Visual Arts"];
@@ -74,6 +79,61 @@ const AdminUploadPage = () => {
             };
             reader.readAsDataURL(file);
         }
+    };
+
+    const handleManualGrant = async () => {
+        const uid = manualUid.trim();
+        const rid = manualRid.trim();
+
+        if (!uid || !rid) {
+            toast({ title: "Error", description: "Enter User ID and Resource ID", status: "error" });
+            return;
+        }
+
+        setGrantLoading(true);
+        try {
+            // 1. Check Resource
+            const docRef = doc(firestore, 'content_library', rid);
+            const docSnap = await getDoc(docRef);
+
+            if (!docSnap.exists()) {
+                throw new Error(`Resource ${rid} not found in content_library`);
+            }
+
+            const data = docSnap.data();
+
+            // 2. Grant Access
+            await setDoc(doc(firestore, `users/${uid}/purchases/${rid}`), {
+                itemId: rid,
+                title: data.title || "Manual Unlock",
+                url: data.url || "",
+                purchaseDate: serverTimestamp(),
+                paymentId: 'manual_admin_grant'
+            });
+
+            toast({
+                title: "Success",
+                description: `Access granted for ${data.title} to user ${uid}`,
+                status: "success",
+                duration: 5000,
+                isClosable: true
+            });
+
+            // Clear inputs
+            setManualUid('');
+            setManualRid('');
+
+        } catch (error: any) {
+            console.error("Grant Error", error);
+            toast({
+                title: "Grant Failed",
+                description: error.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true
+            });
+        }
+        setGrantLoading(false);
     };
 
     const handleUpload = async () => {
@@ -187,7 +247,16 @@ const AdminUploadPage = () => {
                     </FormControl>
                     <FormControl>
                         <FormLabel>Resource Type</FormLabel>
-                        <Select value={resourceType} onChange={(e) => setResourceType(e.target.value)}>
+                        <Select value={resourceType} onChange={(e) => {
+                            const newType = e.target.value;
+                            setResourceType(newType);
+                            // Reset score defaults based on type
+                            if (newType === 'TOK' || newType === 'EE') {
+                                setScore('A');
+                            } else {
+                                setScore('7');
+                            }
+                        }}>
                             {(program === 'DP' ? RESOURCE_TYPES_DP : RESOURCE_TYPES_MYP).map(type => (
                                 <option key={type} value={type}>{type}</option>
                             ))}
@@ -216,6 +285,8 @@ const AdminUploadPage = () => {
                                 <option value="A">A</option>
                                 <option value="B">B</option>
                                 <option value="C">C</option>
+                                <option value="D">D</option>
+                                <option value="E">E</option>
                             </Select>
                         ) : (
                             <Select value={score} onChange={(e) => setScore(e.target.value)}>
@@ -312,6 +383,38 @@ const AdminUploadPage = () => {
                     Upload Content
                 </Button>
 
+            </VStack>
+
+            {/* Manual Unlock Section -- REFACTORED */}
+            <VStack mt={10} spacing={6} align="stretch" bg="white" p={8} borderRadius="xl" boxShadow="lg" border="1px solid" borderColor="gray.100">
+                <Heading size="md">Manual Access Grant</Heading>
+                <Text fontSize="sm" color="gray.500">Unlock a resource for a user manually. IDs must be exact.</Text>
+                <Flex gap={4} direction={{ base: 'column', md: 'row' }}>
+                    <FormControl>
+                        <FormLabel>User ID (UID)</FormLabel>
+                        <Input
+                            value={manualUid}
+                            onChange={(e) => setManualUid(e.target.value)}
+                            placeholder="e.g. 28JzN8..."
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <FormLabel>Resource ID (Doc ID)</FormLabel>
+                        <Input
+                            value={manualRid}
+                            onChange={(e) => setManualRid(e.target.value)}
+                            placeholder="e.g. T7fL5g..."
+                        />
+                    </FormControl>
+                </Flex>
+                <Button
+                    colorScheme="green"
+                    onClick={handleManualGrant}
+                    isLoading={grantLoading}
+                    loadingText="Granting..."
+                >
+                    Grant Access
+                </Button>
             </VStack>
         </Container>
     );

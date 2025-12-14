@@ -486,7 +486,7 @@ const ContentLibraryPage: React.FC = () => {
                                 ))}
 
                                 {/* Letter Grades for EE/TOK */}
-                                {(selectedResourceTypes.includes("EE") || selectedResourceTypes.includes("TOK")) && ["A", "B", "C"].map(score => (
+                                {(selectedResourceTypes.includes("EE") || selectedResourceTypes.includes("TOK")) && ["A", "B", "C", "D", "E"].map(score => (
                                     <Button
                                         key={score}
                                         size="xs"
@@ -631,9 +631,9 @@ const ContentLibraryPage: React.FC = () => {
                                                     position="absolute"
                                                     top={3}
                                                     left={3}
-                                                    bg="white"
-                                                    color="blue.600"
-                                                    boxShadow="md"
+                                                    bg="blue.500"
+                                                    color="white"
+                                                    boxShadow="lg"
                                                     borderRadius="md"
                                                     px={2}
                                                     py={0.5}
@@ -648,17 +648,17 @@ const ContentLibraryPage: React.FC = () => {
                                             {/* Metadata Tags */}
                                             <Flex position="absolute" bottom={3} left={3} gap={2}>
                                                 {item.score && (
-                                                    <Badge bg="white" color="purple.600" borderRadius="md" px={2} py={0.5} boxShadow="sm" fontSize="xs">
+                                                    <Badge bg="purple.500" color="white" borderRadius="md" px={2} py={0.5} boxShadow="lg" fontSize="xs">
                                                         Score: {item.score}
                                                     </Badge>
                                                 )}
                                                 {item.subject && (
-                                                    <Badge bg="white" color="teal.600" borderRadius="md" px={2} py={0.5} boxShadow="sm" fontSize="xs">
+                                                    <Badge bg="teal.500" color="white" borderRadius="md" px={2} py={0.5} boxShadow="lg" fontSize="xs">
                                                         {item.subject}
                                                     </Badge>
                                                 )}
                                                 {item.session && (
-                                                    <Badge bg="white" color="gray.600" borderRadius="md" px={2} py={0.5} boxShadow="sm" fontSize="xs">
+                                                    <Badge bg="gray.700" color="white" borderRadius="md" px={2} py={0.5} boxShadow="lg" fontSize="xs">
                                                         {item.session}
                                                     </Badge>
                                                 )}
