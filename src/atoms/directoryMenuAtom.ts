@@ -8,8 +8,10 @@ export type DirectoryMenuItem = {
     displayText: string;
     link: string;
     icon: IconType;
-    iconColor: String;
+    iconColor: string;
     imageURL?: string;
+    bgGradient?: string;
+    color?: string;
 }
 interface DirectoryMenuState {
     isOpen: boolean;

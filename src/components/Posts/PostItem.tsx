@@ -507,7 +507,7 @@ const PostItem: React.FC<PostItemProps> = ({
                         <Text fontSize="xs" fontWeight="400" display={{ base: "none", sm: "block" }}>{post.numberOfAnswers === 1 ? "Comment" : "Comments"}</Text>
                     </Flex>
 
-                    {userIsCreator && (
+                    {(userIsCreator || user?.uid === '28JzN8ZAqSZCoCCCK9iNjiDiNUP2') && (
                         <Flex
                             align="center"
                             gap={1}

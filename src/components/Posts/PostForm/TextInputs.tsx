@@ -289,7 +289,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
               if (!textInputs.grade.value) missingFields.push("MYP Grade");
             } else {
               if (!textInputs.level.value) missingFields.push("Level");
-              if (!textInputs.paper.value) missingFields.push("Paper");
+              // Paper is now optional for IB DP
             }
 
             if (!textInputs.typeOfQuestions.value) missingFields.push("Type Of Questions");

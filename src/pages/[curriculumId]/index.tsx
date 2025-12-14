@@ -11,7 +11,12 @@ import {
     orderBy,
     query,
     where,
-    Timestamp
+    Timestamp,
+    addDoc,
+    serverTimestamp,
+    deleteDoc,
+    doc,
+    writeBatch
 } from "firebase/firestore";
 import type { NextPage } from "next";
 import { useEffect, useState } from "react";
@@ -80,11 +85,6 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
         if (curriculumId && (curriculumId === 'ib-myp' || curriculumId === 'ib-dp')) {
             if (curriculum.curriculumId !== curriculumId) {
                 setCurriculum({ curriculumId: curriculumId as 'ib-myp' | 'ib-dp' });
-            }
-            // Trigger construction modal if IB DP
-            if (curriculumId === 'ib-dp') {
-                // Check if we already showed it this session? For now, always show on mount effectively.
-                setConstructionModalOpen(true);
             }
         }
     }, [curriculumId, curriculum.curriculumId, setCurriculum]);
@@ -493,8 +493,7 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
                                     <Box my={4} borderRadius="md" overflow="hidden" boxShadow="sm" border="1px solid" borderColor="gray.100">
                                         <GoogleAd
                                             slot="3619019024"
-                                            format="fluid"
-                                            layoutKey="-gw-3+1f-3d+2z"
+                                            style={{ display: 'block', width: '300px', height: '250px', margin: '0 auto' }}
                                         />
                                     </Box>
                                 )}

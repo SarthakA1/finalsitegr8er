@@ -1,4 +1,6 @@
 import { Subject, subjectState } from '@/atoms/subjectsAtom';
+import { curriculumState } from '@/atoms/curriculumAtom';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import PageContent from '@/components/layout/PageContent';
 import Posts from '@/components/Posts/Posts';
 import About from '@/components/Subject/About';
@@ -12,7 +14,7 @@ import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import { stringify } from 'querystring';
 import React, { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
+
 import safeJsonStringify from 'safe-json-stringify';
 
 type SubjectPageProps = {
@@ -34,11 +36,21 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subjectData, initialPosts }) 
     return <NotFound />;
   }
 
+  const setCurriculumState = useSetRecoilState(curriculumState);
+
   useEffect(() => {
     setSubjectStateValue((prev) => ({
       ...prev,
       currentSubject: subjectData,
-    }))
+    }));
+
+    // SYNC DIRECTORY: Ensure global curriculum matches the subject's curriculum
+    if (subjectData?.curriculumId) {
+      setCurriculumState(prev => ({
+        ...prev,
+        curriculumId: subjectData.curriculumId as "ib-dp" | "ib-myp"
+      }));
+    }
   }, [subjectData]);
 
 
@@ -53,7 +65,7 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subjectData, initialPosts }) 
           <div>
             <Head>
 
-              <title>{subjectData.id}</title>
+              <title>{subjectData.curriculumId === 'ib-dp' ? (subjectData.subjectInfo || subjectData.id) : subjectData.id}</title>
             </Head>
           </div>
           <Posts subjectData={subjectData} initialPosts={initialPosts} />

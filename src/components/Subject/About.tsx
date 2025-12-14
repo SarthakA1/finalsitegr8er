@@ -146,9 +146,11 @@ const About: React.FC<AboutProps> = ({
 
                 <Divider />
 
-                <Text fontSize="sm" color="gray.700" lineHeight="1.6" textAlign="center">
-                  {subjectData.subjectInfo}
-                </Text>
+                {subjectData.curriculumId !== 'ib-dp' && (
+                  <Text fontSize="sm" color="gray.700" lineHeight="1.6" textAlign="center">
+                    {subjectData.subjectInfo}
+                  </Text>
+                )}
 
                 {user && (
                   <Link href={`/subject/${subjectData.id}/submit`}>

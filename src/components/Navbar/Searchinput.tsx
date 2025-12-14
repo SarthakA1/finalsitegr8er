@@ -112,19 +112,18 @@ const Searchinput: React.FC<SearchinputProps> = ({ user }) => {
 
         // -- Filter Library --
         const matchingLibrary = allLibraryItems.filter(item => {
-            // RELAXED Exclusion Logic
-            // Instead of requiring strict match (which fails on typos/"IB-DP"),
-            // we only exclude items that explicitly belong to the OTHER program.
             const p = item.program ? String(item.program).toLowerCase() : '';
 
-            // If we are in DP, exclude MYP items. Allow everything else (DP, empty, etc.)
-            if (currentCurriculumId === 'ib-dp' && p.includes('myp')) return false;
+            // STRICT Isolation
+            if (currentCurriculumId === 'ib-dp') {
+                // Must be DP
+                if (!p.includes('dp')) return false;
+            } else {
+                // Must be MYP (or implicitly MYP if legacy/empty, but definitely not DP)
+                if (p.includes('dp') && !p.includes('myp')) return false;
+            }
 
-            // If we are in MYP, exclude DP items.
-            if (currentCurriculumId === 'ib-myp' && p.includes('dp')) return false;
-
-            // Search Logic: Title + Subject (User requested "use only title")
-            // We include subject because "Math" might be the subject, not in the title "IA 1"
+            // Search Logic
             const matches = (str?: string | number) => str ? String(str).toLowerCase().includes(lowerValue) : false;
 
             return (
@@ -135,10 +134,18 @@ const Searchinput: React.FC<SearchinputProps> = ({ user }) => {
 
         // -- Filter Posts --
         const matchingPosts = allPosts.filter(post => {
-            // RELAXED Curriculum Filtering
-            if (post.curriculumId && post.curriculumId !== currentCurriculumId) {
-                return false;
+
+            // STRICT Isolation
+            if (currentCurriculumId === 'ib-dp') {
+                // Must explicity be 'ib-dp'
+                if (post.curriculumId !== 'ib-dp') return false;
+            } else {
+                // Assume 'ib-myp' or undefined (legacy) are MYP.
+                // EXCLUDE 'ib-dp'
+                if (post.curriculumId === 'ib-dp') return false;
             }
+
+            // Safe Title/Body check
 
             // Safe Title/Body check
             const titleMatch = post.title ? post.title.toLowerCase().includes(lowerValue) : false;

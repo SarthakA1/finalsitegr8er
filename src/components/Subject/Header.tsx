@@ -50,7 +50,9 @@ const Header: React.FC<HeaderProps> = ({ subjectData }) => {
                     <Flex padding="10px 16px">
                         <Flex direction='column' mr={6} justifyContent='center'>
                             <Text fontWeight={800} fontSize="22px">
-                                {subjectData.id}
+                                {subjectData.curriculumId === 'ib-dp'
+                                    ? (subjectData.subjectInfo || subjectData.id)
+                                    : subjectData.id}
                             </Text>
                             <Text fontWeight={600} fontSize="13px" color='gray.400' ml={0}>
                                 Subject Group

@@ -1,4 +1,7 @@
+import { resolveMypIcon } from '@/utils/subjectIcons';
 import { curriculumState } from '@/atoms/curriculumAtom';
+// ... (in Subjects component)
+
 import { subjectState } from '@/atoms/subjectsAtom';
 import CreateSubjectModal from '@/components/Modal/CreateSubjectModal';
 import { auth, firestore } from '@/firebase/clientApp';
@@ -24,35 +27,43 @@ const Subjects: React.FC<subjectsProps> = () => {
     const curriculum = useRecoilValue(curriculumState);
     const [user] = useAuthState(auth);
 
-    // Auto-seed DP subjects if they don't exist
+    // Auto-seed DP subjects (Comprehensive Check)
     useEffect(() => {
         const seedSubjects = async () => {
             if (curriculum.curriculumId !== 'ib-dp') return;
 
             try {
-                // Check if the first DP subject exists
-                const firstSub = dpSubjects[0];
-                const docRef = doc(firestore, 'subjects', firstSub.id);
-                const docSnap = await getDoc(docRef);
+                // We want to ensure ALL subjects in the list exist in DB.
+                // Checking one by one is safer for updates.
+                const batch = writeBatch(firestore);
+                let updateCount = 0;
 
-                if (!docSnap.exists()) {
-                    console.log("Seeding DP Subjects...");
-                    const batch = writeBatch(firestore);
-                    dpSubjects.forEach(sub => {
-                        const newDocRef = doc(firestore, 'subjects', sub.id);
-                        batch.set(newDocRef, {
+                for (const sub of dpSubjects) {
+                    // This is slightly inefficient (N reads) but safe and runs rarely
+                    // Optimization: We could just validte known new ones, but loop is fine for <30 items.
+                    const docRef = doc(firestore, 'subjects', sub.id);
+                    // Use getDoc to check existence
+                    const docSnap = await getDoc(docRef);
+                    if (!docSnap.exists()) {
+                        batch.set(docRef, {
                             id: sub.id,
-                            creatorId: 'system', // or a dedicated admin ID
+                            creatorId: 'system',
                             numberOfMembers: 0,
                             createdAt: serverTimestamp(),
                             imageURL: sub.imageURL,
                             subjectInfo: sub.name,
                             curriculumId: 'ib-dp'
                         });
-                    });
+                        updateCount++;
+                    }
+                }
+
+                if (updateCount > 0) {
+                    console.log(`Seeding ${updateCount} new DP Subjects...`);
                     await batch.commit();
                     console.log("Seeding complete.");
                 }
+
             } catch (error) {
                 console.error("Error seeding DP subjects", error);
             }
@@ -69,41 +80,59 @@ const Subjects: React.FC<subjectsProps> = () => {
 
             {curriculum.curriculumId === 'ib-myp' ? (
                 <>
-                    {mySnippets.filter(snippet => (snippet.curriculumId || 'ib-myp') === 'ib-myp').map(snippet => (
-                        <MenuListItem key={snippet.subjectId}
-                            icon={RiGroup2Fill}
-                            displayText={`${snippet.subjectId}`}
-                            link={`/subject/${snippet.subjectId}`} iconColor="blue.500" imageURL={snippet.imageURL} />
-                    ))}
+                    {mySnippets.filter(snippet => (snippet.curriculumId || 'ib-myp') === 'ib-myp').map(snippet => {
+                        const customIcon = resolveMypIcon(snippet.subjectId);
+                        return (
+                            <MenuListItem key={snippet.subjectId}
+                                icon={customIcon.icon}
+                                displayText={`${snippet.subjectId}`}
+                                link={`/subject/${snippet.subjectId}`}
+                                // imageURL={snippet.imageURL} // Removed to force icon usage as requested
+                                bgGradient={customIcon.bgGradient}
+                                color={customIcon.color}
+                            />
+                        )
+                    })}
                 </>
             ) : (
                 <>
                     {/* Joined DP Subjects */}
-                    {mySnippets.filter(snippet => snippet.curriculumId === 'ib-dp').map(snippet => (
-                        <MenuListItem key={snippet.subjectId}
-                            icon={RiGroup2Fill}
-                            displayText={snippet.subjectId}
-                            link={`/subject/${snippet.subjectId}`}
-                            iconColor="purple.500"
-                            imageURL={snippet.imageURL} />
-                    ))}
+                    {mySnippets.filter(snippet => snippet.curriculumId === 'ib-dp').map(snippet => {
+                        const subName = dpSubjects.find(s => s.id === snippet.subjectId)?.name || snippet.subjectId;
+                        const customIcon = resolveMypIcon(snippet.subjectId);
+                        return (
+                            <MenuListItem key={snippet.subjectId}
+                                icon={customIcon.icon}
+                                displayText={subName}
+                                link={`/subject/${snippet.subjectId}`}
+                                // imageURL={snippet.imageURL} // Force icon usage
+                                bgGradient={customIcon.bgGradient}
+                                color={customIcon.color}
+                            />
+                        )
+                    })}
 
                     {/* Browse DP Subjects */}
                     <Box mt={3} mb={3} >
                         <Text pl={3} mb={1} fontSize="10pt" fontWeight={500} color="gray.500"> BROWSE DP SUBJECTS </Text>
                     </Box>
-                    {dpSubjects.filter(sub => !mySnippets.find(s => s.subjectId === sub.id)).map(subject => (
-                        <MenuListItem key={subject.id}
-                            icon={RiGroup2Fill}
-                            displayText={subject.name}
-                            link={`/subject/${subject.id}`}
-                            iconColor="purple.500"
-                            imageURL={subject.imageURL} />
-                    ))}
+                    {dpSubjects.filter(sub => !mySnippets.find(s => s.subjectId === sub.id)).map(subject => {
+                        const customIcon = resolveMypIcon(subject.id);
+                        return (
+                            <MenuListItem key={subject.id}
+                                icon={customIcon.icon}
+                                displayText={subject.name}
+                                link={`/subject/${subject.id}`}
+                                // imageURL={subject.imageURL} 
+                                bgGradient={customIcon.bgGradient}
+                                color={customIcon.color}
+                            />
+                        )
+                    })}
+
+
                 </>
             )}
-
-
         </>
     )
 }
