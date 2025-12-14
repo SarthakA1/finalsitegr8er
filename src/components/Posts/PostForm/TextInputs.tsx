@@ -206,10 +206,11 @@ const TextInputs: React.FC<TextInputsProps> = ({
               <Select
                 name="level"
                 placeholder="Level (HL/SL)"
+                isClearable
                 components={customLevelComponents}
-                value={textInputs.level.value && textInputs.level}
+                value={textInputs.level.value !== "" ? textInputs.level : null}
                 onChange={(selectedOption: any) =>
-                  handleInputChange("level", selectedOption)
+                  handleInputChange("level", selectedOption || { value: "", label: "" })
                 }
                 options={levelOptions}
               />
@@ -218,10 +219,11 @@ const TextInputs: React.FC<TextInputsProps> = ({
               <Select
                 name="paper"
                 placeholder="Paper"
+                isClearable
                 components={customPaperComponents}
-                value={textInputs.paper.value && textInputs.paper}
+                value={textInputs.paper.value !== "" ? textInputs.paper : null}
                 onChange={(selectedOption: any) =>
-                  handleInputChange("paper", selectedOption)
+                  handleInputChange("paper", selectedOption || { value: "", label: "" })
                 }
                 options={paperOptions}
               />
@@ -288,8 +290,7 @@ const TextInputs: React.FC<TextInputsProps> = ({
             if (curriculum.curriculumId === 'ib-myp') {
               if (!textInputs.grade.value) missingFields.push("MYP Grade");
             } else {
-              if (!textInputs.level.value) missingFields.push("Level");
-              // Paper is now optional for IB DP
+              // DP Tags (Level/Paper) are now optional
             }
 
             if (!textInputs.typeOfQuestions.value) missingFields.push("Type Of Questions");

@@ -61,62 +61,42 @@ const CreatePostLink: React.FC = () => {
       _hover={{ shadow: "md", borderColor: "gray.300" }}
       transition="all 0.2s"
     >
-      <Flex align="center" mb={3}>
-        {user?.photoURL ? (
-          <Image src={user.photoURL} height="40px" width="40px" borderRadius="full" mr={3} />
-        ) : (
-          <Icon as={FaUserCircle} fontSize={40} color="gray.300" mr={3} />
-        )}
-        <Input
-          placeholder="Ask a question or share your thoughts..."
-          fontSize="sm"
-          _placeholder={{ color: "gray.400" }}
-          _hover={{
-            borderColor: "brand.300",
-          }}
-          _focus={{
-            outline: "none",
-            borderColor: "brand.500",
-            boxShadow: "0 0 0 1px #4682B4",
-          }}
-          bg="gray.50"
-          borderColor="gray.200"
-          height="40px"
-          borderRadius="full"
-          onClick={onClick}
-          cursor="pointer"
-        />
-      </Flex>
-      <Flex gap={2}>
+      <Flex gap={3} w="100%">
         <Flex
           align="center"
           justify="center"
           flex={1}
-          p={2}
-          borderRadius="lg"
+          p={3}
+          height="50px"
+          borderRadius="xl"
           bg="gray.50"
+          border="1px solid"
+          borderColor="gray.200"
           cursor="pointer"
-          _hover={{ bg: "brand.50", color: "brand.600" }}
+          _hover={{ bg: "white", borderColor: "brand.500", shadow: "md", transform: "translateY(-1px)" }}
           transition="all 0.2s"
           onClick={onClick}
         >
-          <Icon as={TfiCommentAlt} fontSize={18} mr={2} />
-          <Text fontSize="sm" fontWeight="500">Ask Question</Text>
+          <Icon as={TfiCommentAlt} fontSize={20} mr={2} color="brand.500" />
+          <Text fontSize="md" fontWeight="600" color="gray.700">Ask Anything</Text>
         </Flex>
         <Flex
           align="center"
           justify="center"
           flex={1}
-          p={2}
-          borderRadius="lg"
+          p={3}
+          height="50px"
+          borderRadius="xl"
           bg="gray.50"
+          border="1px solid"
+          borderColor="gray.200"
           cursor="pointer"
-          _hover={{ bg: "green.50", color: "green.600" }}
+          _hover={{ bg: "white", borderColor: "green.500", shadow: "md", transform: "translateY(-1px)" }}
           transition="all 0.2s"
           onClick={onClickResource}
         >
-          <Icon as={IoImageOutline} fontSize={18} mr={2} />
-          <Text fontSize="sm" fontWeight="500">Share Resource</Text>
+          <Icon as={IoImageOutline} fontSize={22} mr={2} color="green.500" />
+          <Text fontSize="md" fontWeight="600" color="gray.700">Share a Resource</Text>
         </Flex>
       </Flex>
     </Flex>
