@@ -146,8 +146,8 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                 src={`https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`}
                                 style={{
                                     width: '100%',
-                                    height: 'calc(100% + 60px)', // Increase height
-                                    marginTop: '-48px', // Shift up to hide Google Docs header (adjusted to show top of doc)
+                                    height: 'calc(100% + 70px)', // Increase height
+                                    marginTop: '-65px', // Shift up to hide Google Docs header (adjusted to show top of doc)
                                     border: 'none',
                                 }}
                                 title="Document Preview"
