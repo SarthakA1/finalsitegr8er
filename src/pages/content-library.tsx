@@ -52,6 +52,7 @@ const ContentLibraryPage: React.FC = () => {
     const [selectedResourceTypes, setSelectedResourceTypes] = useState<string[]>([]);
     const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
     const [selectedTokTypes, setSelectedTokTypes] = useState<string[]>([]);
+    const [sortOption, setSortOption] = useState<string>("latest");
 
     // Filter Options
     const SESSIONS = ["May 2025", "Nov 2024", "May 2024", "Nov 2023"];
@@ -508,6 +509,23 @@ const ContentLibraryPage: React.FC = () => {
                                 ))}
                             </Flex>
                         )}
+
+                        {/* New Sort Filter */}
+                        <Flex gap={2} align="center">
+                            <Text fontSize="sm" fontWeight="600" color="gray.500">Sort By:</Text>
+                            <Select
+                                value={sortOption}
+                                onChange={(e) => setSortOption(e.target.value)}
+                                size="sm"
+                                w="200px"
+                                borderRadius="full"
+                                bg="white"
+                            >
+                                <option value="latest">Latest</option>
+                                <option value="price_low">Price: Low to High</option>
+                                <option value="price_high">Price: High to Low</option>
+                            </Select>
+                        </Flex>
                     </Flex>
                 </Box>
 
@@ -519,10 +537,8 @@ const ContentLibraryPage: React.FC = () => {
                     <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8}>
                         {contentItems
                             .filter(item => {
-                                // 1. Filter by Program (Default to DP if generic item without program for now, or hide?)
-                                // Better: if item has no program, maybe show it? For now, stricly filter if program exists. 
-                                // To make sure mock data shows up:
-                                const itemProgram = item.program || "DP"; // Default to DP for legacy items
+                                // 1. Filter by Program
+                                const itemProgram = item.program || "DP";
                                 if (itemProgram !== selectedProgram) return false;
 
                                 // 2. Filter by Resource Type
@@ -548,8 +564,23 @@ const ContentLibraryPage: React.FC = () => {
 
                                 return true;
                             })
+                            .sort((a, b) => {
+                                if (sortOption === "price_low") {
+                                    return a.price - b.price;
+                                } else if (sortOption === "price_high") {
+                                    return b.price - a.price;
+                                } else {
+                                    // Default to Latest (createdAt desc) check timestamps
+                                    // Assuming createdAt is Date object from hook
+                                    const dateA = new Date(a.createdAt).getTime();
+                                    const dateB = new Date(b.createdAt).getTime();
+                                    return dateB - dateA;
+                                }
+                            })
                             .map((item) => {
                                 const isPurchased = purchasedIds.has(item.id);
+                                const isFree = item.price === 0;
+
                                 return (
                                     <Flex
                                         key={item.id}
@@ -628,6 +659,24 @@ const ContentLibraryPage: React.FC = () => {
                                                 </Badge>
                                             )}
 
+                                            {/* FREE Badge */}
+                                            {isFree && !isPurchased && (
+                                                <Badge
+                                                    position="absolute"
+                                                    top={3}
+                                                    right={3}
+                                                    bg="green.400"
+                                                    color="white"
+                                                    variant="solid"
+                                                    borderRadius="full"
+                                                    px={3}
+                                                    boxShadow="md"
+                                                    fontSize="xs"
+                                                >
+                                                    FREE
+                                                </Badge>
+                                            )}
+
                                             {/* Dynamic Resource Type Badge */}
                                             {item.resourceType && (
                                                 <Badge
@@ -678,7 +727,7 @@ const ContentLibraryPage: React.FC = () => {
                                                 </Text>
                                             </Box>
 
-                                            {isPurchased ? (
+                                            {isPurchased || isFree ? (
                                                 <Button
                                                     leftIcon={<FaEye />}
                                                     size="md"
@@ -687,7 +736,7 @@ const ContentLibraryPage: React.FC = () => {
                                                     colorScheme="gray"
                                                     onClick={() => openViewer(item)}
                                                 >
-                                                    View
+                                                    {isFree ? "View (Free)" : "View"}
                                                 </Button>
                                             ) : (
                                                 <Button

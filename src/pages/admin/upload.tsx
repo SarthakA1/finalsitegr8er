@@ -20,6 +20,7 @@ import {
     VStack,
     Image,
     Icon,
+    Checkbox,
     Progress
 } from '@chakra-ui/react';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -38,6 +39,7 @@ const AdminUploadPage = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('5.00');
+    const [isFree, setIsFree] = useState(false); // New Free State
     const [score, setScore] = useState("7");
     const [session, setSession] = useState('May 2025');
     const [subject, setSubject] = useState('Math AA HL');
