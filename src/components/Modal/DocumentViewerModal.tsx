@@ -176,17 +176,38 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                 bg="white"
                             >
                                 {url.split('?')[0].toLowerCase().endsWith('.pdf') ? (
-                                    <iframe
-                                        src={`${url}#toolbar=0&navpanes=0&scrollbar=0`}
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                            border: 'none',
-                                        }}
-                                        title="Document Preview"
-                                        onLoad={() => setIsFileLoaded(true)}
-                                    // sandbox="allow-scripts allow-same-origin" // Native PDF viewer often needs fewer restrictions or none to render well
-                                    />
+                                    <Box w="100%" h="100%" position="relative">
+                                        <iframe
+                                            src={`${url}#toolbar=0&navpanes=0&scrollbar=0`}
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                                border: 'none',
+                                            }}
+                                            title="Document Preview"
+                                            onLoad={() => setIsFileLoaded(true)}
+                                        />
+                                        {/* Toolbar Shield - Blocks Top Controls */}
+                                        <Box
+                                            position="absolute"
+                                            top={0}
+                                            left={0}
+                                            right="20px" // Leave space for scrollbar
+                                            height="60px"
+                                            bg="transparent"
+                                            zIndex={10}
+                                        />
+                                        {/* FAB Shield - Blocks Floating Buttons (Bottom Right) */}
+                                        <Box
+                                            position="absolute"
+                                            bottom={0}
+                                            right="20px" // Leave space for scrollbar
+                                            width="100px"
+                                            height="100px"
+                                            bg="transparent"
+                                            zIndex={10}
+                                        />
+                                    </Box>
                                 ) : (
                                     <iframe
                                         src={`https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`}
