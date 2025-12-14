@@ -21,7 +21,8 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
     // User requested to show UserID. The prop 'userEmail' currently carries email OR uid.
     // We will trust the prop content.
     const watermarkText = userEmail || "";
-    const watermarks = Array(6).fill(watermarkText);
+    // Increase count to cover the tall 15000px scrollable area
+    const watermarks = Array(4).fill(watermarkText);
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="full" isCentered>
@@ -98,24 +99,28 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                     top={0}
                                     left={0}
                                     w="100%"
-                                    h="2500px" // Match iframe height
-                                    zIndex={10}
+                                    h="15000px" // Huge height for scrolling
+                                    zIndex={20} // Ensure visible above other layers
                                     pointerEvents="none" // Pass through clicks
                                     wrap="wrap"
                                     justify="space-between"  // Push to sides
-                                    alignContent="space-between" // Push to top/bottom
+                                    alignContent="flex-start" // Start from top
                                     p={10} // Padding from edge
                                     overflow="hidden"
-                                    opacity={0.12} // Subtle opacity
+                                    opacity={0.25} // Increased visibility
                                 >
                                     {watermarks.map((text, index) => (
                                         <Text
                                             key={index}
                                             color="gray.900"
-                                            fontSize="3xl"
+                                            fontSize="5xl" // Larger text
                                             fontWeight="bold"
                                             transform="rotate(-45deg)"
                                             whiteSpace="nowrap"
+                                            opacity={0.5}
+                                            m={20} // More spacing
+                                            width="100%" // Force wrap
+                                            textAlign="center"
                                         >
                                             {text}
                                         </Text>
@@ -123,10 +128,22 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                 </Flex>
                             )}
 
+                            {/* Interaction Blocker - Transparent Overlay to catch all clicks */}
+                            <Box
+                                position="absolute"
+                                top="0"
+                                left="0"
+                                w="100%"
+                                h="15000px" // Covers full height
+                                zIndex={15} // Above iframe / Below watermark
+                                bg="transparent"
+                                onContextMenu={(e) => e.preventDefault()}
+                            />
+
                             {/* Header Bar inside container */}
                             <Flex
-                                position="sticky"
-                                top="0"
+                                position="sticky" // Sticky header so it stays while scrolling
+                                top="0" // Reset to 0 relative to scroll parent
                                 left="0"
                                 right="0"
                                 height="50px"
@@ -143,13 +160,13 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                 </Text>
                             </Flex>
 
-                            <Box w="100%" h="2500px" overflow="hidden">
+                            <Box w="100%" h="15000px" overflow="hidden">
                                 <iframe
                                     src={`https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`}
                                     style={{
                                         width: '100%',
                                         height: '100%',
-                                        marginTop: '-60px', // Minor adjustment to hide header
+                                        marginTop: '-100px', // Aggressively shift up to hide Google Docs toolbar/pop-out
                                         border: 'none',
                                         pointerEvents: 'none' // BLOCK INTERACTION
                                     }}
