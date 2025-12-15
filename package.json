@@ -30,7 +30,7 @@
     "katex": "^0.16.9",
     "moment": "^2.29.4",
     "next": "13.1.5",
-    "pdfjs-dist": "^5.4.449",
+    "pdfjs-dist": "^3.11.174",
     "razorpay": "^2.9.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -46,6 +46,8 @@
   },
   "devDependencies": {
     "@types/katex": "^0.16.7",
-    "@types/safe-json-stringify": "^1.1.2"
+    "@types/safe-json-stringify": "^1.1.2",
+    "eslint": "9.39.2",
+    "eslint-config-next": "16.0.10"
   }
 }

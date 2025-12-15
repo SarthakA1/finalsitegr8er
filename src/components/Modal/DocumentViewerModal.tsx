@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Box, Flex, Text, Spinner } from '@chakra-ui/react';
+import PDFCanvasViewer from '../ContentLibrary/PDFCanvasViewer';
 
 type DocumentViewerModalProps = {
     isOpen: boolean;
@@ -11,10 +12,14 @@ type DocumentViewerModalProps = {
 
 const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClose, url, title, userEmail }) => {
     const [isFileLoaded, setIsFileLoaded] = React.useState(false);
+    const [pdfError, setPdfError] = React.useState(false);
 
     // Reset state when url changes or modal opens
     React.useEffect(() => {
-        if (isOpen) setIsFileLoaded(false);
+        if (isOpen) {
+            setIsFileLoaded(false);
+            setPdfError(false);
+        }
     }, [isOpen, url]);
 
     // Create watermark pattern
@@ -175,37 +180,15 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                 overflow="hidden"
                                 bg="white"
                             >
-                                {url.split('?')[0].toLowerCase().endsWith('.pdf') ? (
+                                {url.split('?')[0].toLowerCase().endsWith('.pdf') && !pdfError ? (
                                     <Box w="100%" h="100%" position="relative">
-                                        <iframe
-                                            src={`${url}#toolbar=0&navpanes=0&scrollbar=0`}
-                                            style={{
-                                                width: '100%',
-                                                height: '100%',
-                                                border: 'none',
-                                            }}
-                                            title="Document Preview"
+                                        <PDFCanvasViewer
+                                            url={url}
                                             onLoad={() => setIsFileLoaded(true)}
-                                        />
-                                        {/* Toolbar Shield - Blocks Top Controls */}
-                                        <Box
-                                            position="absolute"
-                                            top={0}
-                                            left={0}
-                                            right="20px" // Leave space for scrollbar
-                                            height="60px"
-                                            bg="transparent"
-                                            zIndex={10}
-                                        />
-                                        {/* FAB Shield - Blocks Floating Buttons (Bottom Right) */}
-                                        <Box
-                                            position="absolute"
-                                            bottom={0}
-                                            right="20px" // Leave space for scrollbar
-                                            width="100px"
-                                            height="100px"
-                                            bg="transparent"
-                                            zIndex={10}
+                                            onError={(err) => {
+                                                console.warn("PDFViewer failed, switching to fallback:", err);
+                                                setPdfError(true);
+                                            }}
                                         />
                                     </Box>
                                 ) : (

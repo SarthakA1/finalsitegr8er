@@ -224,7 +224,10 @@ const Searchinput: React.FC<SearchinputProps> = ({ user }) => {
                                                 <Flex p={2} bg="white" borderRadius="md" cursor="pointer" align="center" boxShadow="sm" _hover={{ bg: "purple.50", transform: "translateY(-1px)", boxShadow: "md" }} transition="all 0.2s">
                                                     <Box flexGrow={1}>
                                                         <Text fontSize="sm" fontWeight="600" color="gray.800" noOfLines={1}>{item.title}</Text>
-                                                        <Text fontSize="xs" color="gray.500" noOfLines={1}>{item.subject} • {item.resourceType}</Text>
+                                                        <Text fontSize="xs" color="gray.500" noOfLines={1}>
+                                                            {item.subject && item.program !== 'MYP' ? `${item.subject} • ` : ''}
+                                                            {item.resourceType}
+                                                        </Text>
                                                     </Box>
                                                     {item.score && (
                                                         <Badge colorScheme="purple" fontSize="10px" variant="solid" bg="purple.400">{item.score}</Badge>
