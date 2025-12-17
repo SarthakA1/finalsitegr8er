@@ -20,15 +20,17 @@ import {
     Icon
 } from '@chakra-ui/react';
 import { FaLock, FaEye } from 'react-icons/fa';
-import { FiShoppingCart } from 'react-icons/fi';
+import { FiShoppingCart, FiUploadCloud } from 'react-icons/fi';
 import useContentLibrary, { ContentItem } from '@/hooks/useContentLibrary';
 import Head from 'next/head';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '@/firebase/clientApp';
-import { setDoc, doc, serverTimestamp, collection, getDocs } from 'firebase/firestore';
+import { setDoc, doc, serverTimestamp, collection, getDocs, updateDoc, increment } from 'firebase/firestore';
 import { useSetRecoilState } from 'recoil';
 import { AuthModalState } from '@/atoms/authModalAtom';
 import DocumentViewerModal from '@/components/Modal/DocumentViewerModal';
+
+import { useRouter } from 'next/router';
 
 // Razorpay Type Definition
 declare global {
@@ -39,6 +41,7 @@ declare global {
 
 const ContentLibraryPage: React.FC = () => {
     console.log("ContentLibraryPage rendering...");
+    const router = useRouter();
     const { contentItems, loading } = useContentLibrary();
     const [selectedItem, setSelectedItem] = useState<ContentItem | null>(null);
     const selectedItemRef = useRef<ContentItem | null>(null); // Ref to hold current item for callbacks
@@ -194,6 +197,12 @@ const ContentLibraryPage: React.FC = () => {
                 paymentId: response.razorpay_payment_id
             });
 
+            // Increment purchase count on the item itself
+            const itemRef = doc(firestore, 'content_library', item.id);
+            await updateDoc(itemRef, {
+                purchaseCount: increment(1)
+            });
+
             toast({
                 title: "Purchase Successful!",
                 description: "You can now view this content.",
@@ -334,6 +343,27 @@ const ContentLibraryPage: React.FC = () => {
                     <Text fontSize="lg" color="gray.500" maxW="600px" mx="auto">
                         Premium resources to help you ace your exams.
                     </Text>
+                </Box>
+
+                {/* Earn Passive Income CTA */}
+                <Box mb={10} textAlign="center">
+                    <Button
+                        onClick={() => router.push('/earn')}
+                        bg="blue.600"
+                        color="white"
+                        size="lg"
+                        _hover={{ bg: "blue.700", transform: "translateY(-2px)", boxShadow: "xl" }}
+                        _active={{ bg: "blue.800" }}
+                        boxShadow="md"
+                        transition="all 0.2s"
+                        px={10}
+                        py={7}
+                        fontSize="lg"
+                        fontWeight="bold"
+                        leftIcon={<Icon as={FiUploadCloud} boxSize={5} />}
+                    >
+                        Earn passive income by uploading high-scoring coursework
+                    </Button>
                 </Box>
 
                 {/* PROGRAM SWITCHER */}
@@ -529,239 +559,241 @@ const ContentLibraryPage: React.FC = () => {
                     </Flex>
                 </Box>
 
-                {loading ? (
-                    <Flex justify="center" align="center" minH="300px">
-                        <Spinner size="xl" color="gray.400" speed="0.8s" thickness="4px" />
-                    </Flex>
-                ) : (
-                    <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8}>
-                        {contentItems
-                            .filter(item => {
-                                // 1. Filter by Program
-                                const itemProgram = item.program || "DP";
-                                if (itemProgram !== selectedProgram) return false;
+                {
+                    loading ? (
+                        <Flex justify="center" align="center" minH="300px">
+                            <Spinner size="xl" color="gray.400" speed="0.8s" thickness="4px" />
+                        </Flex>
+                    ) : (
+                        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8}>
+                            {contentItems
+                                .filter(item => {
+                                    // 1. Filter by Program
+                                    const itemProgram = item.program || "DP";
+                                    if (itemProgram !== selectedProgram) return false;
 
-                                // 2. Filter by Resource Type
-                                if (selectedResourceTypes.length > 0 && !selectedResourceTypes.includes(item.resourceType || '')) return false;
+                                    // 2. Filter by Resource Type
+                                    if (selectedResourceTypes.length > 0 && !selectedResourceTypes.includes(item.resourceType || '')) return false;
 
-                                // 3. Filter by Sessions
-                                if (selectedSessions.length > 0 && !selectedSessions.includes(item.session || '')) return false;
+                                    // 3. Filter by Sessions
+                                    if (selectedSessions.length > 0 && !selectedSessions.includes(item.session || '')) return false;
 
-                                // 4. Filter by Score
-                                if (selectedScores.length > 0 && !selectedScores.includes(item.score?.toString() || '')) return false;
+                                    // 4. Filter by Score
+                                    if (selectedScores.length > 0 && !selectedScores.includes(item.score?.toString() || '')) return false;
 
-                                // 5. Filter by Subject (if active)
-                                if (selectedSubjects.length > 0 && !selectedSubjects.includes(item.subject || '')) return false;
+                                    // 5. Filter by Subject (if active)
+                                    if (selectedSubjects.length > 0 && !selectedSubjects.includes(item.subject || '')) return false;
 
-                                // 6. Filter by TOK Type (if active)
-                                if (selectedTokTypes.length > 0) {
-                                    const match = selectedTokTypes.some(type =>
-                                        item.title.toLowerCase().includes(type.toLowerCase()) ||
-                                        item.subject?.toLowerCase() === type.toLowerCase()
-                                    );
-                                    if (!match) return false;
-                                }
+                                    // 6. Filter by TOK Type (if active)
+                                    if (selectedTokTypes.length > 0) {
+                                        const match = selectedTokTypes.some(type =>
+                                            item.title.toLowerCase().includes(type.toLowerCase()) ||
+                                            item.subject?.toLowerCase() === type.toLowerCase()
+                                        );
+                                        if (!match) return false;
+                                    }
 
-                                return true;
-                            })
-                            .sort((a, b) => {
-                                if (sortOption === "price_low") {
-                                    return a.price - b.price;
-                                } else if (sortOption === "price_high") {
-                                    return b.price - a.price;
-                                } else {
-                                    // Default to Latest (createdAt desc) check timestamps
-                                    // Assuming createdAt is Date object from hook
-                                    const dateA = new Date(a.createdAt).getTime();
-                                    const dateB = new Date(b.createdAt).getTime();
-                                    return dateB - dateA;
-                                }
-                            })
-                            .map((item) => {
-                                const isPurchased = purchasedIds.has(item.id);
-                                const isFree = item.price === 0;
+                                    return true;
+                                })
+                                .sort((a, b) => {
+                                    if (sortOption === "price_low") {
+                                        return a.price - b.price;
+                                    } else if (sortOption === "price_high") {
+                                        return b.price - a.price;
+                                    } else {
+                                        // Default to Latest (createdAt desc) check timestamps
+                                        // Assuming createdAt is Date object from hook
+                                        const dateA = new Date(a.createdAt).getTime();
+                                        const dateB = new Date(b.createdAt).getTime();
+                                        return dateB - dateA;
+                                    }
+                                })
+                                .map((item) => {
+                                    const isPurchased = purchasedIds.has(item.id);
+                                    const isFree = item.price === 0;
 
-                                return (
-                                    <Flex
-                                        key={item.id}
-                                        direction="column"
-                                        bg="white"
-                                        borderRadius="xl"
-                                        overflow="hidden"
-                                        border="1px solid"
-                                        borderColor="gray.100"
-                                        boxShadow="sm"
-                                        transition="all 0.2s ease-in-out"
-                                        _hover={{
-                                            transform: 'translateY(-4px)',
-                                            boxShadow: 'md',
-                                            borderColor: 'gray.300'
-                                        }}
-                                    >
-                                        <Box position="relative" height="200px" bg="gray.100">
-                                            {item.thumbnail ? (
-                                                <Image
-                                                    src={item.thumbnail}
-                                                    alt={item.title}
-                                                    objectFit="cover"
-                                                    width="100%"
-                                                    height="100%"
-                                                />
-                                            ) : item.type !== 'image' ? (
-                                                <Box w="100%" h="100%" overflow="hidden" position="relative" bg="white">
-                                                    <iframe
-                                                        src={`https://docs.google.com/gview?url=${encodeURIComponent(item.url)}&embedded=true`}
-                                                        style={{
-                                                            width: '120%',
-                                                            height: '180%',
-                                                            marginTop: '-70px',
-                                                            marginLeft: '-10%',
-                                                            border: 'none',
-                                                            overflow: 'hidden',
-                                                            transform: 'scale(1.1)',
-                                                            transformOrigin: 'top center',
-                                                            pointerEvents: 'none'
-                                                        }}
-                                                        title="Preview"
-                                                        scrolling="no"
+                                    return (
+                                        <Flex
+                                            key={item.id}
+                                            direction="column"
+                                            bg="white"
+                                            borderRadius="xl"
+                                            overflow="hidden"
+                                            border="1px solid"
+                                            borderColor="gray.100"
+                                            boxShadow="sm"
+                                            transition="all 0.2s ease-in-out"
+                                            _hover={{
+                                                transform: 'translateY(-4px)',
+                                                boxShadow: 'md',
+                                                borderColor: 'gray.300'
+                                            }}
+                                        >
+                                            <Box position="relative" height="200px" bg="gray.100">
+                                                {item.thumbnail ? (
+                                                    <Image
+                                                        src={item.thumbnail}
+                                                        alt={item.title}
+                                                        objectFit="cover"
+                                                        width="100%"
+                                                        height="100%"
                                                     />
-                                                    {/* Transparent Overlay to ensure absolutely no interaction */}
-                                                    <Box
+                                                ) : item.type !== 'image' ? (
+                                                    <Box w="100%" h="100%" overflow="hidden" position="relative" bg="white">
+                                                        <iframe
+                                                            src={`https://docs.google.com/gview?url=${encodeURIComponent(item.url)}&embedded=true`}
+                                                            style={{
+                                                                width: '120%',
+                                                                height: '180%',
+                                                                marginTop: '-70px',
+                                                                marginLeft: '-10%',
+                                                                border: 'none',
+                                                                overflow: 'hidden',
+                                                                transform: 'scale(1.1)',
+                                                                transformOrigin: 'top center',
+                                                                pointerEvents: 'none'
+                                                            }}
+                                                            title="Preview"
+                                                            scrolling="no"
+                                                        />
+                                                        {/* Transparent Overlay to ensure absolutely no interaction */}
+                                                        <Box
+                                                            position="absolute"
+                                                            top="0"
+                                                            left="0"
+                                                            w="100%"
+                                                            h="100%"
+                                                            bg="transparent"
+                                                        />
+                                                    </Box>
+                                                ) : (
+                                                    <Image
+                                                        src={item.url}
+                                                        alt={item.title}
+                                                        objectFit="cover"
+                                                        width="100%"
+                                                        height="100%"
+                                                    />
+                                                )}
+
+                                                {isPurchased && (
+                                                    <Badge
                                                         position="absolute"
-                                                        top="0"
-                                                        left="0"
-                                                        w="100%"
-                                                        h="100%"
-                                                        bg="transparent"
-                                                    />
-                                                </Box>
-                                            ) : (
-                                                <Image
-                                                    src={item.url}
-                                                    alt={item.title}
-                                                    objectFit="cover"
-                                                    width="100%"
-                                                    height="100%"
-                                                />
-                                            )}
-
-                                            {isPurchased && (
-                                                <Badge
-                                                    position="absolute"
-                                                    top={3}
-                                                    right={3}
-                                                    colorScheme="green"
-                                                    variant="subtle"
-                                                    borderRadius="full"
-                                                    px={2}
-                                                >
-                                                    OWNED
-                                                </Badge>
-                                            )}
-
-                                            {/* FREE Badge */}
-                                            {isFree && !isPurchased && (
-                                                <Badge
-                                                    position="absolute"
-                                                    top={3}
-                                                    right={3}
-                                                    bg="green.400"
-                                                    color="white"
-                                                    variant="solid"
-                                                    borderRadius="full"
-                                                    px={3}
-                                                    boxShadow="md"
-                                                    fontSize="xs"
-                                                >
-                                                    FREE
-                                                </Badge>
-                                            )}
-
-                                            {/* Dynamic Resource Type Badge */}
-                                            {item.resourceType && (
-                                                <Badge
-                                                    position="absolute"
-                                                    top={3}
-                                                    left={3}
-                                                    bg="blue.500"
-                                                    color="white"
-                                                    boxShadow="lg"
-                                                    borderRadius="md"
-                                                    px={2}
-                                                    py={0.5}
-                                                    fontSize="xs"
-                                                    textTransform="none"
-                                                    fontWeight="700"
-                                                >
-                                                    {item.resourceType}
-                                                </Badge>
-                                            )}
-
-                                            {/* Metadata Tags */}
-                                            <Flex position="absolute" bottom={3} left={3} gap={2}>
-                                                {item.score && (
-                                                    <Badge bg="purple.500" color="white" borderRadius="md" px={2} py={0.5} boxShadow="lg" fontSize="xs">
-                                                        Score: {item.score}
+                                                        top={3}
+                                                        right={3}
+                                                        colorScheme="green"
+                                                        variant="subtle"
+                                                        borderRadius="full"
+                                                        px={2}
+                                                    >
+                                                        OWNED
                                                     </Badge>
                                                 )}
-                                                {item.subject && item.program !== 'MYP' && (
-                                                    <Badge bg="teal.500" color="white" borderRadius="md" px={2} py={0.5} boxShadow="lg" fontSize="xs">
-                                                        {item.subject}
-                                                    </Badge>
-                                                )}
-                                                {item.session && (
-                                                    <Badge bg="gray.700" color="white" borderRadius="md" px={2} py={0.5} boxShadow="lg" fontSize="xs">
-                                                        {item.session}
-                                                    </Badge>
-                                                )}
-                                            </Flex>
-                                        </Box>
 
-                                        <Flex direction="column" p={5} flex={1} justify="space-between">
-                                            <Box>
-                                                <Text fontSize="lg" fontWeight="700" mb={2} color="gray.800" lineHeight="short">
-                                                    {item.title}
-                                                </Text>
-                                                <Text fontSize="sm" color="gray.500" mb={6} noOfLines={2}>
-                                                    {item.description}
-                                                </Text>
+                                                {/* FREE Badge */}
+                                                {isFree && !isPurchased && (
+                                                    <Badge
+                                                        position="absolute"
+                                                        top={3}
+                                                        right={3}
+                                                        bg="green.400"
+                                                        color="white"
+                                                        variant="solid"
+                                                        borderRadius="full"
+                                                        px={3}
+                                                        boxShadow="md"
+                                                        fontSize="xs"
+                                                    >
+                                                        FREE
+                                                    </Badge>
+                                                )}
+
+                                                {/* Dynamic Resource Type Badge */}
+                                                {item.resourceType && (
+                                                    <Badge
+                                                        position="absolute"
+                                                        top={3}
+                                                        left={3}
+                                                        bg="blue.500"
+                                                        color="white"
+                                                        boxShadow="lg"
+                                                        borderRadius="md"
+                                                        px={2}
+                                                        py={0.5}
+                                                        fontSize="xs"
+                                                        textTransform="none"
+                                                        fontWeight="700"
+                                                    >
+                                                        {item.resourceType}
+                                                    </Badge>
+                                                )}
+
+                                                {/* Metadata Tags */}
+                                                <Flex position="absolute" bottom={3} left={3} gap={2}>
+                                                    {item.score && (
+                                                        <Badge bg="purple.500" color="white" borderRadius="md" px={2} py={0.5} boxShadow="lg" fontSize="xs">
+                                                            Score: {item.score}
+                                                        </Badge>
+                                                    )}
+                                                    {item.subject && item.program !== 'MYP' && (
+                                                        <Badge bg="teal.500" color="white" borderRadius="md" px={2} py={0.5} boxShadow="lg" fontSize="xs">
+                                                            {item.subject}
+                                                        </Badge>
+                                                    )}
+                                                    {item.session && (
+                                                        <Badge bg="gray.700" color="white" borderRadius="md" px={2} py={0.5} boxShadow="lg" fontSize="xs">
+                                                            {item.session}
+                                                        </Badge>
+                                                    )}
+                                                </Flex>
                                             </Box>
 
-                                            {isPurchased || isFree ? (
-                                                <Button
-                                                    leftIcon={<FaEye />}
-                                                    size="md"
-                                                    width="full"
-                                                    variant="outline"
-                                                    colorScheme="gray"
-                                                    onClick={() => openViewer(item)}
-                                                >
-                                                    {isFree ? "View (Free)" : "View"}
-                                                </Button>
-                                            ) : (
-                                                <Button
-                                                    leftIcon={<Icon as={FiShoppingCart} />}
-                                                    bg="black"
-                                                    color="white"
-                                                    _hover={{ bg: "gray.800" }}
-                                                    size="md"
-                                                    width="full"
-                                                    isLoading={isPaymentLoading && selectedItem?.id === item.id}
-                                                    onClick={() => handleBuyClick(item)}
-                                                >
-                                                    Buy ${item.price.toFixed(2)}
-                                                </Button>
-                                            )}
+                                            <Flex direction="column" p={5} flex={1} justify="space-between">
+                                                <Box>
+                                                    <Text fontSize="lg" fontWeight="700" mb={2} color="gray.800" lineHeight="short">
+                                                        {item.title}
+                                                    </Text>
+                                                    <Text fontSize="sm" color="gray.500" mb={6} noOfLines={2}>
+                                                        {item.description}
+                                                    </Text>
+                                                </Box>
+
+                                                {isPurchased || isFree ? (
+                                                    <Button
+                                                        leftIcon={<FaEye />}
+                                                        size="md"
+                                                        width="full"
+                                                        variant="outline"
+                                                        colorScheme="gray"
+                                                        onClick={() => openViewer(item)}
+                                                    >
+                                                        {isFree ? "View (Free)" : "View"}
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        leftIcon={<Icon as={FiShoppingCart} />}
+                                                        bg="black"
+                                                        color="white"
+                                                        _hover={{ bg: "gray.800" }}
+                                                        size="md"
+                                                        width="full"
+                                                        isLoading={isPaymentLoading && selectedItem?.id === item.id}
+                                                        onClick={() => handleBuyClick(item)}
+                                                    >
+                                                        Buy ${item.price.toFixed(2)}
+                                                    </Button>
+                                                )}
+                                            </Flex>
                                         </Flex>
-                                    </Flex>
-                                );
-                            })}
-                    </SimpleGrid>
-                )}
+                                    );
+                                })}
+                        </SimpleGrid>
+                    )
+                }
             </Flex >
 
             {/* Content Viewer Modal */}
-            <DocumentViewerModal
+            < DocumentViewerModal
                 isOpen={isOpen}
                 onClose={onClose}
                 url={viewUrl}
