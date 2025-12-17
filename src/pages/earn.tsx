@@ -16,7 +16,7 @@ import {
     Alert,
     AlertIcon
 } from '@chakra-ui/react';
-import { FiUploadCloud, FiCheckCircle, FiChevronRight, FiChevronLeft } from 'react-icons/fi';
+import { FiUploadCloud, FiCheckCircle, FiChevronRight, FiChevronLeft, FiDollarSign, FiAward, FiTrendingUp } from 'react-icons/fi';
 import Head from 'next/head';
 import { storage, firestore } from '@/firebase/clientApp';
 import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
@@ -190,21 +190,50 @@ const EarnPage: React.FC = () => {
         switch (step) {
             case 0:
                 return (
-                    <VStack spacing={6} align="center" textAlign="center" py={4}>
-                        <Icon as={FiUploadCloud} boxSize={16} color="blue.500" />
-                        <Heading size="lg">Earn Passive Income 💸</Heading>
-                        <Text fontSize="lg" color="gray.600">
-                            Upload your high-scoring coursework and earn money every time someone purchases it on <Text as="span" fontWeight="bold" color="blue.600">www.gr8er.live</Text>!
-                        </Text>
-                        <Text fontSize="md" color="gray.500">
-                            Earn passive income as a former IB Student; earnings depend on coursework quality and demand.
-                        </Text>
-                        <Alert status="success" variant="subtle" flexDirection="column" alignItems="center" justifyContent="center" textAlign="center" p={4} borderRadius="md" bg="green.50">
-                            <AlertIcon boxSize="40px" mr={0} />
-                            <Box mt={2} mb={1} fontSize="lg" fontWeight="bold" color="green.800">
-                                You receive 60% of the sale price.
+                    <VStack spacing={8} align="center" textAlign="center" py={2}>
+                        <VStack spacing={3}>
+                            <Box p={4} bg="blue.50" borderRadius="full">
+                                <Icon as={FiDollarSign} boxSize={10} color="blue.600" />
                             </Box>
-                        </Alert>
+                            <Heading size="lg" bgGradient="linear(to-r, blue.600, blue.400)" bgClip="text">
+                                Monetize Your Masterpieces
+                            </Heading>
+                            <Text fontSize="lg" color="gray.600" maxW="md">
+                                Your IAs and EEs served you well. Now, let them work for you. Turn your hard work into a recurring revenue stream.
+                            </Text>
+                        </VStack>
+
+                        <VStack spacing={4} width="100%" align="stretch" px={2}>
+                            <Flex align="center" gap={4} p={4} bg="gray.50" borderRadius="xl" border="1px solid" borderColor="gray.100">
+                                <Box p={2} bg="white" borderRadius="lg" boxShadow="sm">
+                                    <Icon as={FiUploadCloud} boxSize={5} color="blue.500" />
+                                </Box>
+                                <VStack align="start" spacing={0}>
+                                    <Text fontWeight="bold" fontSize="md">Upload Your Best Work</Text>
+                                    <Text fontSize="sm" color="gray.500">Share your high-scoring Key Assessments.</Text>
+                                </VStack>
+                            </Flex>
+
+                            <Flex align="center" gap={4} p={4} bg="gray.50" borderRadius="xl" border="1px solid" borderColor="gray.100">
+                                <Box p={2} bg="white" borderRadius="lg" boxShadow="sm">
+                                    <Icon as={FiAward} boxSize={5} color="purple.500" />
+                                </Box>
+                                <VStack align="start" spacing={0}>
+                                    <Text fontWeight="bold" fontSize="md">Help Future Students</Text>
+                                    <Text fontSize="sm" color="gray.500">Your expertise guides the next generation.</Text>
+                                </VStack>
+                            </Flex>
+
+                            <Flex align="center" gap={4} p={4} bg="green.50" borderRadius="xl" border="1px solid" borderColor="green.100">
+                                <Box p={2} bg="white" borderRadius="lg" boxShadow="sm">
+                                    <Icon as={FiTrendingUp} boxSize={5} color="green.500" />
+                                </Box>
+                                <VStack align="start" spacing={0}>
+                                    <Text fontWeight="bold" fontSize="md" color="green.800">Earn 60% Royalties</Text>
+                                    <Text fontSize="sm" color="green.700">Get paid every time your work is downloaded.</Text>
+                                </VStack>
+                            </Flex>
+                        </VStack>
                     </VStack>
                 );
             case 1:
