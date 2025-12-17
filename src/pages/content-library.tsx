@@ -356,11 +356,14 @@ const ContentLibraryPage: React.FC = () => {
                         _active={{ bg: "blue.800" }}
                         boxShadow="md"
                         transition="all 0.2s"
-                        px={10}
-                        py={7}
-                        fontSize="lg"
+                        px={{ base: 4, md: 10 }}
+                        py={{ base: 8, md: 7 }}
+                        fontSize={{ base: "sm", md: "lg" }}
                         fontWeight="bold"
                         leftIcon={<Icon as={FiUploadCloud} boxSize={5} />}
+                        whiteSpace="normal"
+                        height="auto"
+                        width={{ base: "100%", md: "auto" }}
                     >
                         Earn passive income by uploading high-scoring coursework
                     </Button>

@@ -66,7 +66,6 @@ const AdminUploadPage = () => {
     const [writerName, setWriterName] = useState(''); // New Writer Name
 
     const [exportLoading, setExportLoading] = useState(false);
-    const [copyLoading, setCopyLoading] = useState(false);
 
     // Manual Unlock State
     const [manualUid, setManualUid] = useState('');
@@ -126,24 +125,6 @@ const AdminUploadPage = () => {
 
         fetchResources();
     }, [isAuthenticated, refreshTrigger]);
-
-    const handleCopyEmails = async () => {
-        setCopyLoading(true);
-        try {
-            const querySnapshot = await getDocs(collection(firestore, 'users'));
-            const emails = querySnapshot.docs
-                .map(doc => doc.data().email)
-                .filter(email => email) // Filter out undefined/null
-                .join(', ');
-
-            await navigator.clipboard.writeText(emails);
-            toast({ title: "Emails Copied to Clipboard!", status: "success", duration: 3000 });
-        } catch (error: any) {
-            console.error("Copy Error", error);
-            toast({ title: "Copy Failed", description: error.message, status: "error" });
-        }
-        setCopyLoading(false);
-    };
 
     const handleExportUsers = async () => {
         setExportLoading(true);
@@ -598,29 +579,17 @@ const AdminUploadPage = () => {
                     <Flex justify="space-between" align="center">
                         <VStack align="start" spacing={1}>
                             <Heading size="md">User Data Export</Heading>
-                            <Text fontSize="sm" color="gray.500">Download CSV or copy all emails.</Text>
+                            <Text fontSize="sm" color="gray.500">Download a CSV of all registered users (Email, Name, UID).</Text>
                         </VStack>
-                        <Flex gap={3}>
-                            <Button
-                                leftIcon={<Icon as={FiFile} />}
-                                colorScheme="blue"
-                                variant="outline"
-                                onClick={handleCopyEmails}
-                                isLoading={copyLoading}
-                                loadingText="Copying..."
-                            >
-                                Copy Emails
-                            </Button>
-                            <Button
-                                leftIcon={<Icon as={FiFile} />}
-                                colorScheme="blue"
-                                onClick={handleExportUsers}
-                                isLoading={exportLoading}
-                                loadingText="Generating CSV..."
-                            >
-                                Export CSV
-                            </Button>
-                        </Flex>
+                        <Button
+                            leftIcon={<Icon as={FiFile} />}
+                            colorScheme="blue"
+                            onClick={handleExportUsers}
+                            isLoading={exportLoading}
+                            loadingText="Generating CSV..."
+                        >
+                            Export CSV
+                        </Button>
                     </Flex>
                 </Box>
 
