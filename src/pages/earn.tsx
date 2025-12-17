@@ -196,10 +196,10 @@ const EarnPage: React.FC = () => {
                                 <Icon as={FiDollarSign} boxSize={10} color="blue.600" />
                             </Box>
                             <Heading size="lg" bgGradient="linear(to-r, blue.600, blue.400)" bgClip="text">
-                                Monetize Your Masterpieces
+                                Turn Your Top Grades Into Income
                             </Heading>
                             <Text fontSize="lg" color="gray.600" maxW="md">
-                                Your IAs and EEs served you well. Now, let them work for you. Turn your hard work into a recurring revenue stream.
+                                Your high-scoring coursework served you well. Now, let it work for you. Turn your hard work into a recurring revenue stream.
                             </Text>
                         </VStack>
 
@@ -210,7 +210,7 @@ const EarnPage: React.FC = () => {
                                 </Box>
                                 <VStack align="start" spacing={0}>
                                     <Text fontWeight="bold" fontSize="md">Upload Your Best Work</Text>
-                                    <Text fontSize="sm" color="gray.500">Share your high-scoring Key Assessments.</Text>
+                                    <Text fontSize="sm" color="gray.500">Share your high-scoring coursework.</Text>
                                 </VStack>
                             </Flex>
 
@@ -230,7 +230,7 @@ const EarnPage: React.FC = () => {
                                 </Box>
                                 <VStack align="start" spacing={0}>
                                     <Text fontWeight="bold" fontSize="md" color="green.800">Earn 60% Royalties</Text>
-                                    <Text fontSize="sm" color="green.700">Get paid every time your work is downloaded.</Text>
+                                    <Text fontSize="sm" color="green.700">Get paid every time your work is purchased.</Text>
                                 </VStack>
                             </Flex>
                         </VStack>
