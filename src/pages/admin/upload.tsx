@@ -65,6 +65,8 @@ const AdminUploadPage = () => {
     const [tokType, setTokType] = useState('Essay');
     const [writerName, setWriterName] = useState(''); // New Writer Name
 
+    const [exportLoading, setExportLoading] = useState(false);
+
     // Manual Unlock State
     const [manualUid, setManualUid] = useState('');
     const [manualRid, setManualRid] = useState('');
@@ -123,6 +125,46 @@ const AdminUploadPage = () => {
 
         fetchResources();
     }, [isAuthenticated, refreshTrigger]);
+
+    const handleExportUsers = async () => {
+        setExportLoading(true);
+        try {
+            const querySnapshot = await getDocs(collection(firestore, 'users'));
+            const users = querySnapshot.docs.map(doc => doc.data());
+
+            const csvRows = [];
+            // Header
+            csvRows.push(['Email', 'Name', 'UID', 'Provider']);
+
+            users.forEach(u => {
+                const email = u.email || '';
+                const name = u.displayName || u.name || '';
+                const uid = u.uid || '';
+                const provider = u.providerData?.[0]?.providerId || '';
+
+                // Escape quotes and wrap in quotes
+                const row = [email, name, uid, provider].map(field => `"${String(field).replace(/"/g, '""')}"`);
+                csvRows.push(row.join(','));
+            });
+
+            const csvString = csvRows.join('\n');
+            const blob = new Blob([csvString], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `gr8er_users_export_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            toast({ title: "Export Successful", status: "success" });
+        } catch (error: any) {
+            console.error("Export Error", error);
+            toast({ title: "Export Failed", description: error.message, status: "error" });
+        }
+        setExportLoading(false);
+    };
 
     const onSelectContent = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files?.[0]) {
@@ -530,6 +572,25 @@ const AdminUploadPage = () => {
                             </Tbody>
                         </Table>
                     )}
+                </Box>
+
+                {/* DATA EXPORT */}
+                <Box bg="white" p={6} borderRadius="xl" boxShadow="lg" border="1px solid" borderColor="gray.100">
+                    <Flex justify="space-between" align="center">
+                        <VStack align="start" spacing={1}>
+                            <Heading size="md">User Data Export</Heading>
+                            <Text fontSize="sm" color="gray.500">Download a CSV of all registered users (Email, Name, UID).</Text>
+                        </VStack>
+                        <Button
+                            leftIcon={<Icon as={FiFile} />}
+                            colorScheme="blue"
+                            onClick={handleExportUsers}
+                            isLoading={exportLoading}
+                            loadingText="Generating CSV..."
+                        >
+                            Export CSV
+                        </Button>
+                    </Flex>
                 </Box>
 
                 {/* Manual Unlock Section */}
