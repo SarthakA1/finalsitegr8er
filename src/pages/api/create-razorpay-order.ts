@@ -33,25 +33,31 @@ export default async function handler(
 
         const itemId = items[0].id;
 
-        // Fetch item from Firestore to get real price
-        const itemRef = doc(firestore, 'content_library', itemId);
-        const itemSnap = await getDoc(itemRef);
+        let amount: number;
 
-        if (!itemSnap.exists()) {
-            throw new Error("Item not found");
+        if (itemId === 'PACKAGE_UNLIMITED') {
+            // Fixed price for Unlimited Access: $15.00
+            amount = 1500;
+        } else {
+            // Fetch item from Firestore to get real price
+            const itemRef = doc(firestore, 'content_library', itemId);
+            const itemSnap = await getDoc(itemRef);
+
+            if (!itemSnap.exists()) {
+                throw new Error("Item not found");
+            }
+
+            const itemData = itemSnap.data();
+            const price = itemData.price;
+
+            if (price === undefined || price === null) {
+                throw new Error("Item price not found");
+            }
+
+            // Razorpay expects amount in smallest currency unit (paise for INR, cents for USD)
+            // 1 USD = 100 cents.
+            amount = Math.round(Number(price) * 100);
         }
-
-        const itemData = itemSnap.data();
-        const price = itemData.price;
-
-        if (!price) {
-            throw new Error("Item price not found");
-        }
-
-        // Razorpay expects amount in smallest currency unit (paise for INR)
-        // Back to USD as requested.
-        // 1 USD = 100 cents.
-        const amount = Math.round(Number(price) * 100);
 
         const options = {
             amount: amount,

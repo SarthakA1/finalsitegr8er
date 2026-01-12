@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import Link from 'next/link';
 import {
     Box,
     Flex,
@@ -20,12 +21,12 @@ import {
     Icon
 } from '@chakra-ui/react';
 import { FaLock, FaEye } from 'react-icons/fa';
-import { FiShoppingCart, FiUploadCloud } from 'react-icons/fi';
+import { FiSearch, FiFilter, FiDownload, FiEye, FiShoppingCart, FiUploadCloud, FiStar, FiUnlock } from 'react-icons/fi';
 import useContentLibrary, { ContentItem } from '@/hooks/useContentLibrary';
 import Head from 'next/head';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '@/firebase/clientApp';
-import { setDoc, doc, serverTimestamp, collection, getDocs, updateDoc, increment } from 'firebase/firestore';
+import { setDoc, doc, serverTimestamp, collection, getDocs, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { useSetRecoilState } from 'recoil';
 import { AuthModalState } from '@/atoms/authModalAtom';
 import DocumentViewerModal from '@/components/Modal/DocumentViewerModal';
@@ -47,6 +48,7 @@ const ContentLibraryPage: React.FC = () => {
     const selectedItemRef = useRef<ContentItem | null>(null); // Ref to hold current item for callbacks
     const [isPaymentLoading, setIsPaymentLoading] = useState(false);
     const [purchasedIds, setPurchasedIds] = useState<Set<string>>(new Set());
+    const [hasUnlimited, setHasUnlimited] = useState(false);
 
     // Filters
     const [selectedProgram, setSelectedProgram] = useState<"DP" | "MYP">("DP");
@@ -161,7 +163,7 @@ const ContentLibraryPage: React.FC = () => {
                 const querySnapshot = await getDocs(collection(firestore, `users/${user.uid}/purchases`));
                 const ids = new Set<string>();
                 querySnapshot.forEach((doc) => {
-                    ids.add(doc.id); // Assuming doc ID is item ID as per handlePaymentSuccess
+                    ids.add(doc.id);
                 });
                 setPurchasedIds(ids);
             } catch (error) {
@@ -171,6 +173,44 @@ const ContentLibraryPage: React.FC = () => {
         fetchPurchases();
     }, [user]);
 
+    // Check for Unlimited
+    const checkUnlimited = async () => {
+        if (!user) {
+            setHasUnlimited(false);
+            return;
+        }
+        try {
+            const userDoc = await getDoc(doc(firestore, "users", user.uid));
+            if (userDoc.exists()) {
+                const data = userDoc.data();
+                if (data.hasUnlimited) {
+                    if (data.unlimitedExpiresAt) {
+                        const now = new Date();
+                        const expiry = data.unlimitedExpiresAt.toDate();
+                        if (now < expiry) {
+                            setHasUnlimited(true);
+                        } else {
+                            setHasUnlimited(false);
+                        }
+                    } else {
+                        // Legacy support
+                        setHasUnlimited(true);
+                    }
+                } else {
+                    setHasUnlimited(false);
+                }
+            }
+        } catch (error) {
+            console.error("Error checking unlimited status", error);
+        }
+    };
+
+    useEffect(() => {
+        if (user) {
+            checkUnlimited();
+        }
+    }, [user]);
+
     const openViewer = (item: ContentItem) => {
         setViewTitle(item.title);
         setViewUrl(item.url);
@@ -178,44 +218,128 @@ const ContentLibraryPage: React.FC = () => {
         onOpen();
     };
 
-    const handlePaymentSuccess = async (response: any) => {
-        console.log("Razorpay Success:", response);
-
-        const item = selectedItemRef.current; // Access via ref
-        if (!user || !item) {
-            console.error("Missing user or item in callback", { user, item });
-            return;
-        }
+    const unlockForUnlimitedUser = async (item: ContentItem) => {
+        if (!user) return;
 
         try {
-            // Save purchase to Firestore
-            await setDoc(doc(firestore, `users/${user.uid}/purchases`, item.id), {
-                itemId: item.id,
-                title: item.title,
-                url: item.url,
-                purchaseDate: serverTimestamp(),
-                paymentId: response.razorpay_payment_id
-            });
+            const purchaseRef = doc(firestore, `users/${user.uid}/purchases`, item.id);
+            const purchaseDoc = await getDoc(purchaseRef);
 
-            // Increment purchase count on the item itself
-            const itemRef = doc(firestore, 'content_library', item.id);
-            await updateDoc(itemRef, {
-                purchaseCount: increment(1)
-            });
+            if (!purchaseDoc.exists()) {
+                // First time view: Record purchase and increment view count
+                await setDoc(purchaseRef, {
+                    itemId: item.id,
+                    title: item.title,
+                    url: item.url,
+                    purchaseDate: serverTimestamp(),
+                    paymentMethod: 'unlimited_access'
+                });
 
-            toast({
-                title: "Purchase Successful!",
-                description: "You can now view this content.",
-                status: "success",
-                duration: 5000,
-                isClosable: true,
-            });
+                const itemRef = doc(firestore, 'content_library', item.id);
+                await updateDoc(itemRef, {
+                    uniqueViews: increment(1)
+                });
 
-            // Update local state immediately
-            setPurchasedIds(prev => new Set(prev).add(item.id));
+                toast({
+                    title: "Unlocked!",
+                    description: "Accessed via Unlimited Package.",
+                    status: "success",
+                    duration: 3000,
+                    position: "top-right",
+                    isClosable: true
+                });
 
-            // Open Viewer
+                // Update local state immediately
+                setPurchasedIds(prev => new Set(prev).add(item.id));
+            }
+
             openViewer(item);
+
+        } catch (error) {
+            console.error("Error unlocking unlimited item", error);
+            toast({
+                title: "Error",
+                description: "Failed to access item.",
+                status: "error",
+                duration: 5000,
+            });
+        }
+    };
+
+    const handlePaymentSuccess = async (response: any) => {
+        console.log("Razorpay Success:", response);
+        const item = selectedItemRef.current;
+
+        try {
+            // Handle Unlimited Package Purchase
+            if (!item && selectedItem?.id === 'PACKAGE_UNLIMITED') {
+                if (!user) return;
+
+                const userRef = doc(firestore, "users", user.uid);
+                const userSnap = await getDoc(userRef);
+                let newExpiry = new Date();
+
+                if (userSnap.exists() && userSnap.data().unlimitedExpiresAt) {
+                    const currentExpiry = userSnap.data().unlimitedExpiresAt.toDate();
+                    if (currentExpiry > new Date()) {
+                        // Valid subscription, extend it
+                        newExpiry = new Date(currentExpiry.getTime() + (30 * 24 * 60 * 60 * 1000));
+                    } else {
+                        // Expired, start fresh
+                        newExpiry.setDate(newExpiry.getDate() + 30);
+                    }
+                } else {
+                    // No previous sub, start fresh
+                    newExpiry.setDate(newExpiry.getDate() + 30);
+                }
+
+                await setDoc(userRef, {
+                    hasUnlimited: true,
+                    unlimitedExpiresAt: newExpiry,
+                    updatedAt: serverTimestamp()
+                }, { merge: true });
+
+                setHasUnlimited(true);
+                toast({
+                    title: "Unlimited Access Active!",
+                    description: `You have access untill ${newExpiry.toLocaleDateString()}`,
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                });
+                return;
+            }
+
+            if (!user || !item) {
+                console.error("Missing user or item in callback", { user, item });
+                return;
+            }
+
+            if (item.id !== 'PACKAGE_UNLIMITED') {
+                await setDoc(doc(firestore, `users/${user.uid}/purchases`, item.id), {
+                    itemId: item.id,
+                    title: item.title,
+                    url: item.url,
+                    purchaseDate: serverTimestamp(),
+                    paymentId: response.razorpay_payment_id
+                });
+
+                const itemRef = doc(firestore, 'content_library', item.id);
+                await updateDoc(itemRef, {
+                    purchaseCount: increment(1)
+                });
+
+                toast({
+                    title: "Purchase Successful!",
+                    description: "You can now view this content.",
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                });
+
+                setPurchasedIds(prev => new Set(prev).add(item.id));
+                openViewer(item);
+            }
 
         } catch (error) {
             console.error("Error saving purchase", error);
@@ -225,11 +349,10 @@ const ContentLibraryPage: React.FC = () => {
                 status: "warning",
                 duration: 5000,
             });
-            openViewer(item);
+            if (item && item.id !== 'PACKAGE_UNLIMITED') openViewer(item);
         }
 
         setSelectedItem(null);
-        selectedItemRef.current = null;
     };
 
     const handleBuyClick = async (item: ContentItem) => {
@@ -241,6 +364,12 @@ const ContentLibraryPage: React.FC = () => {
         // If already purchased, just open
         if (purchasedIds.has(item.id)) {
             openViewer(item);
+            return;
+        }
+
+        // If user has unlimited access, unlock it
+        if (hasUnlimited) {
+            unlockForUnlimitedUser(item);
             return;
         }
 
@@ -322,6 +451,95 @@ const ContentLibraryPage: React.FC = () => {
         }
     };
 
+    const handleBuyPackage = async () => {
+        if (!user) {
+            setAuthModalState({ open: true, view: 'login' });
+            return;
+        }
+
+        const packageItem = {
+            id: 'PACKAGE_UNLIMITED',
+            title: 'Unlimited Access',
+            price: 15.00,
+            description: 'Unlimited access to all files',
+            // Mock other fields to satisfy type
+            url: '', type: 'image', createdAt: new Date()
+        } as ContentItem;
+
+        setSelectedItem(packageItem);
+        selectedItemRef.current = packageItem;
+        setIsPaymentLoading(true);
+
+        try {
+            if (!window.Razorpay) {
+                throw new Error("Razorpay SDK not loaded.");
+            }
+
+            // Create Order
+            const res = await fetch("/api/create-razorpay-order", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ items: [{ id: 'PACKAGE_UNLIMITED' }] }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || "Failed to create order");
+
+            const options = {
+                key: data.key_id,
+                amount: data.amount,
+                currency: data.currency,
+                name: "Gr8er IB",
+                description: "Purchase Unlimited Access",
+                image: "/images/gr8er logo.png",
+                order_id: data.id,
+                handler: async function (response: any) {
+                    console.log("Unlimited Purchase Success", response);
+                    try {
+                        const userRef = doc(firestore, "users", user.uid);
+                        await setDoc(userRef, {
+                            hasUnlimited: true
+                        }, { merge: true });
+
+                        toast({
+                            title: "Unlimited Access Unlocked!",
+                            description: "You can now view ALL files freely.",
+                            status: "success",
+                            duration: 5000,
+                        });
+
+                        setHasUnlimited(true);
+                        setSelectedItem(null);
+                        selectedItemRef.current = null;
+
+                    } catch (err) {
+                        console.error("Error updating unlimited status", err);
+                        toast({
+                            title: "Purchase Recorded",
+                            description: "Payment successful but failed to update status. Contact support.",
+                            status: "warning",
+                            duration: 5000,
+                        });
+                    }
+                },
+                prefill: { name: "", email: "", contact: "" },
+                theme: { color: "#805ad5" }
+            };
+
+            const rzp1 = new window.Razorpay(options);
+            rzp1.on('payment.failed', function (response: any) {
+                toast({ title: "Payment Failed", status: "error" });
+            });
+            rzp1.open();
+
+        } catch (error: any) {
+            console.error(error);
+            toast({ title: "Error", description: error.message, status: "error" });
+        } finally {
+            setIsPaymentLoading(false);
+        }
+    };
+
     return (
         <Box minH="100vh" bg="gray.50" py={10} px={{ base: 4, md: 10 }}>
             <Head>
@@ -369,9 +587,10 @@ const ContentLibraryPage: React.FC = () => {
                     </Button>
                 </Box>
 
+
                 {/* PROGRAM SWITCHER */}
                 <Flex justify="center" mb={10}>
-                    <Flex bg="gray.200" p={1} borderRadius="full" gap={1}>
+                    <Flex bg="gray.100" p={1.5} borderRadius="full" gap={2} boxShadow="inner">
                         <Button
                             borderRadius="full"
                             px={8}
@@ -397,10 +616,10 @@ const ContentLibraryPage: React.FC = () => {
                             IB MYP
                         </Button>
                     </Flex>
-                </Flex>
+                </Flex >
 
                 {/* Filters */}
-                <Box mb={12}>
+                < Box mb={12} >
                     <Flex direction="column" gap={6} align="center">
 
                         {/* Resource Type Filters (Dynamic) */}
@@ -560,11 +779,60 @@ const ContentLibraryPage: React.FC = () => {
                             </Select>
                         </Flex>
                     </Flex>
+                </Box >
+
+                {/* Monthly Access CTA (Clean Glass) */}
+                <Box mb={12} textAlign="center">
+                    <Flex justify="center" gap={4} wrap="wrap" direction="column" align="center">
+                        {!hasUnlimited && (
+                            <Button
+                                onClick={handleBuyPackage}
+                                // Passive Income Style (Purple)
+                                bg="purple.600"
+                                color="white"
+                                size="lg"
+                                _hover={{ bg: "purple.700", transform: "translateY(-2px)", boxShadow: "xl" }}
+                                _active={{ bg: "purple.800" }}
+                                boxShadow="md"
+                                transition="all 0.2s"
+                                px={{ base: 4, md: 10 }}
+                                py={{ base: 8, md: 7 }}
+                                fontSize={{ base: "sm", md: "lg" }}
+                                fontWeight="bold"
+                                leftIcon={<Icon as={FiUnlock} boxSize={5} />}
+                                whiteSpace="normal"
+                                height="auto"
+                                width={{ base: "100%", md: "auto" }}
+                                isLoading={isPaymentLoading && selectedItem?.id === 'PACKAGE_UNLIMITED'}
+                            >
+                                Get Monthly Access for $15 / Month
+                            </Button>
+                        )}
+                        {hasUnlimited && (
+                            <Badge
+                                bg="green.50"
+                                border="1px solid"
+                                borderColor="green.200"
+                                color="green.700"
+                                p={3}
+                                px={6}
+                                borderRadius="full"
+                                fontSize="lg"
+                                variant="subtle"
+                                boxShadow="sm"
+                                display="flex"
+                                alignItems="center"
+                            >
+                                <Icon as={FiUnlock} mr={2} color="green.500" />
+                                Monthly Access Active
+                            </Badge>
+                        )}
+                    </Flex>
                 </Box>
 
                 {
                     loading ? (
-                        <Flex justify="center" align="center" minH="300px">
+                        <Flex justify="center" align="center" minH="300px" >
                             <Spinner size="xl" color="gray.400" speed="0.8s" thickness="4px" />
                         </Flex>
                     ) : (
@@ -753,9 +1021,20 @@ const ContentLibraryPage: React.FC = () => {
 
                                             <Flex direction="column" p={5} flex={1} justify="space-between">
                                                 <Box>
-                                                    <Text fontSize="lg" fontWeight="700" mb={2} color="gray.800" lineHeight="short">
-                                                        {item.title}
-                                                    </Text>
+                                                    <Link href={`/resource/${item.id}`} passHref legacyBehavior>
+                                                        <Text
+                                                            as="a"
+                                                            fontSize="lg"
+                                                            fontWeight="700"
+                                                            mb={2}
+                                                            color="gray.800"
+                                                            lineHeight="short"
+                                                            _hover={{ color: "blue.600", textDecoration: "underline" }}
+                                                            cursor="pointer"
+                                                        >
+                                                            {item.title}
+                                                        </Text>
+                                                    </Link>
                                                     <Text fontSize="sm" color="gray.500" mb={6} noOfLines={2}>
                                                         {item.description}
                                                     </Text>
@@ -791,9 +1070,8 @@ const ContentLibraryPage: React.FC = () => {
                                     );
                                 })}
                         </SimpleGrid>
-                    )
-                }
-            </Flex >
+                    )}
+            </Flex>
 
             {/* Content Viewer Modal */}
             < DocumentViewerModal
@@ -803,7 +1081,20 @@ const ContentLibraryPage: React.FC = () => {
                 title={viewTitle}
                 userEmail={user?.email || user?.uid || ""}
             />
+
+            {/* Auth Modal Helper */}
+            <Modal isOpen={isPaymentLoading} onClose={() => { }} isCentered closeOnOverlayClick={false}>
+                <ModalOverlay />
+                <ModalContent bg="transparent" boxShadow="none">
+                    <ModalBody display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+                        <Spinner size="xl" color="white" thickness="4px" />
+                        <Text mt={4} color="white" fontWeight="bold">Processing Payment...</Text>
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
+
         </Box >
     );
 };
+
 export default ContentLibraryPage;

@@ -546,7 +546,8 @@ const AdminUploadPage = () => {
                                     <Th>Title</Th>
                                     <Th>Writer</Th>
                                     <Th>Uploaded</Th>
-                                    <Th isNumeric>Purchases</Th>
+                                    <Th isNumeric>Please Buy</Th>
+                                    <Th isNumeric>Unique Views</Th>
                                 </Tr>
                             </Thead>
                             <Tbody>
@@ -560,6 +561,11 @@ const AdminUploadPage = () => {
                                         <Td isNumeric>
                                             <Badge colorScheme="green" fontSize="sm" px={2}>
                                                 {res.purchaseCount || 0}
+                                            </Badge>
+                                        </Td>
+                                        <Td isNumeric>
+                                            <Badge colorScheme="blue" fontSize="sm" px={2}>
+                                                {res.uniqueViews || 0}
                                             </Badge>
                                         </Td>
                                     </Tr>
