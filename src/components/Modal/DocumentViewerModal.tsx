@@ -1,6 +1,7 @@
 import React from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Box, Flex, Text, Spinner } from '@chakra-ui/react';
-import PDFCanvasViewer from '../ContentLibrary/PDFCanvasViewer';
+import { Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Box, Flex, Text, Spinner, Button, Link } from '@chakra-ui/react';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
+import PDFPaginatedViewer from '../ContentLibrary/PDFPaginatedViewer';
 
 type DocumentViewerModalProps = {
     isOpen: boolean;
@@ -10,24 +11,14 @@ type DocumentViewerModalProps = {
     userEmail?: string;
 };
 
+
 const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClose, url, title, userEmail }) => {
-    const [isFileLoaded, setIsFileLoaded] = React.useState(false);
-    const [pdfError, setPdfError] = React.useState(false);
-
-    // Reset state when url changes or modal opens
-    React.useEffect(() => {
-        if (isOpen) {
-            setIsFileLoaded(false);
-            setPdfError(false);
-        }
-    }, [isOpen, url]);
-
-    // Create watermark pattern
-    // User requested to show UserID. The prop 'userEmail' currently carries email OR uid.
-    // We will trust the prop content.
+    // Watermark setup
     const watermarkText = userEmail || "";
-    // Increase count to cover the tall 15000px scrollable area
-    const watermarks = Array(4).fill(watermarkText);
+    // 3 columns of 6 rows
+    const watermarks = Array(6).fill(watermarkText);
+
+    const isPdf = url.split('?')[0].toLowerCase().endsWith('.pdf');
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="full" isCentered>
@@ -46,12 +37,13 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                     position="fixed"
                     top="20px"
                     right="20px"
-                    zIndex={999}
+                    zIndex={9999}
                     bg="whiteAlpha.200"
                     color="white"
                     borderRadius="full"
                     _hover={{ bg: "whiteAlpha.400" }}
                 />
+
                 <ModalBody
                     p={0}
                     h="100vh"
@@ -65,15 +57,13 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                     userSelect="none" // Disable Text Selection
                 >
 
-
-                    {/* Document Container - Scrollable Parent, Static Iframe */}
+                    {/* Document Container */}
                     <Box
-                        w={{ base: "100%", md: "80%" }}
-                        h={{ base: "100%", md: "90%" }}
-                        minH={{ base: "100%", md: "90vh" }} // Ensure tall height
+                        w={{ base: "100%", md: "90%" }}
+                        h={{ base: "100%", md: "95%" }}
                         bg="gray.100"
                         borderRadius={{ base: 0, md: "xl" }}
-                        overflow="hidden" // Keep outer hidden, inner scrollable
+                        overflow="hidden"
                         position="relative"
                         boxShadow="2xl"
                         border="1px solid"
@@ -81,76 +71,42 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                     >
                         {/* Wrapper for relative positioning */}
                         <Box w="100%" h="100%" position="relative" onContextMenu={(e) => e.preventDefault()}>
-                            {/* Loading Spinner */}
-                            {!isFileLoaded && (
-                                <Flex
-                                    position="absolute"
-                                    top={0}
-                                    left={0}
-                                    w="100%"
-                                    h="100%"
-                                    justify="center"
-                                    align="center"
-                                    zIndex={30}
-                                    bg="gray.100"
-                                >
-                                    <Spinner size="xl" color="blue.500" thickness="4px" />
-                                </Flex>
-                            )}
 
-                            {/* Watermark Overlay - Only show after file loads */}
-                            {isFileLoaded && (
-                                <Flex
-                                    position="absolute"
-                                    top={0}
-                                    left={0}
-                                    w="100%"
-                                    h="100%"
-                                    zIndex={20}
-                                    pointerEvents="none"
-                                    justify="space-between" // Push to sides
-                                    align="stretch"
-                                    p={4}
-                                    overflow="hidden"
-                                    opacity={0.3} // Slightly clearer
-                                >
-                                    {/* Left Column */}
-                                    <Flex direction="column" justify="space-around" h="100%">
+                            {/* Watermark Overlay */}
+                            <Flex
+                                position="absolute"
+                                top={0}
+                                left={0}
+                                w="100%"
+                                h="100%"
+                                zIndex={20}
+                                pointerEvents="none"
+                                justify="space-between"
+                                align="stretch"
+                                p={4}
+                                overflow="hidden"
+                                opacity={0.2}
+                            >
+                                {[1, 2, 3].map((col) => (
+                                    <Flex key={col} direction="column" justify="space-around" h="100%">
                                         {watermarks.map((text, index) => (
                                             <Text
-                                                key={`left-${index}`}
+                                                key={`wm-${col}-${index}`}
                                                 color="gray.900"
-                                                fontSize="3xl"
+                                                fontSize="2xl"
                                                 fontWeight="bold"
                                                 transform="rotate(-45deg)"
                                                 whiteSpace="nowrap"
-                                                opacity={0.5}
                                             >
                                                 {text}
                                             </Text>
                                         ))}
                                     </Flex>
+                                ))}
+                            </Flex>
 
-                                    {/* Right Column */}
-                                    <Flex direction="column" justify="space-around" h="100%">
-                                        {watermarks.map((text, index) => (
-                                            <Text
-                                                key={`right-${index}`}
-                                                color="gray.900"
-                                                fontSize="3xl"
-                                                fontWeight="bold"
-                                                transform="rotate(-45deg)"
-                                                whiteSpace="nowrap"
-                                                opacity={0.5}
-                                            >
-                                                {text}
-                                            </Text>
-                                        ))}
-                                    </Flex>
-                                </Flex>
-                            )}
 
-                            {/* Header Bar inside container */}
+                            {/* Header Bar */}
                             <Flex
                                 position="absolute"
                                 top="0"
@@ -160,7 +116,7 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                 bg="white"
                                 borderBottom="1px solid"
                                 borderColor="gray.200"
-                                zIndex={20}
+                                zIndex={30}
                                 align="center"
                                 px={4}
                                 justify="center"
@@ -170,7 +126,7 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                 </Text>
                             </Flex>
 
-                            {/* Main Content Area - Absolute Positioned to fill remaining space */}
+                            {/* Main Viewer Area */}
                             <Box
                                 position="absolute"
                                 top="50px"
@@ -180,36 +136,33 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                 overflow="hidden"
                                 bg="white"
                             >
-                                {url.split('?')[0].toLowerCase().endsWith('.pdf') && !pdfError ? (
-                                    <Box w="100%" h="100%" position="relative">
-                                        <PDFCanvasViewer
-                                            url={url}
-                                            onLoad={() => setIsFileLoaded(true)}
-                                            onError={(err) => {
-                                                console.warn("PDFViewer failed, switching to fallback:", err);
-                                                setPdfError(true);
-                                            }}
-                                        />
-                                    </Box>
+                                {isPdf ? (
+                                    <object
+                                        data={url}
+                                        type="application/pdf"
+                                        width="100%"
+                                        height="100%"
+                                        style={{ display: 'block' }}
+                                    >
+                                        <Flex direction="column" align="center" justify="center" h="100%" gap={4}>
+                                            <Text>It appears you don't have a PDF plugin for this browser.</Text>
+                                            <Button as={Link} href={url} isExternal colorScheme="blue">
+                                                Click here to download the PDF
+                                            </Button>
+                                        </Flex>
+                                    </object>
                                 ) : (
-                                    <iframe
-                                        src={`https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`}
-                                        style={{
-                                            width: '100%',
-                                            height: 'calc(100% + 110px)', // Maintain crop for Google Viewer
-                                            marginTop: '-100px', // Maintain crop for Google Viewer
-                                            border: 'none',
-                                        }}
-                                        title="Document Preview"
-                                        onLoad={() => setIsFileLoaded(true)}
-                                        sandbox="allow-scripts allow-same-origin"
-                                    />
+                                    <Flex justify="center" align="center" h="100%" overflow="auto">
+                                        <img
+                                            src={url}
+                                            alt={title}
+                                            style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+                                        />
+                                    </Flex>
                                 )}
                             </Box>
                         </Box>
                     </Box>
-
-
                 </ModalBody>
             </ModalContent>
         </Modal >
