@@ -137,20 +137,7 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                 bg="white"
                             >
                                 {isPdf ? (
-                                    <object
-                                        data={url}
-                                        type="application/pdf"
-                                        width="100%"
-                                        height="100%"
-                                        style={{ display: 'block' }}
-                                    >
-                                        <Flex direction="column" align="center" justify="center" h="100%" gap={4}>
-                                            <Text>It appears you don't have a PDF plugin for this browser.</Text>
-                                            <Button as={Link} href={url} isExternal colorScheme="blue">
-                                                Click here to download the PDF
-                                            </Button>
-                                        </Flex>
-                                    </object>
+                                    <PDFPaginatedViewer url={url} />
                                 ) : (
                                     <Flex justify="center" align="center" h="100%" overflow="auto">
                                         <img
