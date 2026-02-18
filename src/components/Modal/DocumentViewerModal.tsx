@@ -1,7 +1,5 @@
 import React from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Box, Flex, Text, Spinner, Button, Link } from '@chakra-ui/react';
-import { ExternalLinkIcon } from '@chakra-ui/icons';
-import PDFPaginatedViewer from '../ContentLibrary/PDFPaginatedViewer';
+import { Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Box, Flex, Text } from '@chakra-ui/react';
 
 
 type DocumentViewerModalProps = {
@@ -15,6 +13,17 @@ type DocumentViewerModalProps = {
 
 const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClose, url, title, userEmail }) => {
     const isPdf = url.split('?')[0].toLowerCase().endsWith('.pdf');
+
+    // For PDFs, open directly in a new tab - most reliable across all browsers/devices
+    React.useEffect(() => {
+        if (isOpen && isPdf && url) {
+            window.open(url, '_blank', 'noopener,noreferrer');
+            onClose();
+        }
+    }, [isOpen, isPdf, url, onClose]);
+
+    // Only render modal for non-PDF files (images)
+    if (isPdf) return null;
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="full" isCentered>
@@ -42,8 +51,6 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                     alignItems="center"
                     justifyContent="center"
                 >
-
-                    {/* Document Container */}
                     <Box
                         w={{ base: "100%", md: "90%" }}
                         h={{ base: "100%", md: "95%" }}
@@ -56,7 +63,6 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                         borderColor="whiteAlpha.300"
                     >
                         <Box w="100%" h="100%" position="relative">
-
                             {/* Header Bar */}
                             <Flex
                                 position="absolute"
@@ -77,7 +83,7 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                 </Text>
                             </Flex>
 
-                            {/* Main Viewer Area */}
+                            {/* Image Viewer */}
                             <Box
                                 position="absolute"
                                 top="50px"
@@ -87,23 +93,19 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                 overflow="hidden"
                                 bg="gray.800"
                             >
-                                {isPdf ? (
-                                    <PDFPaginatedViewer url={url} />
-                                ) : (
-                                    <Flex justify="center" align="center" h="100%" overflow="auto">
-                                        <img
-                                            src={url}
-                                            alt={title}
-                                            style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
-                                        />
-                                    </Flex>
-                                )}
+                                <Flex justify="center" align="center" h="100%" overflow="auto">
+                                    <img
+                                        src={url}
+                                        alt={title}
+                                        style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+                                    />
+                                </Flex>
                             </Box>
                         </Box>
                     </Box>
                 </ModalBody>
             </ModalContent>
-        </Modal >
+        </Modal>
     );
 };
 

@@ -166,7 +166,7 @@ const ContentLibraryPage: React.FC = () => {
                         height="auto"
                         width={{ base: "100%", md: "auto" }}
                     >
-                        Earn passive income by uploading high-scoring coursework
+                        Help your friends score higher — upload your coursework
                     </Button>
                 </Box>
 
