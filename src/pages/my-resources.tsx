@@ -122,7 +122,7 @@ const MyResourcesPage: React.FC = () => {
                     >
                         <Text fontSize="xl" color="gray.500" mb={4}>You haven't purchased any resources yet.</Text>
                         <Button colorScheme="blackAlpha" bg="black" color="white" _hover={{ bg: "gray.800" }} onClick={() => router.push('/content-library')}>
-                            Browse Library
+                            Browse Verified Resources
                         </Button>
                     </Flex>
                 ) : (

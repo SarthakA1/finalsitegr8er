@@ -67,7 +67,7 @@ const UploadContent: React.FC = () => {
     return (
         <PageContent>
             <Flex direction="column" p={5} border="1px solid" borderColor="gray.200" borderRadius="md" bg="white">
-                <Text fontSize="lg" fontWeight={700} mb={4}>Upload to Content Library</Text>
+                <Text fontSize="lg" fontWeight={700} mb={4}>Upload to Verified Resources</Text>
                 <Stack spacing={4}>
                     <Input
                         placeholder="Content Title"

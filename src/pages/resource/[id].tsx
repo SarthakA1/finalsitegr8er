@@ -23,16 +23,7 @@ import {
 import { NextSeo } from 'next-seo';
 import { ProductSchema, CourseSchema } from '@/components/Seo/Schema';
 import { ContentItem } from '@/hooks/useContentLibrary';
-import { FiShoppingCart, FiCheck, FiFileText } from 'react-icons/fi';
-// Reuse payment logic if possible, or duplicate simplified version for speed
-// Given "useContentLibrary" is hook, we might need to duplicate "buy" logic or extract it.
-// For now, I'll duplicate the Razorpay logic to keep this page self-contained and robust.
-
-declare global {
-    interface Window {
-        Razorpay: any;
-    }
-}
+import { FiCheck, FiFileText } from 'react-icons/fi';
 
 const ResourcePage = () => {
     const router = useRouter();
@@ -192,28 +183,18 @@ const ResourcePage = () => {
                         <Box w="full" pt={4}>
                             <HStack justify="space-between" align="center" mb={4}>
                                 <Text fontSize="3xl" fontWeight="bold">
-                                    {item.price === 0 ? "FREE" : `$${item.price.toFixed(2)}`}
+                                    FREE
                                 </Text>
                             </HStack>
                             <Button
                                 size="lg"
                                 w="full"
-                                colorScheme={item.price === 0 ? "green" : "blue"}
-                                leftIcon={item.price === 0 ? undefined : <Icon as={FiShoppingCart} />}
+                                colorScheme="green"
                                 onClick={() => {
-                                    // For now, redirect to library to handle the complex state/modal purchase flow
-                                    // Ideally, we'd replicate the buy logic here, but redirecting is safer to ensure auth/modal context works.
-                                    // We can pass query param to auto-open?
-                                    toast({
-                                        title: "Redirecting...",
-                                        description: "Please complete your purchase in the library view.",
-                                        status: "info",
-                                        duration: 2000,
-                                    });
                                     router.push(`/content-library?buy=${item.id}`);
                                 }}
                             >
-                                {item.price === 0 ? "Read Now" : "Buy Now"}
+                                Read Now
                             </Button>
                         </Box>
 

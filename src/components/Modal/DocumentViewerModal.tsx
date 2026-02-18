@@ -3,6 +3,7 @@ import { Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Box, Fl
 import { ExternalLinkIcon } from '@chakra-ui/icons';
 import PDFPaginatedViewer from '../ContentLibrary/PDFPaginatedViewer';
 
+
 type DocumentViewerModalProps = {
     isOpen: boolean;
     onClose: () => void;
@@ -13,25 +14,12 @@ type DocumentViewerModalProps = {
 
 
 const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClose, url, title, userEmail }) => {
-    // Watermark setup
-    const watermarkText = userEmail || "";
-    // 3 columns of 6 rows
-    const watermarks = Array(6).fill(watermarkText);
-
     const isPdf = url.split('?')[0].toLowerCase().endsWith('.pdf');
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="full" isCentered>
             <ModalOverlay bg="blackAlpha.800" backdropFilter="blur(5px)" />
             <ModalContent bg="transparent" boxShadow="none">
-                {/* Anti-Print Style */}
-                <style>
-                    {`
-                        @media print {
-                            body { display: none !important; }
-                        }
-                    `}
-                </style>
 
                 <ModalCloseButton
                     position="fixed"
@@ -53,8 +41,6 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                     flexDirection="column"
                     alignItems="center"
                     justifyContent="center"
-                    onContextMenu={(e) => e.preventDefault()} // Disable Right Click
-                    userSelect="none" // Disable Text Selection
                 >
 
                     {/* Document Container */}
@@ -69,42 +55,7 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                         border="1px solid"
                         borderColor="whiteAlpha.300"
                     >
-                        {/* Wrapper for relative positioning */}
-                        <Box w="100%" h="100%" position="relative" onContextMenu={(e) => e.preventDefault()}>
-
-                            {/* Watermark Overlay */}
-                            <Flex
-                                position="absolute"
-                                top={0}
-                                left={0}
-                                w="100%"
-                                h="100%"
-                                zIndex={20}
-                                pointerEvents="none"
-                                justify="space-between"
-                                align="stretch"
-                                p={4}
-                                overflow="hidden"
-                                opacity={0.2}
-                            >
-                                {[1, 2, 3].map((col) => (
-                                    <Flex key={col} direction="column" justify="space-around" h="100%">
-                                        {watermarks.map((text, index) => (
-                                            <Text
-                                                key={`wm-${col}-${index}`}
-                                                color="gray.900"
-                                                fontSize="2xl"
-                                                fontWeight="bold"
-                                                transform="rotate(-45deg)"
-                                                whiteSpace="nowrap"
-                                            >
-                                                {text}
-                                            </Text>
-                                        ))}
-                                    </Flex>
-                                ))}
-                            </Flex>
-
+                        <Box w="100%" h="100%" position="relative">
 
                             {/* Header Bar */}
                             <Flex
@@ -134,7 +85,7 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
                                 left="0"
                                 right="0"
                                 overflow="hidden"
-                                bg="white"
+                                bg="gray.800"
                             >
                                 {isPdf ? (
                                     <PDFPaginatedViewer url={url} />
