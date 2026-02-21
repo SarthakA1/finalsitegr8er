@@ -368,6 +368,7 @@ const PostItem: React.FC<PostItemProps> = ({
 
                             const isImage = ['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(extension);
                             const isPdf = extension === 'pdf';
+                            const isDownloadable = !isImage && !isPdf;
 
                             return (
                                 <Flex
@@ -384,6 +385,16 @@ const PostItem: React.FC<PostItemProps> = ({
                                         e.stopPropagation();
                                         if (isImage) {
                                             window.open(imageURL, '_blank');
+                                        } else if (isDownloadable) {
+                                            // Word, Excel, etc. - trigger download
+                                            const link = document.createElement('a');
+                                            link.href = imageURL;
+                                            link.target = '_blank';
+                                            link.rel = 'noopener noreferrer';
+                                            link.download = `attachment.${extension}`;
+                                            document.body.appendChild(link);
+                                            link.click();
+                                            document.body.removeChild(link);
                                         } else {
                                             setViewerUrl(imageURL);
                                             setIsViewerOpen(true);

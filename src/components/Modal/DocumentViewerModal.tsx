@@ -12,7 +12,10 @@ type DocumentViewerModalProps = {
 
 
 const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClose, url, title, userEmail }) => {
-    const isPdf = url.split('?')[0].toLowerCase().endsWith('.pdf');
+    const cleanUrl = url.split('?')[0].toLowerCase();
+    const isPdf = cleanUrl.endsWith('.pdf');
+    const isImage = ['.png', '.jpg', '.jpeg', '.gif', '.webp'].some(ext => cleanUrl.endsWith(ext));
+    const isDownloadable = !isPdf && !isImage;
 
     // For PDFs, open directly in a new tab - most reliable across all browsers/devices
     React.useEffect(() => {
@@ -22,8 +25,23 @@ const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({ isOpen, onClo
         }
     }, [isOpen, isPdf, url, onClose]);
 
-    // Only render modal for non-PDF files (images)
-    if (isPdf) return null;
+    // For non-PDF, non-image files (Word, Excel, etc.), trigger a download
+    React.useEffect(() => {
+        if (isOpen && isDownloadable && url) {
+            const link = document.createElement('a');
+            link.href = url;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.download = title || 'download';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            onClose();
+        }
+    }, [isOpen, isDownloadable, url, onClose, title]);
+
+    // Only render modal for image files
+    if (isPdf || isDownloadable) return null;
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="full" isCentered>
