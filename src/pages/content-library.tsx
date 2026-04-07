@@ -146,9 +146,10 @@ const ContentLibraryPage: React.FC = () => {
                     </Text>
                 </Box>
 
-                {/* Earn Passive Income CTA */}
+                {/* Upload & Share CTA */}
                 <Box mb={10} textAlign="center">
                     <Button
+
                         onClick={() => router.push('/earn')}
                         bg="blue.600"
                         color="white"
@@ -399,18 +400,13 @@ const ContentLibraryPage: React.FC = () => {
                                     return true;
                                 })
                                 .sort((a, b) => {
-                                    if (sortOption === "price_low") {
-                                        return a.price - b.price;
-                                    } else if (sortOption === "price_high") {
-                                        return b.price - a.price;
-                                    } else {
-                                        // Default to Latest (createdAt desc) check timestamps
-                                        // Assuming createdAt is Date object from hook
-                                        const dateA = new Date(a.createdAt).getTime();
-                                        const dateB = new Date(b.createdAt).getTime();
-                                        return dateB - dateA;
-                                    }
+                                    // Default to Latest (createdAt desc) check timestamps
+                                    // Assuming createdAt is Date object from hook
+                                    const dateA = new Date(a.createdAt).getTime();
+                                    const dateB = new Date(b.createdAt).getTime();
+                                    return dateB - dateA;
                                 })
+
                                 .map((item) => {
                                     return (
                                         <Flex

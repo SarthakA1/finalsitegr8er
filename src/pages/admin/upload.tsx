@@ -55,8 +55,6 @@ const AdminUploadPage = () => {
     // Form State
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [price, setPrice] = useState('5.00');
-    const [isFree, setIsFree] = useState(false);
     const [score, setScore] = useState("7");
     const [session, setSession] = useState('May 2025');
     const [subject, setSubject] = useState('Math AA HL');
@@ -186,16 +184,6 @@ const AdminUploadPage = () => {
         }
     };
 
-    const handleFreeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const checked = e.target.checked;
-        setIsFree(checked);
-        if (checked) {
-            setPrice('0.00');
-        } else {
-            setPrice('5.00'); // Reset to default if unchecked
-        }
-    };
-
     const handleManualGrant = async () => {
         const uid = manualUid.trim();
         const rid = manualRid.trim();
@@ -288,7 +276,7 @@ const AdminUploadPage = () => {
                 description,
                 writerName, // New field
                 purchaseCount: 0, // Init counter
-                price: parseFloat(price),
+                price: 0, // Force free
                 score: score,
                 session,
                 subject: (resourceType === 'TOK' ? tokType : subject),
@@ -405,31 +393,6 @@ const AdminUploadPage = () => {
 
                     <Flex gap={4}>
                         <FormControl>
-                            <FormLabel>Price (USD)</FormLabel>
-                            <Flex align="center" gap={3}>
-                                <NumberInput
-                                    value={price}
-                                    onChange={(valueString) => setPrice(valueString)}
-                                    precision={2}
-                                    step={0.01}
-                                    min={0}
-                                    isDisabled={isFree}
-                                    w="150px"
-                                >
-                                    <NumberInputField />
-                                </NumberInput>
-                                <Checkbox
-                                    isChecked={isFree}
-                                    onChange={handleFreeChange}
-                                    colorScheme="purple"
-                                    fontWeight="bold"
-                                >
-                                    Free?
-                                </Checkbox>
-                            </Flex>
-                        </FormControl>
-
-                        <FormControl>
                             <FormLabel>Score</FormLabel>
                             {(resourceType === 'EE' || resourceType === 'TOK') ? (
                                 <Select value={score} onChange={(e) => setScore(e.target.value)}>
@@ -449,13 +412,14 @@ const AdminUploadPage = () => {
                                 </Select>
                             )}
                         </FormControl>
-                    </Flex>
 
-                    <Flex gap={4}>
                         <FormControl>
                             <FormLabel>Session</FormLabel>
                             <Input value={session} onChange={(e) => setSession(e.target.value)} placeholder="e.g. May 2025" />
                         </FormControl>
+                    </Flex>
+
+                    <Flex gap={4}>
                         {(resourceType === 'IA' || resourceType === 'EE') && (
                             <FormControl>
                                 <FormLabel>Subject</FormLabel>
@@ -546,7 +510,7 @@ const AdminUploadPage = () => {
                                     <Th>Title</Th>
                                     <Th>Writer</Th>
                                     <Th>Uploaded</Th>
-                                    <Th isNumeric>Please Buy</Th>
+                                    <Th isNumeric>Access Count</Th>
                                     <Th isNumeric>Unique Views</Th>
                                 </Tr>
                             </Thead>
@@ -572,7 +536,7 @@ const AdminUploadPage = () => {
                                 ))}
                                 {resources.length === 0 && (
                                     <Tr>
-                                        <Td colSpan={4} textAlign="center" py={6} color="gray.500">No resources found.</Td>
+                                        <Td colSpan={5} textAlign="center" py={6} color="gray.500">No resources found.</Td>
                                     </Tr>
                                 )}
                             </Tbody>
@@ -633,7 +597,7 @@ const AdminUploadPage = () => {
 
                 {/* SUBMISSIONS TABLE */}
                 <Box bg="white" borderRadius="xl" boxShadow="lg" border="1px solid" borderColor="gray.100" p={6} overflowX="auto">
-                    <Heading size="md" mb={6}>User Submissions (Earn Passive Income)</Heading>
+                    <Heading size="md" mb={6}>User Submissions</Heading>
                     <SubmissionTable />
                 </Box>
             </VStack>

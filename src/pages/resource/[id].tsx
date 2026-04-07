@@ -97,7 +97,7 @@ const ResourcePage = () => {
                 name={item.title}
                 description={item.description}
                 image={item.thumbnail ? [item.thumbnail] : []}
-                price={item.price}
+                price={0}
                 currency="USD"
             />
             {/* Also treat as a "Course" material for extra coverage */}
@@ -191,7 +191,7 @@ const ResourcePage = () => {
                                 w="full"
                                 colorScheme="green"
                                 onClick={() => {
-                                    router.push(`/content-library?buy=${item.id}`);
+                                    router.push(`/content-library?view=${item.id}`);
                                 }}
                             >
                                 Read Now

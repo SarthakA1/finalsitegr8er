@@ -16,14 +16,14 @@ import {
     Alert,
     AlertIcon
 } from '@chakra-ui/react';
-import { FiUploadCloud, FiCheckCircle, FiChevronRight, FiChevronLeft, FiDollarSign, FiAward, FiTrendingUp } from 'react-icons/fi';
+import { FiUploadCloud, FiCheckCircle, FiChevronRight, FiChevronLeft, FiBookOpen, FiAward, FiUsers } from 'react-icons/fi';
 import Head from 'next/head';
 import { storage, firestore } from '@/firebase/clientApp';
 import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useRouter } from 'next/router';
 
-const EarnPage: React.FC = () => {
+const SharedUploadPage: React.FC = () => {
     const router = useRouter();
     const toast = useToast();
     const [step, setStep] = useState(0); // Start at 0 for Info Page
@@ -162,11 +162,12 @@ const EarnPage: React.FC = () => {
                 proofUrl: proofUrl,
                 status: 'pending',
                 submittedAt: serverTimestamp(),
+                isFree: true, // Tag as free for future clarity
             });
 
             toast({
                 title: "Submission Received!",
-                description: "We will review your coursework and get back to you.",
+                description: "We will review your coursework and add it to our library shortly.",
                 status: "success",
                 duration: 5000,
                 isClosable: true,
@@ -193,13 +194,13 @@ const EarnPage: React.FC = () => {
                     <VStack spacing={8} align="center" textAlign="center" py={2}>
                         <VStack spacing={3}>
                             <Box p={4} bg="blue.50" borderRadius="full">
-                                <Icon as={FiDollarSign} boxSize={10} color="blue.600" />
+                                <Icon as={FiAward} boxSize={10} color="blue.600" />
                             </Box>
                             <Heading size="lg" bgGradient="linear(to-r, blue.600, blue.400)" bgClip="text">
-                                Turn Your Top Grades Into Income
+                                Share Your Grades & Help Others
                             </Heading>
                             <Text fontSize="lg" color="gray.600" maxW="md">
-                                Your high-scoring coursework served you well. Now, let it work for you. Turn your hard work into a recurring revenue stream.
+                                Your high-scoring coursework served you well. Now, let it help the next generation of students achieve the same success.
                             </Text>
                         </VStack>
 
@@ -210,27 +211,27 @@ const EarnPage: React.FC = () => {
                                 </Box>
                                 <VStack align="start" spacing={0}>
                                     <Text fontWeight="bold" fontSize="md">Upload Your Best Work</Text>
-                                    <Text fontSize="sm" color="gray.500">Share your high-scoring coursework.</Text>
+                                    <Text fontSize="sm" color="gray.500">Share your high-scoring coursework with ease.</Text>
                                 </VStack>
                             </Flex>
 
                             <Flex align="center" gap={4} p={4} bg="gray.50" borderRadius="xl" border="1px solid" borderColor="gray.100">
                                 <Box p={2} bg="white" borderRadius="lg" boxShadow="sm">
-                                    <Icon as={FiAward} boxSize={5} color="purple.500" />
+                                    <Icon as={FiUsers} boxSize={5} color="purple.500" />
                                 </Box>
                                 <VStack align="start" spacing={0}>
-                                    <Text fontWeight="bold" fontSize="md">Help Future Students</Text>
-                                    <Text fontSize="sm" color="gray.500">Your expertise guides the next generation.</Text>
+                                    <Text fontWeight="bold" fontSize="md">Inspire Future Students</Text>
+                                    <Text fontSize="sm" color="gray.500">Your expertise will guide others in your community.</Text>
                                 </VStack>
                             </Flex>
 
                             <Flex align="center" gap={4} p={4} bg="green.50" borderRadius="xl" border="1px solid" borderColor="green.100">
                                 <Box p={2} bg="white" borderRadius="lg" boxShadow="sm">
-                                    <Icon as={FiTrendingUp} boxSize={5} color="green.500" />
+                                    <Icon as={FiBookOpen} boxSize={5} color="green.500" />
                                 </Box>
                                 <VStack align="start" spacing={0}>
-                                    <Text fontWeight="bold" fontSize="md" color="green.800">Earn 60% Royalties</Text>
-                                    <Text fontSize="sm" color="green.700">Get paid every time your work is purchased.</Text>
+                                    <Text fontWeight="bold" fontSize="md" color="green.800">Verified Resources</Text>
+                                    <Text fontSize="sm" color="green.700">We verify every submission to maintain high quality.</Text>
                                 </VStack>
                             </Flex>
                         </VStack>
@@ -240,7 +241,7 @@ const EarnPage: React.FC = () => {
                 return (
                     <VStack spacing={4} align="stretch">
                         <Heading size="md">Step 1: What should we call you?</Heading>
-                        <Text color="gray.600">Real names only please, so we can pay you!</Text>
+                        <Text color="gray.600">Please provide your real name for community recognition.</Text>
                         <Input
                             placeholder="John Doe"
                             value={formData.fullName}
@@ -254,7 +255,7 @@ const EarnPage: React.FC = () => {
                 return (
                     <VStack spacing={4} align="stretch">
                         <Heading size="md">Step 2: Where should we send updates?</Heading>
-                        <Text color="gray.600">No spam, promise! Just the important stuff.</Text>
+                        <Text color="gray.600">No spam, promise! Just a notification when your work is live.</Text>
                         <Input
                             placeholder="john@example.com"
                             value={formData.email}
@@ -432,7 +433,7 @@ const EarnPage: React.FC = () => {
     return (
         <Container maxW="container.sm" py={10} minH="100vh" display="flex" flexDirection="column" justifyContent="center">
             <Head>
-                <title>Earn Passive Income | GR8ER IB</title>
+                <title>Share Your Coursework | GR8ER IB</title>
             </Head>
 
             <Box bg="white" p={8} borderRadius="2xl" boxShadow="xl" border="1px solid" borderColor="gray.100">
@@ -505,4 +506,4 @@ const EarnPage: React.FC = () => {
     );
 };
 
-export default EarnPage;
+export default SharedUploadPage;
