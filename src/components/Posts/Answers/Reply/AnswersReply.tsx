@@ -1,15 +1,12 @@
-import { AnswerReply, AnswerReplyState } from '@/atoms/answersReplyAtom';
+import { AnswerReply } from '@/atoms/answersReplyAtom';
 import { Post, PostState } from '@/atoms/postsAtom';
-import { Subject } from '@/atoms/subjectsAtom';
 import { auth, firestore } from '@/firebase/clientApp';
-import { Box, Flex, SkeletonCircle, SkeletonText, Stack, Text } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import { User } from 'firebase/auth';
-import { collection, doc, Firestore, getDocs, increment, orderBy, query, serverTimestamp, Timestamp, where, writeBatch } from 'firebase/firestore';
+import { collection, doc, getDocs, increment, orderBy, query, serverTimestamp, Timestamp, where, writeBatch } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import AnswerReplyInput from './AnswerReplyInput';
-import AnswerReplyItem from './AnswerReplyItem';
-import CommentReplyItem from './AnswerReplyItem';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import useAnswersReply from '@/hooks/useAnswersReply';
 
@@ -38,12 +35,10 @@ export type Notifications = {
 const AnswersReply:React.FC<AnswersReplyProps> = ({ user, selectedPost, subjectId, answerId }) => {
     const [users] = useAuthState(auth);
     const [answerText, setAnswerText] = useState("");
-    const [answers, setAnswers] = useState<AnswerReply[]>([]);
     const [fetchLoading, setFetchLoading] = useState(true);
     const [createLoading, setCreateLoading] = useState(false);
-    const [loadingDeleteId, setLoadingDeleteId] = useState("");
     const setPostState = useSetRecoilState(PostState);
-    const { answerReplyStateValue, setAnswerReplyStateValue, onAnswerReplyVote, onDeleteAnswerReply } = useAnswersReply();
+    const { setAnswerReplyStateValue } = useAnswersReply();
     
 
 
@@ -94,7 +89,6 @@ const AnswersReply:React.FC<AnswersReplyProps> = ({ user, selectedPost, subjectI
 
 
             setAnswerText("")
-            //setAnswers(prev => [newAnswer, ...prev])
             setAnswerReplyStateValue(prev  => ({
                 ...prev,
                 answersReply: [newAnswer, ...prev.answersReply] as AnswerReply[],
@@ -129,7 +123,6 @@ const AnswersReply:React.FC<AnswersReplyProps> = ({ user, selectedPost, subjectI
                 id: doc.id, 
                 ...doc.data(),
             }));
-            //setAnswers(answers as Answer[]);
             setAnswerReplyStateValue(prev  => ({
                 ...prev,
                 answersReply: answersReply as AnswerReply[],
@@ -150,48 +143,6 @@ const AnswersReply:React.FC<AnswersReplyProps> = ({ user, selectedPost, subjectI
             <Flex direction='column' pr={2} mb={6} fontSize="10pt" width="100%">
                 {!fetchLoading && <AnswerReplyInput answerText={answerText} setAnswerText={setAnswerText} user={user} createLoading={createLoading} onCreateAnswerReply={onCreateAnswerReply}/>}
             </Flex>
-            
-            {/* <Stack spacing={2} p={2}>
-                {fetchLoading ? (
-                    <>
-                     {[0, 1, 2].map((item) => (
-                       <Box key={item} padding="6" bg="white">
-                         <SkeletonCircle size="10" />
-                         <SkeletonText mt="4" noOfLines={2} spacing="4" />
-                       </Box>
-                     ))}
-                   </>
-                ) : (
-                    <>
-                        {answerStateValue.answersReply.length === 0 ? (
-                            <Flex
-                            direction='column'
-                            justify='center'
-                            align="center"
-                            borderTop="1px solid"
-                            borderColor="gray.100"
-                            p={20}>
-                                <Text fontWeight={700} opacity={0.3}> No Answers Yet</Text>
-                            </Flex>
-                        ) : (
-                            <>
-                                {answerStateValue.answersReply.map((item: any, index:any) =>
-                                    <AnswerReplyItem
-                                    //key={answer.id}
-                                    answer={item}
-                                    userIsCreator={user?.uid === item.creatorId}
-                                    userVoteValue={answerStateValue.answerReplyVotes.find((vote: { answerId: any; }) => vote.answerId === item.id)?.voteValue}
-                                    onVote={onVote}
-                                    onDeleteAnswer={onDeleteAnswer}
-                                    loadingDelete={loadingDeleteId === item.id}
-                                    userId={user?.uid}
-                                    />
-                                )}
-                            </>
-                        )}
-                    </>
-                )}
-            </Stack> */}
         </Box>
     )
 }
