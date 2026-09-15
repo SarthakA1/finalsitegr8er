@@ -112,35 +112,6 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
         }
         setCreateLoading(false);
     }
-    // const onDeleteAnswer = async (answer: Answer) => {
-    //     setLoadingDeleteId(answer.id)
-    //     try {
-    //         const batch = writeBatch(firestore);
-    //         const answerDocRef = doc(firestore, 'answers', answer.id);
-    //         batch.delete(answerDocRef);
-
-    //         const postDocRef= doc(firestore, 'posts', selectedPost?.id!)
-    //         batch.update(postDocRef, {
-    //             numberOfAnswers: increment(-1)
-    //         })
-
-    //         await batch.commit()
-
-    //         setPostState(prev => ({
-    //             ...prev,
-    //             selectedPost: {
-    //                 ...prev.selectedPost,
-    //                 numberOfAnswers: prev.selectedPost?.numberOfAnswers! -1
-    //             } as Post
-    //         }))
-
-    //         setAnswers(prev=> prev.filter(item => item.id !== answer.id))
-            
-    //     } catch (error) {
-    //         console.log('onDeleteComment error', error)
-    //     }
-    //     setLoadingDeleteId('')
-    // }
 
     const getPostAnswers = async () => {
         
