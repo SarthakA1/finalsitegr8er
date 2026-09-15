@@ -4,11 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { Text } from "@chakra-ui/react";
 import { useResetRecoilState } from 'recoil';
 import { subjectState } from '@/atoms/subjectsAtom';
-import TabItem from '../../Posts/TabItem';
 import { Post } from '@/atoms/postsAtom';
 import { Notification as NotificationType } from '@/atoms/notificationsAtom';
-import { Subject } from '@/atoms/subjectsAtom';
-import usePosts from '@/hooks/usePosts';
 import { auth, firestore } from '@/firebase/clientApp';
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -41,8 +38,6 @@ const Notification: React.FC<NotificationsProps> = () => {
     const [selectedTab, setSelectedTab] = useState(formTabs[0].title)
     const [users] = useAuthState(auth);
     const [postStateValue, setPostStateValue] = useState<Post[]>([]);
-    //const { postStateValue, setPostStateValue, onVote, onDeletePost, onSelectPost } = usePosts(subjectData!);
-    //const [notificationsValue, setNotificationsValue] = useState([]);
     const [notificationsValue, setNotificationsValue] = useState<NotificationType[]>([]);
     const curriculum = useRecoilValue(curriculumState);
 
@@ -66,10 +61,6 @@ const Notification: React.FC<NotificationsProps> = () => {
             });
 
             setPostStateValue(filteredPosts);
-            // setPostStateValue(prev  => ({
-            //     ...prev,
-            //     posts: posts as Post[],
-            // }))
         } catch (error: any) {
             console.log('getPosts error', error.message)
         }
@@ -87,12 +78,7 @@ const Notification: React.FC<NotificationsProps> = () => {
 
             //store in post state
             const notifications = notificationDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-            //setNotificationsValue(notifications as Notification[]);
             setNotificationsValue(notifications as NotificationType[]);
-            // setNotificationsValue(prev  => ({
-            //     ...prev,
-            //     notifications: notifications as Notification[],
-            // }))
         } catch (error: any) {
             console.log('getPosts error', error.message)
         }
