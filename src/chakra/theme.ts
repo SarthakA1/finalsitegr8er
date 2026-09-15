@@ -23,19 +23,6 @@ export const theme = extendTheme({
       800: "#3730A3",
       900: "#312E81",
     },
-    accent: {
-      100: "#CCFBF1",
-      200: "#99F6E4",
-      300: "#5EEAD4",
-      400: "#2DD4BF",
-      500: "#14B8A6", // Teal-500 (Accent)
-      600: "#0D9488",
-    },
-    fun: {
-      pink: "#EC4899",
-      purple: "#8B5CF6",
-      cyan: "#06B6D4",
-    }
   },
   fonts: {
     body: "var(--font-inter), sans-serif",
@@ -103,21 +90,9 @@ export const theme = extendTheme({
             color: "brand.600",
           }
         },
-        glass: (props: any) => ({
-          bg: "whiteAlpha.600",
-          backdropFilter: "blur(10px)",
-          border: "1px solid",
-          borderColor: "whiteAlpha.400",
-          color: "gray.800",
-          _hover: {
-            bg: "whiteAlpha.800",
-            transform: "translateY(-2px)",
-            boxShadow: "lg",
-          }
-        })
       },
     },
-    // Glassmorphic Modal & Card styles
+    // Glassmorphic Modal styles
     Modal: {
       baseStyle: (props: any) => ({
         dialog: {
@@ -147,15 +122,5 @@ export const theme = extendTheme({
         }
       })
     },
-    Card: {
-      baseStyle: (props: any) => ({
-        bg: "rgba(255, 255, 255, 0.8)", // Semi-transparent
-        backdropFilter: "blur(20px)",
-        border: "1px solid",
-        borderColor: "whiteAlpha.600",
-        borderRadius: "2xl",
-        boxShadow: "0 8px 32px rgba(31, 38, 135, 0.05)",
-      })
-    }
   }
 })
