@@ -11,7 +11,7 @@ import {
   Badge,
 } from "@chakra-ui/react";
 import { collection, getDocs, limit, orderBy, query, where } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { RiGroup2Fill } from "react-icons/ri";
 import { Subject } from "../../atoms/subjectsAtom";
 import { firestore } from "../../firebase/clientApp";
@@ -27,8 +27,9 @@ const Recommendations: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const { subjectStateValue, onJoinOrLeaveSubject } = useSubjectData();
   const curriculum = useRecoilValue(curriculumState);
+  const fetchGenRef = useRef(0);
 
-  const fetchSubjects = async (limitVal: number, isBackground: boolean = false) => {
+  const fetchSubjects = async (limitVal: number, isBackground: boolean = false, gen: number) => {
     if (!isBackground) setLoading(true);
     try {
       let subjectQuery;
@@ -70,23 +71,26 @@ const Recommendations: React.FC = () => {
       // Sort client-side
       filteredSubjects.sort((a, b) => b.numberOfMembers - a.numberOfMembers);
 
-      setSubjects(filteredSubjects);
+      if (fetchGenRef.current === gen) {
+        setSubjects(filteredSubjects);
+      }
     } catch (error) {
       console.log("getSubjectsRecommendations error", error);
     }
-    if (!isBackground) setLoading(false);
+    if (!isBackground && fetchGenRef.current === gen) setLoading(false);
   };
 
-  const getSubjectRecommendations = async () => {
+  const getSubjectRecommendations = async (gen: number) => {
     // Stage 1: Load top 15 (Fast)
-    await fetchSubjects(15, false);
+    await fetchSubjects(15, false, gen);
 
     // Stage 2: Load more (Background)
-    fetchSubjects(50, true);
+    fetchSubjects(50, true, gen);
   };
 
   useEffect(() => {
-    getSubjectRecommendations();
+    const gen = ++fetchGenRef.current;
+    getSubjectRecommendations(gen);
   }, [curriculum.curriculumId]);
 
   return (
