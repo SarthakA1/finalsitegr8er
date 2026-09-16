@@ -190,6 +190,7 @@ const usePosts = (subjectData?: Subject) => {
             setPostStateValue((prev) => ({
                 ...prev,
                 posts: prev.posts.filter(item => item.id !== post.id),
+                selectedPost: prev.selectedPost?.id === post.id ? null : prev.selectedPost,
             }))
 
 
