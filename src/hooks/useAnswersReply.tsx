@@ -24,6 +24,7 @@ const useAnswersReply = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [loadingDeleteId, setLoadingDeleteId] = useState("");
+    const deletingLock = React.useRef(new Set<string>());
     const [answerReplyStateValue, setAnswerReplyStateValue] = useRecoilState(AnswerReplyState);
     const setPostState = useSetRecoilState(PostState);
 
@@ -134,6 +135,8 @@ const useAnswersReply = () => {
 
 
     const onDeleteAnswerReply = async (answer: AnswerReply): Promise<boolean> => {
+        if (!answer.id || deletingLock.current.has(answer.id)) return false;
+        deletingLock.current.add(answer.id);
         setLoadingDeleteId(answer.id!)
         try {
             const batch = writeBatch(firestore);
@@ -157,13 +160,15 @@ const useAnswersReply = () => {
 
             setAnswerReplyStateValue((prev) => ({
                 ...prev,
-                answers: prev.answersReply.filter(item => item.id !== answer.id),
+                answersReply: prev.answersReply.filter(item => item.id !== answer.id),
             }))
             return true;
         } catch (error) {
             return false;
+        } finally {
+            if (answer.id) deletingLock.current.delete(answer.id);
+            setLoadingDeleteId('')
         }
-        setLoadingDeleteId('')
     };
     
     return {
@@ -172,6 +177,7 @@ const useAnswersReply = () => {
         onAnswerReplyVote,
         onSelectAnswerReply,
         onDeleteAnswerReply,
+        loadingDeleteId,
     }
 }
 export default useAnswersReply;

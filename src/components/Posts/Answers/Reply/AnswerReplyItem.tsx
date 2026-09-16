@@ -38,12 +38,13 @@ type AnswerItemProps = {
     vote: number,
     subjectId: string) => void;
   onDeleteAnswerReply: (answerReply: AnswerReply) => Promise<boolean>;
+  loadingDeleteId: string;
   userId: string;
 };
 
 
 
-const AnswerReplyItem: React.FC<AnswerItemProps> = ({ answerReply, userIsCreator, userVoteValue, onAnswerReplyVote, onDeleteAnswerReply, userId }) => {
+const AnswerReplyItem: React.FC<AnswerItemProps> = ({ answerReply, userIsCreator, userVoteValue, onAnswerReplyVote, onDeleteAnswerReply, loadingDeleteId, userId }) => {
   const [user] = useAuthState(auth);
   const setAuthModalState = useSetRecoilState(AuthModalState);
   const { postStateValue, setPostStateValue } = usePosts();
@@ -51,6 +52,7 @@ const AnswerReplyItem: React.FC<AnswerItemProps> = ({ answerReply, userIsCreator
   const [subAnswer, setSubAnswer] = useState<AnswerReply[]>([]);
   const { answerReplyStateValue, setAnswerReplyStateValue } = useAnswersReply();
   const router = useRouter();
+  const loadingDelete = loadingDeleteId === answerReply.id;
   const handleDelete = async () => {
     try {
       const success = await onDeleteAnswerReply(answerReply);
@@ -110,7 +112,7 @@ const AnswerReplyItem: React.FC<AnswerItemProps> = ({ answerReply, userIsCreator
           <Text color="gray.600">
             {moment(new Date(answerReply.createdAt.seconds * 1000)).fromNow()}
           </Text>
-          {/* {loadingDelete && <Spinner size="sm" />} */}
+          {loadingDelete && <Spinner size="sm" />}
         </Stack>
         <LinkifyText text={answerReply.text} fontSize="10pt" />
         <Stack direction="row" align="center" cursor="pointer" color="gray.500">
@@ -187,6 +189,7 @@ const AnswerReplyItem: React.FC<AnswerItemProps> = ({ answerReply, userIsCreator
                 userVoteValue={answerReplyStateValue.answerReplyVotes.find((vote: { answerId: any; }) => vote.answerId === item.id)?.voteValue}
                 onAnswerReplyVote={onAnswerReplyVote}
                 onDeleteAnswerReply={onDeleteAnswerReply}
+                loadingDeleteId={loadingDeleteId}
                 userId={userId}
               />
             ))

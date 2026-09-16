@@ -40,9 +40,8 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
     const [answers, setAnswers] = useState<Answer[]>([]);
     const [fetchLoading, setFetchLoading] = useState(true);
     const [createLoading, setCreateLoading] = useState(false);
-    const [loadingDeleteId, setLoadingDeleteId] = useState("");
     const setPostState = useSetRecoilState(PostState);
-    const { answerStateValue, setAnswerStateValue, onVote, onDeleteAnswer } = useAnswers();
+    const { answerStateValue, setAnswerStateValue, onVote, onDeleteAnswer, loadingDeleteId } = useAnswers();
     
 
 
