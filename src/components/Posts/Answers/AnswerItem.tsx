@@ -59,7 +59,7 @@ const AnswerItem: React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVote
   const router = useRouter();
   const { subjectStateValue } = useSubjectData();
   const [subAnswer, setSubAnswer] = useState<AnswerReply[]>([]);
-  const { answerReplyStateValue, setAnswerReplyStateValue, onAnswerReplyVote, onDeleteAnswerReply } = useAnswersReply();
+  const { answerReplyStateValue, setAnswerReplyStateValue, onAnswerReplyVote, onDeleteAnswerReply, loadingDeleteId } = useAnswersReply();
   const handleDelete = async () => {
     try {
       const success = await onDeleteAnswer(answer);
@@ -211,6 +211,7 @@ const AnswerItem: React.FC<AnswerItemProps> = ({ answer, userIsCreator, userVote
                 userVoteValue={answerReplyStateValue.answerReplyVotes.find((vote: { answerId: any; }) => vote.answerId === item.id)?.voteValue}
                 onAnswerReplyVote={onAnswerReplyVote}
                 onDeleteAnswerReply={onDeleteAnswerReply}
+                loadingDeleteId={loadingDeleteId}
                 userId={userId}
               />
             ))

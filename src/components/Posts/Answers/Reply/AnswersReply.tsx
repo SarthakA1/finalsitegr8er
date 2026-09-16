@@ -41,7 +41,6 @@ const AnswersReply:React.FC<AnswersReplyProps> = ({ user, selectedPost, subjectI
     const [answers, setAnswers] = useState<AnswerReply[]>([]);
     const [fetchLoading, setFetchLoading] = useState(true);
     const [createLoading, setCreateLoading] = useState(false);
-    const [loadingDeleteId, setLoadingDeleteId] = useState("");
     const setPostState = useSetRecoilState(PostState);
     const { answerReplyStateValue, setAnswerReplyStateValue, onAnswerReplyVote, onDeleteAnswerReply } = useAnswersReply();
     
