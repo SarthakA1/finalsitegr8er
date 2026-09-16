@@ -31,14 +31,11 @@ function scrollToTop() {
 
 const SubjectPage: React.FC<SubjectPageProps> = ({ subjectData, initialPosts }) => {
   const [subjectStateValue, setSubjectStateValue] = useRecoilState(subjectState);
-
-  if (!subjectData) {
-    return <NotFound />;
-  }
-
   const setCurriculumState = useSetRecoilState(curriculumState);
 
   useEffect(() => {
+    if (!subjectData) return;
+
     setSubjectStateValue((prev) => ({
       ...prev,
       currentSubject: subjectData,
@@ -51,9 +48,11 @@ const SubjectPage: React.FC<SubjectPageProps> = ({ subjectData, initialPosts }) 
         curriculumId: subjectData.curriculumId as "ib-dp" | "ib-myp"
       }));
     }
-  }, [subjectData]);
+  }, [subjectData, setSubjectStateValue, setCurriculumState]);
 
-
+  if (!subjectData) {
+    return <NotFound />;
+  }
 
   return (
     <>
