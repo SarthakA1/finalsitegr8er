@@ -40,6 +40,7 @@ import { GetServerSideProps } from 'next';
 
 import { Analytics } from '@vercel/analytics/react';
 import GoogleAd from "@/components/Ads/GoogleAd";
+import { applyCriteriaFilter } from '@/lib/filterPosts';
 
 const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> = ({ initialPosts, curriculumId }) => {
     const router = useRouter();
@@ -212,11 +213,7 @@ const CurriculumFeed: NextPage<{ initialPosts: Post[], curriculumId: string }> =
             filteredPosts = filteredPosts.filter(p => p.paper && paperFilters.includes(p.paper.value));
         }
         if (criteriaFilters.length) {
-            filteredPosts = filteredPosts.filter(p => {
-                if (!p.criteria) return false;
-                const val = Array.isArray(p.criteria) ? p.criteria[0]?.value : p.criteria.value;
-                return criteriaFilters.includes(val);
-            });
+            filteredPosts = applyCriteriaFilter(filteredPosts, criteriaFilters);
         }
         if (typeFilters.length) {
             filteredPosts = filteredPosts.filter(p => p.typeOfQuestions && typeFilters.includes(p.typeOfQuestions.label));

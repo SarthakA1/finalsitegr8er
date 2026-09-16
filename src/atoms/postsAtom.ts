@@ -17,7 +17,7 @@ export type Post = {
     grade: { value: string, label: string };
     typeOfQuestions: { value: string, label: string };
     pinPost: boolean;
-    criteria: { value: string, label: string };
+    criteria: { value: string, label: string } | { value: string, label: string }[];
     curriculumId?: string; // "ib-myp" | "ib-dp"
     level?: { value: string, label: string }; // HL/SL
     paper?: { value: string, label: string }; // 1/2/3
