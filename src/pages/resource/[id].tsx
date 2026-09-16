@@ -65,8 +65,12 @@ const ResourcePage = () => {
     }, [id]);
 
     // SEO Logic
-    const seoTitle = item ? `How to structure ${item.subject} ${item.resourceType || 'Coursework'} - Grade ${item.score || '7'} | GR8ER` : 'Loading Resource | GR8ER';
-    const seoDesc = item ? `Download this high-scoring ${item.subject} ${item.resourceType}. ${item.description.substring(0, 150)}...` : '';
+    const desc = item?.description ?? '';
+    const subj = item?.subject ?? '';
+    const rType = item?.resourceType ?? 'Coursework';
+    const score = item?.score ?? '7';
+    const seoTitle = item ? `How to structure ${subj} ${rType} - Grade ${score} | GR8ER` : 'Loading Resource | GR8ER';
+    const seoDesc = item ? `Download this high-scoring ${subj} ${rType}. ${desc.substring(0, 150)}...` : '';
 
     if (loading) return (
         <Flex justify="center" align="center" minH="100vh">
@@ -95,15 +99,15 @@ const ResourcePage = () => {
             />
             <ProductSchema
                 name={item.title}
-                description={item.description}
+                description={desc || item.title}
                 image={item.thumbnail ? [item.thumbnail] : []}
                 price={0}
                 currency="USD"
             />
             {/* Also treat as a "Course" material for extra coverage */}
             <CourseSchema
-                courseName={`${item.subject} ${item.resourceType}`}
-                description={item.description}
+                courseName={`${subj} ${rType}`}
+                description={desc || item.title}
                 provider={{ name: "GR8ER IB", url: "https://www.gr8er.live" }}
             />
 
@@ -165,7 +169,7 @@ const ResourcePage = () => {
                                 {item.title}
                             </Heading>
                             <Text fontSize="lg" color="gray.600">
-                                {item.description}
+                                {desc || 'No description available for this resource.'}
                             </Text>
                         </Box>
 

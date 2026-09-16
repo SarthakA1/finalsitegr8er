@@ -1,4 +1,4 @@
-import { Button, Flex, Input, Stack, Text, useToast } from '@chakra-ui/react';
+import { Button, Flex, Input, Stack, Text, Textarea, useToast } from '@chakra-ui/react';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import React, { useRef, useState } from 'react';
@@ -7,6 +7,7 @@ import PageContent from '@/components/layout/PageContent';
 
 const UploadContent: React.FC = () => {
     const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -19,7 +20,7 @@ const UploadContent: React.FC = () => {
     };
 
     const handleUpload = async () => {
-        if (!selectedFile || !title) return;
+        if (!selectedFile || !title || !description) return;
         setLoading(true);
         try {
             // 1. Create a reference to the file in storage
@@ -34,6 +35,7 @@ const UploadContent: React.FC = () => {
             // 4. Save metadata to Firestore
             await addDoc(collection(firestore, 'content_library'), {
                 title,
+                description,
                 url: downloadURL,
                 type: 'PDF', // Assuming PDF for now as per request
                 createdAt: serverTimestamp(),
@@ -48,6 +50,7 @@ const UploadContent: React.FC = () => {
 
             // Reset form
             setTitle('');
+            setDescription('');
             setSelectedFile(null);
             if (fileInputRef.current) fileInputRef.current.value = '';
 
@@ -74,6 +77,11 @@ const UploadContent: React.FC = () => {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
+                    <Textarea
+                        placeholder="Short description of the resource..."
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
                     <input
                         type="file"
                         accept="application/pdf"
@@ -83,7 +91,7 @@ const UploadContent: React.FC = () => {
                     <Button
                         onClick={handleUpload}
                         isLoading={loading}
-                        disabled={!selectedFile || !title}
+                        isDisabled={!selectedFile || !title || !description}
                         colorScheme="brand"
                     >
                         Upload Content

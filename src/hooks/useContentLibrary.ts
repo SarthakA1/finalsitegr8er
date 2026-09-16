@@ -5,7 +5,7 @@ import { firestore } from "@/firebase/clientApp";
 export type ContentItem = {
     id: string;
     title: string;
-    description: string;
+    description?: string;
     url: string; // The "preview" image or actual file URL
     thumbnail?: string;
     price: number;
