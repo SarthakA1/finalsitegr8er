@@ -5,6 +5,18 @@
  * @param html - The HTML string to process.
  * @returns The HTML string with auto-linked URLs.
  */
+const escapeHtml = (s: string): string => {
+    const amp = '&' + 'amp;';
+    const quot = '&' + 'quot;';
+    const lt = '&' + 'lt;';
+    const gt = '&' + 'gt;';
+    return s
+        .replace(/&(?!amp;|lt;|gt;|quot;|#\d+;|#x[0-9a-fA-F]+;)/g, amp)
+        .replace(/"/g, quot)
+        .replace(/</g, lt)
+        .replace(/>/g, gt);
+};
+
 export const linkifyHtml = (html: string): string => {
     if (!html) return html;
 
@@ -41,6 +53,7 @@ export const linkifyHtml = (html: string): string => {
         // We also need to be careful if the URL is immediately followed by a closing tag like </a> or </p> which `[^\s<]+` mostly handles 
         // but handles punctuation at the end could be an issue.
 
-        return `<a href="${match}" target="_blank" rel="noopener noreferrer" style="color: #3182ce; text-decoration: underline;">${match}</a>`;
+        const safe = escapeHtml(match);
+        return `<a href="${safe}" target="_blank" rel="noopener noreferrer" style="color: #3182ce; text-decoration: underline;">${safe}</a>`;
     });
 };
