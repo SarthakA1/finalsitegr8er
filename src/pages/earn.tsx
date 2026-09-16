@@ -137,7 +137,14 @@ const SharedUploadPage: React.FC = () => {
     };
 
     const handleSubmit = async () => {
-        if (!proofFile || !courseworkFile) return;
+        if (!courseworkFile) {
+            toast({ title: "File required", status: "warning" });
+            return;
+        }
+        if (!proofFile) {
+            toast({ title: "Proof required", status: "warning" });
+            return;
+        }
 
         setLoading(true);
         setUploadProgress(10);
