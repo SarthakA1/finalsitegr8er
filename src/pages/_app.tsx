@@ -4,6 +4,7 @@ import { DefaultSeo } from 'next-seo';
 import type { AppProps } from 'next/app'
 import { theme } from '../chakra/theme'
 import Layout from '@/components/layout/layout'
+import ErrorBoundary from '@/components/ErrorBoundary'
 import { RecoilRoot } from 'recoil';
 import '../lib/css/customstyle.css';
 import { Outfit, Inter } from '@next/font/google'
@@ -44,7 +45,9 @@ function App({ Component, pageProps }: AppProps) {
       <ChakraProvider theme={theme}>
         <Layout>
           <main className={`${outfit.variable} ${inter.variable}`}>
-            <Component {...pageProps} />
+            <ErrorBoundary>
+              <Component {...pageProps} />
+            </ErrorBoundary>
           </main>
         </Layout>
       </ChakraProvider>
