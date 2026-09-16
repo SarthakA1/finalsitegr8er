@@ -70,7 +70,7 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
             batch.set(answerDocRef, newAnswer);
 
             newAnswer.createdAt = {seconds:Date.now() / 1000} as Timestamp
-            //if(user.uid !== selectedPost?.creatorId){
+            if(users?.uid !== selectedPost?.creatorId){
                 const newNotification: Notifications = {
                     id: notificationDocRef.id,
                     notifyBy: users?.displayName! || users?.email!.split("@")[0],
@@ -81,7 +81,7 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
                     createdAt: serverTimestamp() as Timestamp,
                 }
                 batch.set(notificationDocRef, newNotification);
-            //}
+            }
             const postDocRef = doc(firestore, 'posts', selectedPost?.id!);
             batch.update(postDocRef, {
                 numberOfAnswers: increment(1)
