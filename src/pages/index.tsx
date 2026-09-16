@@ -56,8 +56,8 @@ const LandingPage: NextPage = () => {
 
   return (
     <Box
-      h="100vh" // Strict height for no scroll on desktop
-      minH="100vh"
+      h="calc(100vh - 60px)" // Strict height for no scroll on desktop (subtract in-flow 60px Navbar)
+      minH="calc(100vh - 60px)"
       w="100%"
       bg="#fdfbf7"
       position="relative"
