@@ -27,6 +27,13 @@ const PostPage: React.FC = () => {
     try {
       const postDocRef = doc(firestore, "posts", postId);
       const postDoc = await getDoc(postDocRef);
+      if (!postDoc.exists()) {
+        setPostStateValue((prev) => ({
+          ...prev,
+          selectedPost: null,
+        }));
+        return;
+      }
       setPostStateValue((prev) => ({
         ...prev,
         selectedPost: { id: postDoc.id, ...postDoc.data() } as Post,

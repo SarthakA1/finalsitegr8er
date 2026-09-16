@@ -1,5 +1,5 @@
 import { Post } from '@/atoms/postsAtom';
-import { Flex, Icon, Stack, Text, Image, Link, textDecoration, SimpleGrid, Button, Badge, Box } from '@chakra-ui/react';
+import { Flex, Icon, Stack, Text, Image, Link, textDecoration, SimpleGrid, Button, Badge, Box, useToast } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineDelete, AiFillTags } from "react-icons/ai";
 import { TfiCommentAlt } from "react-icons/tfi";
@@ -83,10 +83,9 @@ const PostItem: React.FC<PostItemProps> = ({
     const [highestPercentage, setHighestPercentage] = useState('');
     const [highestPercentageName, setHighestPercentageName] = useState('');
 
-    const [deletePostMessage, setDeletePostMessage] = useState('');
-
     const [fileImageUrl, setFileImageUrl] = useState('');
     const setAuthModalState = useSetRecoilState(AuthModalState);
+    const toast = useToast();
 
     // Viewer State
     const [isViewerOpen, setIsViewerOpen] = useState(false);
@@ -98,10 +97,13 @@ const PostItem: React.FC<PostItemProps> = ({
             if (!success) {
                 throw new Error("Failed to delete post");
             }
-            //console.log("Post was Successfully Deleted"); 
-            setDeletePostMessage('Post was Successfully Deleted');
+            toast({
+                title: "Post was Successfully Deleted",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+            });
             setTimeout(function () {
-                setDeletePostMessage('');
                 router.push('/');
             }, 3000);
         } catch (error: any) {
@@ -231,8 +233,6 @@ const PostItem: React.FC<PostItemProps> = ({
             overflow="hidden"
             mb={4}
         >
-            {deletePostMessage && <Box bg="green.50" p={2}><Text textAlign="center" color="green.600" fontSize="sm">{deletePostMessage}</Text></Box>}
-
             {/* HEADER SECTION */}
             <Flex p={5} pb={2} justify="space-between" align="flex-start" gap={4}>
                 {/* Left: Avatar & Meta */}

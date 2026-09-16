@@ -167,9 +167,20 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
     }
 
     useEffect(() => {
-        if (!selectedPost) return;
+        if (!selectedPost) {
+            setAnswerStateValue((prev) => ({ ...prev, answers: [] }));
+            setFetchLoading(false);
+            return;
+        }
         getPostAnswers();
     }, [selectedPost])
+
+    // Only render answers that belong to the currently selected post. This guards
+    // against showing a stale comment thread from the Recoil cache (across a
+    // client-side revisit or after the selected post is deleted/not-found).
+    const visibleAnswers = selectedPost
+        ? answerStateValue.answers.filter((answer) => answer.postId === selectedPost.id)
+        : [];
     return (
         <Box bg='white' borderRadius='0px 0px 4px 4px' p={2} border="1px solid" 
         borderColor="gray.400" >
@@ -189,7 +200,7 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
                    </>
                 ) : (
                     <>
-                        {answerStateValue.answers.length === 0 ? (
+                        {visibleAnswers.length === 0 ? (
                             <Flex
                             direction='column'
                             justify='center'
@@ -201,7 +212,7 @@ const Answers:React.FC<AnswersProps> = ({ user, selectedPost, subjectId }) => {
                             </Flex>
                         ) : (
                             <>
-                                {answerStateValue.answers.map((item: any, index:any) =>
+                                {visibleAnswers.map((item: any, index:any) =>
                                     <AnswerItem
                                     //key={answer.id}
                                     answer={item}
