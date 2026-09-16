@@ -48,6 +48,7 @@ const MyResourcesPage: React.FC = () => {
     // Fetch User Purchases
     useEffect(() => {
         const fetchPurchases = async () => {
+            setLoadingPurchases(true);
             if (!user) {
                 setPurchasedIds(new Set());
                 setLoadingPurchases(false);
