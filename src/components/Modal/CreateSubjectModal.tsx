@@ -1,5 +1,5 @@
 import { firestore } from '@/firebase/clientApp';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Box, Text, Input } from '@chakra-ui/react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Box, Text, Input, useToast } from '@chakra-ui/react';
 import { doc, getDoc, runTransaction, serverTimestamp, setDoc, Transaction } from 'firebase/firestore';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
@@ -15,37 +15,48 @@ const CreateSubjectModal:React.FC<CreateSubjectModalProps> = ({ open, handleClos
     const [name, setName ] = useState('');
     const router = useRouter()
     const [loading, setLoading] = useState(false);
+    const toast = useToast();
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.value.length > 31) return;
         setName(event.target.value);
       };
    
-   const handleCreateSubject = async () => {
+    const handleCreateSubject = async () => {
+        if (!name.trim()) return;
+        setLoading(true);
+        try {
+            const subjectDocRef = doc(firestore, 'subjects', name);
 
-    const subjectDocRef = doc(firestore, 'subjects', name);
+            await runTransaction(firestore, async (transaction) => {
+                const subjectDoc = await transaction.get(subjectDocRef);
+                if (subjectDoc.exists()) {
+                    throw new Error('Sorry, Subject Group Already Exists');
+                }
+                transaction.set(subjectDocRef, {
+                    creatorId: userId,
+                    createdAt: serverTimestamp(),
+                    numberOfMembers: 1
+                });
 
-    await runTransaction(firestore, async (transaction) => {
-        const subjectDoc = await transaction.get(subjectDocRef);
-        if (subjectDoc.exists()) {
-            throw new Error ('Sorry, Subject Group Already Exists')
+                transaction.set(doc(firestore, `users/${userId}/subjectSnippets`, name), {
+                    subjectId: name,
+                    isModerator: true,
+                });
+            });
+            setName('');
+            handleClose();
+        } catch (error: any) {
+            toast({
+                title: 'Could not create subject',
+                description: error.message,
+                status: 'error',
+                duration: 3000,
+                isClosable: true,
+            });
+        } finally {
+            setLoading(false);
         }
-        transaction.set(subjectDocRef, {
-            creatorId: userId,
-            createdAt: serverTimestamp(),
-            numberOfMembers: 1
-        });
-
-
-        transaction.set(doc(firestore, `users/${userId}/subjectSnippets`, name), {
-            subjectId: name,
-            isModerator: true,
-        })
-    })
-    handleClose()
-   
-    setLoading(false);
-
-   }
+    }
    
    
    return (
@@ -74,7 +85,7 @@ const CreateSubjectModal:React.FC<CreateSubjectModalProps> = ({ open, handleClos
                 <Button colorScheme='blue' mr={3} onClick={handleClose}>
                   Close
                 </Button>
-                <Button variant='ghost' onClick={handleCreateSubject} isLoading={loading}>Create Subject Group</Button>
+                <Button variant='ghost' onClick={handleCreateSubject} isLoading={loading} isDisabled={!name.trim()}>Create Subject Group</Button>
               </ModalFooter>
             </ModalContent>
           </Modal>
