@@ -94,7 +94,7 @@ const Login: React.FC<LoginProps> = () => {
                 textAlign="center"
                 color="red"
                 fontSize="10pt">
-                {FIREBASE_ERRORS[error?.message as keyof typeof FIREBASE_ERRORS]}
+                {FIREBASE_ERRORS[error?.message as keyof typeof FIREBASE_ERRORS] ?? error?.message}
             </Text>
             <Button width="100%" height="36px" mt={2} mb={2} type="submit" isLoading={loading}>
                 Log In
