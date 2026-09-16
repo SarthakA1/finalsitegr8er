@@ -29,7 +29,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           let fileImage = '';
           if (mimeType === 'application/pdf') {
             fileImage = '/images/pdf.png';
-          } else if (mimeType === 'image/png' || mimeType === 'image/jpeg') {
+          } else if (mimeType === 'image/png' || mimeType === 'image/jpeg' || mimeType === 'image/gif') {
             fileImage = file;
           } else if (mimeType === 'application/msword' || mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
             fileImage = '/images/docs.png'
