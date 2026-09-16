@@ -3,7 +3,7 @@ import { Box, Container, Heading, Text, VStack, Input, Select, Button, FormContr
 import { NextSeo } from 'next-seo';
 
 const IbScoreCalculator = () => {
-    const [subjects, setSubjects] = useState(Array(6).fill(0));
+    const [subjects, setSubjects] = useState(Array(6).fill(7));
     const [eeGrade, setEeGrade] = useState('A');
     const [tokGrade, setTokGrade] = useState('A');
 
@@ -74,7 +74,7 @@ const IbScoreCalculator = () => {
                                     type="number"
                                     min={1}
                                     max={7}
-                                    defaultValue={7} // Default to 7 for optimistic checking
+                                    value={subjects[index]}
                                     onChange={(e) => handleSubjectChange(index, e.target.value)}
                                 />
                             </FormControl>
