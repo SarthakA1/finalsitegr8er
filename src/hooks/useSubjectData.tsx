@@ -143,12 +143,12 @@ const useSubjectData = () => {
     }, [user])
 
     useEffect(() => {
-        const { subjectId } = router.query;
+        const subjectId = router.query.subjectId as string | undefined;
 
-        if (subjectId && !subjectStateValue.currentSubject) {
-            getSubjectData(subjectId as string);
+        if (subjectId && subjectStateValue.currentSubject?.id !== subjectId) {
+            getSubjectData(subjectId);
         }
-    }, [router.query, subjectStateValue.currentSubject])
+    }, [router.query.subjectId, subjectStateValue.currentSubject])
 
     return {
         subjectStateValue,
