@@ -68,7 +68,7 @@ export const resolveMypIcon = (subjectId: string) => {
         // English / L&L
         return { icon: IoBook, bgGradient: "linear(to-br, blue.500, blue.700)", color: "white" };
     }
-    if (lower.includes("acquistion") || lower.includes("french") || lower.includes("spanish") || lower.includes("german") || lower.includes("mandarin")) {
+    if (lower.includes("acquisition") || lower.includes("french") || lower.includes("spanish") || lower.includes("german") || lower.includes("mandarin")) {
         // Foreign Language
         return { icon: IoChatbubbles, bgGradient: "linear(to-br, pink.400, purple.400)", color: "white" };
     }
