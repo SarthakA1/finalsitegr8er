@@ -3,7 +3,7 @@ import { Flex, Input, InputGroup, InputRightElement, Image, Link, Box, Text, Sta
 import { collection, getDocs, orderBy, query, where, limit } from 'firebase/firestore';
 import { auth, firestore } from '@/firebase/clientApp';
 import { User } from 'firebase/auth';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRecoilValue } from 'recoil';
 import { curriculumState } from '@/atoms/curriculumAtom';
@@ -51,10 +51,6 @@ const Searchinput: React.FC<SearchinputProps> = ({ user }) => {
     const [allLibraryItems, setAllLibraryItems] = useState<ContentItem[]>([]);
     const [dataFetched, setDataFetched] = useState(false);
 
-    // Filtered Results
-    const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
-    const [filteredLibrary, setFilteredLibrary] = useState<ContentItem[]>([]);
-
     const [users] = useAuthState(auth);
     const [loading, setLoading] = useState(false);
     const curriculum = useRecoilValue(curriculumState);
@@ -98,20 +94,12 @@ const Searchinput: React.FC<SearchinputProps> = ({ user }) => {
     }, []);
 
     // 2. Instant Filtering
-    const handleSearch = (value: string) => {
-        setSearchInputValue(value);
-
-        if (value.trim() === '') {
-            setFilteredPosts([]);
-            setFilteredLibrary([]);
-            return;
-        }
-
-        const lowerValue = value.toLowerCase();
+    const filteredLibrary = useMemo<ContentItem[]>(() => {
+        if (!searchInputValue.trim()) return [];
+        const lowerValue = searchInputValue.toLowerCase();
         const currentCurriculumId = curriculum.curriculumId;
 
-        // -- Filter Library --
-        const matchingLibrary = allLibraryItems.filter(item => {
+        return allLibraryItems.filter(item => {
             const p = item.program ? String(item.program).toLowerCase() : '';
 
             // STRICT Isolation
@@ -131,10 +119,14 @@ const Searchinput: React.FC<SearchinputProps> = ({ user }) => {
                 matches(item.subject)
             );
         });
+    }, [allLibraryItems, searchInputValue, curriculum.curriculumId]);
 
-        // -- Filter Posts --
-        const matchingPosts = allPosts.filter(post => {
+    const filteredPosts = useMemo<Post[]>(() => {
+        if (!searchInputValue.trim()) return [];
+        const lowerValue = searchInputValue.toLowerCase();
+        const currentCurriculumId = curriculum.curriculumId;
 
+        return allPosts.filter(post => {
             // STRICT Isolation
             if (currentCurriculumId === 'ib-dp') {
                 // Must explicity be 'ib-dp'
@@ -153,10 +145,11 @@ const Searchinput: React.FC<SearchinputProps> = ({ user }) => {
 
             return titleMatch || bodyMatch;
         });
+    }, [allPosts, searchInputValue, curriculum.curriculumId]);
 
-        setFilteredLibrary(matchingLibrary);
-        setFilteredPosts(matchingPosts);
-    }
+    const handleSearch = (value: string) => {
+        setSearchInputValue(value);
+    };
 
     return (
         <Flex flexGrow={1} maxWidth={{ base: "100%", md: user ? "auto" : "600px" }} mr={{ base: 0, md: 3 }} ml={{ base: 2, md: 1 }} direction="row" align="center" position="relative">
