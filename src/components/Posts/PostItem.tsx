@@ -29,6 +29,11 @@ import DocumentViewerModal from '@/components/Modal/DocumentViewerModal';
 import { linkifyHtml } from '@/utils/linkifyHtml';
 import { dpSubjects } from '@/lib/curriculumData';
 
+// Maximum visible height (px) of a collapsed post body. The CSS clip applied
+// to `.post-body` and the JS "Read More" detection threshold MUST stay in sync,
+// so both reference this single constant.
+const BODY_CLIP_PX = 300;
+
 type PostItemProps = {
     post: Post;
     userIsCreator: boolean;
@@ -61,13 +66,34 @@ const PostItem: React.FC<PostItemProps> = ({
     const [showFullBody, setShowFullBody] = useState(false);
     const [isLongContent, setIsLongContent] = useState(false);
     const contentRef = React.useRef<HTMLDivElement>(null);
+    const innerContentRef = React.useRef<HTMLDivElement>(null);
 
     // Check content height to determine if "Read More" is needed
     useEffect(() => {
-        if (contentRef.current) {
-            // If scrollHeight > 400 (our max height), showing the button is necessary
-            setIsLongContent(contentRef.current.scrollHeight > 400);
+        const clip = contentRef.current;
+        if (!clip) return;
+
+        const measure = () => {
+            // Show the "Read More" button whenever the body's rendered height
+            // exceeds the clip height (BODY_CLIP_PX), so clipped content is
+            // always reachable. scrollHeight reflects the full content height,
+            // including any overflow hidden by maxH.
+            setIsLongContent(clip.scrollHeight > BODY_CLIP_PX);
+        };
+        measure();
+
+        // Re-measure when the body's rendered height changes (e.g. late-loading
+        // inline images that grow the content after the first paint) so the
+        // affordance reflects the true height rather than the one captured at
+        // mount. The inner content element is unclamped, so it reports growth
+        // even when the outer box is already pinned to BODY_CLIP_PX.
+        if (!innerContentRef.current || typeof ResizeObserver === 'undefined') {
+            return;
         }
+        const observer = new ResizeObserver(measure);
+        observer.observe(innerContentRef.current);
+
+        return () => observer.disconnect();
     }, [post.body]);
 
     const toggleBodyDisplay = () => {
@@ -326,12 +352,12 @@ const PostItem: React.FC<PostItemProps> = ({
                     fontSize="md"
                     color="gray.600"
                     lineHeight="1.6"
-                    maxH={showFullBody ? 'none' : '300px'}
+                    maxH={showFullBody ? 'none' : `${BODY_CLIP_PX}px`}
                     overflowY="hidden"
                     position="relative"
                     className="post-body"
                 >
-                    <div dangerouslySetInnerHTML={{ __html: linkifyHtml(post.body) }} />
+                    <div ref={innerContentRef} dangerouslySetInnerHTML={{ __html: linkifyHtml(post.body) }} />
                     {!showFullBody && isLongContent && (
                         <Box
                             position="absolute"
