@@ -68,6 +68,16 @@ const ContentLibraryPage: React.FC = () => {
         setSelectedTokTypes([]);
     }, [selectedProgram]);
 
+    // Reset dependent filters when their gating resource type is no longer selected
+    useEffect(() => {
+        if (!selectedResourceTypes.includes("IA") && !selectedResourceTypes.includes("EE")) {
+            setSelectedSubjects([]);
+        }
+        if (!selectedResourceTypes.includes("TOK")) {
+            setSelectedTokTypes([]);
+        }
+    }, [selectedResourceTypes]);
+
     const toggleSession = (session: string) => {
         setSelectedSessions(prev =>
             prev.includes(session)
