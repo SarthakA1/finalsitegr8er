@@ -2,23 +2,16 @@ import React, { useState } from "react";
 import {
   Stack,
   Input,
-  Textarea,
   Flex,
   Button,
-  Text,
   SimpleGrid,
-  FormErrorMessage,
   Alert,
   AlertIcon,
 } from "@chakra-ui/react";
 import {
-  AsyncCreatableSelect,
-  AsyncSelect,
-  CreatableSelect,
   Select,
   chakraComponents 
 } from "chakra-react-select";
-import "react-quill/dist/quill.snow.css";
 import { Editor } from "../../common/Editor";
 
 type TextInputsProps = {
@@ -42,9 +35,6 @@ const TextInputs: React.FC<TextInputsProps> = ({
   handleCreatePost,
   loading,
 }) => {
-  function setData(value: string): void {
-    throw new Error("Function not implemented.");
-  }
   const handleInputChange = (name:any, value:any) => {
     onChange({
       target: {
