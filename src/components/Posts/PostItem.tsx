@@ -1,26 +1,13 @@
 import { Post } from '@/atoms/postsAtom';
-import { Flex, Icon, Stack, Text, Image, Link, textDecoration, SimpleGrid, Button, Badge, Box } from '@chakra-ui/react';
+import { Flex, Icon, Text, Image, Link, SimpleGrid, Button, Badge, Box } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { AiOutlineDelete, AiFillTags } from "react-icons/ai";
-import { TfiCommentAlt } from "react-icons/tfi";
-import { collection, Timestamp, writeBatch, doc, serverTimestamp, getDocs, orderBy, query, where } from 'firebase/firestore';
+import { AiOutlineDelete } from "react-icons/ai";
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { auth, firestore } from '@/firebase/clientApp';
 import { MdOutlineComment } from "react-icons/md";
 import { AiFillLike, AiOutlineLike, AiFillDislike, AiOutlineDislike } from "react-icons/ai";
-import { FaFilePdf, FaFileWord, FaFilePowerpoint } from "react-icons/fa";
-import {
-    IoCloseCircleOutline,
-    IoCloseCircleSharp,
-    IoArrowRedoOutline,
-    IoArrowUpCircleOutline,
-    IoArrowUpCircleSharp,
-    IoBookmarkOutline,
-} from "react-icons/io5";
 import moment from 'moment';
-import { RiGroup2Fill } from 'react-icons/ri';
-import { BsDot } from 'react-icons/bs';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import StaticEquationText from '../common/StaticEquationText';
 import { useRouter } from 'next/router';
 import { useSetRecoilState } from 'recoil';
 import { AuthModalState } from '@/atoms/authModalAtom';
@@ -40,15 +27,6 @@ type PostItemProps = {
     onSelectPost?: (post: Post) => void;
     homePage?: boolean;
 };
-export type DifficultyVoting = {
-    id: string;
-    creatorId: string;
-    subjectId: string;
-    postId: string;
-    postTitle: string;
-    voting: string;
-    createdAt: Timestamp;
-}
 const PostItem: React.FC<PostItemProps> = ({
     post,
     userIsCreator,
@@ -78,14 +56,11 @@ const PostItem: React.FC<PostItemProps> = ({
     const router = useRouter();
     const singlePostPage = !onSelectPost
 
-    const criteria = post.criteria;
-
     const [highestPercentage, setHighestPercentage] = useState('');
     const [highestPercentageName, setHighestPercentageName] = useState('');
 
     const [deletePostMessage, setDeletePostMessage] = useState('');
 
-    const [fileImageUrl, setFileImageUrl] = useState('');
     const setAuthModalState = useSetRecoilState(AuthModalState);
 
     // Viewer State
@@ -108,41 +83,7 @@ const PostItem: React.FC<PostItemProps> = ({
 
         }
     }
-    const handleClickVoting = async (value: any) => {
-        const votingQuery = query(
-            collection(firestore, 'diffculty_voting'),
-            where('creatorId', '==', user?.uid),
-            where('postId', '==', post.id),
-            orderBy('createdAt', 'desc')
-        );
-        const votingDocs = await getDocs(votingQuery);
 
-        // Store in post state
-        const voting = votingDocs.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        const totalVoting = voting.length;
-        const batch = writeBatch(firestore);
-        if (voting.length > 0) {
-            console.log(voting[0].id);
-            const diffcultyVotingDocRef = doc(firestore, 'diffculty_voting', voting[0].id!);
-            batch.update(diffcultyVotingDocRef, {
-                voting: value
-            })
-        } else {
-            const diffcultyVotingDocRef = doc(collection(firestore, 'diffculty_voting'))
-            const newDifficultyVoting: DifficultyVoting = {
-                id: diffcultyVotingDocRef.id,
-                creatorId: user?.uid || '',
-                subjectId: post.subjectId,
-                postId: post.id,
-                postTitle: post.title,
-                voting: value,
-                createdAt: serverTimestamp() as Timestamp,
-            }
-            batch.set(diffcultyVotingDocRef, newDifficultyVoting);
-            newDifficultyVoting.createdAt = { seconds: Date.now() / 1000 } as Timestamp
-        }
-        await batch.commit();
-    }
     const fetchVotingData = async () => {
         const votingQuery = query(
             collection(firestore, 'diffculty_voting'),
