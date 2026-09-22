@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import dynamic from 'next/dynamic'
 import "react-quill/dist/quill.snow.css";
 import katex from "katex";
@@ -6,8 +6,7 @@ import "katex/dist/katex.min.css";
 if (typeof window !== "undefined") {
     window.katex = katex;
 }
-export const Editor = ({ id, name, value, onChange, onBlur }: any) => {
-    const quillRef = React.useRef(null);
+export const Editor = ({ name, value, onChange }: any) => {
     const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }), []);
     const modules = {
         toolbar: [
@@ -38,13 +37,9 @@ export const Editor = ({ id, name, value, onChange, onBlur }: any) => {
         onChange(name, val);
     };
 
-    const handleBlur = () => {
-        onBlur(name, true);
-    };
     return (
         <>
             <div className="text-editor">
-                {/* {CustomToolbar(id)} */}
                 <ReactQuill
                     style={{ backgroundColor: "white" }}
                     placeholder="please enter description"
@@ -53,7 +48,6 @@ export const Editor = ({ id, name, value, onChange, onBlur }: any) => {
                     onChange={(e, delta, source, editor) => {
                         handleChange(e, delta, source, editor);
                     }}
-                    //onBlur={handleBlur}
                     modules={modules}
                     formats={formats}
                 />
