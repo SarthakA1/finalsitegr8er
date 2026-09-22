@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, Image, Button, Box } from '@chakra-ui/react';
+import { Flex, Image, Box } from '@chakra-ui/react';
 import Searchinput from './Searchinput';
 import RightContent from './RightContent/RightContent';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -67,16 +67,6 @@ const navbar: React.FC = () => {
 
 
             <Searchinput />
-
-
-            {/*                 <Button 
-    height="35px"
-    width= "150px"
-    onClick={() => window.open('https://forms.gle/VqLu2seSNzi1JneZ9', '_blank')}
-    mr={3} 
-    mt={0.5}>
-    Peer Tutoring
-</Button> */}
 
 
             <Flex >
