@@ -167,7 +167,7 @@ const Notification: React.FC<NotificationsProps> = () => {
                                                 <Box boxSize="8px" bg="brand.500" borderRadius="full" />
                                             </Box>
                                             <Flex direction="column" gap={1}>
-                                                <Text fontSize="sm" color="gray.700" lineHeight="1.4" dangerouslySetInnerHTML={{ __html: item.notification }} />
+                                                <Text fontSize="sm" color="gray.700" lineHeight="1.4">{item.notification}</Text>
                                                 <Text fontSize="xs" color="gray.400">
                                                     {item.createdAt ? new Date(item.createdAt.seconds * 1000).toLocaleDateString() : 'Just now'}
                                                 </Text>
