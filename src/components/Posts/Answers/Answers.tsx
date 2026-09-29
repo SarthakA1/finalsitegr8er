@@ -21,7 +21,7 @@ type AnswersProps = {
     subjectId: string;
 };
 
-export type Notifications = {
+type Notifications = {
     id?: string;
     notifyBy?: string;
     notifyTo?: string;

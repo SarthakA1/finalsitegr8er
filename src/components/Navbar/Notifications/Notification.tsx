@@ -31,7 +31,7 @@ const formTabs: TabItem[] = [
     },
 ]
 
-export type TabItem = {
+type TabItem = {
     title: string;
     icon: typeof Icon.arguments
 }

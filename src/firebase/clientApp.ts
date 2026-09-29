@@ -28,4 +28,4 @@ const analytics = typeof window !== "undefined" ? getAnalytics(app) : null;
 // const analytics = getAnalytics(app);
 
 
-export {app, firestore, auth, storage, analytics };
+export {firestore, auth, storage, analytics };

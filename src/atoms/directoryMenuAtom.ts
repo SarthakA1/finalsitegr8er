@@ -25,7 +25,7 @@ export const defaultMenuItem: DirectoryMenuItem = {
     iconColor: 'black'
 }
 
-export const defaultMenuState: DirectoryMenuState = {
+const defaultMenuState: DirectoryMenuState = {
     isOpen: false,
     selectedMenuItem: defaultMenuItem
 }

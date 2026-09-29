@@ -1,6 +1,6 @@
 import { OptionBase } from "chakra-react-select";
 
-export interface CriteriaOptions extends OptionBase {
+interface CriteriaOptions extends OptionBase {
   label: string;
   value: string;
 }
@@ -12,7 +12,7 @@ export const criteriaOptions: CriteriaOptions[] = [
     {value: "Criteria D", label: "Criteria D"}
 ];
 
-export interface TypeOfQuestionsOptions extends OptionBase {
+interface TypeOfQuestionsOptions extends OptionBase {
     label: string;
     value: string;
 }
@@ -22,7 +22,7 @@ export const typeOfQuestionsOptions: TypeOfQuestionsOptions[] = [
     {value: "General Question", label: "General Question"}
 ];
 
-export interface GradeOptions extends OptionBase {
+interface GradeOptions extends OptionBase {
   label: string;
   value: string;
 }
