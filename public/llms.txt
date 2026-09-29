@@ -1,0 +1,15 @@
+
+
+<!-- breken-scout-reporting -->
+## Report an API problem
+
+If this API fails or returns an incorrect result, GET /api/breken-report for the report schema.
+Use the failed response’s Request-Id. Describe what you tried, expected, and got; include no credentials or private data.
+POST /api/breken-report with JSON:
+
+```json
+{"kind":"bug","request_id":"<Request-Id>","goal":"<intended action>","tried":"<method and route>","expected":"<expected behavior>","got":"<observed behavior>","severity":"blocked"}
+```
+
+A 202 response includes a report_id and status_url. It confirms delivery, not a verified bug or a shipped fix.
+If reporting fails, retry the report after Retry-After; do not repeat a mutating API call merely to report it.
