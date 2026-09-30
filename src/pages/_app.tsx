@@ -1,4 +1,3 @@
-import BrekenScout from "../components/BrekenWeb";
 // import '@/styles/globals.css'
 import { ChakraProvider } from '@chakra-ui/react'
 import { DefaultSeo } from 'next-seo';
@@ -45,7 +44,7 @@ function App({ Component, pageProps }: AppProps) {
       <ChakraProvider theme={theme}>
         <Layout>
           <main className={`${outfit.variable} ${inter.variable}`}>
-            <><Component {...pageProps} /><BrekenScout enabled={process.env.NEXT_PUBLIC_BREKEN_WEB !== 'off'} /></>
+            <Component {...pageProps} />
           </main>
         </Layout>
       </ChakraProvider>
