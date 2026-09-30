@@ -1,5 +1,5 @@
 // @ts-nocheck — plain JavaScript on purpose, so it compiles under any tsconfig.
-// Breken sensor 1.2.0 — reports failed requests in this API to Breken, and gives the agents calling it
+// Breken sensor 1.2.1 — reports failed requests in this API to Breken, and gives the agents calling it
 // a place to say what they were trying to do. MIT licensed: read it, change it, or delete it.
 // Generated for SarthakA1/finalsitegr8er.
 //
@@ -19,7 +19,7 @@ var BREKEN_KEY = "brk_pub_778d39d30b244349_xs5NLg5cB_yc82nHj5zWpI1nbKzKxiyByygin
 var BREKEN_ENDPOINT = "https://breken.ai";
 var BREKEN_SALT = "mTpZweTxiKjist0z";
 var BREKEN_FRAMEWORK = "next";
-var BREKEN_SENSOR_VERSION = "1.2.0";
+var BREKEN_SENSOR_VERSION = "1.2.1";
 // Set to false to turn the sensor off in code.
 var BREKEN_ENABLED = true;
 
@@ -570,8 +570,8 @@ function brekenCallerState(hash) {
   return state;
 }
 
-function brekenRemember(id, record) {
-  brekenRecent.set(id, record);
+function brekenRemember(id, record, callerHash) {
+  brekenRecent.set(id, { record: record, callerHash: callerHash });
   if (brekenRecent.size > BREKEN_MAX_RECENT) brekenRecent.delete(brekenRecent.keys().next().value);
 }
 
@@ -647,7 +647,8 @@ function brekenDetect(r, now, hash, accountHash, authenticated) {
     route: route, status: status, matched: r.matched !== false, duration_ms: base.duration_ms,
     error_class: errorFacts ? errorFacts.class : undefined, top_frame: errorFacts && errorFacts.frames[0] ? errorFacts.frames[0] : undefined,
     body_shape: shape || undefined, query_keys: queryKeys, at: base.at,
-  });
+    release: base.release, route_file: r.routeFile, trail: trail,
+  }, hash);
 
   if (r.aborted) {
     brekenEnqueue(Object.assign({ type: 'abort', status: null }, base));
@@ -844,7 +845,6 @@ function brekenDiscovery() {
     },
     max_bytes: 16384,
     returns: '202 { report_id, status, status_url } — the status URL, on this origin, moves to reproduced, fix PR opened, shipped',
-    human_form: BREKEN_REPORT_PATH + '?request_id=<id>',
     mcp_tool: brekenMcp.problemTool,
     capability_tool: brekenMcp.tool,
   };
@@ -856,36 +856,6 @@ function brekenJson(status, value, extraHeaders) {
 
 function brekenProblem(status, title, detail, extraHeaders) {
   return brekenJson(status, { type: 'https://breken.ai/problems/agent-report', title: title, status: status, detail: detail }, extraHeaders);
-}
-
-function brekenEscape(text) {
-  return String(text).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
-}
-
-/** The one-line form a person gets when an agent hands them the link. No script, no third party. */
-function brekenForm(requestId, done) {
-  var page = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-    + '<meta name="robots" content="noindex"><title>Report a problem</title><style>body{font:16px/1.5 system-ui,sans-serif;max-width:34rem;margin:3rem auto;padding:0 1rem;color:#111}'
-    + 'input,select,button{font:inherit;padding:.5rem;width:100%;box-sizing:border-box;margin:.25rem 0 1rem}button{width:auto;padding:.5rem 1.25rem}small{color:#555}</style></head><body>';
-  if (done) {
-    page += '<h1>Thanks — it was sent.</h1><p>Track it here: <a href="' + brekenEscape(done.status_url) + '">' + brekenEscape(done.status_url) + '</a></p>';
-  } else {
-    page += '<h1>Something not working?</h1><form method="post" action="' + BREKEN_REPORT_PATH + '">'
-      + (requestId ? '<input type="hidden" name="request_id" value="' + brekenEscape(requestId) + '"><p><small>About request ' + brekenEscape(requestId) + '</small></p>' : '')
-      + '<label>What were you trying to do?<input name="goal" maxlength="300" required autofocus></label>'
-      + '<label>Kind<select name="kind"><option value="bug">It broke</option><option value="missing_feature">It cannot do what I need</option><option value="confusing">It was confusing</option></select></label>'
-      + '<button type="submit">Send</button><p><small>Goes to this site\'s maintainers. Please leave out personal data and passwords.</small></p></form>';
-  }
-  return { status: done ? 202 : 200, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', 'x-frame-options': 'DENY', 'content-security-policy': "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'" }, body: page + '</body></html>' };
-}
-
-function brekenParseForm(raw) {
-  var out = {};
-  String(raw || '').split('&').forEach(function (pair) {
-    var parts = pair.split('=');
-    try { var k = decodeURIComponent((parts[0] || '').replace(/\+/g, ' ')); if (BREKEN_REPORT_FIELDS.indexOf(k) >= 0) out[k] = decodeURIComponent((parts.slice(1).join('=') || '').replace(/\+/g, ' ')); } catch (e) { /* skip */ }
-  });
-  return out;
 }
 
 var brekenStatusCache = new Map();
@@ -938,62 +908,35 @@ async function brekenReadRequestBody(request, limit) {
 }
 
 /**
- * Answer the report route. GET: the discovery document (JSON) or the one-line form (a browser);
- * GET /…/rpt_x or /…/cl_x: the status, on this origin; POST: a report, as JSON or as the form.
+ * Answer the report route. GET: the agent discovery document (JSON);
+ * GET /…/rpt_x or /…/cl_x: the status, on this origin; POST: a report as JSON.
  * Resolves null when the request is not the report route, or when the sensor is off (then the
  * route does not exist).
  */
 function brekenReportRoute(method, path, headers, body, address, alias, url) {
   try {
     if (!brekenEnabled()) return Promise.resolve(null);
-    var base = alias && (path === '/feedback' || path.indexOf('/feedback/') === 0) ? '/feedback' : BREKEN_REPORT_PATH;
+    var base = BREKEN_REPORT_PATH;
     if (path !== base && path.indexOf(base + '/') !== 0) return Promise.resolve(null);
     var rest = path.slice(base.length + 1);
-    // The vendored browser snippet posts to this same-origin door. The key stays on the server;
-    // do not treat a web batch as an agent report or expose its body in a response.
-    if (base === BREKEN_REPORT_PATH && rest === 'web-events') {
-      if (method !== 'POST') return Promise.resolve(brekenProblem(405, 'Method not allowed', undefined, { allow: 'POST' }));
-      var site = brekenHeader(headers, 'sec-fetch-site');
-      if (site && site !== 'same-origin' && site !== 'none') return Promise.resolve(brekenProblem(403, 'Cross-origin web event'));
-      var origin = brekenHeader(headers, 'origin');
-      if (origin && origin !== brekenOrigin(headers)) return Promise.resolve(brekenProblem(403, 'Cross-origin web event'));
-      var rawWeb = typeof body === 'string' ? body : body && typeof body === 'object' ? JSON.stringify(body) : '';
-      if (typeof TextEncoder !== 'undefined' ? new TextEncoder().encode(rawWeb).length > 65536 : rawWeb.length > 65536)
-        return Promise.resolve(brekenProblem(413, 'Web batch too large', 'at most 65536 bytes'));
-      if (!rawWeb || !/^(?:text\/plain|application\/json)\b/i.test(brekenHeader(headers, 'content-type')))
-        return Promise.resolve(brekenProblem(415, 'Web batch must be JSON or text/plain'));
-      return brekenFetch('/intake/v1/web-events', {
-        method: 'POST', body: rawWeb,
-        headers: { 'content-type': 'text/plain', authorization: 'Bearer ' + BREKEN_KEY,
-          ...(brekenHeader(headers, 'signature-agent') ? { 'signature-agent': brekenHeader(headers, 'signature-agent').slice(0, 200) } : {}) },
-      }).then(function (response) {
-        if (!response) return brekenProblem(503, 'Web intake unavailable', 'try again later');
-        try { if (response.body && response.body.cancel) response.body.cancel(); } catch (e) { /* ignore */ }
-        return brekenJson(response.status === 202 ? 202 : response.status === 429 ? 429 : 502,
-          { accepted: response.status === 202 });
-      });
-    }
     if (rest) {
       if (!/^(rpt|cl)_[A-Za-z0-9_-]{22}$/.test(rest) || (method !== 'GET' && method !== 'HEAD')) return Promise.resolve(brekenProblem(404, 'Not found'));
       return brekenStatus(rest);
     }
-    var wantsHtml = /text\/html/i.test(brekenHeader(headers, 'accept'));
     var requestId = /[?&]request_id=([^&#]+)/.exec(String(url || ''));
     requestId = requestId ? decodeURIComponent(requestId[1]) : '';
     if (!BREKEN_REQUEST_ID.test(requestId)) requestId = '';
     if (method === 'GET' || method === 'HEAD') {
-      if (wantsHtml) return Promise.resolve(brekenForm(requestId, null));
       var doc = brekenDiscovery();
       if (requestId) doc.request_id = requestId;
       return Promise.resolve({ status: 200, headers: { 'content-type': 'application/json', 'cache-control': 'public, max-age=300' }, body: JSON.stringify(doc) });
     }
     if (method !== 'POST') return Promise.resolve(brekenProblem(405, 'Method not allowed', undefined, { allow: 'GET, POST' }));
-    var form = /application\/x-www-form-urlencoded/i.test(brekenHeader(headers, 'content-type'));
+    if (!/^application\/json(?:;|$)/i.test(brekenHeader(headers, 'content-type'))) return Promise.resolve(brekenProblem(415, 'Send an application/json agent report'));
     var raw = typeof body === 'string' ? body : body && typeof body === 'object' ? JSON.stringify(body) : '';
     if (raw.length > 16384) return Promise.resolve(brekenProblem(413, 'Report too large', 'at most 16384 bytes'));
     var input;
-    if (form) input = typeof body === 'object' && body !== null ? body : brekenParseForm(raw);
-    else { try { input = typeof body === 'object' && body !== null ? body : JSON.parse(raw || 'null'); } catch (e) { input = null; } }
+    { try { input = typeof body === 'object' && body !== null ? body : JSON.parse(raw || 'null'); } catch (e) { input = null; } }
     if (!input || typeof input !== 'object' || Array.isArray(input)) return Promise.resolve(brekenProblem(400, 'Invalid report', 'send a JSON object; GET this URL for the fields'));
     var unknown = Object.keys(input).filter(function (k) { return BREKEN_REPORT_FIELDS.indexOf(k) < 0; });
     if (unknown.length) return Promise.resolve(brekenProblem(400, 'Invalid report', 'unknown field "' + String(unknown[0]).slice(0, 40) + '"; allowed: ' + BREKEN_REPORT_FIELDS.join(', ')));
@@ -1015,10 +958,10 @@ function brekenReportRoute(method, path, headers, body, address, alias, url) {
     // facts come from the server, the intent from the agent.
     var pendingRecord = reportRequestId ? brekenRecentPending.get(reportRequestId) : undefined;
     return Promise.resolve(pendingRecord).then(function () {
-      var record = reportRequestId ? brekenRecent.get(reportRequestId) : undefined;
-      if (record) report.server = record;
       return brekenHash(who.source);
     }).then(function (hash) {
+      var remembered = reportRequestId ? brekenRecent.get(reportRequestId) : undefined;
+      if (remembered && remembered.callerHash === hash) report.server = remembered.record;
       report.caller = { hash: hash, ua_family: brekenUaFamily(headers), authenticated: who.authenticated, signed_agent: Boolean(brekenHeader(headers, 'signature-agent')) };
       var operator = brekenAgentOperator(headers);
       if (operator) report.caller.agent_operator = operator;
@@ -1028,7 +971,6 @@ function brekenReportRoute(method, path, headers, body, address, alias, url) {
     }).then(function (accepted) {
       if (!accepted) return brekenProblem(503, 'Report was not accepted', 'Please retry the report; your original API request was not retried.', { 'retry-after': '5' });
       var statusUrl = brekenOrigin(headers) + BREKEN_REPORT_PATH + '/' + id;
-      if (form) return brekenForm(reportRequestId || '', { status_url: statusUrl });
       return brekenJson(202, { report_id: id, status: 'received', status_url: statusUrl });
     }, function () { return brekenProblem(503, 'Report unavailable', 'Please retry the report.'); });
   } catch (e) {
@@ -1067,7 +1009,8 @@ var brekenMcp = {
   },
   call: function (args, headers) {
     var input = Object.assign({ kind: 'missing_feature' }, args || {});
-    return brekenReportRoute('POST', BREKEN_REPORT_PATH, headers || {}, JSON.stringify(input), '', false, '').then(function (answer) {
+    var reportHeaders = { get: function (name) { return String(name).toLowerCase() === 'content-type' ? 'application/json' : brekenHeader(headers || {}, name); } };
+    return brekenReportRoute('POST', BREKEN_REPORT_PATH, reportHeaders, JSON.stringify(input), '', false, '').then(function (answer) {
       return { content: [{ type: 'text', text: answer && answer.status === 202 ? 'Sent to the maintainers. ' + answer.body : 'Could not send the request.' }], isError: !(answer && answer.status === 202) };
     });
   },
