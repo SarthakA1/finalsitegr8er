@@ -9,6 +9,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import PostItem from './PostItem';
 import PostLoader from './PostLoader';
 import GoogleAd from '../Ads/GoogleAd';
+import { applyCriteriaFilter } from '@/lib/filterPosts';
 
 type PostsProps = {
     subjectData: Subject;
@@ -123,11 +124,7 @@ const Posts: React.FC<PostsProps> = ({ subjectData, userId, initialPosts }) => {
             filteredPosts = filteredPosts.filter(p => p.paper && paperFilters.includes(p.paper.value));
         }
         if (criteriaFilters.length) {
-            filteredPosts = filteredPosts.filter(p => {
-                if (!p.criteria) return false;
-                const val = Array.isArray(p.criteria) ? p.criteria[0]?.value : p.criteria.value;
-                return criteriaFilters.includes(val);
-            });
+            filteredPosts = applyCriteriaFilter(filteredPosts, criteriaFilters);
         }
         if (typeFilters.length) {
             filteredPosts = filteredPosts.filter(p => p.typeOfQuestions && typeFilters.includes(p.typeOfQuestions.label));
